@@ -22,5 +22,5 @@ zip -r Singal-SCA.zip -i Podfile.lock Gemfile.lock Pods/
 ls -la
 
 
-java -verbose -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -createprofile false  -appname "Gen-IR pipeline"  -version "v0.1.APPCENTER" -filepath Signal.zip
+java -verbose -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan 2 -createprofile false  -appname "Gen-IR pipeline"  -version "v0.1.APPCENTER" -filepath Signal.zip
 
