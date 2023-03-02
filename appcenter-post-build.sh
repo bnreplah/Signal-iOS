@@ -18,14 +18,14 @@ ls -la
 gen-ir build_log.txt Signal.xcarchive/IR
 zip -r Signal.zip Signal.xcarchive
 zip -r Singal-SCA.zip -i Podfile.lock Gemfile.lock Pods/
-chmod 755 Signal-SCA.zip
-chmod 755 Signal.zip
+ls -la
+
+#chmod 755 Signal-SCA.zip
+#chmod 755 Signal.zip
 mkdir artifacts
-cp Signal-SCA.zip -t artifacts/
-c[ Signal.zip -t artifacts/
 
 ls -la
 
 
-java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan 2 -createprofile false  -appname "Gen-IR pipeline"  -version "v0.1.APPCENTER" -filepath artifacts/
+#java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan 2 -createprofile false  -appname "Gen-IR pipeline"  -version "v0.1.APPCENTER" -filepath artifacts/
 
