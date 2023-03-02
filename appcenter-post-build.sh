@@ -1,3 +1,13 @@
+WRAPPER_VERSION=`curl https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/maven-metadata.xml | grep latest |  cut -d '>' -f 2 | cut -d '<' -f 1`
+if `wget https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/$WRAPPER_VERSION/vosp-api-wrappers-java-$WRAPPER_VERSION.jar -O VeracodeJavaAPI.jar`; then
+                chmod 755 VeracodeJavaAPI.jar
+                echo '[INFO] SUCCESSFULLY DOWNLOADED WRAPPER'
+  else
+                echo '[ERROR] DOWNLOAD FAILED'
+                exit 1
+fi
+        
+
 brew tap veracode/tap
 brew install gen-ir
 
@@ -10,6 +20,7 @@ zip -r Signal.zip Signal.xcarchive
 zip -r Singal-SCA.zip -i Podfile.lock Gemfile.lock Pods/
 
 ls -la
-docker run -it --rm veracode/api-wrapper-java:cmd -help
-docker run -it --rm  --env VERACODE_API_KEY_ID=$VID  --env VERACODE_API_KEY_SECRET=$VKEY -v ~/:/myapp  veracode/api-wrapper-java:cmd  -action UploadAndScan -createprofile false  -appname "Gen-IR pipeline"  -version "v0.1.APPCENTER" -filepath /myapp/Signal*.zip
+
+
+java -verbose -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -createprofile false  -appname "Gen-IR pipeline"  -version "v0.1.APPCENTER" -filepath /myapp/Signal*.zip
 
