@@ -24,5 +24,5 @@ ls -la
 cp Signal-SCA.zip Signal.zip artifacts/
 ls -la artifacts/
 
-#java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan 2 -createprofile false  -appname "Gen-IR pipeline"  -version "v0.1.APPCENTER" -filepath artifacts/
+java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan 2 -createprofile false  -appname "Gen-IR pipeline"  -version "v0.1.APPCENTER" -filepath artifacts/
 
