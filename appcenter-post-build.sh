@@ -17,7 +17,7 @@ xcodebuild archive -workspace Signal.xcworkspace -configuration Debug -scheme $A
 ls -la 
 gen-ir build_log.txt Signal.xcarchive/IR
 zip -r Signal.zip Signal.xcarchive
-zip -r Singal-SCA.zip Podfile.lock Gemfile.lock Pods/
+zip -r Signal-SCA.zip Podfile.lock Gemfile.lock Pods/
 ls -la
 mkdir artifacts/
 ls -la
