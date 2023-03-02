@@ -7,6 +7,8 @@ xcodebuild archive -workspace Signal.xcworkspace  -configuration Debug -scheme S
 ls -la 
 gen-ir build_log.txt Signal.xcarchive/IR
 zip -r Signal.zip Signal.xcarchive
-zip Singal-Podfile.zip podfile.lock 
+zip -r Singal-SCA.zip -i Podfile.lock Gemfile.lock Pods/
 
 ls -la
+docker run -it --rm veracode/api-wrapper-java:cmd -help
+
