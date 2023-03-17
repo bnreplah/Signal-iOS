@@ -1,0 +1,160 @@
+# Xcode
+# Build, test, and archive an Xcode workspace on macOS.
+# Add steps that install certificates, test, sign, and distribute an app, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/xcode
+
+trigger:
+- main
+
+pool:
+  vmImage: 'macos-latest'
+
+steps:
+
+
+- task: Bash@3
+  displayName: Installing Gen-IR
+  inputs:
+    targetType: 'inline'
+    script: |
+      brew tap veracode/tap
+      brew install gen-ir
+      ls
+      pwd
+
+- task: Bash@3
+  displayName: Archive and Generate Build Log
+  inputs:
+    targetType: 'inline'
+    script: |
+      xcodebuild clean
+      echo ====================================================================================
+      echo =========================== Build + Dependencies =================================== 
+      echo ====================================================================================
+      make dependencies
+      pod install
+      
+      echo ====================================================================================
+      echo === Listing out the project, workspace configuration =============================== 
+      echo ====================================================================================
+      
+      echo Current working director
+      pwd
+      echo xcodebuild -list 3x
+      xcodebuild -list
+      xcodebuild -list -project Signal.xcproject
+      xcodebuild -list -workspace Signal.xcworkspace
+      
+      echo ====================================================================================
+      echo === Archiving the build                              =============================== 
+      echo ====================================================================================
+      
+      xcodebuild archive -workspace Signal.xcworkspace  -configuration Debug -scheme Signal-Veracode -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath Signal.xcarchive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO ENABLE_BITCODE=NO | tee build_log.txt
+
+      
+      echo ====================================================================================
+      echo === Installing and running SCA Agent scan =============================== 
+      echo ====================================================================================
+      
+      echo Run and install SCA Agent
+      curl -sSL https://download.sourceclear.com/ci.sh | sh
+
+      echo [DEBUG] Before zipping up archive
+      ls
+      echo [DEBUG] printing out build_log
+      
+      cat build_log.txt
+      
+      echo ====================================================================================
+      echo === Running gen-ir =============================== 
+      echo ====================================================================================
+      
+      gen-ir build_log.txt Signal.xcarchive/IR
+
+      
+      echo ====================================================================================
+      echo === Packaging                                       =============================== 
+      echo ====================================================================================
+      
+
+      echo [DEBUG] Packaging SCA Component
+      
+      zip Signal-Podfile.zip podfile.lock
+
+      echo [DEBUG] Packaging Archive
+
+      zip -r Signal.zip Signal.xcarchive
+      
+      echo ====================================================================================
+      echo === Listing out permissions of file                 =============================== 
+      echo ====================================================================================
+      
+      ls -la Signal.zip
+      
+      echo [DEBUG] after zipping up archive
+      ls
+      
+      echo [DEBUG] working directory location
+      echo Current Working Directory  $(PWD)
+      pwd
+      echo Build Artifact Directory $(build.artifactstagingdirectory)
+      ls $(build.artifactstagingdirectory)
+      
+      echo ====================================================================================
+      echo === Copying to Staging Directory                    =============================== 
+      echo ====================================================================================
+      
+
+      cp Signal.zip $(build.artifactstagingdirectory)/Signal.zip
+      cp Signal-Podfile.zip $(build.artifactstagingdirectory)/Signal-Podfile.zip
+      ls $(build.artifactstagingdirectory)
+  env:
+    SRCCLR_API_TOKEN: $(SRCCLR_API_TOKEN)
+
+#      xcodebuild archive -workspace Signal.xcworkspace -sdk iphoneos16.0 -configuration Debug -scheme Signal -destination generic/platform=iOS DEBUG_INFOMATION_FORMAT=dwarf-with-dsym -archivePath Signal.xcarchive ENABLE_BITCODE=NO CODE_SIGNING_ALLOWED=NO > build.log
+
+# - task: PublishPipelineArtifact@1
+#   inputs:
+#     targetPath: 'build_log.txt'
+#     artifact: 'build_log.txt'
+#     publishLocation: 'pipeline'
+
+############################################################################################
+# Publish Package 
+############################################################################################
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'Signal.zip'
+    artifact: 'Signal.zip'
+    publishLocation: 'pipeline'
+
+############################################################################################
+# Publish SCA Component
+############################################################################################
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: 'Signal-Podfile.zip'
+    artifact: 'Signal-Podfile.zip'
+    publishLocation: 'pipeline'
+
+# - task: PublishPipelineArtifact@1
+#   inputs:
+#     targetPath: 'SCAcomp.zip'
+#     artifact: 'SCAcomp.zip'
+#     publishLocation: 'pipeline'
+   
+############################################################################################
+# Veracode Upload and Scan
+############################################################################################
+- task: Veracode@3
+  inputs:
+    ConnectionDetailsSelection: 'Service Connection'
+    AnalysisService: 'Veracode_Int'
+    veracodeAppProfile: '$(system.teamProject)'
+    version: '$(build.buildNumber)'
+    filepath: '$(build.artifactstagingdirectory)'
+    optargs: '-deleteincompletescan 2'
+    importResults: true
+    maximumWaitTime: '720'
+     
+    
