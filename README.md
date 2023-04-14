@@ -8,7 +8,7 @@ Also available on [Android](https://github.com/signalapp/signal-android) and [De
 
 MS App Center Build status for demo    
 [![Build status](https://build.appcenter.ms/v0.1/apps/a51353f6-e083-4fe8-baee-096cd6c07082/branches/main/badge)](https://appcenter.ms)
-
+> Note may say failed, but the actions are bing done in the post build step
 
 ## Questions?
 
