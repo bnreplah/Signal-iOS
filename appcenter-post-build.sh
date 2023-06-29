@@ -19,11 +19,12 @@ fi
 
 appname="Signal"
 projectLocation="$appname.xcodeproj"
-
+debug=true
 
 brew tap veracode/tap
 brew install gen-ir
-
+make dependencies
+bundle install
 pod install
 
 
@@ -33,11 +34,22 @@ echo "APPCENTER_XCODE_SCHEME: $APPCENTER_XCODE_SCHEME"
 echo "APPCENTER_SOURCE_DIRECTORY: $APPCENTER_SOURCE_DIRECTORY"
 ls $APPCENTER_SOURCE_DIRECTORY
 echo "APPCENTER_OUTPUT_DIRECTORY: $APPCENTER_OUTPUT_DIRECTORY"
+echo "========================================================================================================================================================================"
+echo "creating archive"
+echo "========================================================================================================================================================================"
 xcodebuild archive -workspace $appname.xcworkspace -configuration Debug -scheme $APPCENTER_XCODE_SCHEME -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath $appname.xcarchive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO ENABLE_BITCODE=NO | tee build_log.txt
-
+if [$debug]; then
+      xcodebuild archive -workspace Signal.xcworkspace  -configuration Debug -scheme Signal-Veracode -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath Signal.xcarchive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO ENABLE_BITCODE=NO | tee build_log.txt
+      echo "========================================================================================================================================================================"
+      echo "Output from Build_log.txt"
+      echo "========================================================================================================================================================================"
+      cat build_log.txt
+fi
 
 #if including the SRCCLR_API_TOKEN as an enviornmental variable to be able to conduct Veracode SCA Agent-based scan
+echo "========================================================================================================================================================================"
 echo "RUNNING VERACODE SCA AGENT-BASED SCAN"
+echo "========================================================================================================================================================================"
 SRCCLR_API_TOKEN=$SRCCLR_API_TOKEN
 curl -sSL https://download.sourceclear.com/ci.sh | sh
 
@@ -46,10 +58,26 @@ curl -sSL https://download.sourceclear.com/ci.sh | sh
 ls -la 
 #gen-ir build_log.txt $appname.xcarchive/IR
 #updated version
+echo "========================================================================================================================================================================"
+echo "GEN-IR Running ##############################################################################"
+echo "========================================================================================================================================================================"
 gen-ir build_log.txt $appname.xcarchive/ --project-path $projectLocation 
+
+if [$debug]; then
+  echo "========================================================================================================================================================================" 
+  echo "Running modified version to write bitcode out to IR folder"
+  echo "========================================================================================================================================================================"
+  gen-ir build_log.txt Signal.xcarchive/IR --project-path ./Signal.xcproj
+fi
+
+
+echo "========================================================================================================================================================================"
+echo "Zipping up artifact"
+echo "========================================================================================================================================================================"
 zip -r $appname.zip $appname.xcarchive
 zip -r $appname-Podfile.zip Podfile.lock Gemfile.lock Pods/
 ls -la
+
 mkdir Veracode/
 ls -la
 cp $appname-Podfile.zip $appname.zip Veracode/
