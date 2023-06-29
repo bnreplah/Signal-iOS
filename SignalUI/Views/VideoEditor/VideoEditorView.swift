@@ -29,12 +29,12 @@ class VideoEditorView: UIView {
 
     private lazy var playerView: VideoPlayerView = {
         let playerView = VideoPlayerView()
-        playerView.videoPlayer = OWSVideoPlayer(url: URL(fileURLWithPath: model.srcVideoPath))
+        playerView.videoPlayer = VideoPlayer(url: URL(fileURLWithPath: model.srcVideoPath))
         playerView.delegate = self
         return playerView
     }()
     private lazy var playButton: UIButton = {
-        let playButton = RoundMediaButton(image: #imageLiteral(resourceName: "play-solid-34"), backgroundStyle: .blur)
+        let playButton = RoundMediaButton(image: UIImage(imageLiteralResourceName: "play-fill-32"), backgroundStyle: .blur)
         playButton.accessibilityLabel = OWSLocalizedString("PLAY_BUTTON_ACCESSABILITY_LABEL",
                                                            comment: "Accessibility label for button to start media playback")
         // this makes the blur circle 72 pts in diameter
@@ -145,7 +145,7 @@ class VideoEditorView: UIView {
 
     func playVideo() {
         if ensureSeekReflectsTrimming() {
-            // If this delay isn't induced OWSVideoPlayer.play() would reset
+            // If this delay isn't induced VideoPlayer.play() would reset
             // current position to 0, likely because AVPlayer hasn't yet
             // had a chance to update its currentTime.
             DispatchQueue.main.async {

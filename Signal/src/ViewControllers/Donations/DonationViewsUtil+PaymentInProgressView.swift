@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
+import SignalCoreKit
+import SignalUI
 
 extension DonationViewsUtil {
     public static func wrapPromiseInProgressView<T>(
@@ -26,7 +27,7 @@ extension DonationViewsUtil {
         backdropView.addSubview(progressViewContainer)
         progressViewContainer.autoCenterInSuperview()
 
-        let progressView = AnimatedProgressView(loadingText: NSLocalizedString(
+        let progressView = AnimatedProgressView(loadingText: OWSLocalizedString(
             "SUSTAINER_VIEW_PROCESSING_PAYMENT",
             comment: "Loading indicator on the sustainer view"
         ))

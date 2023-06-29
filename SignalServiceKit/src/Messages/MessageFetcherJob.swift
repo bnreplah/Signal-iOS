@@ -58,18 +58,14 @@ public class MessageFetcherJob: NSObject {
     // running at a given time.
     private let fetchOperationQueue: OperationQueue = {
         let operationQueue = OperationQueue()
-        operationQueue.name = "MessageFetcherJob.fetchOperationQueue"
+        operationQueue.name = "MessageFetcherJob-Fetch"
         operationQueue.maxConcurrentOperationCount = 1
         return operationQueue
     }()
 
-    fileprivate var activeOperationCount: Int {
-        return fetchOperationQueue.operationCount
-    }
-
     private let unfairLock = UnfairLock()
 
-    private let completionQueue = DispatchQueue(label: "org.signal.messageFetcherJob.completionQueue")
+    private let completionQueue = DispatchQueue(label: "org.signal.message-fetcher.completion")
 
     // This property should only be accessed with unfairLock acquired.
     private var activeFetchCycles = Set<UUID>()
@@ -179,40 +175,27 @@ public class MessageFetcherJob: NSObject {
 
     public func fetchingCompletePromise() -> Promise<Void> {
         guard CurrentAppContext().shouldProcessIncomingMessages else {
-            if DebugFlags.isMessageProcessingVerbose {
-                Logger.verbose("!shouldProcessIncomingMessages")
-            }
             return Promise.value(())
         }
 
         if Self.shouldUseWebSocket {
             guard !hasCompletedInitialFetch else {
-                if DebugFlags.isMessageProcessingVerbose {
-                    Logger.verbose("hasCompletedInitialFetch")
-                }
                 return Promise.value(())
             }
 
-            if DebugFlags.isMessageProcessingVerbose {
-                Logger.verbose("!hasCompletedInitialFetch")
-            }
-
-            return NotificationCenter.default.observe(once: OWSWebSocket.webSocketStateDidChange).then { _ in
+            return NotificationCenter.default.observe(
+                once: OWSWebSocket.webSocketStateDidChange
+            ).then { _ in
                 self.fetchingCompletePromise()
             }.asVoid()
         } else {
             guard !areAllFetchCyclesComplete || !hasCompletedInitialFetch else {
-                if DebugFlags.isMessageProcessingVerbose {
-                    Logger.verbose("areAllFetchCyclesComplete && hasCompletedInitialFetch")
-                }
                 return Promise.value(())
             }
 
-            if DebugFlags.isMessageProcessingVerbose {
-                Logger.verbose("!areAllFetchCyclesComplete || !hasCompletedInitialFetch")
-            }
-
-            return NotificationCenter.default.observe(once: Self.didChangeStateNotificationName).then { _ in
+            return NotificationCenter.default.observe(
+                once: Self.didChangeStateNotificationName
+            ).then { _ in
                 self.fetchingCompletePromise()
             }.asVoid()
         }
@@ -223,6 +206,10 @@ public class MessageFetcherJob: NSObject {
     fileprivate class func fetchMessages(future: Future<Void>) {
         Logger.info("")
 
+        guard CurrentAppContext().shouldProcessIncomingMessages else {
+            return future.reject(OWSAssertionError("This extension should not fetch messages."))
+        }
+
         guard tsAccountManager.isRegisteredAndReady else {
             assert(AppReadiness.isAppReady)
             Logger.warn("Not registered.")
@@ -230,26 +217,13 @@ public class MessageFetcherJob: NSObject {
         }
 
         if shouldUseWebSocket {
-            Logger.info("delegating message fetching to SocketManager since we're using normal transport.")
+            Logger.info("Fetching messages via Web Socket.")
             socketManager.didReceivePush()
             // Should we wait to resolve the future until we know the WebSocket is open? Wait until it empties?
             return future.resolve()
-        } else if CurrentAppContext().shouldProcessIncomingMessages {
-            // Main app should use REST if censorship circumvention is active.
-            // Notification extension that should always use REST.
         } else {
-            return future.reject(OWSAssertionError("App extensions should not fetch messages."))
-        }
-
-        Logger.info("Fetching messages via REST.")
-
-        firstly {
-            fetchMessagesViaRestWhenReady()
-        }.done {
-            future.resolve()
-        }.catch { error in
-            Logger.error("Error: \(error).")
-            future.reject(error)
+            Logger.info("Fetching messages via REST.")
+            future.resolve(with: fetchMessagesViaRestWhenReady())
         }
     }
 
@@ -258,7 +232,7 @@ public class MessageFetcherJob: NSObject {
     // We want to have multiple ACKs in flight at a time.
     private let ackOperationQueue: OperationQueue = {
         let operationQueue = OperationQueue()
-        operationQueue.name = "MessageFetcherJob.ackOperationQueue"
+        operationQueue.name = "MessageFetcherJob-ACKs"
         operationQueue.maxConcurrentOperationCount = 5
         return operationQueue
     }()
@@ -289,12 +263,6 @@ public class MessageFetcherJob: NSObject {
     }
 
     private class func fetchMessagesViaRest() -> Promise<Void> {
-        if DebugFlags.internalLogging {
-            Logger.info("")
-        } else {
-            Logger.debug("")
-        }
-
         return firstly(on: DispatchQueue.global()) {
             fetchBatchViaRest()
         }.map(on: DispatchQueue.global()) { (batch: RESTBatch) -> ([EnvelopeJob], UInt64, Bool) in
@@ -459,21 +427,14 @@ public class MessageFetcherJob: NSObject {
 
             let builder = SSKProtoEnvelope.builder(timestamp: timestamp)
             builder.setType(type)
-
             if let sourceUuid: String = try params.optional(key: "sourceUuid") {
                 builder.setSourceUuid(sourceUuid)
             }
-
             if let sourceDevice: UInt32 = try params.optional(key: "sourceDevice") {
                 builder.setSourceDevice(sourceDevice)
             }
-
             if let destinationUuid: String = try params.optional(key: "destinationUuid") {
                 builder.setDestinationUuid(destinationUuid)
-            }
-
-            if let legacyMessage = try params.optionalBase64EncodedData(key: "message") {
-                builder.setLegacyMessage(legacyMessage)
             }
             if let content = try params.optionalBase64EncodedData(key: "content") {
                 builder.setContent(content)
@@ -483,6 +444,12 @@ public class MessageFetcherJob: NSObject {
             }
             if let serverGuid: String = try params.optional(key: "guid") {
                 builder.setServerGuid(serverGuid)
+            }
+            if let story: Bool = try params.optional(key: "story") {
+                builder.setStory(story)
+            }
+            if let token = try params.optionalBase64EncodedData(key: "reportSpamToken") {
+                builder.setSpamReportingToken(token)
             }
 
             return try builder.build()

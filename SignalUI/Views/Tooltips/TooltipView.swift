@@ -3,9 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
+import SignalCoreKit
 
-@objc
 open class TooltipView: UIView {
 
     private let wasTappedBlock: (() -> Void)?
@@ -172,7 +171,7 @@ open class TooltipView: UIView {
     // MARK: Events
 
     @objc
-    func handleTap(sender: UIGestureRecognizer) {
+    private func handleTap(sender: UIGestureRecognizer) {
         guard sender.state == .recognized else { return }
         Logger.verbose("")
         if dismissOnTap { removeFromSuperview() }

@@ -3,12 +3,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
+import AVFoundation
 import SignalServiceKit
 import SignalMessaging
-import UIKit
+import SignalUI
 
-@objc
 class InternalSettingsViewController: OWSTableViewController2 {
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,21 +22,19 @@ class InternalSettingsViewController: OWSTableViewController2 {
 
         let debugSection = OWSTableSection()
 
-        #if DEBUG
-        if DebugUITableViewController.useDebugUI() {
-            debugSection.add(.disclosureItem(
-                withText: "Debug UI",
-                actionBlock: { [weak self] in
-                    guard let self = self else { return }
-                    DebugUITableViewController.presentDebugUI(from: self)
-                }
-            ))
-        }
+        #if USE_DEBUG_UI
+        debugSection.add(.disclosureItem(
+            withText: "Debug UI",
+            actionBlock: { [weak self] in
+                guard let self = self else { return }
+                DebugUITableViewController.presentDebugUI(from: self)
+            }
+        ))
         #endif
 
         if DebugFlags.audibleErrorLogging {
             debugSection.add(.disclosureItem(
-                withText: NSLocalizedString("SETTINGS_ADVANCED_VIEW_ERROR_LOG", comment: ""),
+                withText: OWSLocalizedString("SETTINGS_ADVANCED_VIEW_ERROR_LOG", comment: ""),
                 accessibilityIdentifier: UIView.accessibilityIdentifier(in: self, name: "error_logs"),
                 actionBlock: { [weak self] in
                     Logger.flush()
@@ -96,16 +93,16 @@ class InternalSettingsViewController: OWSTableViewController2 {
             }
         ))
 
-        contents.addSection(debugSection)
+        contents.add(debugSection)
 
         let infoSection = OWSTableSection()
         infoSection.add(.label(withText: "Environment: \(TSConstants.isUsingProductionService ? "Production" : "Staging")"))
         infoSection.add(.copyableItem(label: "Build variant", value: FeatureFlags.buildVariantString))
-        infoSection.add(.copyableItem(label: "App Release Version", value: AppVersion.shared().currentAppReleaseVersion))
-        infoSection.add(.copyableItem(label: "App Build Version", value: AppVersion.shared().currentAppBuildVersion))
-        infoSection.add(.copyableItem(label: "App Version 4", value: AppVersion.shared().currentAppVersion4))
+        infoSection.add(.copyableItem(label: "App Release Version", value: AppVersion.shared.currentAppReleaseVersion))
+        infoSection.add(.copyableItem(label: "App Build Version", value: AppVersion.shared.currentAppBuildVersion))
+        infoSection.add(.copyableItem(label: "App Version 4", value: AppVersion.shared.currentAppVersion4))
         // The first version of the app that was run on this device.
-        infoSection.add(.copyableItem(label: "First Version", value: AppVersion.shared().firstAppVersion))
+        infoSection.add(.copyableItem(label: "First Version", value: AppVersion.shared.firstAppVersion))
 
         infoSection.add(.copyableItem(label: "Local Phone Number", value: tsAccountManager.localNumber))
 
@@ -113,10 +110,7 @@ class InternalSettingsViewController: OWSTableViewController2 {
 
         infoSection.add(.copyableItem(label: "Local PNI", value: tsAccountManager.localPni?.uuidString))
 
-        infoSection.add(.copyableItem(label: "Device ID", value: "\(tsAccountManager.storedDeviceId())"))
-        if let deviceName = tsAccountManager.storedDeviceName() {
-            infoSection.add(.label(withText: "Device Name: \(deviceName)"))
-        }
+        infoSection.add(.copyableItem(label: "Device ID", value: "\(tsAccountManager.storedDeviceId)"))
 
         if let buildDetails = Bundle.main.object(forInfoDictionaryKey: "BuildDetails") as? [String: AnyObject] {
             if let signalCommit = (buildDetails["SignalCommit"] as? String)?.strippedOrNil?.prefix(12) {
@@ -131,7 +125,7 @@ class InternalSettingsViewController: OWSTableViewController2 {
                 TSThread.anyCount(transaction: transaction),
                 TSInteraction.anyCount(transaction: transaction),
                 TSAttachment.anyCount(transaction: transaction),
-                SubscriptionManager.getSubscriberID(transaction: transaction)
+                SubscriptionManagerImpl.getSubscriberID(transaction: transaction)
             )
         }
 
@@ -153,8 +147,8 @@ class InternalSettingsViewController: OWSTableViewController2 {
         infoSection.add(.label(withText: "Core count: \(LocalDevice.allCoreCount) (active: \(LocalDevice.activeCoreCount))"))
         infoSection.add(.label(withText: "isCensorshipCircumventionActive: \(self.signalService.isCensorshipCircumventionActive)"))
 
-        infoSection.add(.copyableItem(label: "Push Token", value: preferences.getPushToken()))
-        infoSection.add(.copyableItem(label: "VOIP Token", value: preferences.getVoipToken()))
+        infoSection.add(.copyableItem(label: "Push Token", value: preferences.pushToken))
+        infoSection.add(.copyableItem(label: "VOIP Token", value: preferences.voipToken))
 
         infoSection.add(.label(withText: "Audio Category: \(AVAudioSession.sharedInstance().category.rawValue.replacingOccurrences(of: "AVAudioSessionCategory", with: ""))"))
         infoSection.add(.label(withText: "Local Profile Key: \(profileManager.localProfileKey().keyData.hexadecimalString)"))
@@ -171,7 +165,7 @@ class InternalSettingsViewController: OWSTableViewController2 {
             }
         }
 
-        infoSection.add(.copyableItem(label: "iOS Version", value: AppVersion.iOSVersionString))
+        infoSection.add(.copyableItem(label: "iOS Version", value: AppVersion.iosVersionString))
         infoSection.add(.copyableItem(label: "Device Model", value: AppVersion.hardwareInfoString))
 
         infoSection.add(.copyableItem(label: "Locale Identifier", value: Locale.current.identifier.nilIfEmpty))
@@ -187,7 +181,7 @@ class InternalSettingsViewController: OWSTableViewController2 {
             infoSection.add(.copyableItem(label: "", value: "Subscriber ID: \(subscriberID.asBase64Url)"))
         }
 
-        contents.addSection(infoSection)
+        contents.add(infoSection)
 
         self.contents = contents
     }

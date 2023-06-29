@@ -3,9 +3,40 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
+import SignalCoreKit
+import SignalUI
 
 extension UsernameSelectionViewController {
+    class UsernameTextFieldWrapper: UIView {
+        let textField: UsernameTextField
+
+        init(username: ParsedUsername?) {
+            textField = UsernameTextField(forUsername: username)
+
+            super.init(frame: .zero)
+
+            addSubview(textField)
+            textField.autoPinEdgesToSuperviewMargins()
+
+            layoutMargins = UIEdgeInsets(hMargin: 16, vMargin: 14)
+            layer.cornerRadius = 10
+        }
+
+        required init?(coder: NSCoder) {
+            owsFail("Not implemented!")
+        }
+
+        func updateFontsForCurrentPreferredContentSize() {
+            textField.updateFontsForCurrentPreferredContentSize()
+        }
+
+        func setColorsForCurrentTheme() {
+            backgroundColor = Theme.isDarkThemeEnabled ? .ows_gray80 : .ows_white
+
+            textField.setColorsForCurrentTheme()
+        }
+    }
+
     class UsernameTextField: OWSTextField {
         /// Presents state related to a username discriminator, such as the
         /// discriminator itself and state indicators such as a spinner.
@@ -62,13 +93,7 @@ extension UsernameSelectionViewController {
             // MARK: Views
 
             private lazy var spinnerView: UIActivityIndicatorView = {
-                let spinner: UIActivityIndicatorView = {
-                    if #available(iOS 13, *) {
-                        return .init(style: .medium)
-                    } else {
-                        return .init(style: .white)
-                    }
-                }()
+                let spinner = UIActivityIndicatorView(style: .medium)
 
                 spinner.startAnimating()
 
@@ -101,7 +126,7 @@ extension UsernameSelectionViewController {
             }
 
             func updateFontsForCurrentPreferredContentSize() {
-                discriminatorLabel.font = .ows_dynamicTypeBodyClamped
+                discriminatorLabel.font = .dynamicTypeBodyClamped
             }
 
             /// Configure which subviews to present based on the current mode.
@@ -188,18 +213,18 @@ extension UsernameSelectionViewController {
 
         // MARK: - Configure views
 
-        func updateFontsForCurrentPreferredContentSize() {
-            font = .ows_dynamicTypeBodyClamped
+        fileprivate func updateFontsForCurrentPreferredContentSize() {
+            font = .dynamicTypeBodyClamped
             discriminatorView.updateFontsForCurrentPreferredContentSize()
         }
 
-        func setColorsForCurrentTheme() {
+        fileprivate func setColorsForCurrentTheme() {
             textColor = Theme.primaryTextColor
             discriminatorView.setColorsForCurrentTheme()
         }
 
         /// Configure the text field for an in-progress reservation.
-        func configureForReservationInProgress() {
+        func configureForSomethingPending() {
             if let lastKnownGoodDiscriminator {
                 setDiscriminatorViewMode(to: .spinningWithDiscriminator(value: lastKnownGoodDiscriminator))
             } else {

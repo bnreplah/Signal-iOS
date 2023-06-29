@@ -12,6 +12,7 @@ extern NSNotificationName const OWSContactsManagerSignalAccountsDidChangeNotific
 extern NSNotificationName const OWSContactsManagerContactsDidChangeNotification;
 
 @class AnyPromise;
+@class AuthedAccount;
 @class OWSContactsManagerSwiftValues;
 @class SDSAnyReadTransaction;
 @class SDSKeyValueStore;
@@ -68,9 +69,6 @@ typedef NS_CLOSED_ENUM(NSUInteger, ContactAuthorizationForSharing) {
 
 - (nullable NSString *)nameFromSystemContactsForAddress:(SignalServiceAddress *)address
                                             transaction:(SDSAnyReadTransaction *)transaction;
-
-// This will always return an instance of SignalAccount.
-- (SignalAccount *)fetchOrBuildSignalAccountForAddress:(SignalServiceAddress *)address;
 
 #pragma mark - System Contact Fetching
 

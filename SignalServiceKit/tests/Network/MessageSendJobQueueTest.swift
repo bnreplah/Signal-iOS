@@ -96,14 +96,18 @@ class MessageSenderJobQueueTest: SSKBaseTestSwift {
             jobQueue.add(message: message.asPreparer, transaction: transaction)
         }
 
-        let finder = AnyJobRecordFinder()
-        var readyRecords: [SSKJobRecord] = []
+        let finder = JobRecordFinderImpl<MessageSenderJobRecord>()
+        var readyRecords: [MessageSenderJobRecord] = []
         self.read { transaction in
-            readyRecords = finder.allRecords(label: MessageSenderJobQueue.jobRecordLabel, status: .ready, transaction: transaction)
+            readyRecords = try! finder.allRecords(
+                label: MessageSenderJobQueue.jobRecordLabel,
+                status: .ready,
+                transaction: transaction.asV2Read
+            )
         }
         XCTAssertEqual(1, readyRecords.count)
 
-        let jobRecord = readyRecords.first!
+        var jobRecord = readyRecords.first!
         XCTAssertEqual(0, jobRecord.failureCount)
 
         // simulate permanent failure (via `maxRetries` retryable failures)
@@ -117,7 +121,7 @@ class MessageSenderJobQueueTest: SSKBaseTestSwift {
         self.wait(for: [expectation], timeout: 1)
 
         self.read { transaction in
-            jobRecord.anyReload(transaction: transaction)
+            jobRecord = jobRecord.fetchLatest(transaction: transaction)
         }
 
         XCTAssertEqual(1, jobRecord.failureCount)
@@ -141,7 +145,7 @@ class MessageSenderJobQueueTest: SSKBaseTestSwift {
 
         // Verify one retry left
         self.read { transaction in
-            jobRecord.anyReload(transaction: transaction)
+            jobRecord = jobRecord.fetchLatest(transaction: transaction)
         }
         XCTAssertEqual(retryCount, jobRecord.failureCount)
         XCTAssertEqual(.running, jobRecord.status)
@@ -152,7 +156,7 @@ class MessageSenderJobQueueTest: SSKBaseTestSwift {
         self.wait(for: [expectedFinalResend], timeout: 1)
 
         self.read { transaction in
-            jobRecord.anyReload(transaction: transaction)
+            jobRecord = jobRecord.fetchLatest(transaction: transaction)
         }
 
         XCTAssertEqual(retryCount + 1, jobRecord.failureCount)
@@ -170,14 +174,18 @@ class MessageSenderJobQueueTest: SSKBaseTestSwift {
             jobQueue.add(message: message.asPreparer, transaction: transaction)
         }
 
-        let finder = AnyJobRecordFinder()
-        var readyRecords: [SSKJobRecord] = []
+        let finder = JobRecordFinderImpl<MessageSenderJobRecord>()
+        var readyRecords: [MessageSenderJobRecord] = []
         self.read { transaction in
-            readyRecords = finder.allRecords(label: MessageSenderJobQueue.jobRecordLabel, status: .ready, transaction: transaction)
+            readyRecords = try! finder.allRecords(
+                label: MessageSenderJobQueue.jobRecordLabel,
+                status: .ready,
+                transaction: transaction.asV2Read
+            )
         }
         XCTAssertEqual(1, readyRecords.count)
 
-        let jobRecord = readyRecords.first!
+        var jobRecord = readyRecords.first!
         XCTAssertEqual(0, jobRecord.failureCount)
 
         // simulate permanent failure
@@ -190,7 +198,7 @@ class MessageSenderJobQueueTest: SSKBaseTestSwift {
         self.wait(for: [expectation], timeout: 1)
 
         self.read { transaction in
-            jobRecord.anyReload(transaction: transaction)
+            jobRecord = jobRecord.fetchLatest(transaction: transaction)
         }
 
         XCTAssertEqual(1, jobRecord.failureCount)
@@ -220,5 +228,15 @@ class MessageSenderJobQueueTest: SSKBaseTestSwift {
         }
 
         return expectation
+    }
+}
+
+private extension MessageSenderJobRecord {
+    func fetchLatest(transaction: SDSAnyReadTransaction) -> Self {
+        guard let latest = Self.anyFetch(uniqueId: uniqueId, transaction: transaction) else {
+            owsFail("Failed to fetch latest model! Was the model removed?")
+        }
+
+        return latest
     }
 }

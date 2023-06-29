@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
+import SignalServiceKit
+import SignalUI
 
 public class CVComponentSenderName: CVComponentBase, CVComponent {
 
@@ -71,9 +72,10 @@ public class CVComponentSenderName: CVComponentBase, CVComponent {
 
     private var labelConfig: CVLabelConfig {
         CVLabelConfig(attributedText: senderName,
-                      font: UIFont.ows_dynamicTypeFootnote.ows_semibold,
+                      font: UIFont.dynamicTypeFootnote.semibold(),
                       textColor: senderNameColor,
-                      lineBreakMode: .byTruncatingTail)
+                      numberOfLines: 0,
+                      lineBreakMode: .byWordWrapping)
     }
 
     private var outerStackConfig: CVStackViewConfig {

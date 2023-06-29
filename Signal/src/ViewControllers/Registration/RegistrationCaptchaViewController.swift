@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
+import SignalCoreKit
 import SignalUI
 
 // MARK: - RegistrationCaptchaPresenter
@@ -47,6 +47,9 @@ class RegistrationCaptchaViewController: OWSViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
+
+        navigationItem.setHidesBackButton(true, animated: false)
+
         initialRender()
     }
 

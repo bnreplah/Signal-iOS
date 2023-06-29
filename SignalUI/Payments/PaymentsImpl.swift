@@ -8,7 +8,6 @@ import MobileCoin
 import SignalMessaging
 import SignalServiceKit
 
-@objc
 public class PaymentsImpl: NSObject, PaymentsSwift {
 
     private var refreshBalanceEvent: RefreshEvent?
@@ -17,10 +16,8 @@ public class PaymentsImpl: NSObject, PaymentsSwift {
 
     private let paymentsProcessor = PaymentsProcessor()
 
-    @objc
     public static let maxPaymentMemoMessageLength: Int = 32
 
-    @objc
     public required override init() {
         super.init()
 
@@ -55,7 +52,7 @@ public class PaymentsImpl: NSObject, PaymentsSwift {
         }
 
         let appVersionKey = "appVersion"
-        let currentAppVersion4 = appVersion.currentAppVersion4
+        let currentAppVersion4 = AppVersion.shared.currentAppVersion4
 
         let shouldUpdate = Self.databaseStorage.read { (transaction: SDSAnyReadTransaction) -> Bool in
             // Check if the app version has changed.
@@ -215,7 +212,6 @@ public class PaymentsImpl: NSObject, PaymentsSwift {
 
     // MARK: - Balance
 
-    @objc
     public static let currentPaymentBalanceDidChange = Notification.Name("currentPaymentBalanceDidChange")
 
     private let paymentBalanceCache = AtomicOptional<PaymentBalance>(nil)
@@ -1052,7 +1048,8 @@ public extension PaymentsImpl {
             let paymentRequest = TSPaymentRequest(requestUuidString: requestUuidString,
                                                   paymentAmount: paymentAmount,
                                                   memoMessage: memoMessage)
-            let expiresInSeconds = thread.disappearingMessagesDuration(with: transaction)
+            let dmConfigurationStore = DependenciesBridge.shared.disappearingMessagesConfigurationStore
+            let expiresInSeconds = dmConfigurationStore.durationSeconds(for: thread, tx: transaction.asV2Read)
             let message = OWSOutgoingPaymentMessage(thread: thread,
                                                     paymentCancellation: nil,
                                                     paymentNotification: nil,
@@ -1087,7 +1084,8 @@ public extension PaymentsImpl {
         let paymentNotification = TSPaymentNotification(memoMessage: memoMessage,
                                                         requestUuidString: requestUuidString,
                                                         mcReceiptData: mcReceiptData)
-        let expiresInSeconds = thread.disappearingMessagesDuration(with: transaction)
+        let dmConfigurationStore = DependenciesBridge.shared.disappearingMessagesConfigurationStore
+        let expiresInSeconds = dmConfigurationStore.durationSeconds(for: thread, tx: transaction.asV2Read)
         let message = OWSOutgoingPaymentMessage(thread: thread,
                                                 paymentCancellation: nil,
                                                 paymentNotification: paymentNotification,
@@ -1114,7 +1112,8 @@ public extension PaymentsImpl {
         let thread = TSContactThread.getOrCreateThread(withContactAddress: address,
                                                        transaction: transaction)
         let paymentCancellation = TSPaymentCancellation(requestUuidString: requestUuidString)
-        let expiresInSeconds = thread.disappearingMessagesDuration(with: transaction)
+        let dmConfigurationStore = DependenciesBridge.shared.disappearingMessagesConfigurationStore
+        let expiresInSeconds = dmConfigurationStore.durationSeconds(for: thread, tx: transaction.asV2Read)
         let message = OWSOutgoingPaymentMessage(thread: thread,
                                                 paymentCancellation: paymentCancellation,
                                                 paymentNotification: nil,
@@ -1162,7 +1161,6 @@ public extension PaymentsImpl {
 
 // MARK: -
 
-@objc
 public class PaymentsEventsMainApp: NSObject, PaymentsEvents {
     public func willInsertPayment(_ paymentModel: TSPaymentModel, transaction: SDSAnyWriteTransaction) {
         let payments = self.payments as! PaymentsImpl

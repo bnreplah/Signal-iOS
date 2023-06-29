@@ -28,7 +28,43 @@
 /* Accessibility label for a voice memo. */
 "ACCESSIBILITY_LABEL_VOICE_MEMO" = "ভয়েস মেসেজ";
 
-/* Label for 'audio call' button in contact view. */
+/* Users can request a report of their account data. Before they get their account export, they are warned to only share account data with trustworthy sources. This is the button on that warning, and tapping it lets users continue. */
+"ACCOUNT_DATA_REPORT_CONFIRM_EXPORT_CONFIRM_BUTTON" = "রিপোর্ট এক্সপোর্ট করুন";
+
+/* Users can request a report of their account data. Before they get their account export, they are warned to only share account data with trustworthy sources. This is the message on that warning. */
+"ACCOUNT_DATA_REPORT_CONFIRM_EXPORT_MESSAGE" = "শুধুমাত্র আপনার বিশ্বাসযোগ্য ব্যক্তি বা অ্যাপের সাথে আপনার Signal অ্যাকাউন্টের ডেটা শেয়ার করুন।";
+
+/* Users can request a report of their account data. If this request fails (probably because of a network connection problem), they will see an error sheet. This is the message on that error. */
+"ACCOUNT_DATA_REPORT_ERROR_MESSAGE" = "আপনার নেটওয়ার্ক সংযোগ ঠিক আছে কি না দেখুন এবং আবার চেষ্টা করুন।";
+
+/* Users can request a report of their account data. If this request fails (probably because of a network connection problem), they will see an error sheet. This is the title on that error. */
+"ACCOUNT_DATA_REPORT_ERROR_TITLE" = "রিপোর্ট তৈরি করা যায়নি";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the subtitle on the button that switches to JSON mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_JSON_SUBTITLE" = "মেশিন-পাঠযোগ্য ফাইল";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the title on the button that switches to JSON mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_JSON_TITLE" = "JSON হিসেবে এক্সপোর্ট করুন";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the subtitle on the button that switches to plain text mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_TXT_SUBTITLE" = "সহজে পড়া যায় এমন টেক্সট ফাইল";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the title on the button that switches to plain text mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_TXT_TITLE" = "TXT হিসেবে এক্সপোর্ট করুন";
+
+/* Users can request a report of their account data. Users tap this button to export their data. */
+"ACCOUNT_DATA_REPORT_EXPORT_REPORT_BUTTON" = "রিপোর্ট এক্সপোর্ট করুন";
+
+/* Users can request a report of their account data. This text appears at the bottom of this screen, offering more information. */
+"ACCOUNT_DATA_REPORT_FOOTER" = "আপনার রিপোর্ট শুধুমাত্র এক্সপোর্ট করার সময় তৈরি হয় এবং Signal কর্তৃক আপনার ডিভাইসে সংরক্ষণ করা হয় না।";
+
+/* Users can request a report of their account data. This is the subtitle on the screen where they do this, giving them more information. */
+"ACCOUNT_DATA_REPORT_SUBTITLE" = "আপনার Signal অ্যাকাউন্ট ডেটার একটি রিপোর্ট ডাউনলোড করুন এবং এক্সপোর্ট করুন। এই রিপোর্টে কোনো ম্যাসেজ বা মিডিয়া অন্তর্ভুক্ত নেই।";
+
+/* Users can request a report of their account data. This is the title on the screen where they do this. */
+"ACCOUNT_DATA_REPORT_TITLE" = "আপনার অ্যাকাউন্টের ডেটা";
+
+/* Label for 'voice call' button in contact view. */
 "ACTION_AUDIO_CALL" = "Signal কল";
 
 /* Label for 'invite' button in contact view. */
@@ -86,13 +122,13 @@
 "ALERT_ACTION_ACKNOWLEDGE" = "বুঝতে পেরেছি";
 
 /* Format string for delivery issue sheet message. Embeds {{ sender name }}. */
-"ALERT_DELIVERY_ISSUE_MESSAGE_FORMAT" = "এই চ্যাটে %1$@ থেকে একটি বার্তা, স্টিকার, প্রতিক্রিয়া, পঠিত রসিদ বা মিডিয়া আপনাকে সরবরাহ করা যাবে না।";
+"ALERT_DELIVERY_ISSUE_MESSAGE_FORMAT" = "এই চ্যাটে %1$@-এর কাছ থেকে কোনো ম্যাসেজ, স্টিকার, প্রতিক্রিয়া, রিড রিসিপ্ট বা মিডিয়া আপনাকে পাঠানো যায়নি।";
 
 /* Title for delivery issue sheet */
 "ALERT_DELIVERY_ISSUE_TITLE" = "পাঠানোর ক্ষেত্রে সমস্যা";
 
 /* Format string for delivery issue sheet message where the original thread is unknown. Embeds {{ sender name }}. */
-"ALERT_DELIVERY_ISSUE_UNKNOWN_THREAD_MESSAGE_FORMAT" = "%1$@ থেকে একটি বার্তা, স্টিকার, প্রতিক্রিয়া, রিড রসিদ বা মিডিয়া আপনাকে সরবরাহ করা যায়নি। তারা হয়তো সরাসরি, অথবা কোনও গ্রুপে এটি আপনার কাছে পাঠানোর চেষ্টা করেছিল।";
+"ALERT_DELIVERY_ISSUE_UNKNOWN_THREAD_MESSAGE_FORMAT" = "%1$@-এর কাছ থেকে একটি ম্যাসেজ, স্টিকার, প্রতিক্রিয়া, রিড রিসিপ্ট বা মিডিয়া আপনাকে পাঠানো যায়নি। তারা হয়তো সরাসরি, অথবা কোনো গ্রুপে এটি আপনাকে পাঠানোর চেষ্টা করেছিলেন।";
 
 /* The label for the 'discard' button in alerts and action sheets. */
 "ALERT_DISCARD_BUTTON" = "বাতিল করুন";
@@ -115,8 +151,35 @@
 /* Label for button to learn more about message requests. */
 "ALERT_UNKNOWN_THREAD_WARNING_LEARN_MORE" = "মেসেজের অনুরোধ সম্পর্কে";
 
+/* Audio file type in All Meda file type picker. */
+"ALL_MEDIA_FILE_TYPE_AUDIO" = "অডিও";
+
+/* Media (i.e., graphical) file type in All Meda file type picker. */
+"ALL_MEDIA_FILE_TYPE_MEDIA" = "মিডিয়া";
+
+/* Menu option to limit All Media view to displaying only GIFs */
+"ALL_MEDIA_FILTER_GIFS" = "GIF";
+
+/* Menu option to limit All Media view to displaying only photos */
+"ALL_MEDIA_FILTER_PHOTOS" = "ছবি";
+
+/* Menu option to limit All Media view to displaying only videos */
+"ALL_MEDIA_FILTER_VIDEOS" = "ভিডিও";
+
+/* Menu option to show All Media items in a grid of square thumbnails */
+"ALL_MEDIA_GRID_MODE" = "গ্রিড";
+
+/* Menu option to show All Media items in a single-column list */
+"ALL_MEDIA_LIST_MODE" = "লিস্ট";
+
 /* Label shown over thumbnails of GIFs in the All Media view */
 "ALL_MEDIA_THUMBNAIL_LABEL_GIF" = "GIF";
+
+/* Label shown by thumbnails of images in the All Media view */
+"ALL_MEDIA_THUMBNAIL_LABEL_IMAGE" = "ছবি";
+
+/* Label shown by thumbnails of videos in the All Media view */
+"ALL_MEDIA_THUMBNAIL_LABEL_VIDEO" = "ভিডিও";
 
 /* Title for the view of all your signal connections */
 "ALL_SIGNAL_CONNECTIONS_TITLE" = "সকল কানেকশন";
@@ -130,11 +193,14 @@
 /* Default message for the 'app launch failed' alert. */
 "APP_LAUNCH_FAILURE_ALERT_MESSAGE" = "Signal চালু করা যাবে না। অনুগ্রহ করে একটি ডিবাগ লগ support@signal.org এই ইমেইলে পাঠান যাতে আমরা এই সমস্যাটি সমাধান করতে পারি।";
 
-/* Title for the 'app launch failed' alert. */
-"APP_LAUNCH_FAILURE_ALERT_TITLE" = "ত্রুটি";
-
 /* Button to try launching the app even though the last launch failed */
 "APP_LAUNCH_FAILURE_CONTINUE" = "এর পরিবর্তে Signal খুলুন";
+
+/* Message for an error indicating that the app couldn't launch because some unexpected error happened with the user's registration status. */
+"APP_LAUNCH_FAILURE_CORRUPT_REGISTRATION_MESSAGE" = "অনুগ্রহ করে support@signal.org-এ একটি ডিবাগ লগ পাঠান যাতে আমরা এই সমস্যার সমাধান করতে পারি।";
+
+/* Title for an error indicating that the app couldn't launch because some unexpected error happened with the user's registration status. */
+"APP_LAUNCH_FAILURE_CORRUPT_REGISTRATION_TITLE" = "Signal চালু করা সম্ভব হয়নি";
 
 /* Error indicating that the app could not launch because the database could not be loaded. */
 "APP_LAUNCH_FAILURE_COULD_NOT_LOAD_DATABASE" = "ডাটাবেস লোড করা যায়নি";
@@ -314,7 +380,7 @@
 "ATTACHMENT_KEYBOARD_FILE" = "ফাইল";
 
 /* A button to select a GIF from the Attachment Keyboard */
-"ATTACHMENT_KEYBOARD_GIF" = "জিফ";
+"ATTACHMENT_KEYBOARD_GIF" = "GIF";
 
 /* A message on a button prompting the user to go settings to grant Signal photos access. */
 "ATTACHMENT_KEYBOARD_GIVE_PHOTOS_ACCESS" = "অ্যাক্সেসের অনুমতি দিন";
@@ -371,7 +437,7 @@
 "AUDIO_ACTIVITY_PLAYBACK_NAME_AUDIO_MESSAGE" = "অডিও মেসেজ";
 
 /* Accessibility label for placing an audio call */
-"AUDIO_CALL_LABEL" = "অডিও কল";
+"AUDIO_CALL_LABEL" = "ভয়েস কল";
 
 /* action sheet button title to enable built in speaker during a call */
 "AUDIO_ROUTE_BUILT_IN_SPEAKER" = "স্পিকার";
@@ -416,7 +482,7 @@
 "BADGE_EXPIRED_BOOST_BODY" = "আপনার বুস্ট ব্যাজের মেয়াদ শেষ হয়ে গেছে, এবং আপনার প্রোফাইলে তা আর দৃশ্যমান নয়।\n\nআপনি Signal ব্যবহার করা চালিয়ে যেতে পারেন, কিন্তু আপনার জন্য তৈরি এই প্রযুক্তিকে সমর্থন করার জন্য, অনুগ্রহ করে একজন মাসিক ডোনার হওয়ার বিষয়টি বিবেচনা করুন।";
 
 /* String explaining to the user that their boost badge has expired while they are a current subscription sustainer on the badge expiry sheet. */
-"BADGE_EXPIRED_BOOST_CURRENT_SUSTAINER_BODY" = "আপনার বুস্ট ব্যাজের মেয়াদ শেষ হয়ে গেছে, এবং আপনার প্রোফাইলে তা আর দৃশ্যমান নয়।\n\nএককালীন ডোনেশনের মাধ্যমে আপনি আপনার বুস্ট ব্যাজকে আরও 30 দিনের জন্য পুনরায় সক্রিয় করতে পারেন।";
+"BADGE_EXPIRED_BOOST_CURRENT_SUSTAINER_BODY" = "আপনার বুস্ট ব্যাজের মেয়াদ শেষ হয়ে গেছে এবং আপনার প্রোফাইলে তা আর দৃশ্যমান নয়।\n\nএককালীন ডোনেশনের মাধ্যমে আপনি আপনার বুস্ট ব্যাজকে আরো 30 দিনের জন্য পুনরায় সক্রিয় করতে পারবেন।";
 
 /* Title for boost on the badge expiration sheet. */
 "BADGE_EXPIRED_BOOST_TITLE" = "ব্যাজের মেয়াদ শেষ হয়েছে";
@@ -431,7 +497,7 @@
 "BADGE_EXPIRED_SUBSCRIPTION_TITLE" = "মাসিক ডোনেশন বাতিল করা হয়েছে";
 
 /* String explaining to the user that their subscription badge has expired on the badge expiry sheet. Embeds {failure-specific sentence(s)}. */
-"BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_CHARGE_FAILURE_BODY_FORMAT" = "আপনার পুনরাবৃত্ত মাসিক ডোনেশন বাতিল করা হয়েছে। %1$@ ডোনেশন ব্যাজ আপনার প্রোফাইলে আর দেখা যাবে না।\n\nSignal-কে সমর্থন করা চালিয়ে যেতে এবং আপনার ব্যাজ আবার সক্রিয় করতে, আপনার পেমেন্টের বিবরণ আপডেট করুন এবং আবারো ডোনেট করুন।";
+"BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_CHARGE_FAILURE_BODY_FORMAT" = "আপনার পুনরাবৃত্ত মাসিক ডোনেশন বাতিল করা হয়েছে। %1$@ ডোনেশন ব্যাজ আপনার প্রোফাইলে আর দেখা যাবে না।\n\nSignal-কে সহায়তা করা চালিয়ে যেতে এবং আপনার ব্যাজ আবার সক্রিয় করতে, আপনার পেমেন্টের বিবরণ আপডেট করুন এবং আবারো ডোনেট করুন।";
 
 /* Body of the sheet shown when your subscription is canceled due to inactivity */
 "BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_INACTIVITY_BODY_FORMAT" = "অনেক দিন ধরে নিষ্ক্রিয় থাকার কারণে আপনার পুনরাবৃত্ত মাসিক ডোনেশন স্বয়ংক্রিয়ভাবে বাতিল হয়ে গেছে। আপনার %1$@ ব্যাজ আপনার প্রোফাইলে আর দৃশ্যমান নয়।\n\nআপনি Signal ব্যবহার চালিয়ে যেতে পারেন, তবে অ্যাপটিকে সহায়তা করতে এবং আপনার ব্যাজ পুনরায় সক্রিয় করতে, এখনই ডোনেট করুন।";
@@ -596,16 +662,16 @@
 "CALL_AUDIO_INCOMING_NOTIFICATION_BODY" = "📞 অডিও কল আসছে…";
 
 /* notification body for a missed call in the last 24 hours. Embeds {{time}}, e.g. '3:30 PM'. */
-"CALL_AUDIO_MISSED_24_HOURS_NOTIFICATION_BODY_FORMAT" = "📞 %1$@ টায় অডিও কল মিস্ হয়েছে";
+"CALL_AUDIO_MISSED_24_HOURS_NOTIFICATION_BODY_FORMAT" = "📞 %1$@টায় অডিও কল মিস হয়েছে";
 
 /* notification body for a call that was just missed */
 "CALL_AUDIO_MISSED_NOTIFICATION_BODY" = "📞 অডিও কল মিস হয়েছে";
 
 /* notification body for a missed call from more than a week ago. Embeds {{short date}}, e.g. '6/28'. */
-"CALL_AUDIO_MISSED_PAST_NOTIFICATION_BODY_FORMAT" = "📞 %1$@দিন আগে অডিও কল মিস্ হয়েছে";
+"CALL_AUDIO_MISSED_PAST_NOTIFICATION_BODY_FORMAT" = "📞 অডিও কল মিস হয়েছে %1$@ তারিখে";
 
 /* notification body for a missed call from the last week. Embeds {{weekday}}, e.g. 'Monday'. */
-"CALL_AUDIO_MISSED_WEEK_NOTIFICATION_BODY_FORMAT" = "📞 %1$@ অডিও কল মিস্ হয়েছে";
+"CALL_AUDIO_MISSED_WEEK_NOTIFICATION_BODY_FORMAT" = "📞 অডিও কল মিস হয়েছে %1$@";
 
 /* Alert message when calling and permissions for microphone are missing */
 "CALL_AUDIO_PERMISSION_MESSAGE" = "Signal থেকে কল সমূহ করতে এবং ভয়েস বার্তাগুলি রেকর্ড করতে আপনি iOS সেটিংস অ্যাপে মাইক্রোফোন অ্যাক্সেস সক্ষম করতে পারেন।";
@@ -689,7 +755,7 @@
 "CALL_VIEW_SWITCH_CAMERA_DIRECTION" = "ক্যামেরা দিক পরিবর্তন করুন";
 
 /* Accessibility label to switch to audio only */
-"CALL_VIEW_SWITCH_TO_AUDIO_LABEL" = "অডিও কল পরিবর্তন করুন";
+"CALL_VIEW_SWITCH_TO_AUDIO_LABEL" = "ভয়েস কলে স্যুইচ করুন";
 
 /* Accessibility label to switch to video call */
 "CALL_VIEW_SWITCH_TO_VIDEO_LABEL" = "ভিডিও কল পরিবর্তন করুন";
@@ -866,7 +932,7 @@
 "CHAT_COLOR_SETTINGS_DELETE_ALERT_TITLE" = "রঙ মুছে ফেলুন";
 
 /* Title for the chat color settings view. */
-"CHAT_COLOR_SETTINGS_TITLE" = "চ্যাটের রঙ";
+"CHAT_COLOR_SETTINGS_TITLE" = "চ্যাটের রং";
 
 /* Title for the 'edit chat color confirm alert' in the chat color settings view. */
 "CHAT_COLOR_SETTINGS_UPDATE_ALERT_ALERT_TITLE" = "রঙ সম্পাদনা করুন";
@@ -878,13 +944,13 @@
 "CHAT_LIST_TITLE_INBOX" = "চ্যাট";
 
 /* Title for the color & wallpaper settings view. */
-"COLOR_AND_WALLPAPER_SETTINGS_TITLE" = "চ্যাটের রঙ ও ওয়ালপেপার";
+"COLOR_AND_WALLPAPER_SETTINGS_TITLE" = "চ্যাটের রং ও ওয়ালপেপার";
 
 /* Activity Sheet label */
 "COMPARE_SAFETY_NUMBER_ACTION" = "ক্লিপবোর্ডের সাথে তুলনা করুন";
 
 /* Accessibility hint describing what you can do with the compose button */
-"COMPOSE_BUTTON_HINT" = "একটি চ্যাট শুরু করতে একজন Signal ইউজারকে বেছে নিন বা খুঁজুন।";
+"COMPOSE_BUTTON_HINT" = "একটি চ্যাট শুরু করতে একজন Signal ব্যবহারকারীকে বেছে নিন বা খুঁজুন।";
 
 /* Accessibility label from compose button. */
 "COMPOSE_BUTTON_LABEL" = "লিখুন";
@@ -905,7 +971,7 @@
 "COMPOSE_SCREEN_MISSING_CONTACTS_PERMISSION" = "আপনার পরিচিতি গুলির মধ্যে কোনটি Signal ব্যবহারকারী তা দেখতে আপনি iOS সেটিংস অ্যাপ থেকে পরিচিতি অ্যাক্সেস সক্ষম করতে পারেন।";
 
 /* Configure reactions title text */
-"CONFIGURE_REACTIONS" = "রিঅ্যাকশন কনফিগার করুন";
+"CONFIGURE_REACTIONS" = "প্রতিক্রিয়া কনফিগার করুন";
 
 /* No comment provided by engineer. */
 "CONFIRM_DELETE_DATA_TEXT" = "এটি আপনার মেসেজগুলি মুছে দিয়ে অ্যাপ্লিকেশনটি রিসেট করবে। এই প্রক্রিয়াটি সম্পন্ন হওয়ার পর অ্যাপটি বন্ধ হবে।";
@@ -986,7 +1052,7 @@
 "CONTACT_FIELD_ORGANIZATION" = "প্রতিষ্ঠান";
 
 /* Body for contact permission action sheet */
-"CONTACT_PERMISSION_ACTION_SHEET_BODY" = "আপনার চ্যাটগুলিতে থাকা কন্ট্যাক্টের নাম ও ফটোগুলি দেখতে:";
+"CONTACT_PERMISSION_ACTION_SHEET_BODY" = "আপনার চ্যাটে থাকা কন্টাক্টের নাম ও ছবি দেখতে:";
 
 /* First step for contact permission action sheet */
 "CONTACT_PERMISSION_ACTION_SHEET_STEP_ONE" = "নিচের “সেটিংস-এ যান” অপশনে ট্যাপ করুন";
@@ -1004,7 +1070,7 @@
 "CONTACT_PERMISSION_REMINDER_MEGAPHONE_ACTION" = "চালু করুন";
 
 /* Body for contact permission reminder megaphone */
-"CONTACT_PERMISSION_REMINDER_MEGAPHONE_BODY" = "আপনার চ্যাটগুলিতে থাকা কন্ট্যাক্টের নাম ও ফটোগুলি দেখুন।";
+"CONTACT_PERMISSION_REMINDER_MEGAPHONE_BODY" = "আপনার চ্যাটে থাকা কন্টাক্টের নাম ও ছবি দেখুন।";
 
 /* Title for contact permission reminder megaphone */
 "CONTACT_PERMISSION_REMINDER_MEGAPHONE_TITLE" = "কন্ট্যাক্ট চালু করবেন?";
@@ -1145,7 +1211,7 @@
 "CONVERSATION_DELETE_CONFIRMATION_ALERT_TITLE" = "চ্যাট মুছে ফেলবেন?";
 
 /* Title for the 'conversation mute confirmation' alert. */
-"CONVERSATION_MUTE_CONFIRMATION_ALERT_TITLE" = "এই চ্যাটটি মিউট করুন…";
+"CONVERSATION_MUTE_CONFIRMATION_ALERT_TITLE" = "এই চ্যাটটি মিউট করুন...";
 
 /* 1 day */
 "CONVERSATION_MUTE_CONFIRMATION_OPTION_1D" = "1 দিন";
@@ -1265,7 +1331,7 @@
 "CONVERSATION_SETTINGS_MENTION_MODE_NEVER" = "মিউট করা থাকলে জানাবেন না";
 
 /* Title of the 'mention notification mode' action sheet. */
-"CONVERSATION_SETTINGS_MENTION_NOTIFICATION_MODE_ACTION_SHEET_TITLE" = "মিউট করা চ্যাটগুলিতে আপনাকে উল্লেখ করা হলে নোটিফিকেশন পেতে চান?";
+"CONVERSATION_SETTINGS_MENTION_NOTIFICATION_MODE_ACTION_SHEET_TITLE" = "মিউট করা চ্যাটে আপনাকে উল্লেখ করা হলে নোটিফিকেশন পেতে চান?";
 
 /* label for 'mentions' cell in conversation settings */
 "CONVERSATION_SETTINGS_MENTIONS_LABEL" = "উল্লেখ";
@@ -1274,7 +1340,7 @@
 "CONVERSATION_SETTINGS_MESSAGE_BUTTON" = "মেসেজ পাঠান";
 
 /* Title for the mute action sheet */
-"CONVERSATION_SETTINGS_MUTE_ACTION_SHEET_TITLE" = "এই চ্যাটটি এই সময়ের জন্য মিউট করুন…";
+"CONVERSATION_SETTINGS_MUTE_ACTION_SHEET_TITLE" = "এই চ্যাটটি মিউট করুন…";
 
 /* Label for button to mute a thread forever. */
 "CONVERSATION_SETTINGS_MUTE_ALWAYS_ACTION" = "সর্বদা";
@@ -1397,13 +1463,13 @@
 "COUNTRYCODE_SELECT_TITLE" = "দেশ কোড নির্বাচন করুন";
 
 /* Body text for an interactive in-app prompt to set up a Signal username. */
-"CREATE_USERNAME_MEGAPHONE_BODY" = "Usernames let others message you without needing your phone number.";
+"CREATE_USERNAME_MEGAPHONE_BODY" = "ব্যবহারকারীর নাম ব্যবহার করলে আপনার ফোন নম্বর ছাড়াই অন্যরা আপনাকে ম্যাসেজ পাঠাতে পারবেন।";
 
 /* Title for a button in an interactive in-app prompt to set up a Signal username, which will start a create-username flow. */
-"CREATE_USERNAME_MEGAPHONE_SET_UP_BUTTON_TITLE" = "Set Up";
+"CREATE_USERNAME_MEGAPHONE_SET_UP_BUTTON_TITLE" = "সেট আপ করুন";
 
 /* Title for an interactive in-app prompt to set up a Signal username. */
-"CREATE_USERNAME_MEGAPHONE_TITLE" = "Set up your Signal username";
+"CREATE_USERNAME_MEGAPHONE_TITLE" = "আপনার Signal 'ব্যবহারকারীর নাম' সেট আপ করুন";
 
 /* Credit/debit card donation error for decline failures where the card has expired. */
 "CREDIT_OR_DEBIT_CARD_DONATION_ERROR_EXPIRED_CARD" = "আপনার কার্ডের মেয়াদ শেষ হয়ে গেছে। আপনার কার্ডের বিবরণ সঠিক কি না তা যাচাই করুন এবং আবার চেষ্টা করুন।";
@@ -1598,7 +1664,7 @@
 "DELETE_ACCOUNT_CONFIRMATION_WRONG_NUMBER" = "আপনার লেখা ফোন নম্বরটি আপনার অ্যাকাউন্টের সাথে মিলছে না।";
 
 /* action sheet body */
-"DELETE_ALL_MESSAGES_IN_CONVERSATION_ALERT_BODY" = "চ্যাট-এ থাকা সকল বার্তা মুছবেন?";
+"DELETE_ALL_MESSAGES_IN_CONVERSATION_ALERT_BODY" = "চ্যাটে থাকা সব ম্যাসেজ মুছবেন?";
 
 /* button text */
 "DELETE_ALL_MESSAGES_IN_CONVERSATION_BUTTON" = "সকল বার্তা মুছে ফেলুন";
@@ -1610,7 +1676,10 @@
 "DEREGISTRATION_REREGISTER_WITH_SAME_PHONE_NUMBER" = "এই ফোন নাম্বার পূনরায় রেজিষ্ট্রি করুন";
 
 /* Label warning the user that they have been de-registered. */
-"DEREGISTRATION_WARNING" = "ডিভাইস আর নিবন্ধভুক্ত নয়। আপনার ফোন নাম্বার অন্য ডিভাইস থেকে সিগন্যালের সাথে নিবন্ধিত হতে পারে। পুনরায় নিবন্ধন করতে আলতো চাপুন।";
+"DEREGISTRATION_WARNING" = "এই ডিভাইসটি আর নিবন্ধিত নয়। এটি হওয়ার সম্ভাব্য কারণ হলো, আপনি হয়তো একটি ভিন্ন ডিভাইসে Signal-এর সাথে আপনার ফোন নম্বর নিবন্ধন করেছেন।";
+
+/* If the user has been deregistered, they'll see a warning. This is This is the call to action on that warning. */
+"DEREGISTRATION_WARNING_ACTION_TITLE" = "ডিভাইসটি আবারো নিবন্ধন করুন";
 
 /* {{Short Date}} when device last communicated with Signal Server. */
 "DEVICE_LAST_ACTIVE_AT_LABEL" = "শেষবার %1$@-এ সক্রিয় হয়েছে";
@@ -1620,6 +1689,12 @@
 
 /* Alert title that can occur when viewing device manager. */
 "DEVICE_LIST_UPDATE_FAILED_TITLE" = "ডিভাইস তালিকা আপডেট করতে ব্যর্থ।";
+
+/* A label for this device in the device list. */
+"DEVICE_NAME_THIS_DEVICE" = "এই ডিভাইসটি";
+
+/* A label for an unnamed device in the device list. */
+"DEVICE_NAME_UNNAMED_DEVICE" = "নামহীন ডিভাইস";
 
 /* The stop action of the dialog asking the user if they want to cancel a device transfer */
 "DEVICE_TRANSFER_CANCEL_CONFIRMATION_ACTION" = "স্থানান্তর বন্ধ করুন";
@@ -1727,7 +1802,7 @@
 "DISAPPEARING_MESSAGES" = "অদৃশ্য বার্তা";
 
 /* Info Message when added to a group which has enabled disappearing messages. Embeds {{time amount}} before messages disappear. See the *_TIME_AMOUNT strings for context. */
-"DISAPPEARING_MESSAGES_CONFIGURATION_GROUP_EXISTING_FORMAT" = "এই চ্যাটটিতে থাকা মেসেজগুলি %1$@-এর পরে অদৃশ্য হয়ে যাবে।";
+"DISAPPEARING_MESSAGES_CONFIGURATION_GROUP_EXISTING_FORMAT" = "এই চ্যাটটিতে থাকা ম্যাসেজ %1$@-এর পরে অদৃশ্য হয়ে যাবে।";
 
 /* Disappearing message option to define a custom time */
 "DISAPPEARING_MESSAGES_CUSTOM_TIME" = "কাস্টম সময়";
@@ -1736,7 +1811,7 @@
 "DISAPPEARING_MESSAGES_DAYS" = "দিন";
 
 /* subheading in conversation settings */
-"DISAPPEARING_MESSAGES_DESCRIPTION" = "সক্রিয় থাকা অবস্থায়, এই চ্যাট থেকে পাঠানো ও এখানে আসা নতুন মেসেজ দেখার পর অদৃশ্য হয়ে যাবে।";
+"DISAPPEARING_MESSAGES_DESCRIPTION" = "সক্রিয় থাকা অবস্থায়, এই চ্যাট থেকে পাঠানো ও পাওয়া নতুন ম্যাসেজ দেখার পর অদৃশ্য হয়ে যাবে।";
 
 /* Accessibility hint that contains current timeout information */
 "DISAPPEARING_MESSAGES_HINT" = "বর্তমানে %1$@ এর পরে বার্তাগুলি অদৃশ্য হয়ে যায়";
@@ -1919,7 +1994,7 @@
 "DONATION_ON_BEHALF_OF_A_FRIEND_REPLY" = "ডোনেশন";
 
 /* You sent a donation to a friend. This is the title of that message in the chat. Embeds {{short contact name}}. */
-"DONATION_ON_BEHALF_OF_A_FRIEND_SENT_TITLE_FORMAT" = "%1$@-কে ডোনেশন";
+"DONATION_ON_BEHALF_OF_A_FRIEND_SENT_TITLE_FORMAT" = "%1$@-এর পক্ষ থেকে ডোনেশন";
 
 /* When you donate on behalf of a friend, a thank-you sheet will appear. This is the text on that sheet. Embeds {{recipient name}}. */
 "DONATION_ON_BEHALF_OF_A_FRIEND_THANKS_BODY_FORMAT" = "আপনি %1$@-এর পক্ষ হয়ে Signal-এ একটি ডোনেশন দিয়েছেন। তাদের প্রোফাইলে তাদের সমর্থন প্রদর্শন করার জন্য বিকল্প দেওয়া হবে।";
@@ -2053,11 +2128,14 @@
 /* The alert title if user tries to exit update group view without saving changes. */
 "EDIT_GROUP_VIEW_UNSAVED_CHANGES_TITLE" = "অসংরক্ষিত পরিবর্তনসমূহ";
 
+/* Label for Edit History modal */
+"EDIT_HISTORY_LABEL" = "এডিট করার ইতিহাস";
+
 /* Short name for edit menu item to copy contents of media message. */
 "EDIT_ITEM_COPY_ACTION" = "অনুলিপি";
 
 /* body of email sent to contacts when inviting to install Signal. Embeds {{link to install Signal}} and {{link to the Signal home page}} */
-"EMAIL_INVITE_BODY" = "হেই,\n\nআমার iPhone-এর চ্যাটগুলি গোপন রাখতে সম্প্রতি আমি Signal ব্যবহার করছি। আমি চাই আপনিও এটি ইনস্টল করুন, যাতে আমরা সুনিশ্চিত হতে পারি যে কেবলমাত্র আপনি ও আমি আমাদের বার্তাগুলি পড়তে পারি এবং আমাদের কথা শুনতে পারি।\n\nSignal iPhones ও Android ফোন উভয় ধরনের জন্যই উপলভ্য রয়েছে। এটি এখান থেকে সংগ্রহ করুন: %1$@\n\nSignal আপনার বিদ্যমান মেসেজিং অ্যাপের মতোই কাজ করে। আমরা ছবি ও ভিডিও পাঠাতে পারি, কল করতে পারি এবং গ্রুপ চ্যাট শুরু করতে পারি। এর সেরা দিকটি হচ্ছে অন্য কেউ এসবের কিছুই দেখতে পারবে না, এমনকি Signal যারা তৈরি করেছেন তারাও। \n\nআপনি Signal তৈরিতে নিয়োজিত ব্যক্তিদের Open Whisper Systems সম্পর্কে আরও পড়তে পারেন, এখানে: %2$@";
+"EMAIL_INVITE_BODY" = "হাই,\n\nআমার iPhone-এর চ্যাট গোপন রাখতে সম্প্রতি আমি Signal ব্যবহার করছি। আমি চাই আপনিও এটি ইনস্টল করুন, যাতে আমরা নিশ্চিত হতে পারি যে শুধু আপনি ও আমি আমাদের ম্যাসেজ পড়তে পারি এবং আমাদের কথা শুনতে পারি।\n\niPhones ও Android ফোন উভয় ধরনের জন্যই Signal পাওয়া যাচ্ছে। এটি এখান থেকে সংগ্রহ করুন: %1$@\n\nSignal আপনার বিদ্যমান ম্যাসেজিং অ্যাপের মতোই কাজ করে। আমরা ছবি ও ভিডিও পাঠাতে পারি, কল করতে পারি এবং গ্রুপ চ্যাট শুরু করতে পারি। এর সেরা দিকটি হচ্ছে অন্য কেউ এসবের কিছুই দেখতে পারবে না, এমনকি Signal যারা তৈরি করেছেন তারাও না!\n\nআপনি Signal তৈরিতে নিয়োজিত ব্যক্তিদের Open Whisper Systems সম্পর্কে আরো পড়তে পারেন, এখানে: %2$@";
 
 /* subject of email sent to contacts when inviting to install Signal */
 "EMAIL_INVITE_SUBJECT" = "Signal এ স্যুইচ করা যাক";
@@ -2082,6 +2160,9 @@
 
 /* The name for the emoji category 'Objects' */
 "EMOJI_CATEGORY_OBJECTS_NAME" = "অবজেক্ট";
+
+/* The name for the emoji section for emojis already used on the message */
+"EMOJI_CATEGORY_ON_MESSAGE_NAME" = "এই মেসেজ";
 
 /* The name for the emoji category 'Recents' */
 "EMOJI_CATEGORY_RECENTS_NAME" = "সাম্প্রতিক";
@@ -2224,11 +2305,23 @@
 /* Format string for 'unregistered user' error. Embeds {{the unregistered user's name or signal id}}. */
 "ERROR_UNREGISTERED_USER_FORMAT" = "অনিবন্ধভুক্ত ব্যবহারকারী: %1$@";
 
+/* Button to exit change number, shown in context menu. */
+"EXIT_CHANGE_NUMBER" = "নম্বর পরিবর্তন বন্ধ করে বেরিয়ে আসুন";
+
+/* Button to exit re-registration, shown in context menu. */
+"EXIT_REREGISTRATION" = "রেজিস্ট্রেশন বন্ধ করে বেরিয়ে আসুন";
+
 /* Label notifying the user that the app has expired. */
-"EXPIRATION_ERROR" = "আপনার Signal সংস্করণটির মেয়াদ শেষ হয়ে গেছে! সাম্প্রতিকতম সংস্করণটিতে আপডেট করতে ট্যাপ করুন।";
+"EXPIRATION_ERROR" = "Signal-এর এই সংস্করণটির মেয়াদ শেষ হয়ে গেছে। ম্যাসেজ আদানপ্রদান করতে আপডেট করুন।";
+
+/* If the user's app is too old, they'll be shown a warning asking them to upgrade. This is the text on the warning, and tapping it will open the App Store page for Signal. */
+"EXPIRATION_WARNING_ACTION_TITLE" = "এখনই আপডেট করুন";
+
+/* Label warning the user that the app will expire soon. Embeds {{date}}. */
+"EXPIRATION_WARNING_SOON" = "Signal-এর এই সংস্করণটির মেয়াদ %1$@ তারিখে শেষ হয়ে যাবে। ম্যাসেজ করা চালিয়ে যেতে আপডেট করুন।";
 
 /* Label warning the user that the app will expire today. */
-"EXPIRATION_WARNING_TODAY" = "আপনার Signal সংস্করণ আজ বাতিল হয়ে যাবে। অতি সাম্প্রতিক সংস্করণে আপডেট করতে আলতো চাপুন।";
+"EXPIRATION_WARNING_TODAY" = "Signal-এর এই সংস্করণটির মেয়াদ আজ শেষ হয়ে যাবে। ম্যাসেজ করা চালিয়ে যেতে আপডেট করুন।";
 
 /* action sheet header when re-sending message which failed because of too many attempts */
 "FAILED_SENDING_BECAUSE_RATE_LIMIT" = "এই পরিচিতি এর সাথে অনেকবার ব্যর্থ চেস্টা করা হয়েছে। পরে আবার চেষ্টা করুন।";
@@ -2285,7 +2378,10 @@
 "FORWARD_MESSAGE_TITLE" = "সামনে";
 
 /* Label indicating media gallery is empty */
-"GALLERY_TILES_EMPTY_GALLERY" = "এই চ্যাটে আপনার কোনও মিডিয়া নেই।";
+"GALLERY_TILES_EMPTY_GALLERY" = "এই চ্যাটে আপনার কোনো মিডিয়া নেই।";
+
+/* Label indicating media gallery with audio filter is empty */
+"GALLERY_TILES_EMPTY_GALLERY_AUDIO" = "এই চ্যাটে আপনার কোনো অডিও নেই।";
 
 /* Label indicating loading is in progress */
 "GALLERY_TILES_LOADING_MORE_RECENT_LABEL" = "নতুন মিডিয়া লোড হচ্ছে…";
@@ -2800,6 +2896,9 @@
 /* Message indicating that the local user was removed from the group by an unknown user. */
 "GROUP_LOCAL_USER_REMOVED_BY_UNKNOWN_USER" = "আপনাকে গ্রুপ থেকে সরানো হয়েছে।";
 
+/* Message indicating that the local user's request to join the group was approved. */
+"GROUP_LOCAL_USER_REQUEST_APPROVED" = "গ্রুপে যোগ দেয়ার জন্য আপনার অনুরোধ অনুমোদন করা হয়েছে।";
+
 /* Message indicating that the local user's request to join the group was approved by another user. Embeds {{ %@ the name of the user who approved the request }}. */
 "GROUP_LOCAL_USER_REQUEST_APPROVED_BY_REMOTE_USER_FORMAT" = "%1$@ গ্রুপটিতে যোগদান করার জন্য আপনার অনুরোধ অনুমোদন করেছেন।";
 
@@ -2884,9 +2983,6 @@
 /* Message indicating that a remote user's invite was revoked by the local user. Embeds {{remote user name}}. */
 "GROUP_REMOTE_USER_INVITE_REVOKED_BY_LOCAL_USER_FORMAT" = "গ্রুপটিতে %1$@-এর জন্য আমন্ত্রণ বাতিল করা হয়েছে।";
 
-/* Message indicating that a single remote user was invited to the group. Embeds {{remote user name}}. */
-"GROUP_REMOTE_USER_INVITED_1_FORMAT" = "%1$@-কে গ্রুপটিতে আমন্ত্রণ জানানো হয়েছে।";
-
 /* Message indicating that a remote user was invited to the group by the local user. Embeds {{remote user name}}. */
 "GROUP_REMOTE_USER_INVITED_BY_LOCAL_USER_FORMAT" = "আপনি %1$@-কে এই গ্রুপে আমন্ত্রণ জানিয়েছেন।";
 
@@ -2917,7 +3013,7 @@
 /* Message indicating that a remote user's request to join the group was rejected by the local user. Embeds {{requesting user name}}. */
 "GROUP_REMOTE_USER_REQUEST_REJECTED_BY_LOCAL_USER_FORMAT" = "আপনি %1$@-এর গ্রুপটিতে যোগদানের অনুরোধ প্রত্যাখ্যান করেছেন।";
 
-/* Message indicating that a remote user's request to join the group was rejected by another user. Embeds {{ %1$@ requesting user name, %2$@ approving user name }}. */
+/* Message indicating that a remote user's request to join the group was rejected by another user. Embeds {{ %1$@ requesting user name, %2$@ rejecting user name }}. */
 "GROUP_REMOTE_USER_REQUEST_REJECTED_BY_REMOTE_USER_FORMAT" = "%2$@ গ্রুপটিতে যোগদান করার জন্য %1$@-এর অনুরোধ প্রত্যাখ্যান করেছেন।";
 
 /* Message indicating that a remote user's request to join the group was rejected. Embeds {{requesting user name}}. */
@@ -3025,12 +3121,6 @@
 /* Message indicating that the group was migrated. */
 "GROUP_WAS_MIGRATED" = "গ্রুপটি আপগ্রেড হয়ে একটি নতুন গ্রুপ হয়েছে।";
 
-/* Message indicating that the local user was dropped while migrating the group. */
-"GROUP_WAS_MIGRATED_USERS_DROPPED_LOCAL_USER" = "নতুন গ্রুপটিতে আপনাকে যোগ করা যায়নি এবং আপনাকে গ্রুপটি থেকে বাদ দেওয়া হয়েছে।";
-
-/* Message indicating that the local user was invited while migrating the group. */
-"GROUP_WAS_MIGRATED_USERS_INVITED_LOCAL_USER" = "নতুন গ্রুপটিতে আপনাকে যোগ করা যায়নি এবং আপনাকে গ্রুপটিতে যোগদান করার জন্য আমন্ত্রণ জানানো হয়েছে।";
-
 /* Message indicating that the local user left the group. */
 "GROUP_YOU_LEFT" = "আপনি গ্রুপ ত্যাগ করেছেন।";
 
@@ -3076,128 +3166,8 @@
 /* Label for 'invite friends to group' button. */
 "GROUPS_INVITE_FRIENDS_BUTTON" = "বন্ধুকে আমন্ত্রণ জানান";
 
-/* Body text for the first section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_1_BODY" = "লিগ্যাসি গ্রুপ হচ্ছে এমন ধরনের গ্রুপ যেগুলো নতুন গ্রুপের ফিচার যেমন অ্যাডমিন ও অন্যান্য বিস্তারিত গ্রুপ আপডেটের সাথে সামঞ্জস্যপূর্ণ নয়।";
-
-/* Title for the first section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_1_TITLE" = "লিগ্যাসি গ্রুপ কী?";
-
-/* Body text for the second section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_2_BODY" = "লিগ্যাসি গ্রুপগুলিকে এখনও নতুন গ্রুপে আপগ্রেড করা যাবে না, কিন্তু আপনি একই সদস্যদের নিয়ে নতুন গ্রুপ তৈরি করতে পারবেন যদি তারা Signal-এর সর্বশেষ সংস্করণটি ব্যবহার করে থাকেন।\n\nSignal ভবিষ্যতে লিগ্যাসি গ্রুপগুলি আপগ্রেড করার সুবিধা প্রদান করবে।";
-
-/* Title for the second section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_2_TITLE" = "আমি কি একটি লিগ্যাসি গ্রুপ আপগ্রেড করতে পারি?";
-
-/* Body text for the third section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_3_BODY" = "একটি নতুন গ্রুপ তৈরি করতে, সকল সদস্যকে Signal-এর সর্বশেষ সংস্করণটিতে আপডেট করতে হবে।";
-
-/* Title for the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_TITLE" = "লিগ্যাসি বনাম নতুন গ্রুপ";
-
-/* Format for indicator that a group cannot be used until it is migrated. Embeds {{ a \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_BLOCKING_MIGRATION_FORMAT" = "@mentions ও অ্যাডমিনের মতো নতুন ফিচার সক্রিয় করতে গ্রুপটি আপগ্রেড করুন। যে সদস্যরা এই গ্রুপটিতে তাদের নাম বা ফটো শেয়ার করেননি তাদেরকে যোগদান করার জন্য আমন্ত্রণ জানানো হবে। %1$@।";
-
-/* Title for the 'can't upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_ALERT_TITLE" = "নতুন গ্রুপে আপগ্রেড করা যাবে না";
-
-/* Text indicating that a legacy group can't be upgraded because it has too many members. Embeds {{ The maximum number of members allowed in a group. }}. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_ALERT_TOO_MANY_MEMBERS_FORMAT" = "অনেক বেশি সদস্য থাকায় এই গ্রুপটিকে নতুন গ্রুপে আপগ্রেড করা যাবে না। গ্রুপের সর্বোচ্চ যে আকারকে আপগ্রেড করা যাবে তা হলো %1$@।";
-
-/* Explanation of group migration for groups that can't yet be migrated in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_YET_1" = "যখন গ্রুপের সকল সদস্য Signal-এর এমন সংস্করণ ব্যবহার করছেন যা নতুন গ্রুপে যোগদানের উপযোগী, তখন গ্রুপটি আপগ্রেড করা হবে।";
-
-/* Explanation of group migration for groups that can't yet be migrated in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_YET_2" = "আপগ্রেড করার আগে সকল ম্যাসেজের ইতিহাস ও মিডিয়া রাখা হবে।";
-
-/* Brief explanation of legacy groups. Embeds {{ a \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_FORMAT" = "এটি একটি লিগ্যাসি গ্রুপ। গ্রুপ অ্যাডমিনের মতো বৈশিষ্ট্যগুলি কেবলমাত্র নতুন গ্রুপের জন্য উপলভ্য থাকে। %1$@";
-
-/* Indicates that a legacy group can't be upgraded because some members can't be migrated. Embeds {{ an \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_MEMBERS_CANT_BE_MIGRATED_FORMAT" = "এই লিগ্যাসি গ্রুপটি নতুন গ্রুপে আপগ্রেড হওয়ার জন্য এখনও প্রস্তুত নয়। %1$@।";
-
-/* Indicates that a legacy group can't be upgraded because it has too many members. Embeds {{ an \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_TOO_MANY_MEMBERS_FORMAT" = "এই লিগ্যাসি গ্রুপটি বেশি বড় হওয়ায় এটিকে নতুন গ্রুপে আপগ্রেড করা যাবে না। %1$@।";
-
-/* Explanation of legacy groups. Embeds {{ an \"upgrade\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_WITH_UPGRADE_OFFER_FORMAT" = "এটি একটি লিগ্যাসি গ্রুপ। @mentions ও অ্যাডমিনের মতো নতুন ফিচারগুলির সুবিধা পেতে, %1$@।";
-
 /* Label indicating a legacy group. */
 "GROUPS_LEGACY_GROUP_INDICATOR" = "লিগ্যাসি গ্রুপ";
-
-/* Indicates that the local user needs to accept an invitation to rejoin the group after a group migration. */
-"GROUPS_LEGACY_GROUP_LOCAL_USER_INVITED" = "আপনাকে আবার এই গ্রুপে যোগদানের জন্য একটি আমন্ত্রণ স্বীকার করতে হবে এবং আপনি স্বীকার না করা পর্যন্ত গ্রুপের কোনও মেসেজ পাবেন না।";
-
-/* Title for the 'migrated group' alert view. */
-"GROUPS_LEGACY_GROUP_MIGRATED_GROUP_ALERT_TITLE" = "নতুন কোন কোন গ্রুপ রয়েছে?";
-
-/* Explanation of group migration for a migrated group in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_MIGRATED_GROUP_DESCRIPTION" = "আপগ্রেড করার আগে সকল ম্যাসেজের ইতিহাস ও মিডিয়া রাখা হয়েছে।";
-
-/* Explanation of new groups in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_NEW_GROUP_DESCRIPTION" = "নতুন গ্রুপে @mentions এবং গ্রুপ অ্যাডমিনের মতো ফিচার রয়েছে এবং ভবিষ্যতে আরও ফিচার সমর্থন করবে।";
-
-/* Title for the 'new groups' alert view. */
-"GROUPS_LEGACY_GROUP_NEW_GROUPS_ALERT_TITLE" = "নতুন গ্রুপ";
-
-/* Label for the 'add members' button in the 're-add dropped group members' alert view. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_ADD_MEMBERS_BUTTON" = "সদস্যকে যোগ করুন";
-
-/* Title for the 're-add dropped group members' alert view. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_ALERT_TITLE_1" = "সদস্যকে যোগ করবেন?";
-
-/* Title for the 're-add dropped group members' alert view. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_ALERT_TITLE_N" = "সদস্যকে যোগ করবেন?";
-
-/* Label for the 'add members' button in the 're-add dropped groups members' banner. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_BUTTON" = "সদস্যকে যোগ করুন";
-
-/* Explanation of 're-adding dropped group member' in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_DESCRIPTION_1" = "নতুন গ্রুপটি আপগ্রেড হওয়ার সময় এই সদস্যকে স্বয়ংক্রিয়ভাবে এতে যোগ করা যায়নি:";
-
-/* Explanation of 're-adding dropped group member' in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_DESCRIPTION_N" = "নতুন গ্রুপটি আপগ্রেড হওয়ার সময় এই সদস্যদের স্বয়ংক্রিয়ভাবে যোগ করা যায়নি:";
-
-/* Body text for the second section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_2_BODY" = "আপগ্রেড করার আগে সকল ম্যাসেজের ইতিহাস ও মিডিয়া রাখা হয়েছে।";
-
-/* Body text for the 'dropped member' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_DROPPED_MEMBERS_1" = "এই সদস্যকে গ্রুপটি থেকে সরানো হয়েছে এবং তারা আপগ্রেড না করা পর্যন্ত গ্রুপটিতে পুনরায় যোগ দিতে পারবেন না:";
-
-/* Body text for the 'dropped members' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_DROPPED_MEMBERS_N" = "এই সদস্যদের গ্রুপটি থেকে সরানো হয়েছে এবং তারা আপগ্রেড না করা পর্যন্ত গ্রুপটিতে পুনরায় যোগ দিতে পারবেন না:";
-
-/* Body text for the 'invites member' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_INVITED_MEMBERS_1" = "এই গ্রুপে আবার যোগ দিতে এই সদস্যকে একটি আমন্ত্রণ স্বীকার করতে হবে, এবং তারা সেটি স্বীকার না করা পর্যন্ত গ্রুপ মেসেজ পাবেন না:";
-
-/* Body text for the 'invites members' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_INVITED_MEMBERS_N" = "এই গ্রুপে পুনরায় যোগ দিতে এই সদস্যদেরকে একটি আমন্ত্রণ স্বীকার করতে হবে এবং তারা সেটি স্বীকার না করা পর্যন্ত গ্রুপ মেসেজগুলি পাবেন না:";
-
-/* Body text for the 'possibly dropped member' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_POSSIBLY_DROPPED_MEMBERS_1" = "এই সদস্যটি নতুন গ্রুপে যোগদানের যোগ্য নন এবং তাকে গ্রুপটি থেকে সরানো হবে।";
-
-/* Body text for the 'possibly dropped members' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_POSSIBLY_DROPPED_MEMBERS_N" = "এই সদস্যরা নতুন গ্রুপে যোগদানের যোগ্য নন এবং তাদেরকে গ্রুপটি থেকে সরানো হবে:";
-
-/* Title for the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_TITLE" = "নতুন গ্রুপে আপগ্রেড করুন";
-
-/* Label for the 'upgrade this group' button in the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_BUTTON" = "এই গ্রুপটি আপগ্রেড করুন";
-
-/* Message for error alert indicating the group update failed. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_FAILED_ERROR_MESSAGE" = "এই গ্রুপটি এখনই নতুন গ্রুপে আপগ্রেড করা যাবে না।";
-
-/* Message for error alert indicating the group update failed due to network connectivity. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_FAILED_ERROR_MESSAGE_NETWORK" = "আপনি ইন্টারনেটের সাথে সংযুক্ত না থাকায় এই গ্রুপটিকে নতুন গ্রুপে আপগ্রেড করা যায়নি। পরে আবার চেষ্টা করুন।";
-
-/* Title for error alert indicating the group update failed. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_FAILED_ERROR_TITLE" = "আপগ্রেড সম্পন্ন করা যায়নি";
-
-/* Message indicating the group update succeeded. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_SUCCEEDED" = "নতুন গ্রুপে আপগ্রেড হয়েছে।";
-
-/* An \"upgrade\" link for upgrading legacy groups to new groups. */
-"GROUPS_LEGACY_GROUP_UPGRADE_LINK" = "এই গ্রুপটি আপগ্রেড করুন";
 
 /* Message for the 'replace group admin' alert. */
 "GROUPS_REPLACE_ADMIN_ALERT_MESSAGE" = "আপনি ছেড়ে চলে যাওয়ার আগে, এই গ্রুপের জন্য একটি নতুন অ্যাডমিন বেছে নিন।";
@@ -3227,7 +3197,7 @@
 "HELP_SUPPORT_CENTER" = "সহায়তা কেন্দ্র";
 
 /* Label for 'archived conversations' button. */
-"HOME_VIEW_ARCHIVED_CONVERSATIONS" = "আর্কাইভ করা চ্যাট";
+"HOME_VIEW_ARCHIVED_CONVERSATIONS" = "আর্কাইভকৃত চ্যাট";
 
 /* Table cell subtitle label for a conversation the user has blocked. */
 "HOME_VIEW_BLOCKED_CONVERSATION" = "ব্লক করা হয়েছে";
@@ -3311,7 +3281,7 @@
 "IN_CALL_RINGING" = "রিং হচ্ছে…";
 
 /* Call setup status label */
-"IN_CALL_RINGING_AUDIO" = "অডিও কল…";
+"IN_CALL_RINGING_AUDIO" = "ভয়েস কল…";
 
 /* Call setup status label */
 "IN_CALL_RINGING_VIDEO" = "ভিডিও কল…";
@@ -3326,10 +3296,10 @@
 "INBOX_VIEW_ARCHIVE_MODE_MUTED_CHATS_REMINDER" = "যখন নতুন ম্যাসেজ আসবে তখন আর্কাইভ করা মিউটকৃত চ্যাট আর্কাইভ অবস্থায়ই থাকবে।";
 
 /* Label reminding the user that they are in archive mode, and that chats are unarchived when they receive a new message. */
-"INBOX_VIEW_ARCHIVE_MODE_REMINDER" = "নতুন ম্যাসেজ আসলে আর্কাইভকৃত চ্যাট ইনবক্সে চলে যাবে৷";
+"INBOX_VIEW_ARCHIVE_MODE_REMINDER" = "নতুন ম্যাসেজ আসলে আর্কাইভকৃত চ্যাট ইনবক্সে চলে যাবে।";
 
 /* Message shown in the conversation list when the inbox is empty. */
-"INBOX_VIEW_EMPTY_INBOX" = "এখনো কোন চ্যাট নেই।\nএকজন বন্ধুকে মেসেজ পাঠানোর মাধ্যমে শুরু করুন।";
+"INBOX_VIEW_EMPTY_INBOX" = "এখনো কোনো চ্যাট নেই।\nএকজন বন্ধুকে ম্যাসেজ পাঠানোর মাধ্যমে শুরু করুন।";
 
 /* info message text in conversation view */
 "INCOMING_AUDIO_CALL" = "ভয়েস কল আসছে";
@@ -3416,10 +3386,10 @@
 "KEY_COMMAND_NEW_MESSAGE" = "নতুন বার্তা";
 
 /* A keyboard command to jump to the next conversation in the list. */
-"KEY_COMMAND_NEXT_CONVERSATION" = "পরবর্তী চ্যাট-এ যান";
+"KEY_COMMAND_NEXT_CONVERSATION" = "পরবর্তী চ্যাটে যান";
 
 /* A keyboard command to jump to the previous conversation in the list. */
-"KEY_COMMAND_PREVIOUS_CONVERSATION" = "পূর্ববর্তী চ্যাট-এ যান";
+"KEY_COMMAND_PREVIOUS_CONVERSATION" = "পূর্ববর্তী চ্যাটে যান";
 
 /* A keyboard command to begin a search on the conversation list. */
 "KEY_COMMAND_SEARCH" = "অনুসন্ধান";
@@ -3445,6 +3415,21 @@
 /* Error indicating that a group could not be left. */
 "LEAVE_GROUP_FAILED" = "গ্রুপ ছাড়ার সময় একটি ত্রুটি ঘটেছে।";
 
+/* Text in a sheet explaining details about 'Legacy Groups'. */
+"LEGACY_GROUP_UNSUPPORTED_LEARN_MORE_BODY" = "\"লিগ্যাসি গ্রুপ\" এমন একটি গ্রুপ যা @উল্লেখ এবং অ্যাডমিন-এর মতো নতুন ফিচার সমর্থন করে না। বেশিরভাগ লিগ্যাসি গ্রুপ স্বয়ংক্রিয়ভাবে বা ম্যানুয়ালি \"নতুন গ্রুপ\"-এ আপগ্রেড করা হয়েছিল। দীর্ঘ সময় ধরে নিষ্ক্রিয় থাকার কারণে, এই গ্রুপটি আর আপগ্রেড করা যাবে না।\n\nএই চ্যাটটি চালিয়ে যেতে, আপনাকে অবশ্যই একটি নতুন গ্রুপ তৈরি করতে হবে।";
+
+/* Title for a sheet explaining details about 'Legacy Groups'. */
+"LEGACY_GROUP_UNSUPPORTED_LEARN_MORE_TITLE" = "লিগ্যাসি গ্রুপ";
+
+/* Message explaining that this group can no longer be used because it is unsupported. Embeds a {{ learn more link }}. */
+"LEGACY_GROUP_UNSUPPORTED_MESSAGE" = "এটি একটি লিগ্যাসি গ্রুপ এবং এই গ্রুপটি আর সমর্থিত নয়। এই কথোপকথনটি চালিয়ে যেতে একটি নতুন গ্রুপ তৈরি করুন। %1$@";
+
+/* Text in a sheet explaining details about 'New Groups'. */
+"LEGACY_GROUP_WHAT_ARE_NEW_GROUPS_BODY" = "নতুন গ্রুপে @mentions এবং গ্রুপ অ্যাডমিনের মতো ফিচার রয়েছে এবং ভবিষ্যতে আরও ফিচার সমর্থন করবে।\n\nআপগ্রেড করার আগে সকল ম্যাসেজের ইতিহাস ও মিডিয়া রাখা হয়েছে।";
+
+/* Title for a sheet explaining details about 'New Groups'. */
+"LEGACY_GROUP_WHAT_ARE_NEW_GROUPS_TITLE" = "নতুন কোন কোন গ্রুপ রয়েছে?";
+
 /* report an invalid linking code */
 "LINK_DEVICE_INVALID_CODE_BODY" = "এই কিউআর কোডটি বৈধ নয়। আপনি যে ডিভাইস লিঙ্কটি করতে চান তাতে প্রদর্শিত QR কোডটি আপনি স্ক্যান করছেন তা দয়া করে নিশ্চিত হন।";
 
@@ -3452,7 +3437,7 @@
 "LINK_DEVICE_INVALID_CODE_TITLE" = "ডিভাইস সংযুক্তি ব্যর্থ";
 
 /* confirm the users intent to link a new device */
-"LINK_DEVICE_PERMISSION_ALERT_BODY" = "এই ডিভাইসটি আপনার গ্রুপ ও কন্ট্যাক্টগুলিকে দেখতে পাবে, আপনার চ্যাটসমূহ অ্যাক্সেস করতে পারবে এবং আপনার নামে মেসেজ পাঠাতে পারবে।";
+"LINK_DEVICE_PERMISSION_ALERT_BODY" = "এই ডিভাইসটি আপনার গ্রুপ ও কন্টাক্ট দেখতে পাবে, আপনার চ্যাট অ্যাক্সেস করতে পারবে এবং আপনার নামে ম্যাসেজ পাঠাতে পারবে।";
 
 /* confirm the users intent to link a new device */
 "LINK_DEVICE_PERMISSION_ALERT_TITLE" = "এই ডিভাইস সংযুক্ত করবেন?";
@@ -3553,11 +3538,20 @@
 /* Shown in place of message input text in media editor when 'View Once' is on. */
 "MEDIA_EDITOR_TEXT_FIELD_VIEW_ONCE_MEDIA" = "একবার-দেখার উপযোগী মিডিয়া";
 
+/* Explanatory text displayed when deleting N items in All Media screen. */
+"MEDIA_GALLERY_DELETE_MEDIA_BODY" = "This will permanently delete the selected files. Any message text associated with these items will also be deleted.";
+
 /* Format for the 'more items' indicator for media galleries. Embeds {{the number of additional items}}. */
 "MEDIA_GALLERY_MORE_ITEMS_FORMAT" = "+ %1$@";
 
 /* Section header in media gallery collection view */
 "MEDIA_GALLERY_THIS_MONTH_HEADER" = "এই মাস";
+
+/* Text explaining that the user will forward all media from a message. */
+"MEDIA_PAGE_FORWARD_MEDIA_CONFIRM_MESSAGE" = "এই মেসেজে সকল মিডিয়া ফরওয়ার্ড করা হবে।";
+
+/* Context menu item in media viewer. Refers to deleting currently displayed photo/video. */
+"MEDIA_VIEWER_DELETE_MEDIA_ACTION" = "মুছে ফেলুন";
 
 /* button title to snooze a megaphone */
 "MEGAPHONE_REMIND_LATER" = "আমাকে পরে মনে করিয়ে দেবেন";
@@ -3572,7 +3566,7 @@
 "MESSAGE_ACTION_DELETE_FOR_EVERYONE" = "সবার জন্য মুছে ফেলুন";
 
 /* A one-time confirmation that you want to delete for everyone */
-"MESSAGE_ACTION_DELETE_FOR_EVERYONE_CONFIRMATION" = "এই বার্তাটি চ্যাটে থাকা সকলের জন্য মুছে যাবে, যদি তারা Signal-এর সর্বশেষ সংস্করণটি ব্যবহার করেন। আপনি যে একটি বার্তা মুছে ফেলেছেন তা তারা দেখতে পাবেন।";
+"MESSAGE_ACTION_DELETE_FOR_EVERYONE_CONFIRMATION" = "এই ম্যাসেজটি চ্যাটে থাকা সকলের জন্য মুছে যাবে, যদি তারা Signal-এর সর্বশেষ সংস্করণটি ব্যবহার করেন। আপনি যে একটি ম্যাসেজ মুছে ফেলেছেন তা তারা দেখতে পাবেন।";
 
 /* The title for the action sheet asking who the user wants to delete the message for. */
 "MESSAGE_ACTION_DELETE_FOR_TITLE" = "আপনি কার জন্য বার্তাটি মুছে ফেলতে চান?";
@@ -3654,6 +3648,9 @@
 
 /* Toast indicating that the user has copied the sent timestamp. */
 "MESSAGE_DETAIL_VIEW_DID_COPY_SENT_TIMESTAMP" = "পাঠানোর সময় কপি করা হয়েছে";
+
+/* Title for the 'edit history' section on the 'message details' view. */
+"MESSAGE_DETAILS_EDIT_HISTORY_TITLE" = "এডিট করার ইতিহাস দেখুন";
 
 /* Title for the 'sent from' section on the 'message details' view. */
 "MESSAGE_DETAILS_VIEW_SENT_FROM_TITLE" = "এর থেকে পাঠানো হয়েছে";
@@ -3797,10 +3794,10 @@
 "MESSAGE_REQUEST_VIEW_DELETE_BUTTON" = "মুছে ফেলুন";
 
 /* A prompt notifying that the user must share their profile with this conversation. Embeds {{contact name}}. */
-"MESSAGE_REQUEST_VIEW_EXISTING_CONTACT_PROMPT_FORMAT" = "%1$@-এর সাথে চ্যাট চালিয়ে যাবেন এবং আপনার নাম ও ফটো তাদের সাথে শেয়ার করবেন?";
+"MESSAGE_REQUEST_VIEW_EXISTING_CONTACT_PROMPT_FORMAT" = "%1$@-এর সাথে চ্যাট চালিয়ে যাবেন এবং আপনার নাম ও ছবি তাদের সাথে শেয়ার করবেন?";
 
 /* A prompt notifying that the user must share their profile with this group. */
-"MESSAGE_REQUEST_VIEW_EXISTING_GROUP_PROMPT" = "এই গ্রুপের সাথে চ্যাট চালিয়ে যাবেন এবং এর সদস্যদের সাথে আপনার নাম ও ফটো শেয়ার করবেন?";
+"MESSAGE_REQUEST_VIEW_EXISTING_GROUP_PROMPT" = "এই গ্রুপের সাথে চ্যাট চালিয়ে যাবেন এবং এর সদস্যদের সাথে আপনার নাম ও ছবি শেয়ার করবেন?";
 
 /* A prompt asking if the user wants to accept a conversation invite. Embeds {{contact name}}. */
 "MESSAGE_REQUEST_VIEW_NEW_CONTACT_PROMPT_FORMAT" = "%1$@-কে কি আপনাকে মেসেজ পাঠাতে দেবেন এবং তাদের সাথে আপনার নাম ও ফটো শেয়ার করবেন? আপনি স্বীকার না করা পর্যন্ত তারা জানবেন না যে আপনি তাদের মেসেজটি দেখেছেন।";
@@ -3828,6 +3825,9 @@
 
 /* message status while message is downloading. */
 "MESSAGE_STATUS_DOWNLOADING" = "ডাউনলোড করা হচ্ছে";
+
+/* status meesage for edited messages */
+"MESSAGE_STATUS_EDITED" = "এডিট করা হয়েছে";
 
 /* status message for failed messages */
 "MESSAGE_STATUS_FAILED" = "পাঠাতে ব্যর্থ";
@@ -4067,7 +4067,10 @@
 "NO_OTHER_GROUPS_IN_COMMON" = "একই রকমের আর কোনও গ্রুপ নেই";
 
 /* Label for 1:1 conversation with yourself. */
-"NOTE_TO_SELF" = "নিজের জন্য বার্তা";
+"NOTE_TO_SELF" = "নিজের জন্য নোট";
+
+/* Body for a notification representing a message request. */
+"NOTIFICATION_BODY_INCOMING_MESSAGE_REQUEST" = "মেসেজের অনুরোধ";
 
 /* Lock screen notification text presented after user powers on their device without unlocking. Embeds {{device model}} (either 'iPad' or 'iPhone') */
 "NOTIFICATION_BODY_PHONE_LOCKED_FORMAT" = "আপনার %1$@ পুনঃসূচনা করার সময় হয়তবা আপনি বার্তা পেয়েছেন।";
@@ -4140,6 +4143,9 @@
 
 /* Label indicating that the 2fa pin is invalid in the 'onboarding 2fa' view. */
 "ONBOARDING_2FA_INVALID_PIN" = "ভুল পিন";
+
+/* Label indicating that the 2fa pin is invalid in the 'onboarding 2fa' view, and you only have one more attempt */
+"ONBOARDING_2FA_INVALID_PIN_LAST_ATTEMPT" = "ভুল পিন। 1টি প্রচেষ্টা বাকি আছে।";
 
 /* Label for the 'skip and create new pin' button when reglock is disabled during onboarding. */
 "ONBOARDING_2FA_SKIP_AND_CREATE_NEW_PIN" = "এড়িয়ে যান এবং নতুন পিন তৈরি করুন";
@@ -4222,6 +4228,9 @@
 /* Title of the 'onboarding pin attempts exhausted' view when reglock is disabled. */
 "ONBOARDING_PIN_ATTEMPTS_EXHAUSTED_TITLE" = "ভুল পিন";
 
+/* Explanation of the 'onboarding pin attempts exhausted' view when it is unknown if reglock is enabled. */
+"ONBOARDING_PIN_ATTEMPTS_EXHAUSTED_WITH_UNKNOWN_REGLOCK_EXPLANATION" = "আপনার পিন অনুমানের সংখ্যা শেষ হয়ে গেছে, তবে আপনি এখনো একটি নতুন পিন তৈরি করে আপনার Signal অ্যাকাউন্ট অ্যাক্সেস করতে পারবেন। আপনার গোপনীয়তা এবং সুরক্ষার জন্য কোনো সেভ করা প্রোফাইলের তথ্য বা সেটিংস ছাড়াই আপনার অ্যাকাউন্ট পুনর্বহাল করা হবে।";
+
 /* Title of the 'onboarding PIN' view. */
 "ONBOARDING_PIN_EXPLANATION" = "আপনি নিজের অ্যাকাউন্ট এর জন্য তৈরি করা পিনটি প্রবেশ করুন। এটি আপনার এসএমএস যাচাইকরণ কোড থেকে ভিন্ন।";
 
@@ -4255,6 +4264,18 @@
 /* Label for a progress spinner currently validating code */
 "ONBOARDING_VERIFICATION_CODE_VALIDATION_PROGRESS_LABEL" = "কোড যাচাই হচ্ছে…";
 
+/* First bullet point for the explainer sheet for registering via verification code. */
+"ONBOARDING_VERIFICATION_HELP_BULLET_1" = "SMS বা কল পেতে আপনার ফোনে সেলুলার সিগন্যাল রয়েছে কি না তা নিশ্চিত করুন";
+
+/* Second bullet point for the explainer sheet for registering via verification code. */
+"ONBOARDING_VERIFICATION_HELP_BULLET_2" = "নিশ্চিত করুন যে আপনি নম্বরটিতে একটি ফোন কল পেতে পারেন";
+
+/* Third bullet point for the explainer sheet for registering via verification code. */
+"ONBOARDING_VERIFICATION_HELP_BULLET_3" = "আপনি আপনার ফোন নম্বর সঠিকভাবে লিখেছেন কি না, তা যাচাই করে নিন";
+
+/* Label for a button to get help entering a verification code when registering. */
+"ONBOARDING_VERIFICATION_HELP_LINK" = "রেজিস্ট্রেশন করতে সমস্যা হচ্ছে?";
+
 /* Label indicating that the verification code is incorrect in the 'onboarding verification' view. */
 "ONBOARDING_VERIFICATION_INVALID_CODE" = "এই কোডটি ভুল";
 
@@ -4272,6 +4293,21 @@
 
 /* Button text which opens the settings app */
 "OPEN_SETTINGS_BUTTON" = "সেটিংস";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're on unsupported version. Some users can upgrade their device to a newer version of iOS to continue using Signal. If that's the case, they'll be shown this text. */
+"OS_EXPIRED_AND_CAN_UPGRADE_OS" = "Signal এই ডিভাইসে আর কাজ করে না। আবার Signal ব্যবহার করতে, iOS-এর একটি নতুন সংস্করণ দিয়ে আপনার ডিভাইসটি আপডেট করুন।";
+
+/* Signal doesn't support old devices. If that's the case, they'll be shown this action, and tapping it will open information about Signal's minimum supported operating systems. */
+"OS_EXPIRED_AND_DEVICE_IS_STUCK" = "Signal এই ডিভাইসে আর কাজ করে না। আবার Signal ব্যবহার করতে, একটি নতুন ডিভাইসে সুইচ করুন।";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're on an old version. Some users can upgrade their device to a newer version of iOS to continue using Signal. If that's the case, they'll be shown this action, and tapping it will open device update instructions. */
+"OS_SOON_TO_EXPIRE_ACTION_TITLE" = "এখনই আপডেট করুন";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're an old version that will soon lose support. Some users can upgrade their device to a newer version of iOS to continue using Signal. If that's the case, they'll be shown this text. Embeds {{expiration date}}. */
+"OS_SOON_TO_EXPIRE_AND_CAN_UPGRADE_OS_FORMAT" = "Signal শীঘ্রই আপনার ডিভাইসের iOS সংস্করণ আর সমর্থন করবে না। Signal ব্যবহার অব্যাহত রাখতে, iOS-এর একটি নতুন সংস্করণে আপনার ডিভাইসটি %1$@ তারিখের মধ্যে আপডেট করুন।";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're on an old version that will soon lose support. This is the text on that warning when users can't upgrade iOS without getting a new device. Embeds {{expiration date}}. */
+"OS_SOON_TO_EXPIRE_AND_DEVICE_WILL_BE_STUCK_FORMAT" = "Signal শীঘ্রই আপনার ডিভাইসের iOS সংস্করণ আর সমর্থন করবে না। Signal ব্যবহার অব্যাহত রাখতে, %1$@ তারিখের মধ্যে একটি নতুন ডিভাইসে সুইচ করুন।";
 
 /* Info Message when another user disabled disappearing messages. Embeds {{name of other user}}. */
 "OTHER_DISABLED_DISAPPEARING_MESSAGES_CONFIGURATION" = "%1$@অদৃশ্য হয়ে যাওয়া বার্তা নিস্ক্রীয় করেছেন।";
@@ -4649,22 +4685,16 @@
 "PHONE_NUMBER_DISCOVERABILITY_EVERYBODY" = "সবাই";
 
 /* A user friendly description of the 'everybody' phone number discoverability mode. */
-"PHONE_NUMBER_DISCOVERABILITY_EVERYBODY_DESCRIPTION" = "Anyone who has your phone number in their contacts will see you as a contact on Signal. Others will be able to reach you with your phone number when they start a new chat or group.";
+"PHONE_NUMBER_DISCOVERABILITY_EVERYBODY_DESCRIPTION" = "যাদের কন্টাক্ট লিস্টে আপনার ফোন নম্বর আছে তারা আপনাকে Signal-এ একজন কন্টাক্ট হিসেবে দেখতে পাবেন। অন্যরা একটি নতুন চ্যাট বা গ্রুপ শুরু করলে আপনার ফোন নম্বর দিয়ে তারা আপনার সাথে যোগাযোগ করতে সক্ষম হবেন।";
 
 /* A user friendly name for the 'nobody' phone number discoverability mode. */
 "PHONE_NUMBER_DISCOVERABILITY_NOBODY" = "কেউ না";
 
 /* A user friendly description of the 'nobody' phone number discoverability mode. */
-"PHONE_NUMBER_DISCOVERABILITY_NOBODY_DESCRIPTION" = "Nobody on Signal will be able to reach you with your phone number.";
+"PHONE_NUMBER_DISCOVERABILITY_NOBODY_DESCRIPTION" = "Signal-এ থাকা কোন ব্যক্তিই আপনার ফোন নম্বরের মাধ্যমে আপনাকে খুঁজে পাবেন না।";
 
 /* A format for a label showing an example phone number. Embeds {{the example phone number}}. */
 "PHONE_NUMBER_EXAMPLE_FORMAT" = "উদাহরণ: %1$@";
-
-/* A user friendly name for the 'contacts only' phone number sharing mode. */
-"PHONE_NUMBER_SHARING_CONTACTS_ONLY" = "আমার কন্ট্যাক্ট";
-
-/* A user friendly description of the 'contacts only' phone number sharing mode. */
-"PHONE_NUMBER_SHARING_CONTACTS_ONLY_DESCRIPTION" = "কেবলমাত্র আপনার কন্ট্যাক্টরা Signal-এ আপনার ফোন নম্বর দেখতে পারবেন।";
 
 /* A user friendly name for the 'everybody' phone number sharing mode. */
 "PHONE_NUMBER_SHARING_EVERYBODY" = "সবাই";
@@ -4772,7 +4802,13 @@
 "PIN_CREATION_EXPLANATION" = "পিনগুলি এনক্রিপ্ট করা Signal-এর সাথে তথ্য সঞ্চয় করে রাখে যাতে কেবলমাত্র আপনিই সেগুলি পড়তে পারেন। আপনি পুনরায় ইনস্টল করার পর আপনার প্রোফাইল, সেটিংস ও কন্ট্যাক্টগুলি পুনর্বহাল হবে। অ্যাপটি চালু করতে আপনার পিনের দরকার হবে না।";
 
 /* Learn more action on the pin creation view */
-"PIN_CREATION_LEARN_MORE" = "পিনগুলি সম্পর্কে আরও জানুন";
+"PIN_CREATION_LEARN_MORE" = "পিন সম্পর্কে আরো তথ্য";
+
+/* Users can create PINs to restore their account data later. They can learn more about this on a sheet. This is the text on that sheet. */
+"PIN_CREATION_LEARN_MORE_TEXT" = "পিন Signal এনক্রিপ্টেড অবস্থায় আপনার তথ্য সংরক্ষিত রাখে, যাতে শুধুমাত্র আপনিই এতে অ্যাক্সেস করতে পারেবেন। আপনি যখন পুনরায় ইনস্টল করবেন তখন আপনার প্রোফাইল, সেটিংস এবং কন্টাক্ট পুনর্বহাল করা হবে।";
+
+/* Users can create PINs to restore their account data later. They can learn more about this on a sheet. This is the title on that sheet. */
+"PIN_CREATION_LEARN_MORE_TITLE" = "Signal পিন সম্পর্কে তথ্য";
 
 /* Label indicating that the attempted PIN does not match the first PIN */
 "PIN_CREATION_MISMATCH_ERROR" = "পিনগুলি মেলে না। আবার চেষ্টা করুন।";
@@ -4820,13 +4856,16 @@
 "PIN_CREATION_WEAK_ERROR" = "একটি শক্তিশালী পিন বেছে নিন";
 
 /* If your attempted PIN is too weak, you'll see an error message. This is the text on the error dialog. */
-"PIN_CREATION_WEAK_ERROR_MESSAGE" = "PINs keep your information stored with Signal encrypted so only you can access it. Choose a stronger PIN to protect your account.";
+"PIN_CREATION_WEAK_ERROR_MESSAGE" = "পিন সিগন্যাল এনক্রিপ্টেড অবস্থায় আপনার তথ্য সংরক্ষিত রাখে, যাতে শুধুমাত্র আপনিই এতে অ্যাক্সেস করতে পারবেন। আপনার অ্যাকাউন্ট সুরক্ষিত রাখতে একটি শক্তিশালী পিন বেছে নিন।";
 
 /* Error body indicating that the attempt to disable a PIN failed. */
 "PIN_DISABLE_ERROR_MESSAGE" = "আপনার পিন নিষ্ক্রিয় করা যায়নি। আমরা আপনাকে পরে আবার এটি করতে বলবো।";
 
 /* Error title indicating that the attempt to disable a PIN failed. */
 "PIN_DISABLE_ERROR_TITLE" = "পিন নিষ্ক্রিয়করণ ব্যর্থ হয়েছে";
+
+/* If the user is re-registering, they need to enter their PIN to restore all their data. In some cases, they can skip this entry and lose some data. This text is shown on a button that lets them begin to do this. */
+"PIN_ENTER_EXISTING_SKIP" = "পিন এড়িয়ে যান";
 
 /* Error title indicating that the attempt to recreate a PIN failed. */
 "PIN_RECREATION_ERROR_TITLE" = "পিন তৈরি করতে ব্যর্থ হয়েছে";
@@ -4897,7 +4936,7 @@
 /* Badge indicating that the user is verified. */
 "PRIVACY_IDENTITY_IS_VERIFIED_BADGE" = "যাচাইকৃত";
 
-/* Label indicating that the user is verified. Embeds {{the user's name or phone number}}. */
+/* Label indicating that the user is verified. Embeds  user's name or phone number}}. */
 "PRIVACY_IDENTITY_IS_VERIFIED_FORMAT" = "%1$@ যাচাইকৃত";
 
 /* Button that shows the 'scan with camera' view. */
@@ -4910,7 +4949,7 @@
 "PRIVACY_VERIFICATION_FAILED_I_HAVE_WRONG_KEY_FOR_THEM" = "এটি %1$@ এর সাথে আপনার নিরাপত্তা নাম্বার এর মতো দেখাচ্ছে না। আপনি কি সঠিক পরিচিতি যাচাই করছেন?";
 
 /* Alert body */
-"PRIVACY_VERIFICATION_FAILED_MISMATCHED_SAFETY_NUMBERS_IN_CLIPBOARD" = "আপনার ক্লিপবোর্ডের নম্বরটি এই চ্যাটের সঠিক নিরাপত্তা নাম্বার বলে মনে হচ্ছে না।";
+"PRIVACY_VERIFICATION_FAILED_MISMATCHED_SAFETY_NUMBERS_IN_CLIPBOARD" = "আপনার ক্লিপবোর্ডের নম্বরটি এই চ্যাটের সঠিক নিরাপত্তা নম্বর বলে মনে হচ্ছে না।";
 
 /* Alert body for user error */
 "PRIVACY_VERIFICATION_FAILED_NO_SAFETY_NUMBERS_IN_CLIPBOARD" = "Signal আপনার ক্লিপবোর্ডে কোনও নিরাপত্তা নাম্বার খুঁজে পায়নি। আপনি কি এটি সঠিকভাবে অনুলিপি করেছেন?";
@@ -4970,7 +5009,7 @@
 "PROFILE_BIO_VIEW_DEFAULT_BIO_ENCRYPTED" = "এনক্রিপ্ট করা হয়েছে";
 
 /* The 'free to chat' default bio in the profile bio view. */
-"PROFILE_BIO_VIEW_DEFAULT_BIO_FREE_TO_CHAT" = "বিনা দ্বিধায় চ্যাট করুন";
+"PROFILE_BIO_VIEW_DEFAULT_BIO_FREE_TO_CHAT" = "ফ্রি-তে চ্যাট করুন";
 
 /* The 'Speak Freely' default bio in the profile bio view. */
 "PROFILE_BIO_VIEW_DEFAULT_BIO_SPEAK_FREELY" = "নির্দ্বিধায় কথা বলুন";
@@ -5002,8 +5041,14 @@
 /* Placeholder when the user doesn't have a 'name' defined for profile settings screen. */
 "PROFILE_SETTINGS_NAME_PLACEHOLDER" = "নাম";
 
+/* Title for a menu action allowing users to edit their existing username. */
+"PROFILE_SETTINGS_USERNAME_EDIT_USERNAME_ACTION" = "ব্যবহারকারীর নাম এডিট করুন";
+
 /* A placeholder value shown in the profile settings screen on a tappable item leading to a username selection flow, for when the user doesn't have a username. */
 "PROFILE_SETTINGS_USERNAME_PLACEHOLDER" = "ইউজারনেম";
+
+/* Title for a menu action allowing users to view their username link QR code. */
+"PROFILE_SETTINGS_USERNAME_VIEW_QR_CODE_ACTION" = "QR কোড দেখুন";
 
 /* Error message shown when user tries to update profile with a family name that is too long. */
 "PROFILE_VIEW_ERROR_FAMILY_NAME_TOO_LONG" = "আপনার নামের শেষাংশটি অনেক দীর্ঘ।";
@@ -5024,7 +5069,7 @@
 "PROFILE_VIEW_NO_CONNECTION" = "শুধুমাত্র ইন্টারনেটে সংযুক্ত থাকলেই প্রোফাইল আপডেট করা যায়।";
 
 /* Description of the user profile. */
-"PROFILE_VIEW_PROFILE_DESCRIPTION" = "আপনার প্রোফাইলটি এক প্রান্ত থেকে অপর প্রান্ত পর্যন্ত এনক্রিপ্ট করা হয়েছে। আপনি যখন কোন নতুন চ্যাট শুরু করবেন বা গ্রহণ করবেন তখন আপনার প্রোফাইল ও এতে করা কোন পরিবর্তন আপনার কন্ট্যাক্টদের কাছে দৃশ্যমান হবে।";
+"PROFILE_VIEW_PROFILE_DESCRIPTION" = "আপনার প্রোফাইলটি এন্ড-টু-এন্ড এনক্রিপ্ট করা হয়েছে। আপনি যখন কোনো নতুন চ্যাট শুরু করবেন বা পাবেন তখন আপনার প্রোফাইল ও এতে করা কোন পরিবর্তন আপনার কন্টাক্টদের কাছে দৃশ্যমান হবে।";
 
 /* Button to save the profile view in the profile view. */
 "PROFILE_VIEW_SAVE_BUTTON" = "সংরক্ষ";
@@ -5072,10 +5117,10 @@
 "QUOTED_REPLY_ORIGINAL_MESSAGE_REMOTELY_SOURCED" = "মূল বার্তাটি পাওয়া যায়নি।";
 
 /* Header label that appears above quoted messages when the quoted content was includes a reaction to your own story. */
-"QUOTED_REPLY_REACTION_TO_OWN_STORY" = "আপনার স্টোরি-তে রিঅ্যাক্ট করা হয়েছে";
+"QUOTED_REPLY_REACTION_TO_OWN_STORY" = "আপনার স্টোরিতে রিঅ্যাক্ট করেছেন";
 
 /* Header label that appears above quoted messages when the quoted content was includes a reaction to a story. Embeds {{ story author name }} */
-"QUOTED_REPLY_REACTION_TO_STORY_FORMAT" = "%1$@-এর স্টোরি-তে রিঅ্যাক্ট করা হয়েছে";
+"QUOTED_REPLY_REACTION_TO_STORY_FORMAT" = "%1$@-এর স্টোরিতে রিঅ্যাক্ট করেছেন";
 
 /* Message header when you are quoting a story. Embeds {{ story author name }} */
 "QUOTED_REPLY_STORY_AUTHOR_INDICATOR_FORMAT" = "%1$@ · স্টোরি";
@@ -5102,40 +5147,40 @@
 "REACTION_DETAIL_ALL_FORMAT" = "সমস্ত · %1$@টি";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_BODY_FORMAT" = "আপনার মেসেজে %1$@ প্রতিক্রিয়া ব্যক্ত করা হয়েছে";
+"REACTION_INCOMING_NOTIFICATION_BODY_FORMAT" = "আপনার ম্যাসেজে %1$@ রিঅ্যাক্ট করেছেন";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_ALBUM_BODY_FORMAT" = "আপনার অ্যালবামে %1$@ প্রতিক্রিয়া ব্যক্ত করা হয়েছে";
+"REACTION_INCOMING_NOTIFICATION_TO_ALBUM_BODY_FORMAT" = "আপনার অ্যালবামে %1$@ রিঅ্যাক্ট করেছেন";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_AUDIO_BODY_FORMAT" = "আপনার অডিওতে %1$@ প্রতিক্রিয়া ব্যক্ত করা হয়েছে";
+"REACTION_INCOMING_NOTIFICATION_TO_AUDIO_BODY_FORMAT" = "আপনার অডিওতে %1$@ রিঅ্যাক্ট করেছেন";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_CONTACT_SHARE_BODY_FORMAT" = "আপনার কন্ট্যাক্ট শেয়ারে %1$@ প্রতিক্রিয়া ব্যক্ত করা হয়েছে";
+"REACTION_INCOMING_NOTIFICATION_TO_CONTACT_SHARE_BODY_FORMAT" = "আপনার কন্টাক্ট শেয়ারে %1$@ রিঅ্যাক্ট করেছেন";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_FILE_BODY_FORMAT" = "আপনার ফাইলটিতে %1$@ প্রতিক্রিয়া ব্যক্ত করা হয়েছে";
+"REACTION_INCOMING_NOTIFICATION_TO_FILE_BODY_FORMAT" = "আপনার ফাইলটিতে %1$@ রিঅ্যাক্ট করেছেন";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_GIF_BODY_FORMAT" = "আপনার GIF-এ %1$@ প্রতিক্রিয়া ব্যক্ত করা হয়েছে";
+"REACTION_INCOMING_NOTIFICATION_TO_GIF_BODY_FORMAT" = "আপনার GIF-এ %1$@ রিঅ্যাক্ট করেছেন";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_PHOTO_BODY_FORMAT" = "আপনার ফটোতে %1$@ প্রতিক্রিয়া ব্যক্ত করা হয়েছে";
+"REACTION_INCOMING_NOTIFICATION_TO_PHOTO_BODY_FORMAT" = "আপনার ছবিতে %1$@ রিঅ্যাক্ট করেছেন";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_STICKER_MESSAGE_BODY_FORMAT" = "আপনার স্টিকারটিতে %1$@ প্রতিক্রিয়া ব্যক্ত করা হয়েছে";
+"REACTION_INCOMING_NOTIFICATION_TO_STICKER_MESSAGE_BODY_FORMAT" = "আপনার স্টিকারে %1$@ রিঅ্যাক্ট করেছেন";
 
 /* notification body. Embeds {{reaction emoji}} and {{body text}} */
-"REACTION_INCOMING_NOTIFICATION_TO_TEXT_MESSAGE_BODY_FORMAT" = "\"%1$@\" প্রতিক্রিয়া ব্যক্ত করা হয়েছে: %2$@";
+"REACTION_INCOMING_NOTIFICATION_TO_TEXT_MESSAGE_BODY_FORMAT" = "%1$@ রিঅ্যাক্ট করেছেন: \"%2$@\"-এ";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_VIDEO_BODY_FORMAT" = "আপনার ভিডিওতে %1$@ প্রতিক্রিয়া ব্যক্ত করা হয়েছে";
+"REACTION_INCOMING_NOTIFICATION_TO_VIDEO_BODY_FORMAT" = "আপনার ভিডিওতে %1$@ রিঅ্যাক্ট করেছেন";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_VIEW_ONCE_MESSAGE_BODY_FORMAT" = "আপনার একবার দেখার যোগ্য মিডিয়াতে %1$@ প্রতিক্রিয়া ব্যক্ত করা হয়েছে";
+"REACTION_INCOMING_NOTIFICATION_TO_VIEW_ONCE_MESSAGE_BODY_FORMAT" = "আপনার ভিউ-ওয়ান্স মিডিয়াতে %1$@ রিঅ্যাক্ট করেছেন";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_VOICE_MESSAGE_BODY_FORMAT" = "আপনার ভয়েস মেসেজে %1$@ প্রতিক্রিয়া ব্যক্ত করা হয়েছে";
+"REACTION_INCOMING_NOTIFICATION_TO_VOICE_MESSAGE_BODY_FORMAT" = "আপনার ভয়েস ম্যাসেজে %1$@ রিঅ্যাক্ট করেছেন";
 
 /* Pressing this button marks a thread as read */
 "READ_ACTION" = "পড়ুন";
@@ -5164,8 +5209,11 @@
 /* Alert body for a forgotten SVR (V2) PIN */
 "REGISTER_2FA_FORGOT_SVR_PIN_ALERT_MESSAGE" = "আপনার পিনটি হল আপনার তৈরি 4+ সংখ্যা বিশিষ্ট কোড যা সংখ্যাসূচক বা বর্ণানুক্রমিক হতে পারে। আপনি যদি আপনার পিনটি মনে করতে না পারেন তবে আপনার অ্যাকাউন্টটি পুনরায় রেজিস্টার করতে আপনাকে 7 দিন অপেক্ষা করতে হবে।";
 
-/* Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock */
-"REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_ALERT_MESSAGE" = "আপনার পিনটি হল আপনার তৈরি 4+ সংখ্যা বিশিষ্ট কোড যা সংখ্যাসূচক বা বর্ণানুক্রমিক হতে পারে। আপনি যদি আপনার পিনটি মনে না করতে পারেন তবে আপনি একটি নতুন তৈরি করতে পারেন। আপনি নিজের অ্যাকাউন্টটি রেজিস্টার করতে এবং ব্যবহার করতে পারেন, তবে আপনি আপনার প্রোফাইল তথ্যের মতো কিছু সংরক্ষিত সেটিংস হারাবেন।";
+/* Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock and they cannot necessarily create a new PIN */
+"REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_ALERT_MESSAGE" = "আপনার পিন হলো আপনারই তৈরি একটি {0}+ সংখ্যার কোড, যা সংখ্যাসূচক বা আলফানিউমেরিক হতে পারে। আপনার পিন মনে না রাখতে পারলেও আপনি রেজিস্ট্রেশন করতে এবং আপনার অ্যাকাউন্ট ব্যবহার করতে পারবেন, তবে আপনি আপনার প্রোফাইলের তথ্যের মতো কিছু সংরক্ষিত সেটিংস হারাবেন।";
+
+/* Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock and they can create a new PIN */
+"REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_AND_CAN_CREATE_NEW_PIN_ALERT_MESSAGE" = "আপনার পিনটি হলো আপনার তৈরি 4+ সংখ্যাবিশিষ্ট কোড যা সংখ্যাসূচক বা আলফানিউমেরিক হতে পারে। আপনি যদি আপনার পিনটি মনে করতে না পারেন, তবে আপনি নতুন একটি তৈরি করতে পারেন। আপনি নিজের অ্যাকাউন্টটি রেজিস্টার করতে এবং ব্যবহার করতে পারেন, তবে আপনি আপনার প্রোফাইলের তথ্যের মতো কিছু সংরক্ষিত সেটিংস হারাবেন।";
 
 /* Alert body for a forgotten V1 PIN */
 "REGISTER_2FA_FORGOT_V1_PIN_ALERT_MESSAGE" = "আপনার পিনটি হল আপনার তৈরি করা 4+ ডিজিটের সংখ্যাসূচক কোড। আপনি যদি আপনার পিনটি মনে করতে না পারেন তবে আপনার অ্যাকাউন্টটি পুনরায় রেজিস্টার করতে আপনাকে 7 দিন অপেক্ষা করতে হবে।";
@@ -5179,6 +5227,9 @@
 /* No comment provided by engineer. */
 "REGISTER_CONTACTS_WELCOME" = "স্বাগতম!";
 
+/* Body of action sheet shown when rate-limited during registration. */
+"REGISTER_RATE_LIMITING_ALERT" = "আপনি অল্প সময়ের মধ্যে অনেকবার চেষ্টা করে ফেলেছেন। পুনরায় চেষ্টা করার আগে অনুগ্রহ করে কয়েক মিনিট অপেক্ষা করুন।";
+
 /* action sheet body */
 "REGISTER_RATE_LIMITING_BODY" = "আপনি অনেকবার চেষ্টা করেছেন। আবার চেষ্টা করার আগে দয়া করে এক মিনিট অপেক্ষা করুন।";
 
@@ -5188,17 +5239,26 @@
 /* Title of alert shown when push tokens sync job fails. */
 "REGISTRATION_BODY" = "পুশ বিজ্ঞপ্তিগুলির জন্য পুনরায় নিবন্ধন করতে ব্যর্থ।";
 
+/* During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the action button on that alert. */
+"REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_ACTION" = "আপডেট করুন";
+
+/* During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the description text on that alert. */
+"REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_DESCRIPTION" = "নিবন্ধন চালিয়ে যেতে, অনুগ্রহ করে Signal-এর সর্বশেষ সংস্করণে আপডেট করুন।";
+
+/* During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the title on that alert. */
+"REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_TITLE" = "আপডেট করা প্রয়োজন";
+
 /* During registration, users may be shown a CAPTCHA to verify that they're human. This text is shown above the CAPTCHA. */
-"REGISTRATION_CAPTCHA_TITLE" = "We need to verify that you’re human";
+"REGISTRATION_CAPTCHA_TITLE" = "আপনি যে একজন মানুষ তা আমরা যাচাই করতে চাই।";
 
 /* Label for the country code field */
 "REGISTRATION_DEFAULT_COUNTRY_NAME" = "দেশ কোড";
 
 /* If a user is installing Signal on a new phone, they may be asked whether they want to transfer their account from their old device. This is a description on the screen that asks them this question. */
-"REGISTRATION_DEVICE_TRANSFER_CHOICE_EXPLANATION" = "Continuing will disable Signal on other devices currently registered with the same phone number.";
+"REGISTRATION_DEVICE_TRANSFER_CHOICE_EXPLANATION" = "আপনি যদি চালিয়ে যান তবে একই ফোন নম্বর দিয়ে বর্তমানে অন্যান্য ডিভাইসে রেজিস্ট্রেশন করা Signal অকার্যকর হবে।";
 
 /* If a user is installing Signal on a new phone, they may be asked whether they want to transfer their account from their old device. This is the title on the screen that asks them this question. */
-"REGISTRATION_DEVICE_TRANSFER_CHOICE_TITLE" = "Transfer Account & Messages";
+"REGISTRATION_DEVICE_TRANSFER_CHOICE_TITLE" = "অ্যাকাউন্ট এবং ম্যাসেজ ট্রান্সফার করুন";
 
 /* Placeholder text for the phone number textfield */
 "REGISTRATION_ENTERNUMBER_DEFAULT_TEXT" = "নাম্বার লিখুন";
@@ -5215,59 +5275,98 @@
 /* Alert title for network failure during registration */
 "REGISTRATION_ERROR_NETWORK_FAILURE_ALERT_TITLE" = "সংযোগ পরীক্ষা করুন";
 
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This is the description on that screen, explaining what's going on. Embeds {{ duration }}, such as \"7 days\". */
+"REGISTRATION_LOCK_TIMEOUT_DESCRIPTION_FORMAT" = "আপনার গোপনীয়তা ও নিরাপত্তা নিশ্চিত করতে আপনার অ্যাকাউন্টটি লক করা হয়েছে। আপনার অ্যাকাউন্টটি %1$@ দিন নিষ্ক্রিয় থাকার পরে আপনি আপনার পিনের প্রয়োজন ছাড়াই এই ফোন নম্বরটি পুনরায় নিবন্ধন করতে সক্ষম হবেন। সব কন্টেন্ট মুছে ফেলা হবে।";
+
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This button appears on that screen. Tapping it will tell the user more information. */
+"REGISTRATION_LOCK_TIMEOUT_LEARN_MORE_BUTTON" = "লক করা অ্যাকাউন্টগুলো সম্পর্কে আরো জানুন";
+
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This button appears on that screen. Tapping it will bump the user back, earlier in registration, so they can register with a different phone number. */
+"REGISTRATION_LOCK_TIMEOUT_RESET_PHONE_NUMBER_BUTTON" = "অন্য একটি ফোন নম্বর ব্যবহার করুন";
+
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This is the title of that screen. */
+"REGISTRATION_LOCK_TIMEOUT_TITLE" = "অ্যাকাউন্ট লক করা হয়েছে";
+
+/* A network error occurred during registration, and an error is shown to the user. This is the body on that error sheet. */
+"REGISTRATION_NETWORK_ERROR_BODY" = "চালিয়ে যেতে, আপনার ফোনের ইন্টারনেট সংযোগটি ঠিক আছে কি না দেখুন এবং আবার চেষ্টা করুন।";
+
+/* A network error occurred during registration, and an error is shown to the user. This is the title on that error sheet. */
+"REGISTRATION_NETWORK_ERROR_TITLE" = "সংযোগ পরীক্ষা করুন";
+
 /* No comment provided by engineer. */
 "REGISTRATION_NON_VALID_NUMBER" = "এই ফোন নাম্বার ফর্ম্যাটটি সমর্থিত নয়, দয়া করে সহায়তার সাথে যোগাযোগ করুন।";
 
 /* During registration, users are asked to enter their phone number. This is the subtitle on that screen, which gives users some instructions. */
-"REGISTRATION_PHONE_NUMBER_SUBTITLE" = "Enter your phone number to get started.";
+"REGISTRATION_PHONE_NUMBER_SUBTITLE" = "শুরু করতে আপনার ফোন নম্বর লিখুন।";
 
 /* During registration, users are asked to enter their phone number. This is the title on that screen. */
-"REGISTRATION_PHONE_NUMBER_TITLE" = "Your Phone Number";
+"REGISTRATION_PHONE_NUMBER_TITLE" = "আপনার ফোন নম্বর";
+
+/* Message for confirmation alert when requesting a voice code during phone number registration. */
+"REGISTRATION_PHONE_NUMBER_VOICE_CODE_ALERT_MESSAGE" = "এই নম্বরটি যাচাই করার জন্য আপনি একটি কল পাবেন। উপরে প্রদর্শিত আপনার ফোন নম্বরটি কি সঠিক?";
 
 /* Label for the phone number textfield */
 "REGISTRATION_PHONENUMBER_BUTTON" = "ফোন নম্বর";
 
 /* During registration, users are asked to create a PIN code. They'll be taken to a screen to confirm their PIN, much like confirming a password. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_CONFIRM_SUBTITLE" = "Re-enter the PIN you just created.";
+"REGISTRATION_PIN_CONFIRM_SUBTITLE" = "এই মাত্র তৈরি করা পিনটি আবারো লিখুন।";
 
 /* During registration, users are asked to create a PIN code. They'll be taken to a screen to confirm their PIN, much like confirming a password. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_CONFIRM_TITLE" = "Confirm your PIN";
+"REGISTRATION_PIN_CONFIRM_TITLE" = "আপনার পিনটি নিশ্চিত করুন";
 
 /* During registration, users are asked to create a PIN code. This is the subtitle on the screen where this happens. A \"learn more\" link will be added to the end of this string. */
-"REGISTRATION_PIN_CREATE_SUBTITLE" = "PINs can help you restore your account and keep your info encrypted with Signal.";
+"REGISTRATION_PIN_CREATE_SUBTITLE" = "পিন আপনাকে আপনার অ্যাকাউন্ট পুনরুদ্ধার করতে এবং Signal-এর সাথে আপনার তথ্য এনক্রিপ্ট করে রাখতে সাহায্য করতে পারে।";
 
 /* During registration, users are asked to create a PIN code. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_CREATE_TITLE" = "Create your PIN";
+"REGISTRATION_PIN_CREATE_TITLE" = "আপনার পিন তৈরি করুন";
 
 /* During re-registration, users may be asked to re-enter their PIN code. This is the subtitle on the screen where this happens. A \"learn more\" link will be added to the end of this string. */
-"REGISTRATION_PIN_ENTER_EXISTING_SUBTITLE" = "PINs can help you restore your account and keep your info encrypted with Signal.";
+"REGISTRATION_PIN_ENTER_EXISTING_SUBTITLE" = "পিন আপনাকে আপনার অ্যাকাউন্ট পুনরুদ্ধার করতে এবং Signal-এর সাথে আপনার তথ্য এনক্রিপ্ট করে রাখতে সাহায্য করতে পারে।";
 
 /* During re-registration, users may be asked to re-enter their PIN code. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_ENTER_EXISTING_TITLE" = "Enter your PIN";
+"REGISTRATION_PIN_ENTER_EXISTING_TITLE" = "আপনার পিন লিখুন";
 
 /* During registration, users set up their profile. Users input a family name. This is the placeholder for that field. */
-"REGISTRATION_PROFILE_SETUP_FAMILY_NAME_FIELD_PLACEHOLDER" = "Last Name";
+"REGISTRATION_PROFILE_SETUP_FAMILY_NAME_FIELD_PLACEHOLDER" = "নামের শেষ অংশ";
+
+/* During registration, users can choose who can see their phone number. */
+"REGISTRATION_PROFILE_SETUP_FIND_MY_NUMBER_TITLE" = "নম্বরের মাধ্যমে কারা আমাকে খুঁজে পাবেন?";
 
 /* During registration, users set up their profile. Users input a given name. This is the placeholder for that field. */
-"REGISTRATION_PROFILE_SETUP_GIVEN_NAME_FIELD_PLACEHOLDER" = "First Name";
+"REGISTRATION_PROFILE_SETUP_GIVEN_NAME_FIELD_PLACEHOLDER" = "নামের প্রথম অংশ";
 
 /* During registration, users set up their profile. They can learn more about the privacy of their profile by clicking a \"learn more\" button. This is the message on a sheet that appears when they do that. */
-"REGISTRATION_PROFILE_SETUP_MORE_INFO_DETAILS" = "Your name, photo and changes to it will be visible to your contacts and when you start or accept new chats.";
+"REGISTRATION_PROFILE_SETUP_MORE_INFO_DETAILS" = "আপনার নাম, ছবি এবং এতে আনা পরিবর্তনগুলো আপনার কন্টাক্টদের কাছে এবং আপনি যখন নতুন চ্যাট শুরু করবেন বা গ্রহণ করবেন তখন এটি দৃশ্যমান হবে।";
 
 /* During registration, users set up their profile. They can learn more about the privacy of their profile by clicking a \"learn more\" button. This is the title on a sheet that appears when they do that. */
-"REGISTRATION_PROFILE_SETUP_MORE_INFO_TITLE" = "About Profile Privacy";
+"REGISTRATION_PROFILE_SETUP_MORE_INFO_TITLE" = "প্রোফাইলের গোপনীয়তা সম্পর্কে";
 
 /* During registration, users set up their profile. This is the subtitle on the screen where this is done. It tells users about the privacy of their profile. A \"learn more\" link will be added to the end of this string. */
-"REGISTRATION_PROFILE_SETUP_SUBTITLE" = "Profiles are visible to people you message, contacts, and groups.";
+"REGISTRATION_PROFILE_SETUP_SUBTITLE" = "প্রোফাইলগুলো আপনার ম্যাসেজ, কন্টাক্ট এবং গ্ৰুপগুলোর কাছে দৃশ্যমান হবে।";
 
 /* During registration, users set up their profile. This is the title on the screen where this is done. */
-"REGISTRATION_PROFILE_SETUP_TITLE" = "Set up your profile";
+"REGISTRATION_PROFILE_SETUP_TITLE" = "আপনার প্রোফাইল সেট করুন";
+
+/* Error shown if an SMS/call service provider is permanently unable to send a verification code to the provided number. */
+"REGISTRATION_PROVIDER_FAILURE_MESSAGE_PERMANENT" = "একটি বাহ্যিক ত্রুটির কারণে Signal আপনার নম্বরে একটি SMS কোড পাঠাতে সক্ষম নয়।";
+
+/* Error shown if an SMS/call service provider is temporarily unable to send a verification code to the provided number. */
+"REGISTRATION_PROVIDER_FAILURE_MESSAGE_TRANSIENT" = "একটি বাহ্যিক ত্রুটির কারণে Signal এই মুহূর্তে একটি SMS কোড পাঠাতে সক্ষম হয়নি, অনুগ্রহ করে পরে আবার চেষ্টা করুন।";
 
 /* No comment provided by engineer. */
 "REGISTRATION_RESTRICTED_MESSAGE" = "একটি বার্তা প্রেরণের আগে আপনাকে নিবন্ধন করতে হবে।";
 
+/* Alert shown when running out of attempts at submitting a verification code. */
+"REGISTRATION_SUBMIT_CODE_ATTEMPTS_EXHAUSTED_ALERT" = "কোড ব্যবহার করে প্রবেশ করার জন্য আপনি অনেকবার চেষ্টা করে ফেলেছেন। অনুগ্রহ করে কোডটি আবার পাঠান এবং আবার চেষ্টা করুন।";
+
+/* Alert shown when submitting a verification code too many times. Embeds {{ duration }}, such as \"5:00\" */
+"REGISTRATION_SUBMIT_CODE_RATE_LIMIT_ALERT_FORMAT" = "কোড ব্যবহার করে প্রবেশ করার জন্য আপনি অনেকবার চেষ্টা করে ফেলেছেন। %1$@ পরে আবার চেষ্টা করুন";
+
 /* Error message indicating that device transfer from another device might be possible. */
 "REGISTRATION_TRANSFER_AVAILABLE_DESCRIPTION" = "এই নম্বরে আগে নিবন্ধিত একটি অ্যাকাউন্ট ছিল যা স্থানান্তরের জন্য সহজলভ্য";
+
+/* During registration and re-registration, users may have to enter a code to verify ownership of their phone number. If they enter an invalid code, they will see this error message. */
+"REGISTRATION_VERIFICATION_ERROR_INVALID_VERIFICATION_CODE" = "আপনি যে কোডটি লিখেছেন তা কার্যকর নয়। অনুগ্রহ করে কোডটি আবার পাঠান এবং আবার চেষ্টা করুন।";
 
 /* Alert view title */
 "REGISTRATION_VERIFICATION_FAILED_TITLE" = "যাচাইকরন ব্যর্থ";
@@ -5317,6 +5416,12 @@
 /* No comment provided by engineer. */
 "REREGISTER_FOR_PUSH" = "পুশ নোটিফিকেশন পুনরায় রেজিস্টার করুন";
 
+/* If the user is re-registering, they may need to enter their PIN to restore all their data. If they enter the incorrect PIN, they will be shown a warning. In some cases (such as for this string), the user has the option to skip PIN entry and will lose some data. Embeds {{ number of attempts }}, such as \"3 attempts\". */
+"REREGISTER_INVALID_PIN_WARNING_SKIPPABLE_FORMAT" = "আপনার %1$@টি চেষ্টা বাকি আছে। আপনার চেষ্টার সংখ্যা যদি ফুরিয়ে যায়, তবে আপনি একটি নতুন পিন তৈরি করতে পারবেন। আপনি আপনার অ্যাকাউন্ট নিবন্ধন করতে ও ব্যবহার করতে পারবেন, তবে আপনি আপনার প্রোফাইলের তথ্যের মতো কিছু সংরক্ষিত সেটিংস হারাবেন।";
+
+/* If the user is re-registering, they may need to enter their PIN to restore all their data. If they enter the incorrect PIN, they will be shown a warning. Embeds {{ number of attempts }}, such as \"3 attempts\". */
+"REREGISTER_INVALID_PIN_WARNING_UNSKIPPABLE_FORMAT" = "আপনার %1$@টি চেষ্টা বাকি আছে। আপনার চেষ্টার সংখ্যা যদি ফুরিয়ে যায়, তবে আপনার একাউন্ট 7 দিনের জন্য লক থাকবে। 7 দিন নিষ্ক্রিয় থাকার পর, আপনি আপনার পিন ছাড়াই পুনরায় নিবন্ধন করতে পারবেন। সব কন্টেন্ট মুছে ফেলা হবে।";
+
 /* Configure reactions reset button text */
 "RESET" = "রিসেট করুন";
 
@@ -5343,6 +5448,9 @@
 
 /* Title for the 'safety number confirmation' view */
 "SAFETY_NUMBER_CONFIRMATION_TITLE" = "নিরাপত্তা নাম্বার পরিবর্তিত হয়";
+
+/* Text explaining that the given contact has had their safety number verified. */
+"SAFETY_NUMBER_CONFIRMATION_VERIFIED" = "যাচাইকৃত";
 
 /* View safety number action for the 'safety number confirmation' view */
 "SAFETY_NUMBER_CONFIRMATION_VIEW_ACTION" = "দেখুন";
@@ -5513,7 +5621,7 @@
 "SENT_MEDIA_QUALITY_STANDARD" = "স্ট্যান্ডার্ড";
 
 /* Description for the session refresh alert */
-"SESSION_REFRESH_ALERT_MESSAGE" = "Signal এক প্রান্ত থেকে অপর প্রান্ত পর্যন্ত এনক্রিপশন ব্যবহার করে এবং এটিকে মাঝেমাঝে আপনার চ্যাট সেশন রিফ্রেশ করতে হতে পারে। এটি আপনার চ্যাটের সুরক্ষাকে ব্যহত করবে না কিন্তু আপনি এই কন্ট্যাক্ট থেকে কোন মেসেজ নাও পেতে পারেন, সুতরাং আপনি সংশ্লিষ্ট কন্ট্যাক্টকে মেসেজটি পুনরায় পাঠাতে বলতে পারেন।";
+"SESSION_REFRESH_ALERT_MESSAGE" = "Signal এন্ড-টু-এন্ড এনক্রিপশন ব্যবহার করে এবং এটিকে মাঝেমাঝে আপনার চ্যাট সেশন রিফ্রেশ করতে হতে পারে। এটি আপনার চ্যাটের সুরক্ষাকে ব্যহত করবে না কিন্তু আপনি এই কন্টাক্ট থেকে কোন ম্যাসেজ নাও পেতে পারেন, সুতরাং আপনি সংশ্লিষ্ট কন্টাক্টকে ম্যাসেজটি পুনরায় পাঠাতে বলতে পারেন।";
 
 /* Title for the session refresh alert */
 "SESSION_REFRESH_ALERT_TITLE" = "চ্যাট সেশনটি রিফ্রেশ করা হয়েছে";
@@ -5529,6 +5637,9 @@
 
 /* Title for the 'account' link in settings. */
 "SETTINGS_ACCOUNT" = "অ্যাকাউন্ট";
+
+/* Label for button in settings to get your account data report */
+"SETTINGS_ACCOUNT_DATA_REPORT_BUTTON" = "আপনার অ্যাকাউন্টের ডেটা";
 
 /* Title for the 'add to block list' view. */
 "SETTINGS_ADD_TO_BLOCK_LIST_TITLE" = "ব্লক করুন";
@@ -5638,7 +5749,7 @@
 /* Title for the 'old phone number' section in the 'change phone number' settings. */
 "SETTINGS_CHANGE_PHONE_NUMBER_OLD_PHONE_NUMBER_SECTION_TITLE" = "আপনার পুরোনো নাম্বার";
 
-/* Label for the 'country code' row in the 'change phone number' settings. */
+/* Label for the 'phone number' row in the 'change phone number' settings. */
 "SETTINGS_CHANGE_PHONE_NUMBER_PHONE_NUMBER_FIELD" = "ফোন নম্বর";
 
 /* Format for the 'change phone number' progress view. Embeds: {{ the user's new phone number }}. */
@@ -5723,7 +5834,7 @@
 "SETTINGS_DISAPPEARING_MESSAGES" = "অদৃশ্য হওয়া বার্তা";
 
 /* Explanation for the 'disappearing messages' privacy settings. */
-"SETTINGS_DISAPPEARING_MESSAGES_FOOTER" = "আপনার শুরু করা সব নতুন চ্যাটের জন্য মেসেজ অদৃশ্য হওয়ার ডিফল্ট সময় সেট করুন।";
+"SETTINGS_DISAPPEARING_MESSAGES_FOOTER" = "আপনার শুরু করা সব নতুন চ্যাটের জন্য ম্যাসেজ অদৃশ্য হওয়ার ডিফল্ট সময় সেট করুন।";
 
 /* Title for the 'donate to signal' link in settings. */
 "SETTINGS_DONATE" = "Signal-এ ডোনেট করুন";
@@ -5735,7 +5846,7 @@
 "SETTINGS_INVITE_TITLE" = "আপনার বন্ধুদের আমন্ত্রণ করুন";
 
 /* Label for settings view that allows user to change the chat color and wallpaper. */
-"SETTINGS_ITEM_COLOR_AND_WALLPAPER" = "চ্যাটের রঙ ও ওয়ালপেপার";
+"SETTINGS_ITEM_COLOR_AND_WALLPAPER" = "চ্যাটের রং ও ওয়ালপেপার";
 
 /* Label for settings view that allows user to change the notification sound. */
 "SETTINGS_ITEM_NOTIFICATION_SOUND" = "বার্তার শব্দ";
@@ -5870,10 +5981,10 @@
 "SETTINGS_PAYMENTS_DEACTIVATE_TITLE" = "পেমেন্ট বন্ধ করুন";
 
 /* Explanation of the 'deactivate payments with balance' process in the 'deactivate payments' settings. */
-"SETTINGS_PAYMENTS_DEACTIVATE_WITH_BALANCE_EXPLANATION" = "সুপারিশ করা হচ্ছে যে পেমেন্ট বন্ধ করার আগে আপনি আপনার ফান্ডগুলি আরেকটি ওয়ালেট ঠিকানায় স্থানান্তর করুন। আপনি এখনই আপনার ফান্ডগুলি স্থানান্তর করতে না চাইলে, সেগুলি Signal-এর সাথে লিঙ্ক করা আপনার ওয়ালেটে থাকবে যদি আপনি পেমেন্ট পুনরায় সক্রিয় করতে চান।";
+"SETTINGS_PAYMENTS_DEACTIVATE_WITH_BALANCE_EXPLANATION" = "পেমেন্ট নিষ্ক্রিয় করার আগে আপনাকে অন্য ওয়ালেট ঠিকানায় আপনার ফান্ড স্থানান্তর করার পরামর্শ দেওয়া হচ্ছে। আপনি যদি এখন আপনার ফান্ড স্থানান্তর না করার সিদ্ধান্ত নেন, এবং আপনি যদি পেমেন্ট পুনরায় সক্রিয় করেন তবে সেগুলো আপনার Signal-এর সাথে লিংককৃত ওয়ালেটে থাকবে।";
 
 /* Description for the 'deactivate payments confirmation' UI in the payment settings. */
-"SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_DESCRIPTION" = "আপনি পেমেন্ট পুনঃসক্রিয় করা বেছে নিলে আপনার ব্যালান্স Signal-এর সাথে লিঙ্ক করা আপনার ওয়ালেটে থাকবে।";
+"SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_DESCRIPTION" = "আপনি পেমেন্ট পুনরায় সক্রিয় করলে আপনার ব্যালান্স Signal-এর সাথে লিংককৃত আপনার ওয়ালেটে থাকবে।";
 
 /* Title for the 'deactivate payments confirmation' UI in the payment settings. */
 "SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_TITLE" = "ট্রান্সফার না করেই বন্ধ করবেন?";
@@ -5960,7 +6071,7 @@
 "SETTINGS_PAYMENTS_OPT_IN_MESSAGE" = "গোপনীয়তাকে গুরুত্ব দেয় এমন একটি নতুন ডিজিটাল মুদ্রা MobileCoin পাঠাতে ও গ্রহণ করতে Signal ব্যবহার করুন। শুরু করতে সক্রিয় করুন।";
 
 /* Label for 'activate' button in the 'payments opt-in' view in the app settings. */
-"SETTINGS_PAYMENTS_OPT_IN_REACTIVATE_BUTTON" = "পেমেন্ট পুনরায় চালু করুন";
+"SETTINGS_PAYMENTS_OPT_IN_REACTIVATE_BUTTON" = "পেমেন্ট আবারো চালু করুন";
 
 /* Title for the 'payments opt-in' view in the app settings. */
 "SETTINGS_PAYMENTS_OPT_IN_TITLE" = "পেমেন্ট উপস্থাপন করা হচ্ছে (বিটা)";
@@ -6278,16 +6389,16 @@
 "SETTINGS_PAYMENTS_WALLET_ADDRESS_LABEL" = "আপনার ওয়ালেট ঠিকানা";
 
 /* The title for the phone number discoverability setting section. */
-"SETTINGS_PHONE_NUMBER_DISCOVERABILITY_TITLE" = "Who Can Find Me By Number";
+"SETTINGS_PHONE_NUMBER_DISCOVERABILITY_TITLE" = "নম্বরের মাধ্যমে কে আমাকে খুঁজে পাবেন";
 
 /* Description label for Phone Number Privacy */
-"SETTINGS_PHONE_NUMBER_PRIVACY_DESCRIPTION_LABEL" = "Choose who can see your phone number and who can contact you on Signal with it.";
+"SETTINGS_PHONE_NUMBER_PRIVACY_DESCRIPTION_LABEL" = "আপনার ফোন নম্বর কে দেখতে পাবেন এবং এটি ব্যবহার করে Signal-এ কে আপনার সাথে যোগাযোগ করতে পারবেন তা বেছে নিন।";
 
 /* The title for phone number privacy settings. */
-"SETTINGS_PHONE_NUMBER_PRIVACY_TITLE" = "Phone Number";
+"SETTINGS_PHONE_NUMBER_PRIVACY_TITLE" = "ফোন নম্বর";
 
 /* The title for the phone number sharing setting section. */
-"SETTINGS_PHONE_NUMBER_SHARING_TITLE" = "Who Can See My Number";
+"SETTINGS_PHONE_NUMBER_SHARING_TITLE" = "কে আমার নম্বর দেখতে পাবেন";
 
 /* The button text for the dialog asking user to confirm their PIN to disable reminders */
 "SETTINGS_PIN_REMINDER_DISABLE_CONFIRMATION_ACTION" = "রিমাইন্ডার বন্ধ করুন";
@@ -6392,10 +6503,10 @@
 "SETTINGS_SHARING_SUGGESTIONS" = "iOS এর সাথে কন্টাক্টস শেয়ার করুন";
 
 /* Footer for setting for enabling & disabling contact sharing with iOS. */
-"SETTINGS_SHARING_SUGGESTIONS_FOOTER" = "পরামর্শ গুলি ভাগ করার মতো বৈশিষ্ট্যগুলির জন্য iOS কে Signal কন্টাক্টস এবং চ্যাটগুলিতে অ্যাক্সেসের অনুমতি দিন";
+"SETTINGS_SHARING_SUGGESTIONS_FOOTER" = "পরামর্শ শেয়ার করার মতো ফিচারের জন্য iOS-কে Signal কন্টাক্ট এবং চ্যাটে অ্যাক্সেসের অনুমতি দিন।";
 
 /* Footer for setting for enabling & disabling contact and notification sharing with iOS. */
-"SETTINGS_SHARING_SUGGESTIONS_NOTIFICATIONS_FOOTER" = "আইওএস-কে সিগন্যাল কন্টাক্ট এবং চ্যাটগুলি ভাগ করার পরামর্শ এবং বিজ্ঞপ্তিগুলির মতো বৈশিষ্ট্যগুলির জন্য অ্যাক্সেসের অনুমতি দিন৷";
+"SETTINGS_SHARING_SUGGESTIONS_NOTIFICATIONS_FOOTER" = "পরামর্শ ও নোটিফিকেশন শেয়ার করার মতো ফিচারের জন্য iOS-কে Signal কন্টাক্ট এবং চ্যাটে অ্যাক্সেসের অনুমতি দিন।";
 
 /* Label for the 'enable registration lock' switch of the privacy settings. */
 "SETTINGS_TWO_FACTOR_AUTH_SWITCH_LABEL" = "রেজিস্ট্রেশন লক";
@@ -6569,7 +6680,7 @@
 "STORIES_FORWARD_STORY_ACTION" = "ফরওয়ার্ড";
 
 /* Context menu action to open the chat associated with the selected story */
-"STORIES_GO_TO_CHAT_ACTION" = "চ্যাট-এ যান";
+"STORIES_GO_TO_CHAT_ACTION" = "চ্যাটে যান";
 
 /* Text indicating you can't reply to a group story because you're not a member of the group */
 "STORIES_GROUP_REPLY_NOT_A_MEMBER" = "আপনি এই স্টোরি-র উত্তর দিতে পারবেন না, কারণ আপনি আর এই গ্রুপের সদস্য নন।";
@@ -6605,13 +6716,13 @@
 "STORIES_NO_VIEWS_YET" = "এখন পর্যন্ত কোন ভিউ নেই";
 
 /* Section footer for the 'replies & reactions' section in stories settings */
-"STORIES_REPLIES_AND_REACTIONS_FOOTER" = "যারা আপনার স্টোরি দেখতে পাবেন তাদের রিঅ্যাক্ট এবং উত্তর দিতে দিন।";
+"STORIES_REPLIES_AND_REACTIONS_FOOTER" = "আপনার স্টোরি দেখতে পাবেন এমন লোকজনকে রিঅ্যাক্ট করতে ও উত্তর দিতে দিন।";
 
 /* Section header for the 'replies & reactions' section in stories settings */
-"STORIES_REPLIES_AND_REACTIONS_HEADER" = "উত্তর ও রিঅ্যাকশন";
+"STORIES_REPLIES_AND_REACTIONS_HEADER" = "উত্তর ও প্রতিক্রিয়া";
 
 /* Toggle text for the 'replies & reactions' switch in stories settings */
-"STORIES_REPLIES_AND_REACTIONS_TOGGLE" = "উত্তর ও রিঅ্যাকশন অনুমোদন করুন";
+"STORIES_REPLIES_AND_REACTIONS_TOGGLE" = "উত্তর ও প্রতিক্রিয়ার অনুমতি দিন";
 
 /* Title text for the 'replies' tab on the stories views & replies sheet */
 "STORIES_REPLIES_TAB" = "রিপ্লাই";
@@ -6719,19 +6830,19 @@
 "STORY_PRIVACY_TITLE" = "স্টোরির গোপনীয়তা";
 
 /* inbox and notification text for a reaction to a story authored by the local user. Embeds {{reaction emoji}} */
-"STORY_REACTION_LOCAL_AUTHOR_PREVIEW_FORMAT" = "আপনার স্টোরিতে %1$@ রিঅ্যাক্ট করেছে";
+"STORY_REACTION_LOCAL_AUTHOR_PREVIEW_FORMAT" = "আপনার স্টোরিতে %1$@ রিঅ্যাক্ট করেছেন";
 
 /* quote text for a reaction to a story. Embeds {{reaction emoji}} */
-"STORY_REACTION_QUOTE_FORMAT" = "একটি স্টোরিতে %1$@ রিঅ্যাক্ট করেছে";
+"STORY_REACTION_QUOTE_FORMAT" = "একটি স্টোরিতে %1$@ রিঅ্যাক্ট করেছেন";
 
 /* inbox and notification text for a reaction to a story authored by another user. Embeds {{ %1$@ reaction emoji, %2$@ story author name }} */
-"STORY_REACTION_REMOTE_AUTHOR_PREVIEW_FORMAT" = "%2$@-এর স্টোরিতে %1$@ রিঅ্যাক্ট করেছে";
+"STORY_REACTION_REMOTE_AUTHOR_PREVIEW_FORMAT" = "%2$@-এর স্টোরিতে %1$@ রিঅ্যাক্ট করেছেন";
 
 /* Button for replying to a story with no existing replies. */
 "STORY_REPLY_BUTTON" = "প্রত্যুত্তর";
 
 /* Text indicating a story has been reacted to */
-"STORY_REPLY_REACTION" = "স্টোরি-তে রিঅ্যাক্ট করা হয়েছে";
+"STORY_REPLY_REACTION" = "স্টোরিতে রিঅ্যাক্ট করেছেন";
 
 /* header text for replying to private story. Embeds {{author name}} */
 "STORY_REPLY_TEXT_FIELD_HEADER_FORMAT" = "%1$@-কে গোপনে উত্তর";
@@ -6961,6 +7072,36 @@
 /* Tap to Replace Emoji string for reaction configuration */
 "TAP_REPLACE_EMOJI" = "একটি ইমোজি রিপ্লেস করতে ট্যাপ করুন";
 
+/* Option in selected text edit menu to make text bold */
+"TEXT_MENU_BOLD" = "বোল্ড";
+
+/* Option in selected text edit menu to clear all text formatting in the selected text range */
+"TEXT_MENU_CLEAR_FORMATTING" = "Clear Formatting";
+
+/* Option in selected text edit menu to view text formatting options */
+"TEXT_MENU_FORMAT" = "ফরম্যাট";
+
+/* Option in selected text edit menu to make text italic */
+"TEXT_MENU_ITALIC" = "ইটালিক";
+
+/* Option in selected text edit menu to look up word definitions */
+"TEXT_MENU_LOOK_UP" = "খুঁজুন";
+
+/* Option in selected text edit menu to make text monospace */
+"TEXT_MENU_MONOSPACE" = "মনোস্পেস";
+
+/* Option in selected text edit menu to replace text with suggestions */
+"TEXT_MENU_REPLACE" = "প্রতিস্থাপন করুন";
+
+/* Option in selected text edit menu to share selected text */
+"TEXT_MENU_SHARE" = "শেয়ার করুন";
+
+/* Option in selected text edit menu to make text spoiler */
+"TEXT_MENU_SPOILER" = "স্পয়লার";
+
+/* Option in selected text edit menu to make text strikethrough */
+"TEXT_MENU_STRIKETHROUGH" = "স্ট্রাইকথ্রু";
+
 /* text indicating the message was remotely deleted */
 "THIS_MESSAGE_WAS_DELETED" = "এই বার্তাটি মুছে ফেলা হয়েছে।";
 
@@ -6968,7 +7109,7 @@
 "THREAD_DETAILS_MORE_MUTUAL_GROUP" = "%1$@, %2$@, এবং %3$lu এর অতিরিক্ত সদস্য";
 
 /* Subtitle appearing at the top of the users 'note to self' conversation */
-"THREAD_DETAILS_NOTE_TO_SELF_EXPLANATION" = "আপনি এই চ্যাটটিতে আপনার নিজের জন্য নোটগুলি যোগ করতে পারবেন। আপনার অ্যাকাউন্টের সাথে সংযুক্ত কোনও ডিভাইস থাকলে, নতুন নোটগুলি সিঙ্ক করা হবে।";
+"THREAD_DETAILS_NOTE_TO_SELF_EXPLANATION" = "আপনি এই চ্যাটটিতে আপনার নিজের জন্য নোট যোগ করতে পারবেন। আপনার অ্যাকাউন্টের সাথে সংযুক্ত কোনো ডিভাইস থাকলে, নতুন নোট সমন্বয় করা হবে।";
 
 /* A string indicating a mutual group the user shares with this contact. Embeds {{mutual group name}} */
 "THREAD_DETAILS_ONE_MUTUAL_GROUP" = "%1$@এর সদস্য";
@@ -7082,13 +7223,13 @@
 "UNLINK_CONFIRMATION_ALERT_TITLE" = "\"%1$@\" বিযুক্ত করবেন?";
 
 /* Label warning the user that they have been unlinked from their primary device. */
-"UNLINKED_WARNING" = "ডিভাইস আর সংযুক্ত নেই। বার্তা প্রেরণ চালিয়ে যেতে আপনার ফোনের সাথে পুনরায় Signal সংযুক্ত করুন।";
+"UNLINKED_WARNING" = "এই ডিভাইসটি আর সংযুক্ত নয়। ম্যাসেজ করা চালিয়ে যেতে আপনার ফোনের সাথে Signal আবারো সংযুক্ত করুন।";
+
+/* If this device has become unlinked from their primary device, they'll see a warning. This is the call to action on that warning. */
+"UNLINKED_WARNING_ACTION_TITLE" = "ডিভাইসটি আবারো সংযুক্ত করুন";
 
 /* Alert title when unlinking device fails */
 "UNLINKING_FAILED_ALERT_TITLE" = "Signal আপনার ডিভাইস বিযুক্ত করতে ব্যর্থ হয়েছিল।";
-
-/* Label text in device manager for a device with no name */
-"UNNAMED_DEVICE" = "নামহীন ডিভাইস";
 
 /* Pressing this button un-pins a thread */
 "UNPIN_ACTION" = "আনপিন করুন";
@@ -7098,6 +7239,9 @@
 
 /* Pressing this button marks a thread as unread */
 "UNREAD_ACTION" = "অপঠিত করুন";
+
+/* Label warning the user that the validation of their username has failed. */
+"UNREGISTERED_USERNAME_WARNING" = "আপনার 'ব্যবহারকারীর নাম' নিয়ে কিছু একটা সমস্যা হয়েছে, এটি আর আপনার অ্যাকাউন্টের জন্য বরাদ্দ করা নেই। আপনি আবার চেষ্টা করে এটি সেট করতে পারেন বা নতুন একটি বেছে নিন।";
 
 /* No comment provided by engineer. */
 "UNSUPPORTED_ATTACHMENT" = "অসমর্থিত সংযুক্তির ধরন পওয়া গেছে।";
@@ -7136,7 +7280,22 @@
 "USERNAME_EDUCATION_TITLE" = "আপনার Signal 'ইউজারনেম' সেট আপ করুন";
 
 /* Description of username link */
-"USERNAME_LINK_DESCRIPTION" = "প্রতিটি ইউজারনেমের একটি বিশেষ লিঙ্ক রয়েছে যা আপনার সাথে একটি চ্যাট শুরু করতে আপনি আপনার বন্ধুদের সাথে শেয়ার করতে পারেন";
+"USERNAME_LINK_DESCRIPTION" = "প্রতিটি ব্যবহারকারীর নামের একটি বিশেষ লিঙ্ক রয়েছে যা আপনার সাথে একটি চ্যাট শুরু করতে আপনি আপনার বন্ধুদের সাথে শেয়ার করতে পারেন";
+
+/* Title for a button to pick the color of your username link QR code. Lowercase styling is intentional. */
+"USERNAME_LINK_QR_CODE_VIEW_COLOR_BUTTON" = "রঙ";
+
+/* Text for a label explaining what the username link and QR code give others access to. */
+"USERNAME_LINK_QR_CODE_VIEW_DISCLAIMER_LABEL" = "শুধু তাদের সাথেই আপনার কোড ও লিংক শেয়ার করুন যাদের উপর আপনি আস্থা রাখতে পারেন। শেয়ার করা হলে অন্যরা আপনার ব্যবহারকারীর নাম দেখতে পাবেন এবং আপনার সাথে চ্যাট শুরু করতে পারবেন।";
+
+/* Title for a button that allows users to reset their username link and QR code. */
+"USERNAME_LINK_QR_CODE_VIEW_RESET_BUTTON_TITLE" = "রিসেট করুন";
+
+/* Title for a button to share your username link QR code. Lowercase styling is intentional. */
+"USERNAME_LINK_QR_CODE_VIEW_SHARE_BUTTON" = "শেয়ার করুন";
+
+/* A title for a view that allows you to view and interact with a QR code for your username link. */
+"USERNAME_LINK_QR_CODE_VIEW_TITLE_CODE" = "কোড";
 
 /* A message indicating that username lookup failed. */
 "USERNAME_LOOKUP_ERROR_MESSAGE" = "ইউজার নেমটি খুঁজতে গিয়ে একটি ত্রুটি ঘটেছে। পরে আবার চেষ্টা করুন|";
@@ -7153,8 +7312,8 @@
 /* Title for an action sheet indicating that the given username is not associated with a registered Signal account. */
 "USERNAME_LOOKUP_NOT_FOUND_TITLE" = "ব্যবহারকারী খুঁজে পাওয়া যায়নি";
 
-/* A prefix appended to all usernames when displayed */
-"USERNAME_PREFIX" = "@";
+/* An error message shown when the user has typed a username that starts with a digit, which is invalid. */
+"USERNAME_SELECTION_CANNOT_START_WITH_DIGIT_ERROR_MESSAGE" = "ব্যবহারকারীর নাম সংখ্যা দিয়ে শুরু করা যায় না।";
 
 /* The title of an action sheet button that will delete a user's username. */
 "USERNAME_SELECTION_DELETE_USERNAME_ACTION_TITLE" = "ব্যবহারকারীর নাম মুছে ফেলুন";
@@ -7172,7 +7331,7 @@
 "USERNAME_SELECTION_INVALID_CHARACTERS_ERROR_MESSAGE" = "ব্যবহারকারীর নামে শুধুমাত্র এগুলো থাকতে পারবে: a-z, 0-9, এবং _।";
 
 /* The message of a sheet that pops up when the user taps \"Learn More\" in text that explains how usernames work. This message help explain that the automatically-generated numeric suffix of their username helps keep their username private, to avoid them being contacted by people by whom they don't want to be contacted. */
-"USERNAME_SELECTION_LEARN_MORE_ACTION_SHEET_MESSAGE" = "এই সংখ্যাগুলো আপনার ব্যবহারকারীর নামটি গোপন রাখতে সাহায্য করে, যাতে আপনি অবাঞ্ছিত বার্তা এড়িয়ে যেতে পারেন। আপনি যে ব্যক্তি ও গ্রুপের সাথে চ্যাট করতে চান শুধুমাত্র তাদের সাথে আপনার ব্যবহারকারীর নামটি শেয়ার করুন। ব্যবহারকারীর নামটি পরিবর্তন করলে আপনি কিছু নতুন সংখ্যার সেট পাবেন।";
+"USERNAME_SELECTION_LEARN_MORE_ACTION_SHEET_MESSAGE" = "এই সংখ্যাগুলি আপনার ব্যবহারকারীর নামটি গোপন রাখতে সাহায্য করে, যাতে আপনি অবাঞ্ছিত ম্যাসেজ এড়িয়ে যেতে পারেন। আপনি যে ব্যক্তি ও গ্রুপের সাথে চ্যাট করতে চান শুধুমাত্র তাদের সাথে আপনার ব্যবহারকারীর নামটি শেয়ার করুন। ব্যবহারকারীর নামটি পরিবর্তন করলে আপনি কিছু নতুন সংখ্যার সেট পাবেন।";
 
 /* The title of a sheet that pops up when the user taps \"Learn More\" in text that explains how usernames work. The sheet will present a more detailed explanation of the username's numeric suffix. */
 "USERNAME_SELECTION_LEARN_MORE_ACTION_SHEET_TITLE" = "এই নম্বরটি কী?";
@@ -7301,13 +7460,13 @@
 "WALLPAPER_SETTINGS_RESET_ALL_WALLPAPERS" = "সবকটি ওয়ালপেপার রিসেট করুন";
 
 /* Message of confirmation dialog when resetting the global wallpaper settings. */
-"WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_MESSAGE" = "আপনি কি সবকটি চ্যাটের রঙ বাতিল করতে চান?";
+"WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_MESSAGE" = "আপনি কি সবগুলি চ্যাটের রং বাতিল করতে চান?";
 
 /* Title of confirmation dialog when resetting the global wallpaper settings. */
-"WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_TITLE" = "চ্যাটের রঙ রিসেট করুন";
+"WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_TITLE" = "চ্যাটের রং রিসেট করুন";
 
 /* Reset conversation chat color action in wallpaper settings view. */
-"WALLPAPER_SETTINGS_RESET_CONVERSATION_CHAT_COLOR" = "চ্যাটের রঙ রিসেট করুন";
+"WALLPAPER_SETTINGS_RESET_CONVERSATION_CHAT_COLOR" = "চ্যাটের রং রিসেট করুন";
 
 /* Reset conversation wallpaper action in wallpaper settings view. */
 "WALLPAPER_SETTINGS_RESET_CONVERSATION_WALLPAPER" = "ওয়ালপেপার রিসেট করুন";
@@ -7316,7 +7475,7 @@
 "WALLPAPER_SETTINGS_RESET_DEFAULT_CHAT_COLOR" = "ডিফল্ট রং রিসেট করুন";
 
 /* Reset global chat colors action in wallpaper settings view. */
-"WALLPAPER_SETTINGS_RESET_DEFAULT_CHAT_COLORS" = "চ্যাটের রঙ রিসেট করুন";
+"WALLPAPER_SETTINGS_RESET_DEFAULT_CHAT_COLORS" = "চ্যাটের রং রিসেট করুন";
 
 /* Label for 'reset default wallpaper' action in the global wallpaper settings. */
 "WALLPAPER_SETTINGS_RESET_DEFAULT_WALLPAPER" = "ডিফল্ট ওয়ালপেপারে রিসেট করুন";

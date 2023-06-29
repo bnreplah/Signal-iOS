@@ -530,6 +530,11 @@ NSString *NSStringForAttachmentThumbnailQuality(AttachmentThumbnailQuality value
 
 - (BOOL)isAnimated
 {
+    return [self isAnimatedWithGenerator:^BOOL { return [self hasAnimatedImageContent]; }];
+}
+
+- (BOOL)isAnimatedWithGenerator:(BOOL (^)(void))generator
+{
     BOOL result;
     BOOL didUpdateCache = NO;
     @synchronized(self) {
@@ -537,7 +542,7 @@ NSString *NSStringForAttachmentThumbnailQuality(AttachmentThumbnailQuality value
             if (!SSKDebugFlags.reduceLogChatter) {
                 OWSLogVerbose(@"Updating isAnimatedCached.");
             }
-            self.isAnimatedCached = @([self hasAnimatedImageContent]);
+            self.isAnimatedCached = @(generator());
             didUpdateCache = YES;
         }
         result = self.isAnimatedCached.boolValue;
@@ -562,23 +567,7 @@ NSString *NSStringForAttachmentThumbnailQuality(AttachmentThumbnailQuality value
 
 - (BOOL)hasAnimatedImageContent
 {
-    if ([self.contentType isEqualToString:OWSMimeTypeImageGif]) {
-        return YES;
-    }
-    if (![self.contentType isEqualToString:OWSMimeTypeImageWebp]
-        && ![self.contentType isEqualToString:OWSMimeTypeImagePng]) {
-        return NO;
-    }
-    NSString *_Nullable filePath = self.originalFilePath;
-    if (filePath == nil) {
-        OWSFailDebug(@"Missing filePath.");
-        return NO;
-    }
-    ImageMetadata *imageMetadata = [NSData imageMetadataWithPath:filePath mimeType:self.contentType];
-    if (!imageMetadata.isValid) {
-        return NO;
-    }
-    return imageMetadata.isAnimated;
+    return [OWSVideoAttachmentDetection.sharedInstance attachmentStreamIsAnimated:self];
 }
 
 #pragma mark -
@@ -824,7 +813,12 @@ NSString *NSStringForAttachmentThumbnailQuality(AttachmentThumbnailQuality value
 
 - (nullable AudioWaveform *)audioWaveform
 {
-    return [AudioWaveformManager audioWaveformForAttachment:self];
+    return [AudioWaveformManager audioWaveformForAttachment:self highPriority:NO];
+}
+
+- (nullable AudioWaveform *)highPriorityAudioWaveform
+{
+    return [AudioWaveformManager audioWaveformForAttachment:self highPriority:YES];
 }
 
 #pragma mark - Thumbnails
@@ -928,7 +922,7 @@ NSString *NSStringForAttachmentThumbnailQuality(AttachmentThumbnailQuality value
     static NSOperationQueue *operationQueue;
     dispatch_once(&onceToken, ^{
         operationQueue = [NSOperationQueue new];
-        operationQueue.name = @"thumbnailLoadingOperationQueue";
+        operationQueue.name = @"ThumbnailLoading";
         operationQueue.maxConcurrentOperationCount = 4;
     });
     return operationQueue;

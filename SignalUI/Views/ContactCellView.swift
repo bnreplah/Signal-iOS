@@ -6,7 +6,6 @@
 import Foundation
 import SignalMessaging
 
-@objc
 public class ContactCellAccessoryView: NSObject {
     let accessoryView: UIView
     let size: CGSize
@@ -19,7 +18,6 @@ public class ContactCellAccessoryView: NSObject {
 
 // MARK: -
 
-@objc
 public class ContactCellConfiguration: NSObject {
     fileprivate enum CellDataSource {
         case address(SignalServiceAddress)
@@ -29,36 +27,26 @@ public class ContactCellConfiguration: NSObject {
 
     fileprivate let dataSource: CellDataSource
 
-    @objc
     public let localUserDisplayMode: LocalUserDisplayMode
 
-    @objc
     public var forceDarkAppearance = false
 
-    @objc
     public var accessoryMessage: String?
 
-    @objc
     public var customName: String?
 
-    @objc
     public var accessoryView: ContactCellAccessoryView?
 
-    @objc
     public var attributedSubtitle: NSAttributedString?
 
-    @objc
     public var allowUserInteraction = false
 
-    @objc
     public var badged = true // TODO: Badges — Default false? Configure each use-case?
 
-    @objc
     public var hasAccessoryText: Bool {
         accessoryMessage?.nilIfEmpty != nil
     }
 
-    @objc
     public init(address: SignalServiceAddress, localUserDisplayMode: LocalUserDisplayMode) {
         self.dataSource = .address(address)
         self.localUserDisplayMode = localUserDisplayMode
@@ -79,8 +67,7 @@ public class ContactCellConfiguration: NSObject {
 
     public func useVerifiedSubtitle() {
         let text = NSMutableAttributedString()
-        text.appendTemplatedImage(named: "check-12",
-                                  font: ContactCellView.subtitleFont)
+        text.appendTemplatedImage(named: "check-extra-small", font: ContactCellView.subtitleFont)
         text.append(" ", attributes: [:])
         text.append(OWSLocalizedString("PRIVACY_IDENTITY_IS_VERIFIED_BADGE",
                                       comment: "Badge indicating that the user is verified."),
@@ -117,7 +104,6 @@ public class ContactCellView: ManualStackView {
 
     public var tooltipTailReferenceView: UIView { return avatarView }
 
-    @objc
     public static let avatarTextHSpacing: CGFloat = 12
 
     private let nameLabel = CVLabel()
@@ -141,12 +127,12 @@ public class ContactCellView: ManualStackView {
     }
 
     private var nameLabelFont: UIFont { OWSTableItem.primaryLabelFont }
-    fileprivate static var subtitleFont: UIFont { .ows_dynamicTypeCaption1Clamped }
+    fileprivate static var subtitleFont: UIFont { .dynamicTypeCaption1Clamped }
 
     private func configureFontsAndColors(forceDarkAppearance: Bool) {
         nameLabel.font = nameLabelFont
         subtitleLabel.font = Self.subtitleFont
-        accessoryLabel.font = .ows_dynamicTypeSubheadlineClamped
+        accessoryLabel.font = .dynamicTypeSubheadlineClamped
 
         nameLabel.textColor = forceDarkAppearance ? Theme.darkThemePrimaryColor : Theme.primaryTextColor
         subtitleLabel.textColor = (forceDarkAppearance ? Theme.darkThemeSecondaryTextAndIconColor : Theme.secondaryTextAndIconColor)
@@ -262,28 +248,13 @@ public class ContactCellView: ManualStackView {
             if let customName = configuration.customName?.nilIfEmpty {
                 return customName.asAttributedString
             }
-            func nameForAddress(_ address: SignalServiceAddress) -> NSAttributedString {
-                let name: String
-                if address.isLocalAddress {
-                    switch configuration.localUserDisplayMode {
-                    case .noteToSelf:
-                        name = MessageStrings.noteToSelf
-                    case .asLocalUser:
-                        name = CommonStrings.you
-                    case .asUser:
-                        name = contactsManager.displayName(for: address,
-                                                           transaction: transaction)
-                    }
-                } else {
-                    name = contactsManager.displayName(for: address,
-                                                       transaction: transaction)
-                }
-                return name.asAttributedString
-            }
 
             switch configuration.dataSource {
             case .address(let address):
-                return nameForAddress(address)
+                return contactsManager.nameForAddress(address,
+                                                      localUserDisplayMode: configuration.localUserDisplayMode,
+                                                      short: false,
+                                                      transaction: transaction)
             case .groupThread(let thread):
                 // TODO: Ensure nameLabel.textColor.
                 let threadName = contactsManager.displayName(for: thread,

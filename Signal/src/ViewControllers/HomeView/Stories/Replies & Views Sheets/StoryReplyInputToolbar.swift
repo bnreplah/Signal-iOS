@@ -15,7 +15,8 @@ protocol StoryReplyInputToolbarDelegate: AnyObject {
     func storyReplyInputToolbarDidTapReact(_ storyReplyInputToolbar: StoryReplyInputToolbar)
     func storyReplyInputToolbarDidBeginEditing(_ storyReplyInputToolbar: StoryReplyInputToolbar)
     func storyReplyInputToolbarHeightDidChange(_ storyReplyInputToolbar: StoryReplyInputToolbar)
-    func storyReplyInputToolbarMentionPickerPossibleAddresses(_ storyReplyInputToolbar: StoryReplyInputToolbar) -> [SignalServiceAddress]
+    func storyReplyInputToolbarMentionPickerPossibleAddresses(_ storyReplyInputToolbar: StoryReplyInputToolbar, tx: DBReadTransaction) -> [SignalServiceAddress]
+    func storyReplyInputToolbarMentionCacheInvalidationKey() -> String
     func storyReplyInputToolbarMentionPickerReferenceView(_ storyReplyInputToolbar: StoryReplyInputToolbar) -> UIView?
     func storyReplyInputToolbarMentionPickerParentView(_ storyReplyInputToolbar: StoryReplyInputToolbar) -> UIView?
 }
@@ -25,14 +26,15 @@ protocol StoryReplyInputToolbarDelegate: AnyObject {
 class StoryReplyInputToolbar: UIView {
 
     weak var delegate: StoryReplyInputToolbarDelegate?
-    let quotedReplyModel: OWSQuotedReplyModel?
+    let quotedReplyModel: QuotedReplyModel?
 
-    var messageBody: MessageBody? {
-        get { textView.messageBody }
-        set {
-            textView.messageBody = newValue
-            updateContent(animated: false)
-        }
+    var messageBodyForSending: MessageBody? {
+        textView.messageBodyForSending
+    }
+
+    func setMessageBody(_ messageBody: MessageBody?, txProvider: EditableMessageBodyTextStorage.ReadTxProvider) {
+        textView.setMessageBody(messageBody, txProvider: txProvider)
+        updateContent(animated: false)
     }
 
     override var bounds: CGRect {
@@ -52,7 +54,7 @@ class StoryReplyInputToolbar: UIView {
 
     // MARK: - Initializers
 
-    init(quotedReplyModel: OWSQuotedReplyModel? = nil) {
+    init(quotedReplyModel: QuotedReplyModel? = nil) {
         self.quotedReplyModel = quotedReplyModel
         super.init(frame: CGRect.zero)
 
@@ -74,7 +76,7 @@ class StoryReplyInputToolbar: UIView {
             backgroundColor = .clear
 
             let blurEffect: UIBlurEffect
-            if #available(iOS 13, *), quotedReplyModel != nil {
+            if quotedReplyModel != nil {
                 blurEffect = UIBlurEffect(style: .systemThickMaterialDark)
             } else {
                 blurEffect = Theme.darkThemeBarBlurEffect
@@ -142,14 +144,14 @@ class StoryReplyInputToolbar: UIView {
     }()
 
     private lazy var reactButton: UIButton = {
-        let button = OWSButton(imageName: "add-reaction-outline-24", tintColor: Theme.darkThemePrimaryColor) { [weak self] in
+        let button = OWSButton(imageName: "heart-plus", tintColor: Theme.darkThemePrimaryColor) { [weak self] in
             self?.didTapReact()
         }
         button.autoSetDimensions(to: CGSize(square: 48))
         return button
     }()
 
-    private lazy var textView: MentionTextView = {
+    private lazy var textView: BodyRangesTextView = {
         let textView = buildTextView()
         textView.scrollIndicatorInsets = UIEdgeInsets(top: 5, left: 0, bottom: 5, right: 3)
         textView.mentionDelegate = self
@@ -169,10 +171,11 @@ class StoryReplyInputToolbar: UIView {
     private lazy var placeholderTextView: UITextView = {
         let placeholderTextView = buildTextView()
 
-        placeholderTextView.text = OWSLocalizedString(
+        let placeholderText = OWSLocalizedString(
             "STORY_REPLY_TEXT_FIELD_PLACEHOLDER",
             comment: "placeholder text for replying to a story"
         )
+        placeholderTextView.setMessageBody(.init(text: placeholderText, ranges: .empty), txProvider: databaseStorage.readTxProvider)
         placeholderTextView.isEditable = false
         placeholderTextView.textContainer.maximumNumberOfLines = 1
         placeholderTextView.textContainer.lineBreakMode = .byTruncatingTail
@@ -214,14 +217,14 @@ class StoryReplyInputToolbar: UIView {
         return textContainer
     }()
 
-    private func buildTextView() -> MentionTextView {
-        let textView = MentionTextView()
+    private func buildTextView() -> BodyRangesTextView {
+        let textView = BodyRangesTextView()
 
         textView.keyboardAppearance = Theme.darkThemeKeyboardAppearance
         textView.backgroundColor = .clear
         textView.tintColor = Theme.darkThemePrimaryColor
 
-        let textViewFont = UIFont.ows_dynamicTypeBody
+        let textViewFont = UIFont.dynamicTypeBody
         textView.font = textViewFont
         textView.textColor = Theme.darkThemePrimaryColor
         return textView
@@ -249,7 +252,7 @@ class StoryReplyInputToolbar: UIView {
 
         let label = UILabel()
         label.textColor = Theme.darkThemeSecondaryTextAndIconColor
-        label.font = .ows_dynamicTypeFootnote
+        label.font = .dynamicTypeFootnote
         label.text = headerText
 
         let container = UIView()
@@ -278,10 +281,10 @@ class StoryReplyInputToolbar: UIView {
 
         updateHeight(textView: textView)
 
-        let hasAnyText = !textView.text.isEmptyOrNil
+        let hasAnyText = !textView.isEmpty
         placeholderTextView.isHidden = hasAnyText
 
-        let hasNonWhitespaceText = !textView.text.ows_stripped().isEmpty
+        let hasNonWhitespaceText = !textView.isWhitespaceOrEmpty
         setSendButtonHidden(!hasNonWhitespaceText, animated: animated)
     }
 
@@ -339,28 +342,34 @@ class StoryReplyInputToolbar: UIView {
     }
 }
 
-extension StoryReplyInputToolbar: MentionTextViewDelegate {
+extension StoryReplyInputToolbar: BodyRangesTextViewDelegate {
 
-    func textViewDidBeginTypingMention(_ textView: MentionTextView) {}
+    func textViewDidBeginTypingMention(_ textView: BodyRangesTextView) {}
 
-    func textViewDidEndTypingMention(_ textView: MentionTextView) {}
+    func textViewDidEndTypingMention(_ textView: BodyRangesTextView) {}
 
-    func textViewMentionPickerParentView(_ textView: MentionTextView) -> UIView? {
+    func textViewMentionPickerParentView(_ textView: BodyRangesTextView) -> UIView? {
         delegate?.storyReplyInputToolbarMentionPickerParentView(self)
     }
 
-    func textViewMentionPickerReferenceView(_ textView: MentionTextView) -> UIView? {
+    func textViewMentionPickerReferenceView(_ textView: BodyRangesTextView) -> UIView? {
         delegate?.storyReplyInputToolbarMentionPickerReferenceView(self)
     }
 
-    func textViewMentionPickerPossibleAddresses(_ textView: MentionTextView) -> [SignalServiceAddress] {
-        delegate?.storyReplyInputToolbarMentionPickerPossibleAddresses(self) ?? []
+    func textViewMentionPickerPossibleAddresses(_ textView: BodyRangesTextView, tx: DBReadTransaction) -> [SignalServiceAddress] {
+        delegate?.storyReplyInputToolbarMentionPickerPossibleAddresses(self, tx: tx) ?? []
     }
 
-    func textView(_ textView: MentionTextView, didDeleteMention mention: Mention) {}
+    func textViewMentionCacheInvalidationKey(_ textView: BodyRangesTextView) -> String {
+        return delegate?.storyReplyInputToolbarMentionCacheInvalidationKey() ?? UUID().uuidString
+    }
 
-    func textViewMentionStyle(_ textView: MentionTextView) -> Mention.Style {
-        .groupReply
+    public func textViewDisplayConfiguration(_ textView: BodyRangesTextView) -> HydratedMessageBody.DisplayConfiguration {
+        return .init(mention: .groupReply, style: .composingGroupReply, searchRanges: nil)
+    }
+
+    public func mentionPickerStyle(_ textView: BodyRangesTextView) -> MentionPickerStyle {
+        return .groupReply
     }
 
     public func textViewDidChange(_ textView: UITextView) {

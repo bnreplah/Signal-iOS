@@ -32,16 +32,17 @@ message Envelope {
   reserved /* relay */                 3;
   // @required
   optional uint64 timestamp          = 5;
-  optional bytes  legacyMessage      = 6; // Contains an encrypted DataMessage
+  reserved 6;  // formerly optional bytes legacyMessage = 6; // Contains an encrypted DataMessage; this field could have been set historically for type 1 or 3 messages; no longer in use
   optional bytes  content            = 8; // Contains an encrypted Content
   // We may eventually want to make this required.
   optional string serverGuid         = 9;
   // We may eventually want to make this required.
   optional uint64 serverTimestamp    = 10;
-  // @trustedMapping
   optional string sourceUuid         = 11;
   reserved /* urgent */                14;
-  reserved /* update_pni */            15;
+  // On change-number sync messages delivered to linked devices, this will
+  // contain the account's new PNI.
+  optional string updatedPni         = 15;
   optional bool   story              = 16;
   optional bytes  spamReportingToken = 17;
 }
@@ -66,6 +67,7 @@ message StoryMessage {
     optional TextAttachment textAttachment = 4;
   // }
   optional bool allowsReplies = 5;
+  repeated BodyRange bodyRanges = 6;
 }
 
 message Preview {
@@ -117,6 +119,7 @@ message Content {
   optional bytes               decryptionErrorMessage        = 8;    // Serialized decryption error
   optional StoryMessage        storyMessage                  = 9;
   optional PniSignatureMessage pniSignatureMessage           = 10;
+  optional EditMessage         editMessage                   = 11;
 }
 
 message CallMessage {
@@ -321,23 +324,10 @@ message DataMessage {
     optional uint64 targetSentTimestamp = 1;
   }
 
-  message BodyRange {
-    optional uint32 start  = 1;
-    optional uint32 length = 2;
-
-    // oneof commented out because swift generated
-    // enum with associated values can't be converted
-    // to objc representation
-    //
-    // oneof associatedValue {
-      optional string mentionUuid = 3;
-    // }
-  }
-
   message GroupCallUpdate {
     optional string eraId = 1;
   }
-    
+
   message Payment {
     message Amount {
       message MobileCoin {
@@ -355,7 +345,7 @@ message DataMessage {
       // @required
       optional string uuid = 1;
     }
- 
+
     message Request {
       // @required
       optional RequestId requestId = 1;
@@ -363,28 +353,28 @@ message DataMessage {
       optional Amount    amount    = 2;
       optional string    note      = 3;
     }
- 
+
     message Notification {
       message MobileCoin {
         // @required
         optional bytes  receipt = 1;
       }
- 
+
       // oneof commented out
       // oneof Transaction {
         optional MobileCoin mobileCoin = 1;
       // }
- 
+
       // Optional, Refers to the PaymentRequest message, if any.
       optional string    note          = 2;
       optional RequestId requestId     = 1003;
     }
- 
+
     message Cancellation {
       // @required
       optional RequestId requestId = 1;
     }
- 
+
     // oneof commented out
     // oneof Item {
       optional Notification notification = 1;
@@ -397,7 +387,7 @@ message DataMessage {
     optional string authorUuid = 1;
     optional uint64 sentTimestamp = 2;
   }
-    
+
   enum ProtocolVersion {
     option allow_alias = true;
 
@@ -418,7 +408,7 @@ message DataMessage {
 
   optional string            body                    =  1;
   repeated AttachmentPointer attachments             =  2;
-  optional GroupContext      group                   =  3;
+  reserved                   /*groupV1Context*/         3;
   optional GroupContextV2    groupV2                 = 15;
   optional uint32            flags                   =  4;
   optional uint32            expireTimer             =  5;
@@ -461,7 +451,7 @@ message Verified {
     UNVERIFIED = 2;
   }
 
-  optional string destinationE164 = 1;
+  reserved /*destinationE164*/      1;
   optional string destinationUuid = 5;
   optional bytes  identityKey     = 2;
   optional State  state           = 3;
@@ -471,7 +461,7 @@ message Verified {
 message SyncMessage {
   message Sent {
     message UnidentifiedDeliveryStatus {
-      optional string destinationE164 = 1;
+      reserved /*destinationE164*/      1;
       optional string destinationUuid = 3;
       optional bool   unidentified    = 2;
     }
@@ -491,6 +481,7 @@ message SyncMessage {
     optional bool                       isRecipientUpdate        = 6 [default = false];
     optional StoryMessage               storyMessage             = 8;
     repeated StoryMessageRecipient      storyMessageRecipients   = 9;
+    optional EditMessage                editMessage              = 10;
   }
 
   message Contacts {
@@ -498,10 +489,6 @@ message SyncMessage {
     optional AttachmentPointer blob       = 1;
     // Signal-iOS renamed this property.
     optional bool              isComplete = 2 [default = false];
-  }
-
-  message Groups {
-    optional AttachmentPointer blob = 1;
   }
 
   message Blocked {
@@ -512,27 +499,27 @@ message SyncMessage {
 
   message Request {
     enum Type {
-      UNKNOWN       = 0;
-      CONTACTS      = 1;
-      GROUPS        = 2;
-      BLOCKED       = 3;
-      CONFIGURATION = 4;
-      KEYS          = 5;
-      PNI_IDENTITY  = 6;
+      UNKNOWN                 = 0;
+      CONTACTS                = 1;
+      reserved /*GROUPS*/       2;
+      BLOCKED                 = 3;
+      CONFIGURATION           = 4;
+      KEYS                    = 5;
+      reserved /*PNI_IDENTITY*/ 6;
     }
 
     optional Type type = 1;
   }
 
   message Read {
-    optional string senderE164 = 1;
+    reserved /*senderE164*/      1;
     optional string senderUuid = 3;
     // @required
-    optional uint64 timestamp = 2;
+    optional uint64 timestamp  = 2;
   }
 
   message Viewed {
-    optional string senderE164 = 1;
+    reserved /*senderE164*/      1;
     optional string senderUuid = 3;
     // @required
     optional uint64 timestamp  = 2;
@@ -560,7 +547,7 @@ message SyncMessage {
   }
 
   message ViewOnceOpen {
-      optional string senderE164 = 1;
+      reserved /*senderE164*/      1;
       optional string senderUuid = 3;
       // @required
       optional uint64 timestamp  = 2;
@@ -581,11 +568,6 @@ message SyncMessage {
     optional bytes storageService = 1;
   }
 
-  message PniIdentity {
-    optional bytes publicKey  = 1;
-    optional bytes privateKey = 2;
-  }
-
   message MessageRequestResponse {
     enum Type {
       UNKNOWN          = 0;
@@ -595,12 +577,12 @@ message SyncMessage {
       BLOCK_AND_DELETE = 4;
     }
 
-    optional string threadE164 = 1;
+    reserved /*threadE164*/      1;
     optional string threadUuid = 2;
     optional bytes  groupId    = 3;
     optional Type   type       = 4;
   }
-  
+
   message OutgoingPayment {
     message MobileCoin {
       optional bytes  recipientAddress     = 1;
@@ -616,7 +598,7 @@ message SyncMessage {
       repeated bytes  outputPublicKeys     = 8;
     }
     optional string     recipientUuid = 1;
-    optional string     note          = 2;		
+    optional string     note          = 2;
     // oneof attachment_identifier {
     optional MobileCoin mobileCoin    = 3;
     // }
@@ -649,9 +631,16 @@ message SyncMessage {
     optional Event     event     = 6;
   }
 
+  message PniChangeNumber {
+    optional bytes  identityKeyPair = 1; // Serialized libsignal-client IdentityKeyPair
+    optional bytes  signedPreKey    = 2; // Serialized libsignal-client SignedPreKeyRecord
+    optional uint32 registrationId  = 3;
+    optional string newE164         = 4;
+  }
+
   optional Sent                   sent                   = 1;
   optional Contacts               contacts               = 2;
-  optional Groups                 groups                 = 3;
+  reserved                        /*groups*/               3;
   optional Request                request                = 4;
   repeated Read                   read                   = 5;
   optional Blocked                blocked                = 6;
@@ -665,7 +654,8 @@ message SyncMessage {
   optional MessageRequestResponse messageRequestResponse = 14;
   optional OutgoingPayment        outgoingPayment        = 15;
   repeated Viewed                 viewed                 = 16;
-  optional PniIdentity            pniIdentity            = 17;
+  reserved                                                 17; // Formerly, PNI identity sync messages
+  optional PniChangeNumber        pniChangeNumber        = 18;
   optional CallEvent              callEvent              = 19;
 }
 
@@ -701,28 +691,6 @@ message AttachmentPointer {
   // Next ID: 16
 }
 
-message GroupContext {
-  message Member {
-    reserved /* uuid */ 1;
-    optional string e164 = 2;
-  }
-
-  enum Type {
-    UNKNOWN      = 0;
-    UPDATE       = 1;
-    DELIVER      = 2;
-    QUIT         = 3;
-    REQUEST_INFO = 4;
-  }
-  // @required
-  optional bytes             id          = 1;
-  optional Type              type        = 2;
-  optional string            name        = 3;
-  repeated string            membersE164 = 4;
-  optional AttachmentPointer avatar      = 5;
-  repeated Member            members     = 6;
-}
-
 message GroupContextV2 {
   optional bytes  masterKey   = 1;
   optional uint32 revision    = 2;
@@ -736,7 +704,6 @@ message ContactDetails {
   }
 
   optional string   contactE164 = 1;
-  // @trustedMapping
   optional string   contactUuid = 9;
   optional string   name        = 2;
   optional Avatar   avatar      = 3;
@@ -747,31 +714,6 @@ message ContactDetails {
   optional uint32   expireTimer = 8;
   optional uint32   inboxPosition = 10;
   optional bool     archived      = 11;
-}
-
-message GroupDetails {
-  message Avatar {
-    optional string contentType = 1;
-    optional uint32 length      = 2;
-  }
-
-  message Member {
-    reserved /* uuid */ 1;
-    optional string e164 = 2;
-  }
-
-  // @required
-  optional bytes  id          = 1;
-  optional string name        = 2;
-  repeated string membersE164 = 3;
-  optional Avatar avatar      = 4;
-  optional bool   active      = 5 [default = true];
-  optional uint32 expireTimer = 6;
-  optional string color       = 7;
-  optional bool   blocked     = 8;
-  repeated Member members     = 9;
-  optional uint32 inboxPosition = 10;
-  optional bool archived = 11;
 }
 
 message Pack {
@@ -795,7 +737,7 @@ message PaymentAddress {
     // @required
     optional bytes signature     = 2;
   }
-  
+
   // oneof commented out
   // oneof Address {
   optional MobileCoin mobileCoin = 1;
@@ -812,4 +754,32 @@ message PniSignatureMessage {
   optional bytes pni       = 1;
   // Signature *by* the PNI identity key *of* the ACI identity key
   optional bytes signature = 2;
+}
+
+message BodyRange {
+  enum Style {
+    NONE = 0;
+    BOLD = 1;
+    ITALIC = 2;
+    SPOILER = 3;
+    STRIKETHROUGH = 4;
+    MONOSPACE = 5;
+  }
+
+  optional uint32 start = 1;
+  optional uint32 length = 2;
+
+  // oneof commented out because swift generated
+  // enum with associated values can't be converted
+  // to objc representation
+  //
+  // oneof associatedValue {
+    optional string mentionUuid = 3;
+    optional Style style = 4;
+  // }
+}
+
+message EditMessage {
+  optional uint64 targetSentTimestamp = 1;
+  optional DataMessage dataMessage = 2;
 }

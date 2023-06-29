@@ -3,12 +3,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import PassKit
 import QuickLook
 import SignalMessaging
+import SignalUI
 
-@objc
 public class CVComponentGenericAttachment: CVComponentBase, CVComponent {
 
     public var componentKey: CVComponentKey { .genericAttachment }
@@ -118,10 +117,10 @@ public class CVComponentGenericAttachment: CVComponentBase, CVComponent {
             text = (fileExtension as NSString).localizedUppercase
         }
         if text.isEmpty {
-            text = NSLocalizedString("GENERIC_ATTACHMENT_LABEL", comment: "A label for generic attachments.")
+            text = OWSLocalizedString("GENERIC_ATTACHMENT_LABEL", comment: "A label for generic attachments.")
         }
         return CVLabelConfig(text: text,
-                             font: UIFont.ows_dynamicTypeBody2.ows_semibold,
+                             font: UIFont.dynamicTypeBody2.semibold(),
                              textColor: conversationStyle.bubbleTextColor(isIncoming: isIncoming),
                              lineBreakMode: .byTruncatingMiddle)
     }
@@ -144,7 +143,7 @@ public class CVComponentGenericAttachment: CVComponentBase, CVComponent {
             case .enqueued, .downloading:
                 break
             case .failed, .pendingMessageRequest, .pendingManualDownload:
-                textComponents.append(NSLocalizedString("ACTION_TAP_TO_DOWNLOAD", comment: "A label for 'tap to download' buttons."))
+                textComponents.append(OWSLocalizedString("ACTION_TAP_TO_DOWNLOAD", comment: "A label for 'tap to download' buttons."))
             }
 
             if !textComponents.isEmpty {
@@ -163,7 +162,7 @@ public class CVComponentGenericAttachment: CVComponentBase, CVComponent {
         }
 
         return CVLabelConfig(text: text,
-                             font: UIFont.ows_dynamicTypeCaption1,
+                             font: UIFont.dynamicTypeCaption1,
                              textColor: conversationStyle.bubbleSecondaryTextColor(isIncoming: isIncoming),
                              lineBreakMode: .byTruncatingMiddle)
     }
@@ -182,7 +181,7 @@ public class CVComponentGenericAttachment: CVComponentBase, CVComponent {
         let text = (fileExtension as NSString).localizedUppercase
 
         return CVLabelConfig(text: text,
-                             font: UIFont.ows_dynamicTypeCaption1.ows_semibold,
+                             font: UIFont.dynamicTypeCaption1.semibold(),
                              textColor: .ows_gray90,
                              lineBreakMode: .byTruncatingTail)
     }
@@ -331,14 +330,13 @@ public class CVComponentGenericAttachment: CVComponentBase, CVComponent {
         return try? PKPass(data: data)
     }
 
-    @objc(showShareUIFromView:)
     public func showShareUI(from view: UIView) {
         guard let attachmentStream = attachmentStream else {
             owsFailDebug("should not show the share UI unless there's a downloaded attachment")
             return
         }
         // TODO: Ensure share UI is shown from correct location.
-        AttachmentSharing.showShareUI(forAttachment: attachmentStream, sender: view)
+        AttachmentSharing.showShareUI(for: attachmentStream, sender: view)
     }
 
     // MARK: -
@@ -396,7 +394,7 @@ extension CVComponentGenericAttachment: CVAccessibilityComponent {
     public var accessibilityDescription: String {
         // TODO: We could include information about the attachment format,
         //       and/or filename, and download state.
-        NSLocalizedString("ACCESSIBILITY_LABEL_ATTACHMENT",
+        OWSLocalizedString("ACCESSIBILITY_LABEL_ATTACHMENT",
                           comment: "Accessibility label for attachment.")
     }
 }

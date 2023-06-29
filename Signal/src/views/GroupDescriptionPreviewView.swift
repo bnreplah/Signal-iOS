@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import BonMot
+import SignalServiceKit
 import SignalUI
 
 class GroupDescriptionPreviewView: ManualLayoutView {
@@ -56,7 +56,6 @@ class GroupDescriptionPreviewView: ManualLayoutView {
         textView.autoPinEdgesToSuperviewEdges()
     }
 
-    @objc
     required init(name: String) {
         fatalError("init(name:) has not been implemented")
     }
@@ -66,7 +65,7 @@ class GroupDescriptionPreviewView: ManualLayoutView {
     }
 
     private static let moreTextPrefix = "… "
-    private static let moreText = NSLocalizedString(
+    private static let moreText = OWSLocalizedString(
         "GROUP_DESCRIPTION_MORE",
         comment: "Text indication the user can tap to view the full group description"
     )
@@ -75,11 +74,7 @@ class GroupDescriptionPreviewView: ManualLayoutView {
     private let textThatFitsCache = LRUCache<String, String>(maxSize: 128)
 
     func truncateVisibleTextIfNecessary() {
-        // When using autolayout, we need to initially set the text
-        // to the full text otherwise the view will never get any width.
-        if !shouldDeactivateConstraints {
-            textView.text = descriptionText
-        }
+        textView.text = descriptionText
 
         guard width > 0 else { return }
 
@@ -160,7 +155,7 @@ class GroupDescriptionPreviewView: ManualLayoutView {
                     with: .link(Self.viewFullDescriptionURL)
                 )
             ]).styled(
-                with: .font(font ?? .ows_dynamicTypeBody),
+                with: .font(font ?? .dynamicTypeBody),
                 .color(textColor ?? Theme.secondaryTextAndIconColor),
                 .alignment(textAlignment)
             )

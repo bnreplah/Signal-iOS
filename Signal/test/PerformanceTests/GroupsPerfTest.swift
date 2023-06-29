@@ -12,6 +12,8 @@ class GroupsPerfTest: PerformanceBaseTest {
     private let iterationCount: UInt64 = DebugFlags.fastPerfTests ? 5 : 5 * 1000
 
     func testMembershipSerialization() {
+        setUpIteration()
+
         let membership = Self.buildMembership()
 
         measureMetrics(XCTestCase.defaultPerformanceMetrics, automaticallyStartMeasuring: true) {
@@ -43,11 +45,10 @@ class GroupsPerfTest: PerformanceBaseTest {
     }
 
     static func serialize(membership: GroupMembership) throws -> Data {
-        try! NSKeyedArchiver.archivedData(withRootObject: membership,
-                                                 requiringSecureCoding: false)
+        try NSKeyedArchiver.archivedData(withRootObject: membership, requiringSecureCoding: false)
     }
 
     static func deserialize(data: Data) throws -> GroupMembership {
-        try! NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as! GroupMembership
+        try NSKeyedUnarchiver.unarchivedObject(ofClass: GroupMembership.self, from: data, requiringSecureCoding: false)!
     }
 }

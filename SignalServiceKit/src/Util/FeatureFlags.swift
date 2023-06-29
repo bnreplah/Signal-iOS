@@ -55,6 +55,9 @@ extension StorageMode: CustomStringConvertible {
 /// which feature flags are in play.
 @objc(SSKFeatureFlags)
 public class FeatureFlags: BaseFlags {
+
+    public static let choochoo = build.includes(.internal)
+
     @objc
     public static let phoneNumberSharing = build.includes(.internal)
 
@@ -86,15 +89,7 @@ public class FeatureFlags: BaseFlags {
     @objc
     public static let deprecateREST = false
 
-    @objc
-    public static let canUseNativeWebsocket = true
-
-    public static let shouldUseRemoteConfigForReceivingGiftBadges = true
-
     public static let isPrerelease = build.includes(.beta)
-
-    @objc
-    public static let contactDiscoveryV2 = true
 
     @objc
     public static var notificationServiceExtension: Bool {
@@ -105,14 +100,7 @@ public class FeatureFlags: BaseFlags {
         return false
     }
 
-    public static let useNewRegistrationFlow: Bool = {
-        #if DEBUG
-        if ProcessInfo.processInfo.environment["REG_BRAVO_TESTING"] == "1" {
-            return true
-        }
-        #endif
-        return false
-    }()
+    public static let periodicallyCheckDatabaseIntegrity: Bool = build.includes(.internal)
 
     @objc
     public static func logFlags() {
@@ -130,6 +118,10 @@ public class FeatureFlags: BaseFlags {
             logFlag("FeatureFlag", key, value)
         }
     }
+
+    public static let textFormattingSend = build.includes(.internal)
+
+    public static let aciSafetyNumbers = build.includes(.dev)
 }
 
 // MARK: -
@@ -208,13 +200,6 @@ public class DebugFlags: BaseFlags {
     @objc
     public static let betaLogging = build.includes(.beta)
 
-    // DEBUG builds won't receive push notifications, which prevents receiving messages
-    // while the app is backgrounded or the system call screen is active.
-    //
-    // Set this flag to true to be able to download messages even when the app is in the background.
-    @objc
-    public static let keepWebSocketOpenInBackground = false
-
     @objc
     public static let testPopulationErrorAlerts = build.includes(.beta)
 
@@ -225,10 +210,6 @@ public class DebugFlags: BaseFlags {
     public static let internalSettings = build.includes(.internal)
 
     public static let internalMegaphoneEligible = build.includes(.internal)
-
-    // This can be used to shut down various background operations.
-    @objc
-    public static let suppressBackgroundActivity = false
 
     @objc
     public static let reduceLogChatter: Bool = {
@@ -242,71 +223,10 @@ public class DebugFlags: BaseFlags {
     @objc
     public static let logSQLQueries = build.includes(.dev) && !reduceLogChatter
 
-    // We can use this to test recovery from "missed updates".
-    @objc
-    public static let groupsV2dontSendUpdates = TestableFlag(false,
-                                                             title: LocalizationNotNeeded("Groups v2: Don't Send Updates"),
-                                                             details: LocalizationNotNeeded("The app will not send 'group update' messages for v2 groups. " +
-                                                                                                "Other group members will only learn of group changes from normal group messages."))
-
-    // If set, v2 groups will be created and updated with invalid avatars
-    // so that we can test clients' robustness to this case.
-    @objc
-    public static let groupsV2corruptAvatarUrlPaths = TestableFlag(false,
-                                                                   title: LocalizationNotNeeded("Groups v2: Corrupt avatar URL paths"),
-                                                                   details: LocalizationNotNeeded("Client will update group state with corrupt avatar URL paths."))
-
-    // If set, v2 groups will be created and updated with
-    // corrupt avatars, group names, and/or dm state
-    // so that we can test clients' robustness to this case.
-    @objc
-    public static let groupsV2corruptBlobEncryption = TestableFlag(false,
-                                                                   title: LocalizationNotNeeded("Groups v2: Corrupt blobs"),
-                                                                   details: LocalizationNotNeeded("Client will update group state with corrupt blobs."))
-
-    // If set, client will invite instead of adding other users.
-    @objc
-    public static let groupsV2forceInvites = TestableFlag(false,
-                                                          title: LocalizationNotNeeded("Groups v2: Always Invite"),
-                                                          details: LocalizationNotNeeded("Members added to a v2 group will always be invited instead of added."))
-
-    // If set, client will always send corrupt invites.
-    @objc
-    public static let groupsV2corruptInvites = TestableFlag(false,
-                                                            title: LocalizationNotNeeded("Groups v2: Corrupt Invites"),
-                                                            details: LocalizationNotNeeded("Client will only emit corrupt invites to v2 groups."))
-
-    @objc
-    public static let groupsV2onlyCreateV1Groups = TestableFlag(false,
-                                                                title: LocalizationNotNeeded("Groups v2: Only create v1 groups"),
-                                                                details: LocalizationNotNeeded("Client will not try to create v2 groups."))
-
-    @objc
-    public static let groupsV2migrationsDropOtherMembers = TestableFlag(false,
-                                                                        title: LocalizationNotNeeded("Groups v2: Migrations drop others"),
-                                                                        details: LocalizationNotNeeded("Group migrations will drop other members."))
-
-    @objc
-    public static let groupsV2migrationsInviteOtherMembers = TestableFlag(false,
-                                                                          title: LocalizationNotNeeded("Groups v2: Migrations invite others"),
-                                                                          details: LocalizationNotNeeded("Group migrations will invite other members."))
-
-    @objc
-    public static let groupsV2migrationsIgnoreMigrationCapability = false
-
     @objc
     public static let aggressiveProfileFetching = TestableFlag(false,
                                                                title: LocalizationNotNeeded("Aggressive profile fetching"),
                                                                details: LocalizationNotNeeded("Client will update profiles aggressively."))
-
-    @objc
-    public static let groupsV2ignoreCorruptInvites = false
-
-    @objc
-    public static let groupsV2memberStatusIndicators = build.includes(.internal)
-
-    @objc
-    public static let isMessageProcessingVerbose = false
 
     // Currently this flag is only honored by NetworkManager,
     // but we could eventually honor in other places as well:
@@ -316,20 +236,11 @@ public class DebugFlags: BaseFlags {
     @objc
     public static let logCurlOnSuccess = false
 
-    // Our "group update" info messages should be robust to
-    // various situations that shouldn't occur in production,
-    // bug we want to be able to test them using the debug UI.
-    @objc
-    public static let permissiveGroupUpdateInfoMessages = build.includes(.dev)
-
     @objc
     public static let showContextMenuDebugRects = false
 
     @objc
     public static let verboseNotificationLogging = build.includes(.internal)
-
-    @objc
-    public static let verboseSignalRecipientLogging = build.includes(.internal)
 
     @objc
     public static let deviceTransferVerboseProgressLogging = build.includes(.internal)
@@ -345,9 +256,6 @@ public class DebugFlags: BaseFlags {
 
     @objc
     public static let allowV1GroupsUpdates = build.includes(.internal)
-
-    @objc
-    public static let forceGroupCalling = build.includes(.beta)
 
     @objc
     public static let forceStories = build.includes(.beta)
@@ -476,17 +384,14 @@ public class DebugFlags: BaseFlags {
                                                                       details: LocalizationNotNeeded("Shows placeholder interactions in the conversation list."))
 
     @objc
-    public static let fastPlaceholderExpiration = TestableFlag(false,
-                                                               title: LocalizationNotNeeded("Sender Key: Early placeholder expiration"),
-                                                               details: LocalizationNotNeeded("Shortens the valid window for message resend+recovery."),
-                                                               toggleHandler: { _ in
-        databaseStorage.read { messageDecrypter.schedulePlaceholderCleanup(transaction: $0)}
-    })
-
-    @objc
-    public static let forceChangePhoneNumberUI = TestableFlag(build.includes(.beta),
-                                                              title: LocalizationNotNeeded("Force 'change phone number' UI."),
-                                                              details: LocalizationNotNeeded("The UI will appear in settings."))
+    public static let fastPlaceholderExpiration = TestableFlag(
+        false,
+        title: LocalizationNotNeeded("Sender Key: Early placeholder expiration"),
+        details: LocalizationNotNeeded("Shortens the valid window for message resend+recovery."),
+        toggleHandler: { _ in
+            messageDecrypter.cleanUpExpiredPlaceholders()
+        }
+    )
 
     @objc
     public static let deviceTransferPreserveOldDevice = false

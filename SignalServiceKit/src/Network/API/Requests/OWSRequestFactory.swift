@@ -52,24 +52,39 @@ public extension OWSRequestFactory {
         return .init(url: URL(string: textSecure2FAAPI)!, method: "PUT", parameters: ["pin": pin])
     }
 
-    static func changePhoneNumberRequest(newPhoneNumberE164: String,
-                                         verificationCode: String,
-                                         registrationLock: String?) -> TSRequest {
+    @nonobjc
+    static func changePhoneNumberRequest(
+        newPhoneNumberE164: String,
+        verificationCode: String,
+        registrationLock: String?,
+        pniChangePhoneNumberParameters: PniDistribution.Parameters
+    ) -> TSRequest {
         owsAssertDebug(nil != newPhoneNumberE164.strippedOrNil)
         owsAssertDebug(nil != verificationCode.strippedOrNil)
 
         let url = URL(string: "\(textSecureAccountsAPI)/number")!
+
         var parameters: [String: Any] = [
             "number": newPhoneNumberE164,
             "code": verificationCode
         ]
+
         if let registrationLock = registrationLock?.strippedOrNil {
             parameters["reglock"] = registrationLock
         }
 
-        return TSRequest(url: url,
-                  method: HTTPMethod.put.methodName,
-                  parameters: parameters)
+        parameters.merge(
+            pniChangePhoneNumberParameters.requestParameters(),
+            uniquingKeysWith: { (_, _) in
+                owsFail("Unexpectedly encountered duplicate keys!")
+            }
+        )
+
+        return TSRequest(
+            url: url,
+            method: HTTPMethod.put.methodName,
+            parameters: parameters
+        )
     }
 
     static func enableRegistrationLockV2Request(token: String) -> TSRequest {
@@ -117,6 +132,17 @@ public extension OWSRequestFactory {
         )
     }
 
+    @nonobjc
+    static func deleteDeviceRequest(
+        _ device: OWSDevice
+    ) -> TSRequest {
+        return TSRequest(
+            url: URL(string: "/v1/devices/\(device.deviceId)")!,
+            method: HTTPMethod.delete.methodName,
+            parameters: nil
+        )
+    }
+
     // MARK: - Donations
 
     static func donationConfiguration() -> TSRequest {
@@ -136,7 +162,7 @@ public extension OWSRequestFactory {
             parameters: nil
         )
         result.shouldHaveAuthorizationHeaders = false
-        result.shouldRedactUrlInLogs = true
+        result.applyRedactionStrategy(.redactURLForSuccessResponses())
         return result
     }
 
@@ -147,7 +173,29 @@ public extension OWSRequestFactory {
             parameters: nil
         )
         result.shouldHaveAuthorizationHeaders = false
-        result.shouldRedactUrlInLogs = true
+        result.applyRedactionStrategy(.redactURLForSuccessResponses())
+        return result
+    }
+
+    static func subscriptionSetDefaultPaymentMethod(
+        subscriberID: Data,
+        processor: String,
+        paymentID: String
+    ) -> TSRequest {
+        let result = TSRequest(
+            url: .init(pathComponents: [
+                "v1",
+                "subscription",
+                subscriberID.asBase64Url,
+                "default_payment_method",
+                processor,
+                paymentID
+            ])!,
+            method: "POST",
+            parameters: nil
+        )
+        result.shouldHaveAuthorizationHeaders = false
+        result.applyRedactionStrategy(.redactURLForSuccessResponses())
         return result
     }
 }
@@ -176,7 +224,7 @@ extension OWSRequestFactory {
     static func preKeyRequestParameters(_ preKeyRecord: PreKeyRecord) -> [String: Any] {
         [
             "keyId": preKeyRecord.id,
-            "publicKey": preKeyRecord.keyPair.publicKey.prependKeyType().base64EncodedString()
+            "publicKey": preKeyRecord.keyPair.publicKey.prependKeyType().base64EncodedStringWithoutPadding()
         ]
     }
 
@@ -184,8 +232,111 @@ extension OWSRequestFactory {
     static func signedPreKeyRequestParameters(_ signedPreKeyRecord: SignedPreKeyRecord) -> [String: Any] {
         [
             "keyId": signedPreKeyRecord.id,
-            "publicKey": signedPreKeyRecord.keyPair.publicKey.prependKeyType().base64EncodedString(),
-            "signature": signedPreKeyRecord.signature.base64EncodedString()
+            "publicKey": signedPreKeyRecord.keyPair.publicKey.prependKeyType().base64EncodedStringWithoutPadding(),
+            "signature": signedPreKeyRecord.signature.base64EncodedStringWithoutPadding()
         ]
+    }
+
+    /// If a username and password are both provided, those are used for the request's
+    /// Authentication header. Otherwise, the default header is used (whatever's on
+    /// TSAccountManager).
+    @objc
+    static func registerPrekeysRequest(
+        identity: OWSIdentity,
+        identityKey: IdentityKey,
+        signedPreKeyRecord: SignedPreKeyRecord,
+        prekeyRecords: [PreKeyRecord],
+        auth: ChatServiceAuth
+    ) -> TSRequest {
+        owsAssertDebug(prekeyRecords.count > 0)
+        owsAssertDebug(identityKey.count > 0)
+
+        var path = textSecureKeysAPI
+        if let queryParam = queryParam(for: identity) {
+            path = path.appending("?\(queryParam)")
+        }
+
+        let serializedPrekeys = prekeyRecords.map { self.preKeyRequestParameters($0) }
+        let request = TSRequest(
+            url: URL(string: path)!,
+            method: "PUT",
+            parameters: [
+                "preKeys": serializedPrekeys,
+                "signedPreKey": signedPreKeyRequestParameters(signedPreKeyRecord),
+                "identityKey": identityKey.prependKeyType().base64EncodedStringWithoutPadding()
+            ]
+        )
+        request.setAuth(auth)
+        return request
+    }
+
+    @objc
+    static func queryParam(for identity: OWSIdentity) -> String? {
+        switch identity {
+        case .aci:
+            return nil
+        case .pni:
+            return "identity=pni"
+        }
+    }
+
+    public static func deprecated_verifyPrimaryDeviceRequest(
+        verificationCode: String,
+        phoneNumber: String,
+        authPassword: String,
+        checkForAvailableTransfer: Bool,
+        attributes: AccountAttributes
+    ) -> TSRequest {
+        owsAssertDebug(verificationCode.isEmpty.negated)
+        owsAssertDebug(phoneNumber.isEmpty.negated)
+
+        let urlPathComponents = URLPathComponents(
+            [self.textSecureAccountsAPI, "code", verificationCode]
+        )
+        var urlComponents = URLComponents()
+        urlComponents.percentEncodedPath = urlPathComponents.percentEncoded
+        if checkForAvailableTransfer {
+            urlComponents.queryItems = [URLQueryItem(name: "transfer", value: "true")]
+        }
+        let url = urlComponents.url!
+
+        // The request expects the AccountAttributes to be the root object.
+        // Serialize it to JSON then get the key value dict to do that.
+        let data = try! JSONEncoder().encode(attributes)
+        let parameters = try! JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as! [String: Any]
+
+        let result = TSRequest(url: url, method: "PUT", parameters: parameters)
+        // The "verify code" request handles auth differently.
+        result.authUsername = phoneNumber
+        result.authPassword = authPassword
+        return result
+    }
+
+    public static func verifySecondaryDeviceRequest(
+        verificationCode: String,
+        phoneNumber: String,
+        authPassword: String,
+        attributes: AccountAttributes
+    ) -> TSRequest {
+        owsAssertDebug(verificationCode.isEmpty.negated)
+        owsAssertDebug(phoneNumber.isEmpty.negated)
+
+        let urlPathComponents = URLPathComponents(
+            ["v1", "devices", verificationCode]
+        )
+        var urlComponents = URLComponents()
+        urlComponents.percentEncodedPath = urlPathComponents.percentEncoded
+        let url = urlComponents.url!
+
+        // The request expects the AccountAttributes to be the root object.
+        // Serialize it to JSON then get the key value dict to do that.
+        let data = try! JSONEncoder().encode(attributes)
+        let parameters = try! JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as! [String: Any]
+
+        let result = TSRequest(url: url, method: "PUT", parameters: parameters)
+        // The "verify code" request handles auth differently.
+        result.authUsername = phoneNumber
+        result.authPassword = authPassword
+        return result
     }
 }

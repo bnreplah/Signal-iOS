@@ -3,9 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import SignalMessaging
-import UIKit
+import SignalUI
 
 class CustomColorViewController: OWSTableViewController2 {
 
@@ -100,7 +99,7 @@ class CustomColorViewController: OWSTableViewController2 {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(updateTableContents),
-            name: .ThemeDidChange,
+            name: .themeDidChange,
             object: nil
         )
     }
@@ -108,7 +107,7 @@ class CustomColorViewController: OWSTableViewController2 {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = NSLocalizedString("CUSTOM_CHAT_COLOR_SETTINGS_TITLE",
+        title = OWSLocalizedString("CUSTOM_CHAT_COLOR_SETTINGS_TITLE",
                                   comment: "Title for the custom chat color settings view.")
 
         navigationItem.rightBarButtonItem = .init(title: CommonStrings.setButton,
@@ -124,11 +123,11 @@ class CustomColorViewController: OWSTableViewController2 {
     }
 
     private func createSubviews() {
-        modeControl.insertSegment(withTitle: NSLocalizedString("CUSTOM_CHAT_COLOR_SETTINGS_SOLID_COLOR",
+        modeControl.insertSegment(withTitle: OWSLocalizedString("CUSTOM_CHAT_COLOR_SETTINGS_SOLID_COLOR",
                                                                comment: "Label for the 'solid color' mode in the custom chat color settings view."),
                                   at: EditMode.solidColor.rawValue,
                                   animated: false)
-        modeControl.insertSegment(withTitle: NSLocalizedString("CUSTOM_CHAT_COLOR_SETTINGS_GRADIENT",
+        modeControl.insertSegment(withTitle: OWSLocalizedString("CUSTOM_CHAT_COLOR_SETTINGS_GRADIENT",
                                                                comment: "Label for the 'gradient' mode in the custom chat color settings view."),
                                   at: EditMode.gradientColor1.rawValue,
                                   animated: false)
@@ -219,7 +218,7 @@ class CustomColorViewController: OWSTableViewController2 {
 
             return cell
         } actionBlock: {})
-        contents.addSection(previewSection)
+        contents.add(previewSection)
 
         // Sliders
 
@@ -234,12 +233,12 @@ class CustomColorViewController: OWSTableViewController2 {
         hueSection.customHeaderHeight = 1
         hueSection.add(self.sliderItem(
             sliderView: hueSlider,
-            headerText: NSLocalizedString(
+            headerText: OWSLocalizedString(
                 "CUSTOM_CHAT_COLOR_SETTINGS_HUE",
                 comment: "Title for the 'hue' section in the chat color settings view."
             )
         ))
-        contents.addSection(hueSection)
+        contents.add(hueSection)
 
         saturationSlider.delegate = self
         let saturationSection = OWSTableSection()
@@ -247,12 +246,12 @@ class CustomColorViewController: OWSTableViewController2 {
         saturationSection.customHeaderHeight = 1
         saturationSection.add(self.sliderItem(
             sliderView: saturationSlider,
-            headerText: NSLocalizedString(
+            headerText: OWSLocalizedString(
                 "CUSTOM_CHAT_COLOR_SETTINGS_SATURATION",
                 comment: "Title for the 'Saturation' section in the chat color settings view."
             )
         ))
-        contents.addSection(saturationSection)
+        contents.add(saturationSection)
 
         self.contents = contents
     }
@@ -263,7 +262,7 @@ class CustomColorViewController: OWSTableViewController2 {
             cell.selectionStyle = .none
 
             let headerLabel = UILabel()
-            headerLabel.font = UIFont.ows_dynamicTypeSubheadline.ows_semibold
+            headerLabel.font = UIFont.dynamicTypeSubheadline.semibold()
             headerLabel.textColor = Theme.isDarkThemeEnabled ? UIColor.ows_gray15 : UIColor.ows_gray60
             headerLabel.text = headerText
             cell.contentView.addSubview(headerLabel)
@@ -440,11 +439,11 @@ class CustomColorViewController: OWSTableViewController2 {
             return
         }
 
-        let messageFormat = NSLocalizedString("CHAT_COLOR_SETTINGS_UPDATE_ALERT_MESSAGE_%d", tableName: "PluralAware",
+        let messageFormat = OWSLocalizedString("CHAT_COLOR_SETTINGS_UPDATE_ALERT_MESSAGE_%d", tableName: "PluralAware",
                                               comment: "Message for the 'edit chat color confirm alert' in the chat color settings view. Embeds: {{ the number of conversations that use this chat color }}.")
         let message = String.localizedStringWithFormat(messageFormat, usageCount)
         let actionSheet = ActionSheetController(
-            title: NSLocalizedString("CHAT_COLOR_SETTINGS_UPDATE_ALERT_ALERT_TITLE",
+            title: OWSLocalizedString("CHAT_COLOR_SETTINGS_UPDATE_ALERT_ALERT_TITLE",
                                      comment: "Title for the 'edit chat color confirm alert' in the chat color settings view."),
             message: message
         )
@@ -469,12 +468,12 @@ class CustomColorViewController: OWSTableViewController2 {
     }
 
     @objc
-    func didTapSet() {
+    private func didTapSet() {
         showSaveUI()
     }
 
     @objc
-    func didTapCancel() {
+    private func didTapCancel() {
         guard hasUnsavedChanges else {
             dismissWithoutSaving()
             return
@@ -486,7 +485,7 @@ class CustomColorViewController: OWSTableViewController2 {
     }
 
     @objc
-    func didTapDone() {
+    private func didTapDone() {
         showSaveUI()
     }
 }
@@ -1090,7 +1089,7 @@ private class CustomColorPreviewView: UIView {
             if Self.showKnobLabels, let name = name {
                 let label = UILabel()
                 label.text = name
-                label.font = .ows_dynamicTypeCaption1
+                label.font = .dynamicTypeCaption1
                 label.textColor = .ows_white
                 self.addSubview(label)
                 label.autoCenterInSuperview()
@@ -1359,19 +1358,19 @@ private class CustomColorPreviewView: UIView {
     private static func buildMockConversationModel() -> MockConversationView.MockModel {
         MockConversationView.MockModel(items: [
             .date,
-            .incoming(text: NSLocalizedString(
+            .incoming(text: OWSLocalizedString(
                 "CHAT_COLOR_INCOMING_MESSAGE_1",
                 comment: "The first incoming bubble text when setting a chat color."
             )),
-            .outgoing(text: NSLocalizedString(
+            .outgoing(text: OWSLocalizedString(
                 "CHAT_COLOR_OUTGOING_MESSAGE_1",
                 comment: "The first outgoing bubble text when setting a chat color."
             )),
-            .incoming(text: NSLocalizedString(
+            .incoming(text: OWSLocalizedString(
                 "CHAT_COLOR_INCOMING_MESSAGE_2",
                 comment: "The second incoming bubble text when setting a chat color."
             )),
-            .outgoing(text: NSLocalizedString(
+            .outgoing(text: OWSLocalizedString(
                 "CHAT_COLOR_OUTGOING_MESSAGE_2",
                 comment: "The second outgoing bubble text when setting a chat color."
             ))
@@ -1430,22 +1429,18 @@ private class CustomColorPreviewView: UIView {
 class CustomColorGestureRecognizer: UIGestureRecognizer {
     private var isActive = false
 
-    @objc
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         handle(event: event)
     }
 
-    @objc
     public override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
         handle(event: event)
     }
 
-    @objc
     public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
         handle(event: event)
     }
 
-    @objc
     public override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
         handle(event: event)
     }
@@ -1515,7 +1510,6 @@ private class CustomColorTooltip: TooltipView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    @objc
     public class func present(fromView: UIView,
                               widthReferenceView: UIView,
                               tailReferenceView: UIView,
@@ -1528,9 +1522,9 @@ private class CustomColorTooltip: TooltipView {
 
     public override func bubbleContentView() -> UIView {
         let label = UILabel()
-        label.text = NSLocalizedString("CUSTOM_CHAT_COLOR_SETTINGS_TOOLTIP",
+        label.text = OWSLocalizedString("CUSTOM_CHAT_COLOR_SETTINGS_TOOLTIP",
                                        comment: "Tooltip highlighting the custom chat color controls.")
-        label.font = .ows_dynamicTypeSubheadline
+        label.font = .dynamicTypeSubheadline
         label.textColor = .ows_white
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping

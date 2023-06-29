@@ -6,9 +6,8 @@
 import Contacts
 import Lottie
 import SignalMessaging
-import UIKit
+import SignalUI
 
-@objc
 public class Deprecated_OnboardingPermissionsViewController: Deprecated_OnboardingBaseViewController {
 
     private let animationView = AnimationView(name: "notificationPermission")
@@ -20,7 +19,7 @@ public class Deprecated_OnboardingPermissionsViewController: Deprecated_Onboardi
         case .registering: // primary
             shouldRequestAccessToContacts = true
         case .provisioning:  // linked
-            shouldRequestAccessToContacts = !FeatureFlags.contactDiscoveryV2
+            shouldRequestAccessToContacts = false
         }
         super.init(onboardingController: onboardingController)
     }
@@ -36,28 +35,28 @@ public class Deprecated_OnboardingPermissionsViewController: Deprecated_Onboardi
         let explanationText: String
         let giveAccessText: String
         if shouldRequestAccessToContacts {
-            titleText = NSLocalizedString(
+            titleText = OWSLocalizedString(
                 "ONBOARDING_PERMISSIONS_TITLE",
                 comment: "Title of the 'onboarding permissions' view."
             )
-            explanationText = NSLocalizedString(
+            explanationText = OWSLocalizedString(
                 "ONBOARDING_PERMISSIONS_EXPLANATION",
                 comment: "Explanation in the 'onboarding permissions' view."
             )
-            giveAccessText = NSLocalizedString(
+            giveAccessText = OWSLocalizedString(
                 "ONBOARDING_PERMISSIONS_ENABLE_PERMISSIONS_BUTTON",
                 comment: "Label for the 'give access' button in the 'onboarding permissions' view."
             )
         } else {
-            titleText = NSLocalizedString(
+            titleText = OWSLocalizedString(
                 "LINKED_ONBOARDING_PERMISSIONS_TITLE",
                 comment: "Title of the 'onboarding permissions' view."
             )
-            explanationText = NSLocalizedString(
+            explanationText = OWSLocalizedString(
                 "LINKED_ONBOARDING_PERMISSIONS_EXPLANATION",
                 comment: "Explanation in the 'onboarding permissions' view."
             )
-            giveAccessText = NSLocalizedString(
+            giveAccessText = OWSLocalizedString(
                 "LINKED_ONBOARDING_PERMISSIONS_ENABLE_PERMISSIONS_BUTTON",
                 comment: "Label for the 'give access' button in the 'onboarding permissions' view."
             )
@@ -159,7 +158,7 @@ public class Deprecated_OnboardingPermissionsViewController: Deprecated_Onboardi
      // MARK: - Events
 
     @objc
-    func giveAccessPressed() {
+    private func giveAccessPressed() {
         Logger.info("")
 
         requestPermissions()

@@ -423,7 +423,7 @@ extension ExperienceUpgradeManifest {
             return true
         case
                 .contactPermissionReminder:
-            return !FeatureFlags.contactDiscoveryV2
+            return false
         case
                 .remoteMegaphone:
             // Controlled by conditional check
@@ -437,7 +437,7 @@ extension ExperienceUpgradeManifest {
 extension ExperienceUpgradeManifest {
     func shouldBeShown(transaction: SDSAnyReadTransaction) -> Bool {
         if
-            let registrationDate = tsAccountManager.registrationDate(with: transaction),
+            let registrationDate = tsAccountManager.registrationDate(transaction: transaction),
             Date().timeIntervalSince(registrationDate) < delayAfterRegistration
         {
             // We have not waited long enough after registration to show this
@@ -482,9 +482,8 @@ extension ExperienceUpgradeManifest {
     private static func checkPreconditionsForIntroducingPins(transaction: SDSAnyReadTransaction) -> Bool {
         // The PIN setup flow requires an internet connection and you to not already have a PIN
         if
-            RemoteConfig.kbs,
             reachabilityManager.isReachable,
-            !DependenciesBridge.shared.keyBackupService.hasMasterKey(transaction: transaction.asV2Read)
+            !DependenciesBridge.shared.svr.hasMasterKey(transaction: transaction.asV2Read)
         {
             return true
         }
@@ -518,7 +517,11 @@ extension ExperienceUpgradeManifest {
     }
 
     private static func checkPreconditionsForCreateUsernameReminder(transaction: SDSAnyReadTransaction) -> Bool {
-        guard let localAci = tsAccountManager.localUuid else {
+        guard FeatureFlags.usernames else {
+            return false
+        }
+
+        guard let localAci = tsAccountManager.localUuid.map({ ServiceId($0) }) else {
             owsFailBeta("Missing local ACI!")
             return false
         }
@@ -565,10 +568,10 @@ extension ExperienceUpgradeManifest {
         guard
             AppVersion.compare(
                 megaphone.manifest.minAppVersion,
-                with: appVersion.currentAppVersion4
+                with: AppVersion.shared.currentAppVersion4
             ) != .orderedDescending
         else {
-            Logger.debug("App version \(appVersion.currentAppVersion4) lower than required \(megaphone.manifest.minAppVersion)!")
+            Logger.debug("App version \(AppVersion.shared.currentAppVersion4) lower than required \(megaphone.manifest.minAppVersion)!")
             return false
         }
 
@@ -580,7 +583,8 @@ extension ExperienceUpgradeManifest {
         guard RemoteConfig.isCountryCodeBucketEnabled(
             csvString: megaphone.manifest.countries,
             key: megaphone.manifest.id,
-            csvDescription: "remoteMegaphoneCountries_\(megaphone.manifest.id)"
+            csvDescription: "remoteMegaphoneCountries_\(megaphone.manifest.id)",
+            account: .implicit()
         ) else {
             Logger.debug("Remote megaphone not enabled for this user, by country code!")
             return false

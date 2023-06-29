@@ -3,13 +3,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
-import UIKit
 import SignalMessaging
+import SignalUI
 
 public class BadgeGiftingChooseBadgeViewController: OWSTableViewController2 {
-    typealias GiftConfiguration = SubscriptionManager.DonationConfiguration.GiftConfiguration
-    typealias PaymentMethodsConfiguration = SubscriptionManager.DonationConfiguration.PaymentMethodsConfiguration
+    typealias GiftConfiguration = SubscriptionManagerImpl.DonationConfiguration.GiftConfiguration
+    typealias PaymentMethodsConfiguration = SubscriptionManagerImpl.DonationConfiguration.PaymentMethodsConfiguration
 
     // MARK: - State management
 
@@ -73,8 +72,8 @@ public class BadgeGiftingChooseBadgeViewController: OWSTableViewController2 {
     private func loadData() -> Guarantee<State> {
         firstly {
             Logger.info("[Gifting] Fetching donation configuration...")
-            return SubscriptionManager.fetchDonationConfiguration()
-        }.then { donationConfiguration -> Promise<SubscriptionManager.DonationConfiguration> in
+            return SubscriptionManagerImpl.fetchDonationConfiguration()
+        }.then { donationConfiguration -> Promise<SubscriptionManagerImpl.DonationConfiguration> in
             Logger.info("[Gifting] Populating badge assets...")
             let giftBadge = donationConfiguration.gift.badge
             return self.profileManager.badgeStore.populateAssetsOnBadge(giftBadge)
@@ -160,24 +159,24 @@ public class BadgeGiftingChooseBadgeViewController: OWSTableViewController2 {
 
                 let titleLabel = UILabel()
                 introStack.addArrangedSubview(titleLabel)
-                titleLabel.text = NSLocalizedString(
+                titleLabel.text = OWSLocalizedString(
                     "DONATION_ON_BEHALF_OF_A_FRIEND_CHOOSE_BADGE_TITLE",
                     comment: "Users can donate on behalf of a friend, and the friend will receive a badge. This is the title on the screen where users choose the badge their friend will receive."
                 )
                 titleLabel.textAlignment = .center
-                titleLabel.font = UIFont.ows_dynamicTypeTitle2.ows_semibold
+                titleLabel.font = UIFont.dynamicTypeTitle2.semibold()
                 titleLabel.numberOfLines = 0
                 titleLabel.lineBreakMode = .byWordWrapping
                 titleLabel.autoPinWidthToSuperview(withMargin: 26)
 
                 let paragraphLabel = UILabel()
                 introStack.addArrangedSubview(paragraphLabel)
-                paragraphLabel.text = NSLocalizedString(
+                paragraphLabel.text = OWSLocalizedString(
                     "DONATION_ON_BEHALF_OF_A_FRIEND_CHOOSE_BADGE_DESCRIPTION",
                     comment: "Users can donate on behalf of a friend, and the friend will receive a badge. This is a short paragraph on the screen where users choose the badge their friend will receive."
                 )
                 paragraphLabel.textAlignment = .center
-                paragraphLabel.font = UIFont.ows_dynamicTypeBody
+                paragraphLabel.font = UIFont.dynamicTypeBody
                 paragraphLabel.numberOfLines = 0
                 paragraphLabel.lineBreakMode = .byWordWrapping
                 paragraphLabel.autoPinWidthToSuperview(withMargin: 26)
@@ -224,9 +223,9 @@ public class BadgeGiftingChooseBadgeViewController: OWSTableViewController2 {
 
             let textLabel = UILabel()
             stackView.addArrangedSubview(textLabel)
-            textLabel.text = NSLocalizedString("DONATION_VIEW_LOAD_FAILED",
+            textLabel.text = OWSLocalizedString("DONATION_VIEW_LOAD_FAILED",
                                                comment: "Text that's shown when the donation view fails to load data, probably due to network failure")
-            textLabel.font = .ows_dynamicTypeBody2
+            textLabel.font = .dynamicTypeBody2
             textLabel.textAlignment = .center
             textLabel.textColor = Theme.primaryTextColor
             textLabel.numberOfLines = 0
@@ -283,7 +282,7 @@ public class BadgeGiftingChooseBadgeViewController: OWSTableViewController2 {
             }
 
             cell.contentView.addSubview(currencyPickerButton)
-            currencyPickerButton.autoPinEdgesToSuperviewEdges(withInsets: UIEdgeInsets(top: 0, leading: 0, bottom: 12, trailing: 0))
+            currencyPickerButton.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 0, leading: 0, bottom: 12, trailing: 0))
 
             return cell
         }))
@@ -331,7 +330,7 @@ public class BadgeGiftingChooseBadgeViewController: OWSTableViewController2 {
         nextButton.dimsWhenHighlighted = true
         nextButton.layer.cornerRadius = 8
         nextButton.backgroundColor = .ows_accentBlue
-        nextButton.titleLabel?.font = UIFont.ows_dynamicTypeBody.ows_semibold
+        nextButton.titleLabel?.font = UIFont.dynamicTypeBody.semibold()
         nextButton.autoSetDimension(.height, toSize: 48)
         nextButton.autoPinWidthToSuperviewMargins()
 

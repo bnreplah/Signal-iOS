@@ -8,8 +8,7 @@ import SignalServiceKit
 
 // MARK: - OWSContactsMangerSwiftValues
 
-@objc
-class OWSContactsManagerSwiftValues: NSObject {
+class OWSContactsManagerSwiftValues {
 
     fileprivate var systemContactsCache: SystemContactsCache?
 
@@ -23,8 +22,6 @@ class OWSContactsManagerSwiftValues: NSObject {
 
     init(usernameLookupManager: UsernameLookupManager) {
         self.usernameLookupManager = usernameLookupManager
-
-        super.init()
     }
 }
 
@@ -35,7 +32,6 @@ extension OWSContactsManagerSwiftValues {
     /// exposing the Swift-only types required by the constructor. Note that
     /// this method will fail if ``DependenciesBridge`` has not yet been
     /// created.
-    @objc
     static func makeWithValuesFromDependenciesBridge() -> OWSContactsManagerSwiftValues {
         .init(usernameLookupManager: DependenciesBridge.shared.usernameLookupManager)
     }
@@ -272,7 +268,6 @@ fileprivate extension OWSContactsManager {
 
 // MARK: -
 
-@objc
 public extension OWSContactsManager {
 
     // MARK: - Low Trust Thread Warnings
@@ -371,7 +366,6 @@ public extension OWSContactsManager {
         }
     }
 
-    @nonobjc
     func blurAvatar(_ image: UIImage) -> UIImage? {
         do {
             return try image.withGaussianBlur(radius: 16, resizeToMaxPixelDimension: 100)
@@ -383,6 +377,7 @@ public extension OWSContactsManager {
 
     // MARK: - Sorting
 
+    @objc
     func sortSignalAccountsWithSneakyTransaction(_ signalAccounts: [SignalAccount]) -> [SignalAccount] {
         databaseStorage.read { transaction in
             self.sortSignalAccounts(signalAccounts, transaction: transaction)
@@ -638,12 +633,12 @@ extension OWSContactsManager {
 extension OWSContactsManager {
     // TODO: It would be preferable to figure out some way to use ReverseDispatchQueue.
     @objc
-    static let intersectionQueue = DispatchQueue(label: OWSDispatch.createLabel("contacts.intersectionQueue"))
+    static let intersectionQueue = DispatchQueue(label: "org.signal.contacts.intersection")
     @objc
     var intersectionQueue: DispatchQueue { Self.intersectionQueue }
 
     private static func buildContactAvatarHash(contact: Contact) -> Data? {
-        func buildHash() -> Data? {
+        return autoreleasepool {
             guard let cnContactId: String = contact.cnContactId else {
                 owsFailDebug("Missing cnContactId.")
                 return nil
@@ -656,13 +651,6 @@ extension OWSContactsManager {
                 return nil
             }
             return contactAvatarHash
-        }
-        if CurrentAppContext().isMainApp {
-            return buildHash()
-        } else {
-            return autoreleasepool {
-                buildHash()
-            }
         }
     }
 
@@ -678,12 +666,10 @@ extension OWSContactsManager {
                 continue
             }
             // TODO: Confirm ordering.
-            signalRecipients.sort { $0.compare($1) == .orderedAscending }
-            // We use Batching since contact avatars could be large.
-            Batching.enumerate(signalRecipients, batchSize: 12) { signalRecipient in
+            signalRecipients.sort { $0.address.compare($1.address) == .orderedAscending }
+            for signalRecipient in signalRecipients {
                 if seenAddresses.contains(signalRecipient.address) {
-                    Logger.verbose("Ignoring duplicate contact: \(signalRecipient.address), \(contact.fullName)")
-                    return
+                    continue
                 }
                 seenAddresses.insert(signalRecipient.address)
 
@@ -693,11 +679,11 @@ extension OWSContactsManager {
                 )
                 let contactAvatarHash = Self.buildContactAvatarHash(contact: contact)
                 let signalAccount = SignalAccount(
-                    signalRecipient: signalRecipient,
                     contact: contact,
                     contactAvatarHash: contactAvatarHash,
-                    multipleAccountLabelText: multipleAccountLabelText
-                )
+                    multipleAccountLabelText: multipleAccountLabelText,
+                    recipientPhoneNumber: signalRecipient.address.phoneNumber,
+                    recipientUUID: signalRecipient.address.uuidString)
                 signalAccounts.append(signalAccount)
             }
         }
@@ -705,9 +691,7 @@ extension OWSContactsManager {
     }
 
     @objc
-    func buildSignalAccountsAndUpdatePersistedState(
-        forFetchedSystemContacts localSystemContacts: [Contact]
-    ) {
+    func buildSignalAccountsAndUpdatePersistedState(forFetchedSystemContacts localSystemContacts: [Contact]) {
         intersectionQueue.async {
             let (oldSignalAccounts, newSignalAccounts) = Self.databaseStorage.read { transaction in
                 let oldSignalAccounts = SignalAccount.anyFetchAll(transaction: transaction)
@@ -720,33 +704,14 @@ extension OWSContactsManager {
             )
             var newSignalAccountsMap = [SignalServiceAddress: SignalAccount]()
 
-            if !FeatureFlags.contactDiscoveryV2 {
-                // If we find a persisted contact that is not from the local address book,
-                // it represents a contact from the address book on the primary device that
-                // was synced to this (linked) device. We should keep it, and not overwrite
-                // it since the primary device's system contacts always take precendence.
-                for signalAccount in oldSignalAccounts {
-                    if signalAccount.contact?.isFromLocalAddressBook == false {
-                        newSignalAccountsMap[signalAccount.recipientAddress] = signalAccount
-                    }
-                }
-            }
-
             var signalAccountsToInsert = [SignalAccount]()
             for newSignalAccount in newSignalAccounts {
                 let address = newSignalAccount.recipientAddress
 
                 // The user might have multiple entries in their address book with the same phone number.
-                if FeatureFlags.contactDiscoveryV2 {
-                    if newSignalAccountsMap[address] != nil {
-                        Logger.warn("Ignoring redundant signal account: \(address)")
-                        continue
-                    }
-                } else {
-                    if newSignalAccountsMap[address]?.contact?.isFromLocalAddressBook == true {
-                        Logger.warn("Ignoring redundant signal account: \(address)")
-                        continue
-                    }
+                if newSignalAccountsMap[address] != nil {
+                    Logger.warn("Ignoring redundant signal account: \(address)")
+                    continue
                 }
 
                 let oldSignalAccountToKeep: SignalAccount?
@@ -756,12 +721,6 @@ extension OWSContactsManager {
 
                 case .some(let oldSignalAccount) where oldSignalAccount.hasSameContent(newSignalAccount):
                     // Same content, no need to update.
-                    oldSignalAccountToKeep = oldSignalAccount
-
-                case .some(let oldSignalAccount) where !FeatureFlags.contactDiscoveryV2 && oldSignalAccount.contact?.isFromLocalAddressBook == false:
-                    // If the contact is not local to this device, then we are a linked device
-                    // and have synced this from the primary. We should not overwrite the
-                    // synced primary-device system contact.
                     oldSignalAccountToKeep = oldSignalAccount
 
                 case .some:
@@ -867,10 +826,7 @@ extension OWSContactsManager {
             let mapping = accounts.reduce(into: [SignalServiceAddress: Contact]()) { partialResult, kv in
                 let (address, account) = kv
 
-                guard
-                    let contact = account.contact,
-                    contact.isFromLocalAddressBook
-                else {
+                guard let contact = account.contact else {
                     return
                 }
 
@@ -983,10 +939,8 @@ extension OWSContactsManager {
 
 // MARK: -
 
-@objc
 public extension OWSContactsManager {
 
-    @nonobjc
     private static let unknownAddressFetchDateMap = AtomicDictionary<UUID, Date>()
 
     @objc(fetchProfileForUnknownAddress:)
@@ -1034,6 +988,10 @@ extension OWSContactsManager {
         }
     }
 
+    public func setIsPrimaryDevice() {
+        updateSystemContactsDataProvider(forcePrimary: true)
+    }
+
     private func registerForRegistrationStateNotification() {
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(
@@ -1049,9 +1007,11 @@ extension OWSContactsManager {
         updateSystemContactsDataProvider()
     }
 
-    private func updateSystemContactsDataProvider() {
+    private func updateSystemContactsDataProvider(forcePrimary: Bool = false) {
         let dataProvider: SystemContactsDataProvider?
-        if !tsAccountManager.isRegistered {
+        if forcePrimary {
+            dataProvider = PrimaryDeviceSystemContactsDataProvider()
+        } else if !tsAccountManager.isRegistered {
             dataProvider = nil
         } else if tsAccountManager.isPrimaryDevice {
             dataProvider = PrimaryDeviceSystemContactsDataProvider()
@@ -1142,7 +1102,6 @@ extension OWSContactsManager {
             .filter { !$0.hasPhoneNumber(localNumber) }
     }
 
-    @objc
     public func allSortedContacts(transaction: SDSAnyReadTransaction) -> [Contact] {
         allUnsortedContacts(transaction: transaction)
             .sorted { comparableName(for: $0).caseInsensitiveCompare(comparableName(for: $1)) == .orderedAscending }
@@ -1191,7 +1150,6 @@ extension OWSContactsManager {
         }
     }
 
-    @objc
     public func displayNamesByAddress(
         for addresses: [SignalServiceAddress],
         transaction: SDSAnyReadTransaction
@@ -1204,16 +1162,8 @@ extension OWSContactsManager {
         displayNamesRefinery(for: addresses, transaction: transaction).values.map { $0! }
     }
 
-    func phoneNumbers(for addresses: [SignalServiceAddress],
-                      transaction: SDSAnyReadTransaction) -> [String?] {
-        return Refinery<SignalServiceAddress, String>(addresses).refine {
-            return $0.map { $0.phoneNumber?.filterStringForDisplay() }
-        }.refine { (addresses: AnySequence<SignalServiceAddress>) -> [String?] in
-            let accounts = fetchSignalAccounts(for: addresses, transaction: transaction)
-            return accounts.map { maybeAccount in
-                return maybeAccount?.recipientPhoneNumber?.filterStringForDisplay()
-            }
-        }.values
+    func phoneNumbers(for addresses: [SignalServiceAddress], transaction: SDSAnyReadTransaction) -> [String?] {
+        return addresses.map { E164($0.phoneNumber)?.stringValue }
     }
 
     func fetchSignalAccounts(for addresses: AnySequence<SignalServiceAddress>,
@@ -1266,12 +1216,46 @@ extension OWSContactsManager {
 private extension SignalAccount {
     var fullName: String? {
         // Name may be either the nickname or the full name of the contact
-        guard let fullName = contactPreferredDisplayName()?.nilIfEmpty else {
+        guard let fullName = contactPreferredDisplayName() else {
             return nil
         }
         guard let label = multipleAccountLabelText.nilIfEmpty else {
             return fullName
         }
         return "\(fullName) (\(label))"
+    }
+}
+
+extension ContactsManagerProtocol {
+    public func nameForAddress(_ address: SignalServiceAddress,
+                               localUserDisplayMode: LocalUserDisplayMode,
+                               short: Bool,
+                               transaction: SDSAnyReadTransaction) -> NSAttributedString {
+        let name: String
+        if address.isLocalAddress {
+            switch localUserDisplayMode {
+            case .noteToSelf:
+                name = MessageStrings.noteToSelf
+            case .asLocalUser:
+                name = CommonStrings.you
+            case .asUser:
+                if short {
+                    name = shortDisplayName(for: address,
+                                            transaction: transaction)
+                } else {
+                    name = displayName(for: address,
+                                       transaction: transaction)
+                }
+            }
+        } else {
+            if short {
+                name = shortDisplayName(for: address,
+                                        transaction: transaction)
+            } else {
+                name = displayName(for: address,
+                                   transaction: transaction)
+            }
+        }
+        return name.asAttributedString
     }
 }

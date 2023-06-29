@@ -3,24 +3,18 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import UIKit
 import SignalServiceKit
+import SignalUI
 
-@objc
 public class Deprecated_OnboardingNavigationController: OWSNavigationController {
     private(set) var onboardingController: Deprecated_OnboardingController!
 
-    @objc
     public init(onboardingController: Deprecated_OnboardingController) {
         self.onboardingController = onboardingController
         super.init()
         if let nextMilestone = onboardingController.nextMilestone {
             setViewControllers([onboardingController.nextViewController(milestone: nextMilestone)], animated: false)
         }
-    }
-
-    public required init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
 
     public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -33,7 +27,8 @@ public class Deprecated_OnboardingNavigationController: OWSNavigationController 
 
 // MARK: -
 
-@objc
+// TODO[Registration]: pull out the parts of this related to secondary device
+// linking into simpler classes and delete the rest once once new registration rolls out.
 public class Deprecated_OnboardingController: NSObject {
 
     public enum OnboardingMode {
@@ -88,7 +83,7 @@ public class Deprecated_OnboardingController: NSObject {
             var milestones: [OnboardingMilestone] = [.verifiedPhoneNumber, .phoneNumberDiscoverability, .setupProfile]
 
             let hasPendingPinRestoration = context.db.read {
-                context.keyBackupService.hasPendingRestoration(transaction: $0)
+                LegacyKbsStateManager.shared.hasPendingRestoration(transaction: $0)
             }
 
             if hasPendingPinRestoration {
@@ -97,7 +92,7 @@ public class Deprecated_OnboardingController: NSObject {
 
             if FeatureFlags.pinsForNewUsers || hasPendingPinRestoration {
                 let hasBackupKeyRequestFailed = context.db.read {
-                    context.keyBackupService.hasBackupKeyRequestFailed(transaction: $0)
+                    LegacyKbsStateManager.shared.hasBackupKeyRequestFailed(transaction: $0)
                 }
 
                 if hasBackupKeyRequestFailed {
@@ -114,7 +109,7 @@ public class Deprecated_OnboardingController: NSObject {
     }
 
     var isComplete: Bool {
-        guard !tsAccountManager.isOnboarded() else {
+        guard !tsAccountManager.isOnboarded else {
             Logger.debug("previously completed onboarding")
             return true
         }
@@ -148,7 +143,10 @@ public class Deprecated_OnboardingController: NSObject {
             milestones.append(.setupProfile)
         }
 
-        if context.keyBackupService.hasMasterKey {
+        let hasMasterKey = context.db.read { tx in
+            context.svr.hasMasterKey(transaction: tx)
+        }
+        if hasMasterKey {
             milestones.append(.restorePin)
             milestones.append(.setupPin)
         }
@@ -156,10 +154,9 @@ public class Deprecated_OnboardingController: NSObject {
         return milestones
     }
 
-    @objc
     public func markAsOnboarded() {
-        guard !tsAccountManager.isOnboarded() else { return }
-        self.databaseStorage.asyncWrite {
+        guard !tsAccountManager.isOnboarded else { return }
+        self.databaseStorage.write {
             Logger.info("completed onboarding")
             self.tsAccountManager.setIsOnboarded(true, transaction: $0)
         }
@@ -167,7 +164,7 @@ public class Deprecated_OnboardingController: NSObject {
 
     func showNextMilestone(navigationController: UINavigationController) {
         guard let nextMilestone = nextMilestone else {
-            SignalApp.shared().showConversationSplitView()
+            SignalApp.shared.showConversationSplitView()
             markAsOnboarded()
             return
         }
@@ -217,6 +214,12 @@ public class Deprecated_OnboardingController: NSObject {
         AssertIsOnMainThread()
 
         Logger.info("")
+
+        if onboardingMode == .provisioning {
+            let loader = RegistrationCoordinatorLoaderImpl(dependencies: .from(self))
+            SignalApp.shared.showRegistration(loader: loader, desiredMode: .registering)
+            return
+        }
 
         switch Self.defaultOnboardingMode {
         case .registering:
@@ -381,7 +384,6 @@ public class Deprecated_OnboardingController: NSObject {
         navigationController.pushViewController(view, animated: true)
     }
 
-    @objc
     public func profileWasSkipped(fromView view: UIViewController) {
         AssertIsOnMainThread()
 
@@ -390,7 +392,6 @@ public class Deprecated_OnboardingController: NSObject {
         showConversationSplitView(view: view)
     }
 
-    @objc
     public func profileDidComplete(fromView view: UIViewController) {
         AssertIsOnMainThread()
 
@@ -412,10 +413,10 @@ public class Deprecated_OnboardingController: NSObject {
         let isModal = navigationController.presentingViewController != nil
         if isModal {
             view.dismiss(animated: true, completion: {
-                SignalApp.shared().showConversationSplitView()
+                SignalApp.shared.showConversationSplitView()
             })
         } else {
-            SignalApp.shared().showConversationSplitView()
+            SignalApp.shared.showConversationSplitView()
         }
     }
 
@@ -442,28 +443,24 @@ public class Deprecated_OnboardingController: NSObject {
         self.countryState = countryState
     }
 
-    @objc
     public func update(phoneNumber: Deprecated_RegistrationPhoneNumber) {
         AssertIsOnMainThread()
 
         self.phoneNumber = phoneNumber
     }
 
-    @objc
     public func update(captchaToken: String) {
         AssertIsOnMainThread()
 
         self.captchaToken = captchaToken
     }
 
-    @objc
     public func update(verificationCode: String) {
         AssertIsOnMainThread()
 
         self.verificationCode = verificationCode
     }
 
-    @objc
     public func update(twoFAPin: String) {
         AssertIsOnMainThread()
 
@@ -584,6 +581,7 @@ public class Deprecated_OnboardingController: NSObject {
     // TODO: Review
     public enum VerificationOutcome: Equatable {
         case success
+        case invalidPhoneNumber
         case invalidVerificationCode
         case invalid2FAPin
         case invalidV2RegistrationLockPin(remainingAttempts: UInt32)
@@ -591,7 +589,7 @@ public class Deprecated_OnboardingController: NSObject {
     }
 
     internal var hasPendingRestoration: Bool {
-        context.db.read { context.keyBackupService.hasPendingRestoration(transaction: $0) }
+        context.db.read { LegacyKbsStateManager.shared.hasPendingRestoration(transaction: $0) }
     }
 
     public func submitVerification(fromViewController: UIViewController,
@@ -610,42 +608,47 @@ public class Deprecated_OnboardingController: NSObject {
 
             // Clear all cached values before doing restores during onboarding,
             // they could be stale from previous registrations.
-            context.db.write { context.keyBackupService.clearKeys(transaction: $0) }
+            context.db.write { context.svr.clearKeys(transaction: $0) }
 
-            context.keyBackupService.restoreKeysAndBackup(with: twoFAPin, and: self.kbsAuth).done {
-                // If we restored successfully clear out KBS auth, the server will give it
-                // to us again if we still need to do KBS operations.
-                self.kbsAuth = nil
-                // The above operation already does a backup; don't bother doing another one later.
-                self.hasBackedUpKBS = true
+            let authMethod: SVR.AuthMethod
+            if let kbsAuth {
+                // The only way to get here is to have had an in progress change number from before
+                // registration updates launched. That was well before the launch of svr2. Therefore,
+                // when we eventually shut down KBS, we can consider this code path really old and
+                // unrecoverable; someone stuck in a change number for that long is doomed because
+                // the kbs they will try and access is dead anyway.
+                // In other words: when we kill .kbsOnly, don't bother to keep this around. Treat it
+                // as if the whole thing failed with no backups.
+                authMethod = .svrAuth(.kbsOnly(kbsAuth), backup: nil)
+            } else {
+                authMethod = .implicit
+            }
+            context.svr.restoreKeysAndBackup(pin: twoFAPin, authMethod: authMethod).done {
+                switch $0 {
+                case .success:
+                    // If we restored successfully clear out KBS auth, the server will give it
+                    // to us again if we still need to do KBS operations.
+                    self.kbsAuth = nil
+                    // The above operation already does a backup; don't bother doing another one later.
+                    self.hasBackedUpKBS = true
 
-                if self.hasPendingRestoration {
-                    firstly {
-                        self.accountManager.performInitialStorageServiceRestore()
-                    }.ensure {
-                        completion(.success)
-                    }.catch { error in
-                        owsFailDebugUnlessNetworkFailure(error)
+                    if self.hasPendingRestoration {
+                        firstly {
+                            self.accountManager.performInitialStorageServiceRestore()
+                        }.ensure {
+                            completion(.success)
+                        }.catch { error in
+                            owsFailDebugUnlessNetworkFailure(error)
+                        }
+                    } else {
+                        // We've restored our keys, we can now re-run this method to post our registration token
+                        // We need to first mark reglock as enabled so we know to include the reglock token in our
+                        // registration attempt.
+                        self.databaseStorage.write { transaction in
+                            self.ows2FAManager.markRegistrationLockV2Enabled(transaction: transaction)
+                        }
+                        self.submitVerification(fromViewController: fromViewController, completion: completion)
                     }
-                } else {
-                    // We've restored our keys, we can now re-run this method to post our registration token
-                    // We need to first mark reglock as enabled so we know to include the reglock token in our
-                    // registration attempt.
-                    self.databaseStorage.write { transaction in
-                        self.ows2FAManager.markRegistrationLockV2Enabled(transaction: transaction)
-                    }
-                    self.submitVerification(fromViewController: fromViewController, completion: completion)
-                }
-            }.catch { error in
-                guard let error = error as? KBS.KBSError else {
-                    owsFailDebug("unexpected response from KBS")
-                    return completion(.invalid2FAPin)
-                }
-
-                switch error {
-                case .assertion:
-                    owsFailDebug("unexpected response from KBS")
-                    completion(.invalid2FAPin)
                 case .invalidPin(let remainingAttempts):
                     Logger.warn("Invalid V2 PIN, \(remainingAttempts) attempt(s) remaining")
                     completion(.invalidV2RegistrationLockPin(remainingAttempts: remainingAttempts))
@@ -655,14 +658,17 @@ public class Deprecated_OnboardingController: NSObject {
                     // was deleted due to too many failed attempts. They'll
                     // have to retry after the registration lock window expires.
                     completion(.exhaustedV2RegistrationLockAttempts)
+                case .genericError, .networkError:
+                    owsFailDebug("unexpected response from KBS")
+                    return completion(.invalid2FAPin)
                 }
             }
 
             return
         }
 
-        guard let phoneNumber = phoneNumber else {
-            owsFailDebug("Missing phoneNumber.")
+        guard let phoneNumber = E164(phoneNumber?.e164) else {
+            completion(.invalidPhoneNumber)
             return
         }
         guard let verificationCode = verificationCode else {
@@ -673,7 +679,7 @@ public class Deprecated_OnboardingController: NSObject {
         // Ensure the account manager state is up-to-date.
         //
         // TODO: We could skip this in production.
-        tsAccountManager.phoneNumberAwaitingVerification = phoneNumber.e164
+        tsAccountManager.phoneNumberAwaitingVerification = E164ObjC(phoneNumber)
 
         let twoFAPin = self.twoFAPin ?? {
             // Initially set the value to any stored PIN code so we try that before asking the user to
@@ -681,7 +687,7 @@ public class Deprecated_OnboardingController: NSObject {
             if
                 Self.tsAccountManager.isReregistering,
                 self.phoneNumber != nil,
-                self.phoneNumber?.e164 == Self.tsAccountManager.reregistrationPhoneNumber()
+                self.phoneNumber?.e164 == Self.tsAccountManager.reregistrationPhoneNumber
             {
                 return Self.ows2FAManager.pinCode
             } else {
@@ -706,13 +712,21 @@ public class Deprecated_OnboardingController: NSObject {
                 }
             }
             return Promise.value(())
-        }.then { [weak self] in
+        }.then { [weak self] () -> Promise<Void> in
             // Do best effort to back up to KBS once we complete registration; this resets
             // the PIN guesses.
             guard let self = self, !self.hasBackedUpKBS, let twoFAPin = self.twoFAPin else {
                 return Promise.value(())
             }
-            return self.context.keyBackupService.restoreKeysAndBackup(with: twoFAPin)
+            return self.context.svr.restoreKeysAndBackup(pin: twoFAPin, authMethod: .implicit).then { (result: SVR.RestoreKeysResult) -> Promise<Void> in
+                switch result {
+                case .success:
+                    return .value(())
+                case .backupMissing, .invalidPin, .networkError, .genericError:
+                    // All errors are collapsed down below anyway.
+                    return .init(error: OWSAssertionError("Failed to restore keys"))
+                }
+            }
         }
 
         if showModal {
@@ -727,7 +741,7 @@ public class Deprecated_OnboardingController: NSObject {
 
                         self.verificationFailed(
                             fromViewController: fromViewController,
-                            error: error as NSError,
+                            error: error,
                             completion: completion)
                     })
                 }
@@ -747,12 +761,11 @@ public class Deprecated_OnboardingController: NSObject {
     }
 
     private func verificationFailed(fromViewController: UIViewController,
-                                    error: NSError,
+                                    error: Error,
                                     completion: @escaping (VerificationOutcome) -> Void) {
         AssertIsOnMainThread()
 
-        if let registrationMissing2FAPinError = (error as Error) as? RegistrationMissing2FAPinError {
-
+        if let registrationMissing2FAPinError = error as? RegistrationMissing2FAPinError {
             Logger.info("Missing 2FA PIN.")
 
             // If we were provided KBS auth, we'll need to re-register using reg lock v2,
@@ -762,29 +775,30 @@ public class Deprecated_OnboardingController: NSObject {
             // Since we were told we need 2fa, clear out any stored KBS keys so we can
             // do a fresh verification.
             SDSDatabaseStorage.shared.write { transaction in
-                context.keyBackupService.clearKeys(transaction: transaction.asV2Write)
+                context.svr.clearKeys(transaction: transaction.asV2Write)
                 self.ows2FAManager.markRegistrationLockV2Disabled(transaction: transaction)
-                self.ows2FAManager.setPinCode(nil, transaction: transaction)
+                self.ows2FAManager.clearLocalPinCode(transaction: transaction)
             }
 
             completion(.invalid2FAPin)
-
             onboardingDidRequire2FAPin(viewController: fromViewController)
-        } else if error.domain == OWSSignalServiceKitErrorDomain &&
-            error.code == OWSErrorCode.registrationTransferAvailable.rawValue {
+            return
+        }
+
+        let nsError = error as NSError
+        if nsError.domain == OWSSignalServiceKitErrorDomain && nsError.code == OWSErrorCode.registrationTransferAvailable.rawValue {
             Logger.info("Transfer available")
 
             presentTransferOptions(viewController: fromViewController)
 
             completion(.success)
         } else {
-            if error.domain == OWSSignalServiceKitErrorDomain &&
-                error.code == OWSErrorCode.userError.rawValue {
+            if nsError.domain == OWSSignalServiceKitErrorDomain && nsError.code == OWSErrorCode.userError.rawValue {
                 completion(.invalidVerificationCode)
             }
 
-            Logger.verbose("error: \(error.domain) \(error.code)")
-            OWSActionSheets.showActionSheet(title: NSLocalizedString("REGISTRATION_VERIFICATION_FAILED_TITLE", comment: "Alert view title"),
+            Logger.verbose("error: \(nsError.domain) \(nsError.code)")
+            OWSActionSheets.showActionSheet(title: OWSLocalizedString("REGISTRATION_VERIFICATION_FAILED_TITLE", comment: "Alert view title"),
                                 message: error.userErrorDescription,
                                 fromViewController: fromViewController)
         }
@@ -795,7 +809,7 @@ public class Deprecated_OnboardingController: NSObject {
 
 public extension UIView {
     func addBottomStroke() -> UIView {
-        return addBottomStroke(color: Theme.middleGrayColor, strokeWidth: CGHairlineWidth())
+        return addBottomStroke(color: .ows_middleGray, strokeWidth: .hairlineWidth)
     }
 
     func addBottomStroke(color: UIColor, strokeWidth: CGFloat) -> UIView {
@@ -837,7 +851,7 @@ extension Deprecated_OnboardingController: Deprecated_RegistrationPinAttemptsExh
 
         if hasPendingRestoration {
             context.db.write { transaction in
-                context.keyBackupService.clearPendingRestoration(transaction: transaction)
+                LegacyKbsStateManager.shared.clearPendingRestoration(transaction: transaction)
             }
             showNextMilestone(navigationController: navigationController)
         } else {

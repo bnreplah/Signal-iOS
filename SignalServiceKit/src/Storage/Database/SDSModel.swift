@@ -5,6 +5,7 @@
 
 import Foundation
 import GRDB
+import SignalCoreKit
 
 public protocol SDSModel: TSYapDatabaseObject, SDSIndexableModel, SDSIdentifiableModel {
     var sdsTableName: String { get }
@@ -14,8 +15,6 @@ public protocol SDSModel: TSYapDatabaseObject, SDSIndexableModel, SDSIdentifiabl
     var serializer: SDSSerializer { get }
 
     func anyInsert(transaction: SDSAnyWriteTransaction)
-
-    func anyRemove(transaction: SDSAnyWriteTransaction)
 
     static var table: SDSTableMetadata { get }
 }
@@ -116,22 +115,22 @@ public extension TableRecord {
 
 public extension SDSModel {
     // If batchSize > 0, the enumeration is performed in autoreleased batches.
-    static func grdbEnumerateUniqueIds(transaction: GRDBReadTransaction,
-                                       sql: String,
-                                       batchSize: UInt,
-                                       block: @escaping (String, UnsafeMutablePointer<ObjCBool>) -> Void) {
+    static func grdbEnumerateUniqueIds(
+        transaction: GRDBReadTransaction,
+        sql: String,
+        batchSize: UInt,
+        block: (String, UnsafeMutablePointer<ObjCBool>) -> Void
+    ) {
         do {
-            let cursor = try String.fetchCursor(transaction.database,
-                                                sql: sql)
-            try Batching.loop(batchSize: batchSize,
-                              loopBlock: { stop in
-                                guard let uniqueId = try cursor.next() else {
-                                    stop.pointee = true
-                                    return
-                                }
-                                block(uniqueId, stop)
+            let cursor = try String.fetchCursor(transaction.database, sql: sql)
+            try Batching.loop(batchSize: batchSize, loopBlock: { stop in
+                guard let uniqueId = try cursor.next() else {
+                    stop.pointee = true
+                    return
+                }
+                block(uniqueId, stop)
             })
-        } catch let error as NSError {
+        } catch let error {
             owsFailDebug("Couldn't fetch uniqueIds: \(error)")
         }
     }

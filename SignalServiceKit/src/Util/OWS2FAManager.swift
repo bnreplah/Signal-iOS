@@ -59,7 +59,13 @@ extension OWS2FAManager {
 
     public func enableRegistrationLockV2() -> Promise<Void> {
         return DispatchQueue.global().async(.promise) { () -> String in
-            guard let token = DependenciesBridge.shared.keyBackupService.deriveRegistrationLockToken() else {
+            let token = Self.databaseStorage.read { tx in
+                return DependenciesBridge.shared.svr.data(
+                    for: .registrationLock,
+                    transaction: tx.asV2Read
+                )?.canonicalStringRepresentation
+            }
+            guard let token else {
                 throw OWSAssertionError("Cannot enable registration lock without an existing PIN")
             }
             return token
@@ -186,7 +192,7 @@ extension OWS2FAManager {
     }
 
     public static func isWeakPin(_ pin: String) -> Bool {
-        let normalizedPin = KeyBackupService.normalizePin(pin)
+        let normalizedPin = SVRUtil.normalizePin(pin)
 
         guard pin.count >= kMin2FAv2PinLength else { return true }
 
@@ -217,26 +223,32 @@ extension OWS2FAManager {
         return allTheSame || forwardSequential || reverseSequential
     }
 
+    @objc
+    public func clearLocalPinCode(transaction: SDSAnyWriteTransaction) {
+        Self.keyValueStore().removeValue(forKey: kOWS2FAManager_PinCode, transaction: transaction)
+    }
+
     // MARK: - KeyBackupService Wrappers/Helpers
 
     @objc
-    public var hasBackedUpMasterKey: Bool {
-        DependenciesBridge.shared.keyBackupService.hasBackedUpMasterKey
+    public func hasBackedUpMasterKey(transaction: SDSAnyReadTransaction) -> Bool {
+        return DependenciesBridge.shared.svr.hasBackedUpMasterKey(transaction: transaction.asV2Read)
     }
 
     @objc(generateAndBackupKeysWithPin:rotateMasterKey:)
     @available(swift, obsoleted: 1.0)
     public func generateAndBackupKeys(with pin: String, rotateMasterKey: Bool) -> AnyPromise {
-        return DependenciesBridge.shared.keyBackupService.generateAndBackupKeys(with: pin, rotateMasterKey: rotateMasterKey)
+        let promise = DependenciesBridge.shared.svr.generateAndBackupKeys(pin: pin, authMethod: .implicit, rotateMasterKey: rotateMasterKey)
+        return AnyPromise(promise)
     }
 
     @objc
     public func verifyKBSPin(_ pin: String, resultHandler: @escaping (Bool) -> Void) {
-        DependenciesBridge.shared.keyBackupService.verifyPin(pin, resultHandler: resultHandler)
+        DependenciesBridge.shared.svr.verifyPin(pin, resultHandler: resultHandler)
     }
 
     @objc(deleteKeys)
     public func deleteKBSKeys() -> AnyPromise {
-        return AnyPromise(DependenciesBridge.shared.keyBackupService.deleteKeys())
+        return AnyPromise(DependenciesBridge.shared.svr.deleteKeys())
     }
 }

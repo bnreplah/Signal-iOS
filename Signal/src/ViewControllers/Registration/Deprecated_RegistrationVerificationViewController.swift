@@ -3,10 +3,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import UIKit
-import SignalCoreKit
+import SignalServiceKit
+import SignalUI
 
-@objc
 protocol Deprecated_RegistrationVerificationViewController: AnyObject {
 
     var viewModel: Deprecated_RegistrationVerificationViewModel { get }
@@ -22,7 +21,6 @@ protocol Deprecated_RegistrationVerificationViewController: AnyObject {
 
 // MARK: -
 
-@objc
 class Deprecated_RegistrationVerificationViewModel: NSObject {
     weak var viewController: Deprecated_RegistrationVerificationViewController?
 
@@ -62,14 +60,14 @@ class Deprecated_RegistrationVerificationViewModel: NSObject {
             .replacingOccurrences(of: " ", with: "\u{00a0}")
 
         let titleLabel = vc.createTitleLabel(
-            text: NSLocalizedString(
+            text: OWSLocalizedString(
                 "ONBOARDING_VERIFICATION_TITLE_LABEL",
                 comment: "Title label for the onboarding verification page")
         )
 
         let subtitleLabel = vc.createExplanationLabel(
             explanationText: String(
-                format: NSLocalizedString(
+                format: OWSLocalizedString(
                     "ONBOARDING_VERIFICATION_TITLE_DEFAULT_FORMAT",
                     comment: "Format for the title of the 'onboarding verification' view. Embeds {{the user's phone number}}."),
                 formattedPhoneNumber)
@@ -80,7 +78,7 @@ class Deprecated_RegistrationVerificationViewModel: NSObject {
         titleLabel.accessibilityIdentifier = "onboarding.verification." + "titleLabel"
         subtitleLabel.accessibilityIdentifier = "onboarding.verification." + "subtitleLabel"
 
-        let backLink = vc.linkButton(title: NSLocalizedString("ONBOARDING_VERIFICATION_BACK_LINK",
+        let backLink = vc.linkButton(title: OWSLocalizedString("ONBOARDING_VERIFICATION_BACK_LINK",
                                                               comment: "Label for the link that lets users change their phone number in the onboarding views."),
                                      target: self,
                                      selector: #selector(backLinkTapped))
@@ -89,10 +87,10 @@ class Deprecated_RegistrationVerificationViewModel: NSObject {
 
         verificationCodeView.delegate = self
 
-        errorLabel.text = NSLocalizedString("ONBOARDING_VERIFICATION_INVALID_CODE",
+        errorLabel.text = OWSLocalizedString("ONBOARDING_VERIFICATION_INVALID_CODE",
                                             comment: "Label indicating that the verification code is incorrect in the 'onboarding verification' view.")
         errorLabel.textColor = .ows_accentRed
-        errorLabel.font = UIFont.ows_dynamicTypeBodyClamped.ows_semibold
+        errorLabel.font = UIFont.dynamicTypeBodyClamped.semibold()
         errorLabel.textAlignment = .center
         errorLabel.autoSetDimension(.height, toSize: errorLabel.font.lineHeight)
         errorLabel.accessibilityIdentifier = "onboarding.verification." + "errorLabel"
@@ -216,7 +214,7 @@ class Deprecated_RegistrationVerificationViewModel: NSObject {
         setHasInvalidCode(false)
         guard verificationCodeView.isComplete else { return }
 
-        let spinnerLabel = NSLocalizedString(
+        let spinnerLabel = OWSLocalizedString(
             "ONBOARDING_VERIFICATION_CODE_VALIDATION_PROGRESS_LABEL",
             comment: "Label for a progress spinner currently validating code")
         setProgressView(animating: true, text: spinnerLabel)
@@ -318,20 +316,20 @@ class Deprecated_RegistrationVerificationViewModel: NSObject {
         callMeButton?.setEnabled(canResend)
 
         if canResend {
-            let resendCodeTitle = NSLocalizedString(
+            let resendCodeTitle = OWSLocalizedString(
                 "ONBOARDING_VERIFICATION_RESEND_CODE_BUTTON",
                 comment: "Label for button to resend SMS verification code.")
-            let callMeTitle = NSLocalizedString(
+            let callMeTitle = OWSLocalizedString(
                 "ONBOARDING_VERIFICATION_CALL_ME_BUTTON",
                 comment: "Label for button to perform verification with a phone call.")
 
             resendCodeButton?.setTitle(
                 title: resendCodeTitle,
-                font: .ows_dynamicTypeSubheadlineClamped,
+                font: .dynamicTypeSubheadlineClamped,
                 titleColor: Theme.accentBlueColor)
             callMeButton?.setTitle(
                 title: callMeTitle,
-                font: .ows_dynamicTypeSubheadlineClamped,
+                font: .dynamicTypeSubheadlineClamped,
                 titleColor: Theme.accentBlueColor)
 
         } else {
@@ -339,10 +337,10 @@ class Deprecated_RegistrationVerificationViewModel: NSObject {
             let countdownRemaining = max(0, Self.countdownDuration - countdownInterval)
             let formattedCountdown = OWSFormat.localizedDurationString(from: round(countdownRemaining))
 
-            let resendCodeCountdownFormat = NSLocalizedString(
+            let resendCodeCountdownFormat = OWSLocalizedString(
                 "ONBOARDING_VERIFICATION_RESEND_CODE_COUNTDOWN_FORMAT",
                 comment: "Format string for button counting down time until SMS code can be resent. Embeds {{time remaining}}.")
-            let callMeCountdownFormat = NSLocalizedString(
+            let callMeCountdownFormat = OWSLocalizedString(
                 "ONBOARDING_VERIFICATION_CALL_ME_COUNTDOWN_FORMAT",
                 comment: "Format string for button counting down time until phone call verification can be performed. Embeds {{time remaining}}.")
 
@@ -350,11 +348,11 @@ class Deprecated_RegistrationVerificationViewModel: NSObject {
             let callMeTitle = String(format: callMeCountdownFormat, formattedCountdown)
             resendCodeButton?.setTitle(
                 title: resendCodeTitle,
-                font: .ows_dynamicTypeSubheadlineClamped,
+                font: .dynamicTypeSubheadlineClamped,
                 titleColor: Theme.secondaryTextAndIconColor)
             callMeButton?.setTitle(
                 title: callMeTitle,
-                font: .ows_dynamicTypeSubheadlineClamped,
+                font: .dynamicTypeSubheadlineClamped,
                 titleColor: Theme.secondaryTextAndIconColor)
         }
     }

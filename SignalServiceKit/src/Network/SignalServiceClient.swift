@@ -17,17 +17,26 @@ public protocol SignalServiceClient {
     func deprecated_requestVerificationCode(e164: String, preauthChallenge: String?, captchaToken: String?, transport: TSVerificationTransport) -> Promise<Void>
     func verifySecondaryDevice(verificationCode: String, phoneNumber: String, authKey: String, encryptedDeviceName: Data) -> Promise<VerifySecondaryDeviceResponse>
     func getAvailablePreKeys(for identity: OWSIdentity) -> Promise<Int>
-    func registerPreKeys(for identity: OWSIdentity, identityKey: IdentityKey, signedPreKeyRecord: SignedPreKeyRecord, preKeyRecords: [PreKeyRecord]) -> Promise<Void>
+    /// If a username and password are both provided, those are used for the request's
+    /// Authentication header. Otherwise, the default header is used (whatever's on
+    /// TSAccountManager).
+    func registerPreKeys(
+        for identity: OWSIdentity,
+        identityKey: IdentityKey,
+        signedPreKeyRecord: SignedPreKeyRecord,
+        preKeyRecords: [PreKeyRecord],
+        auth: ChatServiceAuth
+    ) -> Promise<Void>
     func setCurrentSignedPreKey(_ signedPreKey: SignedPreKeyRecord, for identity: OWSIdentity) -> Promise<Void>
     func requestUDSenderCertificate(uuidOnly: Bool) -> Promise<Data>
     func updatePrimaryDeviceAccountAttributes() -> Promise<Void>
-    func getAccountWhoAmI() -> Promise<WhoAmIResponse>
-    func requestStorageAuth() -> Promise<(username: String, password: String)>
-    func getRemoteConfig() -> Promise<[String: RemoteConfigItem]>
+    func getAccountWhoAmI() -> Promise<WhoAmIRequestFactory.Responses.WhoAmI>
+    func requestStorageAuth(chatServiceAuth: ChatServiceAuth) -> Promise<(username: String, password: String)>
+    func getRemoteConfig(auth: ChatServiceAuth) -> Promise<RemoteConfigResponse>
 
     // MARK: - Secondary Devices
 
-    func updateSecondaryDeviceCapabilities() -> Promise<Void>
+    func updateSecondaryDeviceCapabilities(hasBackedUpMasterKey: Bool) -> Promise<Void>
 }
 
 // MARK: -
@@ -37,11 +46,16 @@ public enum RemoteConfigItem {
     case value(value: AnyObject)
 }
 
+public struct RemoteConfigResponse {
+    public let items: [String: RemoteConfigItem]
+    public let serverEpochTimeSeconds: UInt64?
+}
+
 // MARK: -
 
 /// Based on libsignal-service-java's PushServiceSocket class
 @objc
-public class SignalServiceRestClient: NSObject, SignalServiceClient {
+public class SignalServiceRestClient: NSObject, SignalServiceClient, Dependencies {
 
     public static let shared = SignalServiceRestClient()
 
@@ -85,16 +99,22 @@ public class SignalServiceRestClient: NSObject, SignalServiceClient {
         }
     }
 
-    public func registerPreKeys(for identity: OWSIdentity,
-                                identityKey: IdentityKey,
-                                signedPreKeyRecord: SignedPreKeyRecord,
-                                preKeyRecords: [PreKeyRecord]) -> Promise<Void> {
+    public func registerPreKeys(
+        for identity: OWSIdentity,
+        identityKey: IdentityKey,
+        signedPreKeyRecord: SignedPreKeyRecord,
+        preKeyRecords: [PreKeyRecord],
+        auth: ChatServiceAuth
+    ) -> Promise<Void> {
         Logger.debug("")
 
-        let request = OWSRequestFactory.registerPrekeysRequest(for: identity,
-                                                               prekeyArray: preKeyRecords,
-                                                               identityKey: identityKey,
-                                                               signedPreKey: signedPreKeyRecord)
+        let request = OWSRequestFactory.registerPrekeysRequest(
+            identity: identity,
+            identityKey: identityKey,
+            signedPreKeyRecord: signedPreKeyRecord,
+            prekeyRecords: preKeyRecords,
+            auth: auth
+        )
         return networkManager.makePromise(request: request).asVoid()
     }
 
@@ -126,25 +146,33 @@ public class SignalServiceRestClient: NSObject, SignalServiceClient {
             return Promise(error: OWSAssertionError("only primary device should update account attributes"))
         }
 
-        let request = OWSRequestFactory.updatePrimaryDeviceAttributesRequest()
+        let attributes = self.databaseStorage.write { transaction in
+            return AccountAttributes.generateForPrimaryDevice(
+                fromDependencies: self,
+                svr: DependenciesBridge.shared.svr,
+                transaction: transaction
+            )
+        }
+        let request = AccountAttributesRequestFactory.updatePrimaryDeviceAttributesRequest(attributes)
         return networkManager.makePromise(request: request).asVoid()
     }
 
-    public func getAccountWhoAmI() -> Promise<WhoAmIResponse> {
-        let request = OWSRequestFactory.accountWhoAmIRequest()
+    public func getAccountWhoAmI() -> Promise<WhoAmIRequestFactory.Responses.WhoAmI> {
+        let request = WhoAmIRequestFactory.whoAmIRequest(auth: .implicit())
 
         return firstly {
             networkManager.makePromise(request: request)
         }.map(on: DispatchQueue.global()) { response in
-            guard let json = response.responseBodyJson else {
+            guard let json = response.responseBodyData else {
                 throw OWSAssertionError("Missing or invalid JSON.")
             }
-            return try WhoAmIResponse.parse(json)
+            return try JSONDecoder().decode(WhoAmIRequestFactory.Responses.WhoAmI.self, from: json)
         }
     }
 
-    public func requestStorageAuth() -> Promise<(username: String, password: String)> {
+    public func requestStorageAuth(chatServiceAuth: ChatServiceAuth) -> Promise<(username: String, password: String)> {
         let request = OWSRequestFactory.storageAuthRequest()
+        request.setAuth(chatServiceAuth)
         return firstly {
             networkManager.makePromise(request: request)
         }.map(on: DispatchQueue.global()) { response in
@@ -162,15 +190,28 @@ public class SignalServiceRestClient: NSObject, SignalServiceClient {
         }
     }
 
-    public func verifySecondaryDevice(verificationCode: String,
-                                      phoneNumber: String,
-                                      authKey: String,
-                                      encryptedDeviceName: Data) -> Promise<VerifySecondaryDeviceResponse> {
+    public func verifySecondaryDevice(
+        verificationCode: String,
+        phoneNumber: String,
+        authKey: String,
+        encryptedDeviceName: Data
+    ) -> Promise<VerifySecondaryDeviceResponse> {
 
-        let request = OWSRequestFactory.verifySecondaryDeviceRequest(verificationCode: verificationCode,
-                                                                     phoneNumber: phoneNumber,
-                                                                     authKey: authKey,
-                                                                     encryptedDeviceName: encryptedDeviceName)
+        let accountAttributes = self.databaseStorage.write { transaction in
+            return AccountAttributes.generateForSecondaryDevice(
+                fromDependencies: self,
+                svr: DependenciesBridge.shared.svr,
+                encryptedDeviceName: encryptedDeviceName,
+                transaction: transaction
+            )
+        }
+
+        let request = OWSRequestFactory.verifySecondaryDeviceRequest(
+            verificationCode: verificationCode,
+            phoneNumber: phoneNumber,
+            authPassword: authKey,
+            attributes: accountAttributes
+        )
 
         return firstly {
             networkManager.makePromise(request: request)
@@ -198,8 +239,9 @@ public class SignalServiceRestClient: NSObject, SignalServiceClient {
     }
 
     // yields a map of ["feature_name": isEnabled]
-    public func getRemoteConfig() -> Promise<[String: RemoteConfigItem]> {
+    public func getRemoteConfig(auth: ChatServiceAuth) -> Promise<RemoteConfigResponse> {
         let request = OWSRequestFactory.getRemoteConfigRequest()
+        request.setAuth(auth)
 
         return firstly {
             networkManager.makePromise(request: request)
@@ -212,8 +254,9 @@ public class SignalServiceRestClient: NSObject, SignalServiceClient {
             }
 
             let config: [[String: Any]] = try parser.required(key: "config")
+            let serverEpochTimeSeconds: UInt64? = try parser.optional(key: "serverEpochTime")
 
-            return try config.reduce([:]) { accum, item in
+            let items: [String: RemoteConfigItem] = try config.reduce([:]) { accum, item in
                 var accum = accum
                 guard let itemParser = ParamParser(responseObject: item) else {
                     throw OWSAssertionError("Missing or invalid remote config item.")
@@ -230,36 +273,20 @@ public class SignalServiceRestClient: NSObject, SignalServiceClient {
 
                 return accum
             }
+
+            return .init(items: items, serverEpochTimeSeconds: serverEpochTimeSeconds)
         }
     }
 
     // MARK: - Secondary Devices
 
-    public func updateSecondaryDeviceCapabilities() -> Promise<Void> {
-        let request = OWSRequestFactory.updateSecondaryDeviceCapabilitiesRequest()
+    public func updateSecondaryDeviceCapabilities(hasBackedUpMasterKey: Bool) -> Promise<Void> {
+        let request = OWSRequestFactory.updateSecondaryDeviceCapabilitiesRequest(withHasBackedUpMasterKey: hasBackedUpMasterKey)
         return self.networkManager.makePromise(request: request).asVoid()
     }
 }
 
 // MARK: -
-
-public struct WhoAmIResponse {
-    public let aci: UUID
-    public let pni: UUID
-    public let e164: String?
-
-    public static func parse(_ json: Any?) throws -> Self {
-        guard let parser = ParamParser(responseObject: json) else {
-            throw OWSAssertionError("Missing or invalid response.")
-        }
-
-        let aci: UUID = try parser.required(key: "uuid")
-        let pni: UUID = try parser.required(key: "pni")
-        let e164: String? = try parser.optional(key: "number")
-
-        return WhoAmIResponse(aci: aci, pni: pni, e164: e164)
-    }
-}
 
 public struct VerifySecondaryDeviceResponse {
     public let pni: UUID

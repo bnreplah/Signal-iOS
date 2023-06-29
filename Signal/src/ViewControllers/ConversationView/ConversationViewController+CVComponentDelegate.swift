@@ -17,6 +17,8 @@ extension ConversationViewController: CVComponentDelegate {
 
     public var wallpaperBlurProvider: WallpaperBlurProvider? { backgroundContainer }
 
+    public var spoilerReveal: SpoilerRevealState { return self.viewState.spoilerReveal }
+
     public func enqueueReload() {
         self.loadCoordinator.enqueueReload()
     }
@@ -173,6 +175,22 @@ extension ConversationViewController: CVComponentDelegate {
         expandTruncatedTextOrPresentLongTextView(itemViewModel)
     }
 
+    public func didTapShowEditHistory(_ itemViewModel: CVItemViewModelImpl) {
+        AssertIsOnMainThread()
+
+        guard let message = itemViewModel.interaction as? TSMessage else {
+            owsFailDebug("Invalid interaction.")
+            return
+        }
+
+        let sheet = EditHistoryTableSheetViewController(
+            message: message,
+            spoilerReveal: viewState.spoilerReveal,
+            database: databaseStorage
+        )
+        self.present(sheet, animated: true)
+    }
+
     public func didTapFailedOrPendingDownloads(_ message: TSMessage) {
         AssertIsOnMainThread()
 
@@ -191,7 +209,7 @@ extension ConversationViewController: CVComponentDelegate {
     }
 
     public func didTapBrokenVideo() {
-        let toastText = NSLocalizedString("VIDEO_BROKEN",
+        let toastText = OWSLocalizedString("VIDEO_BROKEN",
                                           comment: "Toast alert text shown when tapping on a video that cannot be played.")
         presentToastCVC(toastText)
     }
@@ -205,8 +223,11 @@ extension ConversationViewController: CVComponentDelegate {
 
         dismissKeyBoard()
 
-        let pageVC = MediaPageViewController(initialMediaAttachment: attachmentStream,
-                                             thread: self.thread)
+        let pageVC = MediaPageViewController(
+            initialMediaAttachment: attachmentStream,
+            thread: self.thread,
+            spoilerReveal: self.viewState.spoilerReveal
+        )
         self.present(pageVC, animated: true, completion: nil)
     }
 
@@ -228,7 +249,7 @@ extension ConversationViewController: CVComponentDelegate {
         }
     }
 
-    public func didTapQuotedReply(_ quotedReply: OWSQuotedReplyModel) {
+    public func didTapQuotedReply(_ quotedReply: QuotedReplyModel) {
         AssertIsOnMainThread()
         owsAssertDebug(quotedReply.timestamp > 0)
         owsAssertDebug(quotedReply.authorAddress.isValid)
@@ -291,7 +312,11 @@ extension ConversationViewController: CVComponentDelegate {
             return
         }
 
-        if SignalMe.isPossibleUrl(url) { return cvc_didTapSignalMeLink(url: url) }
+        if SignalDotMePhoneNumberLink.isPossibleUrl(url) {
+            return cvc_didTapSignalMeLink(url: url)
+        } else if let usernameLink = Usernames.UsernameLink(usernameLinkUrl: url) {
+            return didTapUsernameLink(usernameLink: usernameLink)
+        }
 
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
@@ -342,7 +367,11 @@ extension ConversationViewController: CVComponentDelegate {
     }
 
     public func cvc_didTapSignalMeLink(url: URL) {
-        SignalMe.openChat(url: url, fromViewController: self)
+        SignalDotMePhoneNumberLink.openChat(url: url, fromViewController: self)
+    }
+
+    public func didTapUsernameLink(usernameLink: Usernames.UsernameLink) {
+        UsernameLinkOpener(link: usernameLink).open(fromViewController: self)
     }
 
     public func didTapShowMessageDetail(_ itemViewModel: CVItemViewModelImpl) {
@@ -417,14 +446,14 @@ extension ConversationViewController: CVComponentDelegate {
         headerImageView.autoSetDimension(.height, toSize: 110)
 
         let displayName = contactsManager.displayName(for: address)
-        let messageFormat = NSLocalizedString("UNVERIFIED_SAFETY_NUMBER_CHANGE_DESCRIPTION_FORMAT",
+        let messageFormat = OWSLocalizedString("UNVERIFIED_SAFETY_NUMBER_CHANGE_DESCRIPTION_FORMAT",
                                               comment: "Description for the unverified safety number change. Embeds {name of contact with identity change}")
 
         let actionSheet = ActionSheetController(title: nil,
                                                 message: String(format: messageFormat, displayName))
         actionSheet.customHeader = headerView
 
-        actionSheet.addAction(ActionSheetAction(title: NSLocalizedString("UNVERIFIED_SAFETY_NUMBER_VERIFY_ACTION",
+        actionSheet.addAction(ActionSheetAction(title: OWSLocalizedString("UNVERIFIED_SAFETY_NUMBER_VERIFY_ACTION",
                                                                          comment: "Action to verify a safety number after it has changed"),
                                                 style: .default) { [weak self] _ in
             self?.showFingerprint(address: address)
@@ -440,13 +469,13 @@ extension ConversationViewController: CVComponentDelegate {
         AssertIsOnMainThread()
 
         let keyOwner = contactsManager.displayName(for: message.theirSignalAddress())
-        let titleFormat = NSLocalizedString("SAFETY_NUMBERS_ACTIONSHEET_TITLE", comment: "Action sheet heading")
+        let titleFormat = OWSLocalizedString("SAFETY_NUMBERS_ACTIONSHEET_TITLE", comment: "Action sheet heading")
         let titleText = String(format: titleFormat, keyOwner)
 
         let actionSheet = ActionSheetController(title: titleText, message: nil)
         actionSheet.addAction(OWSActionSheets.cancelAction)
 
-        actionSheet.addAction(ActionSheetAction(title: NSLocalizedString("SHOW_SAFETY_NUMBER_ACTION",
+        actionSheet.addAction(ActionSheetAction(title: OWSLocalizedString("SHOW_SAFETY_NUMBER_ACTION",
                                                                          comment: "Action sheet item"),
                                                 accessibilityIdentifier: "show_safety_number",
                                                 style: .default) { [weak self] _ in
@@ -454,7 +483,7 @@ extension ConversationViewController: CVComponentDelegate {
             self?.showFingerprint(address: message.theirSignalAddress())
         })
 
-        actionSheet.addAction(ActionSheetAction(title: NSLocalizedString("ACCEPT_NEW_IDENTITY_ACTION",
+        actionSheet.addAction(ActionSheetAction(title: OWSLocalizedString("ACCEPT_NEW_IDENTITY_ACTION",
                                                                          comment: "Action sheet item"),
                                                 accessibilityIdentifier: "accept_safety_number",
                                                 style: .default) { _ in
@@ -484,14 +513,14 @@ extension ConversationViewController: CVComponentDelegate {
         let threadName = databaseStorage.read { transaction in
             Self.contactsManager.displayName(for: self.thread, transaction: transaction)
         }
-        let alertMessage = String(format: NSLocalizedString("CORRUPTED_SESSION_DESCRIPTION",
+        let alertMessage = String(format: OWSLocalizedString("CORRUPTED_SESSION_DESCRIPTION",
                                                             comment: "ActionSheet title"),
                                   threadName)
         let alert = ActionSheetController(title: nil, message: alertMessage)
 
         alert.addAction(OWSActionSheets.cancelAction)
 
-        alert.addAction(ActionSheetAction(title: NSLocalizedString("FINGERPRINT_SHRED_KEYMATERIAL_BUTTON",
+        alert.addAction(ActionSheetAction(title: OWSLocalizedString("FINGERPRINT_SHRED_KEYMATERIAL_BUTTON",
                                                                    comment: ""),
                                           accessibilityIdentifier: "reset_session",
                                           style: .default) { [weak self] _ in
@@ -524,9 +553,9 @@ extension ConversationViewController: CVComponentDelegate {
         headerImageView.autoSetDimension(.width, toSize: 200)
         headerImageView.autoSetDimension(.height, toSize: 110)
 
-        ContactSupportAlert.presentAlert(title: NSLocalizedString("SESSION_REFRESH_ALERT_TITLE",
+        ContactSupportAlert.presentAlert(title: OWSLocalizedString("SESSION_REFRESH_ALERT_TITLE",
                                                                   comment: "Title for the session refresh alert"),
-                                         message: NSLocalizedString("SESSION_REFRESH_ALERT_MESSAGE",
+                                         message: OWSLocalizedString("SESSION_REFRESH_ALERT_MESSAGE",
                                                                     comment: "Description for the session refresh alert"),
                                          emailSupportFilter: "Signal iOS Session Refresh",
                                          fromViewController: self,
@@ -621,23 +650,20 @@ extension ConversationViewController: CVComponentDelegate {
     public func didTapFailedOutgoingMessage(_ message: TSOutgoingMessage) {
         AssertIsOnMainThread()
 
-        resendFailedOutgoingMessage(message)
+        let promptBuilder = ResendMessagePromptBuilder(
+            databaseStorage: databaseStorage,
+            messageSenderJobQueue: sskJobQueues.messageSenderJobQueue
+        )
+        dismissKeyBoard()
+        self.present(promptBuilder.build(for: message), animated: true)
     }
 
-    public func didTapShowGroupMigrationLearnMoreActionSheet(infoMessage: TSInfoMessage,
-                                                             oldGroupModel: TSGroupModel,
-                                                             newGroupModel: TSGroupModel) {
+    public func didTapGroupMigrationLearnMore() {
         AssertIsOnMainThread()
-
-        guard let groupThread = thread as? TSGroupThread else {
-            owsFailDebug("Invalid thread.")
-            return
-        }
-
-        let actionSheet = GroupMigrationActionSheet.actionSheetForMigratedGroup(groupThread: groupThread,
-                                                                                oldGroupModel: oldGroupModel,
-                                                                                newGroupModel: newGroupModel)
-        actionSheet.present(fromViewController: self)
+        presentFormSheet(
+            LegacyGroupLearnMoreViewController(mode: .explainNewGroups),
+            animated: true
+        )
     }
 
     public func didTapGroupInviteLinkPromotion(groupModel: TSGroupModel) {
@@ -733,8 +759,7 @@ extension ConversationViewController: CVComponentDelegate {
     public func didTapShowUpgradeAppUI() {
         AssertIsOnMainThread()
 
-        let url = "https://itunes.apple.com/us/app/signal-private-messenger/id874139669?mt=8"
-        UIApplication.shared.open(URL(string: url)!, options: [:], completionHandler: nil)
+        UIApplication.shared.open(TSConstants.appStoreUrl, options: [:], completionHandler: nil)
     }
 
     public func didTapUpdateSystemContact(_ address: SignalServiceAddress, newNameComponents: PersonNameComponents) {

@@ -285,22 +285,6 @@
 			<string>Maximum group size of %d members reached.</string>
 		</dict>
 	</dict>
-	<key>EXPIRATION_WARNING_%d</key>
-	<dict>
-		<key>NSStringLocalizedFormatKey</key>
-		<string>%#@text@</string>
-		<key>text</key>
-		<dict>
-			<key>NSStringFormatSpecTypeKey</key>
-			<string>NSStringPluralRuleType</string>
-			<key>NSStringFormatValueTypeKey</key>
-			<string>d</string>
-			<key>one</key>
-			<string>Your version of Signal will expire in %d day. Tap to update to the most recent version.</string>
-			<key>other</key>
-			<string>Your version of Signal will expire in %d days. Tap to update to the most recent version.</string>
-		</dict>
-	</dict>
 	<key>FORWARD_MESSAGE_FIRST_FORWARD_PROCEED_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -315,22 +299,6 @@
 			<string>Send message</string>
 			<key>other</key>
 			<string>Send %d messages</string>
-		</dict>
-	</dict>
-	<key>GROUPS_LEGACY_GROUP_DROPPED_MEMBERS_BANNER_%d</key>
-	<dict>
-		<key>NSStringLocalizedFormatKey</key>
-		<string>%#@text@</string>
-		<key>text</key>
-		<dict>
-			<key>NSStringFormatSpecTypeKey</key>
-			<string>NSStringPluralRuleType</string>
-			<key>NSStringFormatValueTypeKey</key>
-			<string>d</string>
-			<key>one</key>
-			<string>%d member couldn’t be re-added to the New Group. Do you want to add them now?</string>
-			<key>other</key>
-			<string>%d members couldn’t be re-added to the New Group. Do you want to add them now?</string>
 		</dict>
 	</dict>
 	<key>GROUPS_TOO_MANY_MEMBERS_ALERT_MESSAGE_%d</key>
@@ -573,22 +541,6 @@
 			<string>%d Members</string>
 		</dict>
 	</dict>
-	<key>GROUP_REMOTE_USER_INVITED_%d</key>
-	<dict>
-		<key>NSStringLocalizedFormatKey</key>
-		<string>%#@text@</string>
-		<key>text</key>
-		<dict>
-			<key>NSStringFormatSpecTypeKey</key>
-			<string>NSStringPluralRuleType</string>
-			<key>NSStringFormatValueTypeKey</key>
-			<string>d</string>
-			<key>one</key>
-			<string>%d person was invited to the group.</string>
-			<key>other</key>
-			<string>%d people were invited to the group.</string>
-		</dict>
-	</dict>
 	<key>GROUP_REMOTE_USER_INVITED_BY_REMOTE_USER_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -669,38 +621,6 @@
 			<string>Group Story · %d Viewers</string>
 		</dict>
 	</dict>
-	<key>GROUP_WAS_MIGRATED_USERS_DROPPED_%d</key>
-	<dict>
-		<key>NSStringLocalizedFormatKey</key>
-		<string>%#@text@</string>
-		<key>text</key>
-		<dict>
-			<key>NSStringFormatSpecTypeKey</key>
-			<string>NSStringPluralRuleType</string>
-			<key>NSStringFormatValueTypeKey</key>
-			<string>d</string>
-			<key>one</key>
-			<string>A member couldn’t be added to the New Group and has been removed from the group.</string>
-			<key>other</key>
-			<string>%d members couldn’t be added to the New Group and have been removed from the group.</string>
-		</dict>
-	</dict>
-	<key>GROUP_WAS_MIGRATED_USERS_INVITED_%d</key>
-	<dict>
-		<key>NSStringLocalizedFormatKey</key>
-		<string>%#@text@</string>
-		<key>text</key>
-		<dict>
-			<key>NSStringFormatSpecTypeKey</key>
-			<string>NSStringPluralRuleType</string>
-			<key>NSStringFormatValueTypeKey</key>
-			<string>d</string>
-			<key>one</key>
-			<string>A member couldn’t be added to the New Group and has been invited to join.</string>
-			<key>other</key>
-			<string>%d members couldn’t be added to the New Group and have been invited to join.</string>
-		</dict>
-	</dict>
 	<key>IMAGE_PICKER_CAN_SELECT_NO_MORE_TOAST_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -733,7 +653,7 @@
 			<string>%d groups in common</string>
 		</dict>
 	</dict>
-	<key>MEDIA_GALLERY_DELETE_MESSAGES_%d</key>
+	<key>MEDIA_GALLERY_DELETE_MEDIA_TITLE</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
 		<string>%#@text@</string>
@@ -744,9 +664,25 @@
 			<key>NSStringFormatValueTypeKey</key>
 			<string>d</string>
 			<key>one</key>
-			<string>Delete %d Message</string>
+			<string>Delete %d Item?</string>
 			<key>other</key>
-			<string>Delete %d Messages</string>
+			<string>Delete %d Items?</string>
+		</dict>
+	</dict>
+	<key>MEDIA_GALLERY_DELETE_MEDIA_TOAST</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>One item deleted</string>
+			<key>other</key>
+			<string>%d items deleted</string>
 		</dict>
 	</dict>
 	<key>MEDIA_GALLERY_ITEM_IMAGE_COUNT_%d</key>
@@ -779,6 +715,22 @@
 			<string>%d Item</string>
 			<key>other</key>
 			<string>%d Items</string>
+		</dict>
+	</dict>
+	<key>MEDIA_PAGE_FORWARD_MEDIA_CONFIRM_TITLE_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Forward %d</string>
+			<key>other</key>
+			<string>Forward %d</string>
 		</dict>
 	</dict>
 	<key>MESSAGES_VIEW_GROUP_N_MEMBERS_BLOCKED_%d</key>
@@ -1083,6 +1035,22 @@
 			<string>You have %d attempt remaining. If you run out of attempts your account will be locked. After 7 days of inactivity, you can re-register without your PIN. Your account will be wiped and all content deleted.</string>
 			<key>other</key>
 			<string>You have %d attempts remaining. If you run out of attempts your account will be locked. After 7 days of inactivity, you can re-register without your PIN. Your account will be wiped and all content deleted.</string>
+		</dict>
+	</dict>
+	<key>REREGISTER_INVALID_PIN_ATTEMPT_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%d attempt</string>
+			<key>other</key>
+			<string>%d attempts</string>
 		</dict>
 	</dict>
 	<key>STORIES_SHARESHEET_PARTIAL_SEND_SUBTITLE_%d</key>

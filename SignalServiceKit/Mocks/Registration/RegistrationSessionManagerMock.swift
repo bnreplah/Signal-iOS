@@ -20,19 +20,19 @@ public class RegistrationSessionManagerMock: RegistrationSessionManager {
     public var beginSessionResponse: Guarantee<Registration.BeginSessionResponse>?
     public var didBeginOrRestoreSession = false
 
-    public func beginOrRestoreSession(e164: String, apnsToken: String?) -> Guarantee<Registration.BeginSessionResponse> {
+    public func beginOrRestoreSession(e164: E164, apnsToken: String?) -> Guarantee<Registration.BeginSessionResponse> {
         didBeginOrRestoreSession = true
         return beginSessionResponse!
     }
 
     public var fulfillChallengeResponse: Guarantee<Registration.UpdateSessionResponse>?
-    public var didFulfillChallenge = false
+    public var latestChallengeFulfillment: Registration.ChallengeFulfillment?
 
     public func fulfillChallenge(
         for session: RegistrationSession,
         fulfillment: Registration.ChallengeFulfillment
     ) -> Guarantee<Registration.UpdateSessionResponse> {
-        didFulfillChallenge = true
+        latestChallengeFulfillment = fulfillment
         return fulfillChallengeResponse!
     }
 
@@ -58,7 +58,7 @@ public class RegistrationSessionManagerMock: RegistrationSessionManager {
         return submitCodeResponse!
     }
 
-    public func completeSession() {
+    public func clearPersistedSession(_ transaction: DBWriteTransaction) {
         sessionToRestore = nil
     }
 }

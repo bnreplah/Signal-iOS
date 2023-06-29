@@ -24,12 +24,16 @@ extension UIEdgeInsets {
     ) -> UIEdgeInsets {
         switch horizontalSizeClass {
         case .unspecified, .compact:
-            return UIEdgeInsets(margin: 32)
+            return UIEdgeInsets(allButTop: 32)
         case .regular:
-            return UIEdgeInsets(margin: 112)
+            return UIEdgeInsets(allButTop: 112)
         @unknown default:
-            return UIEdgeInsets(margin: 32)
+            return UIEdgeInsets(allButTop: 32)
         }
+    }
+
+    private init(allButTop: CGFloat) {
+        self.init(top: 0, leading: allButTop, bottom: allButTop, trailing: allButTop)
     }
 }
 
@@ -43,7 +47,7 @@ extension UIColor {
 // MARK: - Fonts
 
 extension UIFont {
-    static var fontForRegistrationExplanationLabel: UIFont { .ows_dynamicTypeSubheadlineClamped }
+    static var fontForRegistrationExplanationLabel: UIFont { .dynamicTypeSubheadlineClamped }
 }
 
 // MARK: - Labels
@@ -53,7 +57,7 @@ extension UILabel {
         let result = UILabel()
         result.text = text
         result.textColor = .colorForRegistrationTitleLabel
-        result.font = UIFont.ows_dynamicTypeTitle1Clamped.ows_semibold
+        result.font = UIFont.dynamicTypeTitle1Clamped.semibold()
         result.numberOfLines = 0
         result.lineBreakMode = .byWordWrapping
         result.textAlignment = .center
@@ -78,7 +82,7 @@ extension OWSFlatButton {
     static func primaryButtonForRegistration(title: String, target: Any, selector: Selector) -> OWSFlatButton {
         let result = insetButton(
             title: title,
-            font: UIFont.ows_dynamicTypeBodyClamped.ows_semibold,
+            font: UIFont.dynamicTypeBodyClamped.semibold(),
             titleColor: .white,
             backgroundColor: .ows_accentBlue,
             target: target,
@@ -86,6 +90,21 @@ extension OWSFlatButton {
         )
         result.contentEdgeInsets = UIEdgeInsets(hMargin: 4, vMargin: 14)
         return result
+    }
+
+    static func linkButtonForRegistration(title: String, target: Any, selector: Selector) -> OWSFlatButton {
+        let button = OWSFlatButton.button(
+            title: title,
+            font: UIFont.dynamicTypeSubheadlineClamped,
+            titleColor: Theme.accentBlueColor,
+            backgroundColor: .clear,
+            target: target,
+            selector: selector
+        )
+        button.enableMultilineLabel()
+        button.button.layer.cornerRadius = 8
+        button.contentEdgeInsets = UIEdgeInsets(hMargin: 4, vMargin: 8)
+        return button
     }
 }
 
@@ -103,6 +122,20 @@ extension ActionSheetController {
         didConfirm: @escaping () -> Void,
         didRequestEdit: @escaping () -> Void
     ) -> ActionSheetController {
+        let message: String
+        switch mode {
+        case .sms:
+            message = OWSLocalizedString(
+                "REGISTRATION_VIEW_PHONE_NUMBER_CONFIRMATION_ALERT_MESSAGE",
+                comment: "Message for confirmation alert during phone number registration."
+            )
+        case .voice:
+            message = OWSLocalizedString(
+                "REGISTRATION_PHONE_NUMBER_VOICE_CODE_ALERT_MESSAGE",
+                comment: "Message for confirmation alert when requesting a voice code during phone number registration."
+            )
+
+        }
         let result = ActionSheetController(
             title: {
                 let format = OWSLocalizedString(
@@ -111,10 +144,7 @@ extension ActionSheetController {
                 )
                 return String(format: format, e164.e164FormattedAsPhoneNumberWithoutBreaks)
             }(),
-            message: OWSLocalizedString(
-                "REGISTRATION_VIEW_PHONE_NUMBER_CONFIRMATION_ALERT_MESSAGE",
-                comment: "Message for confirmation alert during phone number registration."
-            )
+            message: message
         )
 
         let confirmButtonTitle = CommonStrings.yesButton
@@ -125,6 +155,38 @@ extension ActionSheetController {
             comment: "A button allowing user to cancel registration and edit a phone number"
         )
         result.addAction(.init(title: editButtonTitle) { _ in didRequestEdit() })
+
+        return result
+    }
+}
+
+// MARK: - Alerts
+
+extension UIAlertController {
+    static func registrationAppUpdateBanner() -> UIAlertController {
+        let result = UIAlertController(
+            title: OWSLocalizedString(
+                "REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_TITLE",
+                comment: "During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the title on that alert."
+            ),
+            message: OWSLocalizedString(
+                "REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_DESCRIPTION",
+                comment: "During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the description text on that alert."
+            ),
+            preferredStyle: .alert
+        )
+
+        let updateAction = UIAlertAction(
+            title: OWSLocalizedString(
+                "REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_ACTION",
+                comment: "During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the action button on that alert."
+            ),
+            style: .default
+        ) { _ in
+            UIApplication.shared.open(TSConstants.appStoreUrl)
+        }
+        result.addAction(updateAction)
+        result.preferredAction = updateAction
 
         return result
     }

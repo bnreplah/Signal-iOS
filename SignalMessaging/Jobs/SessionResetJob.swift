@@ -3,22 +3,18 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import SignalServiceKit
 
-@objc(OWSSessionResetJobQueue)
-public class SessionResetJobQueue: NSObject, JobQueue {
+public class SessionResetJobQueue: JobQueue {
 
-    @objc(addContactThread:transaction:)
     public func add(contactThread: TSContactThread, transaction: SDSAnyWriteTransaction) {
-        let jobRecord = OWSSessionResetJobRecord(contactThread: contactThread, label: self.jobRecordLabel)
+        let jobRecord = SessionResetJobRecord(contactThread: contactThread, label: self.jobRecordLabel)
         self.add(jobRecord: jobRecord, transaction: transaction)
     }
 
     // MARK: JobQueue
 
     public typealias DurableOperationType = SessionResetOperation
-    @objc
     public static let jobRecordLabel: String = "SessionReset"
     public var jobRecordLabel: String {
         return type(of: self).jobRecordLabel
@@ -28,16 +24,12 @@ public class SessionResetJobQueue: NSObject, JobQueue {
     public var isEnabled: Bool { CurrentAppContext().isMainApp }
     public var runningOperations = AtomicArray<SessionResetOperation>()
 
-    @objc
-    public override init() {
-        super.init()
-
+    public init() {
         AppReadiness.runNowOrWhenAppDidBecomeReadySync {
             self.setup()
         }
     }
 
-    @objc
     public func setup() {
         defaultSetup()
     }
@@ -51,15 +43,15 @@ public class SessionResetJobQueue: NSObject, JobQueue {
     let operationQueue: OperationQueue = {
         // no need to serialize the operation queuing, since sending will ultimately be serialized by MessageSender
         let operationQueue = OperationQueue()
-        operationQueue.name = "SessionReset.OperationQueue"
+        operationQueue.name = "SessionResetJobQueue"
         return operationQueue
     }()
 
-    public func operationQueue(jobRecord: OWSSessionResetJobRecord) -> OperationQueue {
+    public func operationQueue(jobRecord: SessionResetJobRecord) -> OperationQueue {
         return self.operationQueue
     }
 
-    public func buildOperation(jobRecord: OWSSessionResetJobRecord, transaction: SDSAnyReadTransaction) throws -> SessionResetOperation {
+    public func buildOperation(jobRecord: SessionResetJobRecord, transaction: SDSAnyReadTransaction) throws -> SessionResetOperation {
         guard let contactThread = TSThread.anyFetch(uniqueId: jobRecord.contactThreadId, transaction: transaction) as? TSContactThread else {
             throw JobError.obsolete(description: "thread for session reset no longer exists")
         }
@@ -72,7 +64,7 @@ public class SessionResetOperation: OWSOperation, DurableOperation {
 
     // MARK: DurableOperation
 
-    public let jobRecord: OWSSessionResetJobRecord
+    public let jobRecord: SessionResetJobRecord
 
     weak public var durableOperationDelegate: SessionResetJobQueue?
 
@@ -87,8 +79,7 @@ public class SessionResetOperation: OWSOperation, DurableOperation {
         return contactThread.contactAddress
     }
 
-    @objc
-    public required init(contactThread: TSContactThread, jobRecord: OWSSessionResetJobRecord) {
+    public required init(contactThread: TSContactThread, jobRecord: SessionResetJobRecord) {
         self.contactThread = contactThread
         self.jobRecord = jobRecord
     }

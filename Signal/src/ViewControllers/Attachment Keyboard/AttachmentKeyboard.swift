@@ -113,7 +113,7 @@ class AttachmentKeyboard: CustomKeyboard {
 
     private func setupGalleryButton() {
         addSubview(galleryButton)
-        galleryButton.setTemplateImage(#imageLiteral(resourceName: "photo-album-outline-28"), tintColor: .white)
+        galleryButton.setTemplateImageName("album-tilt-28", tintColor: .white)
         galleryButton.setBackgroundImage(UIImage(color: UIColor.black.withAlphaComponent(0.7)), for: .normal)
 
         galleryButton.autoSetDimensions(to: CGSize(square: 48))
@@ -279,7 +279,7 @@ private class RecentPhotosErrorView: UIView {
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         label.textColor = Theme.primaryTextColor
-        label.font = .ows_dynamicTypeSubheadlineClamped
+        label.font = .dynamicTypeSubheadlineClamped
         label.textAlignment = .center
 
         stackView.addArrangedSubview(label)
@@ -291,7 +291,7 @@ private class RecentPhotosErrorView: UIView {
                 "ATTACHMENT_KEYBOARD_GIVE_PHOTOS_ACCESS",
                 comment: "A message on a button prompting the user to go settings to grant Signal photos access."
             ),
-            font: .ows_dynamicTypeBodyClamped,
+            font: .dynamicTypeBodyClamped,
             titleColor: .white
         )
         button.useDefaultCornerRadius()

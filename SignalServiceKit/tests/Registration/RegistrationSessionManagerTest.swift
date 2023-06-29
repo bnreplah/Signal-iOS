@@ -165,11 +165,13 @@ public class RegistrationSessionManagerTest: XCTestCase {
     }
 
     public func testBeginOrRestoreSession() throws {
-        let e164 = "+17875550100"
+        let e164 = E164("+17875550100")!
         let apnsToken = "1234"
         let beginSessionRequest = RegistrationRequestFactory.beginSessionRequest(
             e164: e164,
-            pushToken: apnsToken
+            pushToken: apnsToken,
+            mcc: nil,
+            mnc: nil
         )
 
         // Without any setup, we should try and begin a new session.
@@ -262,7 +264,7 @@ public class RegistrationSessionManagerTest: XCTestCase {
 
         // If we complete the session, that should reset everything and behave like the first time.
 
-        registrationSessionManager.completeSession()
+        db.write { registrationSessionManager.clearPersistedSession($0) }
 
         // Should have no saved session
         savedSession = try db.read { transaction in
@@ -299,7 +301,7 @@ public class RegistrationSessionManagerTest: XCTestCase {
         XCTAssertEqual(savedSession, responseSession)
 
         // If we try and request with a different e164 it should also get a new session and wipe the old one.
-        let newE164 = "+17875550101"
+        let newE164 = E164("+17875550101")!
         responseBody = stubWireSession()
         responseSession = sessionConverter(responseBody, e164: newE164)
 
@@ -540,7 +542,7 @@ public class RegistrationSessionManagerTest: XCTestCase {
     private func stubSession() -> RegistrationSession {
         return RegistrationSession(
             id: UUID().uuidString,
-            e164: "+17875550100", // For our purposes, can be fixed.
+            e164: E164("+17875550100")!, // For our purposes, can be fixed.
             receivedDate: date,
             nextSMS: 1,
             nextCall: 1,
@@ -570,7 +572,7 @@ public class RegistrationSessionManagerTest: XCTestCase {
     // Keep this independent of the production code converter for an extra layer of durability.
     private func sessionConverter(
         _ wireSession: RegistrationServiceResponses.RegistrationSession,
-        e164: String = "+17875550100"
+        e164: E164 = E164("+17875550100")!
     ) -> RegistrationSession {
         let requestedInformation: [RegistrationSession.Challenge] = wireSession.requestedInformation.compactMap {
             switch $0 {

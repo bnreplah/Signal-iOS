@@ -28,7 +28,11 @@ protocol StorageServiceRecordUpdater {
     /// - Returns: A record with the values for the item identified by
     /// `localId`. If `localId` doesn't exist, or if `localId` isn't valid,
     /// `nil` is returned. Callers should exclude items which return `nil`.
-    func buildRecord(for localId: IdType, unknownFields: UnknownStorage?, transaction: SDSAnyReadTransaction) -> RecordType?
+    func buildRecord(
+        for localId: IdType,
+        unknownFields: UnknownStorage?,
+        transaction: SDSAnyReadTransaction
+    ) -> RecordType?
 
     func buildStorageItem(for record: RecordType) -> StorageService.StorageItem
 
@@ -50,7 +54,10 @@ protocol StorageServiceRecordUpdater {
     /// - Parameter transaction: A database transaction.
     ///
     /// - Returns: A type indicating the result of the merge.
-    func mergeRecord(_ record: RecordType, transaction: SDSAnyWriteTransaction) -> StorageServiceMergeResult<IdType>
+    func mergeRecord(
+        _ record: RecordType,
+        transaction: SDSAnyWriteTransaction
+    ) -> StorageServiceMergeResult<IdType>
 }
 
 enum StorageServiceMergeResult<IdType> {
@@ -75,15 +82,15 @@ struct StorageServiceContact {
     }
 
     /// All contact records must have a UUID.
-    var serviceId: UUID
+    var serviceId: ServiceId
 
     /// Contact records may have a phone number.
-    var serviceE164: String?
+    var serviceE164: E164?
 
     /// Contact records may be unregistered.
     var unregisteredAtTimestamp: UInt64?
 
-    init?(serviceId: UUID?, serviceE164: String?, unregisteredAtTimestamp: UInt64?) {
+    init?(serviceId: ServiceId?, serviceE164: E164?, unregisteredAtTimestamp: UInt64?) {
         guard let serviceId else {
             return nil
         }
@@ -119,8 +126,8 @@ struct StorageServiceContact {
             unregisteredAtTimestamp = contactRecord.unregisteredAtTimestamp
         }
         self.init(
-            serviceId: contactRecord.serviceUuid.flatMap { UUID(uuidString: $0) },
-            serviceE164: contactRecord.serviceE164,
+            serviceId: ServiceId.expectNilOrValid(uuidString: contactRecord.serviceUuid),
+            serviceE164: E164.expectNilOrValid(stringValue: contactRecord.serviceE164),
             unregisteredAtTimestamp: unregisteredAtTimestamp
         )
     }
@@ -135,12 +142,12 @@ struct StorageServiceContact {
             unregisteredAtTimestamp = nil
         } else {
             unregisteredAtTimestamp = (
-                signalRecipient.unregisteredAtTimestamp?.uint64Value ?? SignalRecipientDistantPastUnregisteredTimestamp
+                signalRecipient.unregisteredAtTimestamp ?? SignalRecipient.Constants.distantPastUnregisteredTimestamp
             )
         }
         self.init(
-            serviceId: signalRecipient.address.uuid,
-            serviceE164: signalRecipient.recipientPhoneNumber,
+            serviceId: signalRecipient.serviceId,
+            serviceE164: E164.expectNilOrValid(stringValue: signalRecipient.phoneNumber),
             unregisteredAtTimestamp: unregisteredAtTimestamp
         )
     }
@@ -159,6 +166,8 @@ class StorageServiceContactRecordUpdater: StorageServiceRecordUpdater {
     typealias IdType = AccountId
     typealias RecordType = StorageServiceProtoContactRecord
 
+    private let localIdentifiers: LocalIdentifiers
+    private let authedAccount: AuthedAccount
     private let blockingManager: BlockingManager
     private let bulkProfileFetch: BulkProfileFetch
     private let contactsManager: OWSContactsManager
@@ -166,16 +175,22 @@ class StorageServiceContactRecordUpdater: StorageServiceRecordUpdater {
     private let profileManager: OWSProfileManager
     private let tsAccountManager: TSAccountManager
     private let usernameLookupManager: UsernameLookupManager
+    private let recipientMerger: RecipientMerger
 
     init(
+        localIdentifiers: LocalIdentifiers,
+        authedAccount: AuthedAccount,
         blockingManager: BlockingManager,
         bulkProfileFetch: BulkProfileFetch,
         contactsManager: OWSContactsManager,
         identityManager: OWSIdentityManager,
         profileManager: OWSProfileManager,
         tsAccountManager: TSAccountManager,
-        usernameLookupManager: UsernameLookupManager
+        usernameLookupManager: UsernameLookupManager,
+        recipientMerger: RecipientMerger
     ) {
+        self.localIdentifiers = localIdentifiers
+        self.authedAccount = authedAccount
         self.blockingManager = blockingManager
         self.bulkProfileFetch = bulkProfileFetch
         self.contactsManager = contactsManager
@@ -183,6 +198,7 @@ class StorageServiceContactRecordUpdater: StorageServiceRecordUpdater {
         self.profileManager = profileManager
         self.tsAccountManager = tsAccountManager
         self.usernameLookupManager = usernameLookupManager
+        self.recipientMerger = recipientMerger
     }
 
     func unknownFields(for record: StorageServiceProtoContactRecord) -> UnknownStorage? { record.unknownFields }
@@ -200,28 +216,29 @@ class StorageServiceContactRecordUpdater: StorageServiceRecordUpdater {
             return nil
         }
 
+        let address = recipient.address
+
+        if localIdentifiers.contains(address: address) {
+            Logger.warn("Tried to create contact record from local account address")
+            return nil
+        }
+
         var builder = StorageServiceProtoContactRecord.builder()
 
         /// Helps determine if a username is the best identifier we have for
         /// this address.
         var usernameBetterIdentifierChecker = Usernames.BetterIdentifierChecker(forRecipient: recipient)
 
-        builder.setServiceUuid(contact.serviceId.uuidString)
+        builder.setServiceUuid(contact.serviceId.uuidValue.uuidString)
 
         if let serviceE164 = contact.serviceE164 {
-            if serviceE164.isStructurallyValidE164 {
-                builder.setServiceE164(serviceE164)
-                usernameBetterIdentifierChecker.add(e164: serviceE164)
-            } else {
-                owsFailDebug("Invalid e164.")
-            }
+            builder.setServiceE164(serviceE164.stringValue)
+            usernameBetterIdentifierChecker.add(e164: serviceE164.stringValue)
         }
 
         if let unregisteredAtTimestamp = contact.unregisteredAtTimestamp {
             builder.setUnregisteredAtTimestamp(unregisteredAtTimestamp)
         }
-
-        let address = recipient.address
 
         let isInWhitelist = profileManager.isUser(inProfileWhitelist: address, transaction: transaction)
         builder.setWhitelisted(isInWhitelist)
@@ -337,21 +354,37 @@ class StorageServiceContactRecordUpdater: StorageServiceRecordUpdater {
         _ record: StorageServiceProtoContactRecord,
         transaction: SDSAnyWriteTransaction
     ) -> StorageServiceMergeResult<AccountId> {
-        guard let address = record.serviceAddress, let contact = StorageServiceContact(record) else {
+        let immutableAddress = SignalServiceAddress(
+            uuid: ServiceId(uuidString: record.serviceUuid)?.uuidValue,
+            phoneNumber: E164(record.serviceE164)?.stringValue,
+            ignoreCache: true
+        )
+        guard immutableAddress.isValid, let contact = StorageServiceContact(record) else {
             owsFailDebug("address unexpectedly missing for contact")
             return .invalid
         }
-        guard !address.isLocalAddress else {
-            owsFailDebug("Unexpectedly merging contact record for local user.")
+        if localIdentifiers.contains(serviceId: contact.serviceId) {
+            owsFailDebug("Trying to merge contact with our own serviceId.")
+            return .invalid
+        }
+        if let phoneNumber = contact.serviceE164, localIdentifiers.contains(phoneNumber: phoneNumber) {
+            owsFailDebug("Trying to merge contact with our own phone number.")
             return .invalid
         }
 
-        let recipient = SignalRecipient.fetchOrCreate(for: address, trustLevel: .high, transaction: transaction)
+        let recipient = recipientMerger.applyMergeFromLinkedDevice(
+            localIdentifiers: localIdentifiers,
+            serviceId: contact.serviceId,
+            phoneNumber: contact.serviceE164,
+            tx: transaction.asV2Write
+        )
         if let unregisteredAtTimestamp = contact.unregisteredAtTimestamp {
-            recipient.markAsUnregistered(at: unregisteredAtTimestamp, source: .storageService, transaction: transaction)
+            recipient.markAsUnregisteredAndSave(at: unregisteredAtTimestamp, source: .storageService, tx: transaction)
         } else {
-            recipient.markAsRegistered(source: .storageService, transaction: transaction)
+            recipient.markAsRegisteredAndSave(source: .storageService, tx: transaction)
         }
+
+        let address = recipient.address
 
         var needsUpdate = false
 
@@ -370,6 +403,7 @@ class StorageServiceContactRecordUpdater: StorageServiceRecordUpdater {
                 profileKey,
                 for: address,
                 userProfileWriter: .storageService,
+                authedAccount: authedAccount,
                 transaction: transaction
             )
 
@@ -393,6 +427,7 @@ class StorageServiceContactRecordUpdater: StorageServiceRecordUpdater {
                     familyName: record.familyName,
                     for: address,
                     userProfileWriter: .storageService,
+                    authedAccount: authedAccount,
                     transaction: transaction
                 )
             }
@@ -434,13 +469,17 @@ class StorageServiceContactRecordUpdater: StorageServiceRecordUpdater {
         // If our local whitelisted state differs from the service state, use the service's value.
         if record.whitelisted != localIsWhitelisted {
             if record.whitelisted {
-                profileManager.addUser(toProfileWhitelist: address,
-                                       userProfileWriter: .storageService,
-                                       transaction: transaction)
+                profileManager.addUser(
+                    toProfileWhitelist: address,
+                    userProfileWriter: .storageService,
+                    transaction: transaction
+                )
             } else {
-                profileManager.removeUser(fromProfileWhitelist: address,
-                                          userProfileWriter: .storageService,
-                                          transaction: transaction)
+                profileManager.removeUser(
+                    fromProfileWhitelist: address,
+                    userProfileWriter: .storageService,
+                    transaction: transaction
+                )
             }
         }
 
@@ -460,7 +499,7 @@ class StorageServiceContactRecordUpdater: StorageServiceRecordUpdater {
         }
 
         let localStoryContextAssociatedData = StoryContextAssociatedData.fetchOrDefault(
-            sourceContext: .contact(contactUuid: contact.serviceId),
+            sourceContext: .contact(contactUuid: contact.serviceId.uuidValue),
             transaction: transaction
         )
         if record.hideStory != localStoryContextAssociatedData.isHidden {
@@ -559,11 +598,6 @@ class StorageServiceContactRecordUpdater: StorageServiceRecordUpdater {
         }
 
         switch (localAccount, newAccount) {
-        case (.some(let oldAccount), nil) where !FeatureFlags.contactDiscoveryV2 && oldAccount.contact?.isFromLocalAddressBook == true:
-            // There's nothing in storage service, but we have a contact from the
-            // address book on the local device. Don't make any changes.
-            Logger.debug("No system contact found in contact record, keeping existing local address book contact!")
-
         case (.some(let oldAccount), .some(let newAccount)) where oldAccount.hasSameContent(newAccount):
             // What we've saved locally matches what Storage Service wants us to save.
             // Don't make any changes.
@@ -710,7 +744,7 @@ class StorageServiceGroupV1RecordUpdater: StorageServiceRecordUpdater {
         }
 
         let localThreadId = TSGroupThread.threadId(forGroupId: id, transaction: transaction)
-        ThreadAssociatedData.createIfMissing(for: localThreadId, transaction: transaction)
+        ThreadAssociatedData.create(for: localThreadId, warnIfPresent: false, transaction: transaction)
         let localThreadAssociatedData = ThreadAssociatedData.fetchOrDefault(for: localThreadId, transaction: transaction)
 
         if record.archived != localThreadAssociatedData.isArchived {
@@ -735,15 +769,18 @@ class StorageServiceGroupV2RecordUpdater: StorageServiceRecordUpdater {
     typealias IdType = Data
     typealias RecordType = StorageServiceProtoGroupV2Record
 
+    private let authedAccount: AuthedAccount
     private let blockingManager: BlockingManager
     private let groupsV2: GroupsV2Swift
     private let profileManager: ProfileManagerProtocol
 
     init(
+        authedAccount: AuthedAccount,
         blockingManager: BlockingManager,
         groupsV2: GroupsV2Swift,
         profileManager: ProfileManagerProtocol
     ) {
+        self.authedAccount = authedAccount
         self.blockingManager = blockingManager
         self.groupsV2 = groupsV2
         self.profileManager = profileManager
@@ -848,7 +885,7 @@ class StorageServiceGroupV2RecordUpdater: StorageServiceRecordUpdater {
                 needsUpdate = true
             }
         } else {
-            groupsV2.restoreGroupFromStorageServiceIfNecessary(groupRecord: record, transaction: transaction)
+            groupsV2.restoreGroupFromStorageServiceIfNecessary(groupRecord: record, account: authedAccount, transaction: transaction)
         }
 
         // Gather some local contact state to do comparisons against.
@@ -878,9 +915,8 @@ class StorageServiceGroupV2RecordUpdater: StorageServiceRecordUpdater {
         }
 
         let localThreadId = TSGroupThread.threadId(forGroupId: groupId, transaction: transaction)
-        ThreadAssociatedData.createIfMissing(for: localThreadId, transaction: transaction)
-        let localThreadAssociatedData = ThreadAssociatedData.fetchOrDefault(for: localThreadId,
-                                                                            transaction: transaction)
+        ThreadAssociatedData.create(for: localThreadId, warnIfPresent: false, transaction: transaction)
+        let localThreadAssociatedData = ThreadAssociatedData.fetchOrDefault(for: localThreadId, transaction: transaction)
 
         if record.archived != localThreadAssociatedData.isArchived {
             localThreadAssociatedData.updateWith(isArchived: record.archived, updateStorageService: false, transaction: transaction)
@@ -912,14 +948,16 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
     typealias IdType = Void
     typealias RecordType = StorageServiceProtoAccountRecord
 
-    private let localAddress: SignalServiceAddress
-    private let localAci: UUID
+    private let localIdentifiers: LocalIdentifiers
+    private let authedAccount: AuthedAccount
+    private let dmConfigurationStore: DisappearingMessagesConfigurationStore
+    private let legacyChangePhoneNumber: LegacyChangePhoneNumber
     private let paymentsHelper: PaymentsHelperSwift
-    private let preferences: OWSPreferences
+    private let preferences: Preferences
     private let profileManager: OWSProfileManager
     private let receiptManager: OWSReceiptManager
-    private let storageServiceManager: StorageServiceManagerProtocol
-    private let subscriptionManager: SubscriptionManagerProtocol
+    private let storageServiceManager: StorageServiceManager
+    private let subscriptionManager: SubscriptionManager
     private let systemStoryManager: SystemStoryManagerProtocol
     private let tsAccountManager: TSAccountManager
     private let typingIndicators: TypingIndicators
@@ -928,14 +966,16 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
     private let usernameEducationManager: UsernameEducationManager
 
     init(
-        localAddress: SignalServiceAddress,
-        localAci: UUID,
+        localIdentifiers: LocalIdentifiers,
+        authedAccount: AuthedAccount,
+        dmConfigurationStore: DisappearingMessagesConfigurationStore,
+        legacyChangePhoneNumber: LegacyChangePhoneNumber,
         paymentsHelper: PaymentsHelperSwift,
-        preferences: OWSPreferences,
+        preferences: Preferences,
         profileManager: OWSProfileManager,
         receiptManager: OWSReceiptManager,
-        storageServiceManager: StorageServiceManagerProtocol,
-        subscriptionManager: SubscriptionManagerProtocol,
+        storageServiceManager: StorageServiceManager,
+        subscriptionManager: SubscriptionManager,
         systemStoryManager: SystemStoryManagerProtocol,
         tsAccountManager: TSAccountManager,
         typingIndicators: TypingIndicators,
@@ -943,8 +983,10 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
         usernameLookupManager: UsernameLookupManager,
         usernameEducationManager: UsernameEducationManager
     ) {
-        self.localAddress = localAddress
-        self.localAci = localAci
+        self.localIdentifiers = localIdentifiers
+        self.authedAccount = authedAccount
+        self.dmConfigurationStore = dmConfigurationStore
+        self.legacyChangePhoneNumber = legacyChangePhoneNumber
         self.paymentsHelper = paymentsHelper
         self.preferences = preferences
         self.profileManager = profileManager
@@ -972,6 +1014,9 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
     ) -> StorageServiceProtoAccountRecord? {
         var builder = StorageServiceProtoAccountRecord.builder()
 
+        let localAddress = localIdentifiers.aciAddress
+        let localAci = localIdentifiers.aci
+
         if let profileKey = profileManager.profileKeyData(for: localAddress, transaction: transaction) {
             builder.setProfileKey(profileKey)
         }
@@ -987,7 +1032,12 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
             builder.setFamilyName(profileFamilyName)
         }
 
-        if let profileAvatarUrlPath = profileManager.profileAvatarURLPath(for: localAddress, downloadIfMissing: true, transaction: transaction) {
+        if let profileAvatarUrlPath = profileManager.profileAvatarURLPath(
+            for: localAddress,
+            downloadIfMissing: true,
+            authedAccount: authedAccount,
+            transaction: transaction
+        ) {
             Logger.info("profileAvatarUrlPath: yes")
             builder.setAvatarURL(profileAvatarUrlPath)
         } else {
@@ -1043,20 +1093,27 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
             builder.setUnknownFields(unknownFields)
         }
 
-        let dmConfiguration = OWSDisappearingMessagesConfiguration
-            .fetchOrBuildDefaultUniversalConfiguration(with: transaction)
+        let dmConfiguration = dmConfigurationStore.fetchOrBuildDefault(for: .universal, tx: transaction.asV2Read)
         builder.setUniversalExpireTimer(dmConfiguration.isEnabled ? dmConfiguration.durationSeconds : 0)
 
-        if let localPhoneNumber = localAddress.phoneNumber?.strippedOrNil, localPhoneNumber.isStructurallyValidE164 {
-            builder.setE164(localPhoneNumber)
+        if profileManager.localProfileIsPniCapable() {
+            // If we are PNI capable we should no longer use or rely on the
+            // e164 from the AccountRecord since it doesn't store related PNI
+            // material.
+        } else {
+            if let localE164 = E164(localAddress.phoneNumber?.strippedOrNil) {
+                builder.setE164(localE164.stringValue)
+            } else {
+                owsFailDebug("Missing or invalid local E164!")
+            }
         }
 
         if let customEmojiSet = ReactionManager.customEmojiSet(transaction: transaction) {
             builder.setPreferredReactionEmoji(customEmojiSet)
         }
 
-        if let subscriberID = SubscriptionManager.getSubscriberID(transaction: transaction),
-           let subscriberCurrencyCode = SubscriptionManager.getSubscriberCurrencyCode(transaction: transaction) {
+        if let subscriberID = SubscriptionManagerImpl.getSubscriberID(transaction: transaction),
+           let subscriberCurrencyCode = SubscriptionManagerImpl.getSubscriberCurrencyCode(transaction: transaction) {
             builder.setSubscriberID(subscriberID)
             builder.setSubscriberCurrencyCode(subscriberCurrencyCode)
         }
@@ -1086,11 +1143,19 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
     ) -> StorageServiceMergeResult<Void> {
         var needsUpdate = false
 
+        let localAddress = localIdentifiers.aciAddress
+        let localAci = localIdentifiers.aci
+
         // Gather some local contact state to do comparisons against.
         let localProfileKey = profileManager.profileKey(for: localAddress, transaction: transaction)
         let localGivenName = profileManager.unfilteredGivenName(for: localAddress, transaction: transaction)
         let localFamilyName = profileManager.unfilteredFamilyName(for: localAddress, transaction: transaction)
-        let localAvatarUrl = profileManager.profileAvatarURLPath(for: localAddress, downloadIfMissing: true, transaction: transaction)
+        let localAvatarUrl = profileManager.profileAvatarURLPath(
+            for: localAddress,
+            downloadIfMissing: true,
+            authedAccount: authedAccount,
+            transaction: transaction
+        )
         let localUsername = usernameLookupManager.fetchUsername(forAci: localAci, transaction: transaction.asV2Read)
 
         // On the primary device, we only ever want to
@@ -1105,6 +1170,7 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
                 profileKey,
                 for: localAddress,
                 userProfileWriter: .storageService,
+                authedAccount: authedAccount,
                 transaction: transaction
             )
         } else if localProfileKey != nil && !record.hasProfileKey {
@@ -1121,6 +1187,7 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
                 avatarUrlPath: record.avatarURL,
                 for: localAddress,
                 userProfileWriter: .storageService,
+                authedAccount: authedAccount,
                 transaction: transaction
             )
         } else if localGivenName != nil && !record.hasGivenName || localFamilyName != nil && !record.hasFamilyName || localAvatarUrl != nil && !record.hasAvatarURL {
@@ -1194,6 +1261,7 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
             tsAccountManager.setIsDiscoverableByPhoneNumber(
                 !record.notDiscoverableByPhoneNumber,
                 updateStorageService: false,
+                authedAccount: authedAccount,
                 transaction: transaction
             )
         }
@@ -1232,12 +1300,8 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
             )
         }
 
-        let localConfiguration = OWSDisappearingMessagesConfiguration.fetchOrBuildDefaultUniversalConfiguration(with: transaction)
-        let localExpireToken = localConfiguration.asToken
         let remoteExpireToken = DisappearingMessageToken.token(forProtoExpireTimer: record.universalExpireTimer)
-        if localExpireToken != remoteExpireToken {
-            localConfiguration.applyToken(remoteExpireToken, transaction: transaction)
-        }
+        dmConfigurationStore.set(token: remoteExpireToken, for: .universal, tx: transaction.asV2Write)
 
         if !record.preferredReactionEmoji.isEmpty {
             // Treat new preferred emoji as a full source of truth (if not empty). Note
@@ -1248,12 +1312,12 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
         }
 
         if let subscriberIDData = record.subscriberID, let subscriberCurrencyCode = record.subscriberCurrencyCode {
-            if subscriberIDData != SubscriptionManager.getSubscriberID(transaction: transaction) {
-                SubscriptionManager.setSubscriberID(subscriberIDData, transaction: transaction)
+            if subscriberIDData != SubscriptionManagerImpl.getSubscriberID(transaction: transaction) {
+                SubscriptionManagerImpl.setSubscriberID(subscriberIDData, transaction: transaction)
             }
 
-            if subscriberCurrencyCode != SubscriptionManager.getSubscriberCurrencyCode(transaction: transaction) {
-                SubscriptionManager.setSubscriberCurrencyCode(subscriberCurrencyCode, transaction: transaction)
+            if subscriberCurrencyCode != SubscriptionManagerImpl.getSubscriberCurrencyCode(transaction: transaction) {
+                SubscriptionManagerImpl.setSubscriberCurrencyCode(subscriberCurrencyCode, transaction: transaction)
             }
         }
 
@@ -1295,37 +1359,50 @@ class StorageServiceAccountRecordUpdater: StorageServiceRecordUpdater {
             systemStoryManager.setHasViewedOnboardingStoryOnAnotherDevice(transaction: transaction)
         }
 
-        if let serviceLocalE164 = record.e164?.strippedOrNil, serviceLocalE164.isStructurallyValidE164 {
-            // If the local phone number doesn't match the "local phone number" in the storage service...
-            if localAddress.phoneNumber != serviceLocalE164 {
-                Logger.warn("localAddress.phoneNumber: \(String(describing: localAddress.phoneNumber)) != serviceLocalE164: \(serviceLocalE164)")
-                if tsAccountManager.isPrimaryDevice {
+        if profileManager.localProfileIsPniCapable() {
+            // If we are PNI capable we should no longer use or rely on the
+            // e164 from the AccountRecord since it doesn't store related PNI
+            // material.
+        } else if let serviceLocalE164 = E164(record.e164?.strippedOrNil) {
+            if localAddress.e164 != serviceLocalE164 {
+                Logger.warn("localAddress.e164: \(String(describing: localAddress.e164)) != serviceLocalE164: \(serviceLocalE164)")
+
+                if tsAccountManager.isPrimaryDevice(transaction: transaction) {
+                    // It's not clear how we got into this scenario, but if we
+                    // do it's bad. Once all clients are PNI-capable we can
+                    // ignore the AccountRecord's e164 entirely, and remove
+                    // this attempt to heal.
+                    //
+                    // PNI TODO: remove this logic after all clients are known PNI-capable.
+
                     transaction.addAsyncCompletionOffMain {
+                        owsFailDebug("Attempting to heal from primary-device e164 mismatch with AccountRecord.")
+
                         // Consult "whoami" service endpoint; the service is the source of truth
                         // for the local phone number.  This ensures that the primary will always
                         // reflect the latest value.
-                        ChangePhoneNumber.updateLocalPhoneNumber()
+                        self.legacyChangePhoneNumber.deprecated_updateLocalPhoneNumberOnAccountRecordMismatch()
 
                         // The primary should always reflect the latest value.
                         // If local db state doesn't agree with the storage service state,
                         // the primary needs to update the storage service.
                         self.storageServiceManager.recordPendingLocalAccountUpdates()
                     }
+                } else if let localAci = tsAccountManager.localUuid(with: transaction) {
+                    // If we're a linked device, we should always take the e164
+                    // from StorageService.
+                    tsAccountManager.updateLocalPhoneNumber(
+                        E164ObjC(serviceLocalE164),
+                        aci: localAci,
+                        pni: tsAccountManager.localPni(with: transaction),
+                        transaction: transaction
+                    )
                 } else {
-                    // Linked devices should always take changes from the storage service.
-                    if let uuid = localAddress.uuid {
-                        tsAccountManager.updateLocalPhoneNumber(serviceLocalE164,
-                                                                aci: uuid,
-                                                                pni: tsAccountManager.localPni,
-                                                                shouldUpdateStorageService: false,
-                                                                transaction: transaction)
-                    } else {
-                        owsFailDebug("Missing uuid.")
-                    }
+                    owsFailDebug("Linked device missing local ACI!")
                 }
             }
         } else {
-            // If no "local phone number" has been written to the storage service yet, do so now.
+            // If we don't have an e164 in StorageService yet, do so now.
             needsUpdate = true
         }
 
@@ -1352,7 +1429,6 @@ extension PhoneNumberSharingMode {
     var asProtoMode: StorageServiceProtoAccountRecordPhoneNumberSharingMode {
         switch self {
         case .everybody: return .everybody
-        case .contactsOnly: return .contactsOnly
         case .nobody: return .nobody
         }
     }
@@ -1362,7 +1438,7 @@ extension StorageServiceProtoAccountRecordPhoneNumberSharingMode {
     var asLocalMode: PhoneNumberSharingMode? {
         switch self {
         case .everybody: return .everybody
-        case .contactsOnly: return .contactsOnly
+        case .contactsOnly: return nil
         case .nobody: return .nobody
         default:
             owsFailDebug("unexpected case \(self)")
@@ -1463,7 +1539,11 @@ class StorageServiceStoryDistributionListRecordUpdater: StorageServiceRecordUpda
     typealias IdType = Data
     typealias RecordType = StorageServiceProtoStoryDistributionListRecord
 
-    init() {}
+    private let threadRemover: ThreadRemover
+
+    init(threadRemover: ThreadRemover) {
+        self.threadRemover = threadRemover
+    }
 
     func unknownFields(for record: StorageServiceProtoStoryDistributionListRecord) -> UnknownStorage? { record.unknownFields }
 
@@ -1485,7 +1565,7 @@ class StorageServiceStoryDistributionListRecordUpdater: StorageServiceRecordUpda
         builder.setIdentifier(distributionListIdentifier)
 
         if let deletedAtTimestamp = TSPrivateStoryThread.deletedAtTimestamp(
-            forDistributionListIdentifer: distributionListIdentifier,
+            forDistributionListIdentifier: distributionListIdentifier,
             transaction: transaction
         ) {
             builder.setDeletedAtTimestamp(deletedAtTimestamp)
@@ -1527,13 +1607,14 @@ class StorageServiceStoryDistributionListRecordUpdater: StorageServiceRecordUpda
         // The story has been deleted on another device, record that
         // and ensure we don't try and put it back.
         guard record.deletedAtTimestamp == 0 else {
-            existingStory?.anyRemove(transaction: transaction)
+            if let existingStory {
+                threadRemover.remove(existingStory, tx: transaction.asV2Write)
+            }
             TSPrivateStoryThread.recordDeletedAtTimestamp(
                 record.deletedAtTimestamp,
-                forDistributionListIdentifer: identifier,
+                forDistributionListIdentifier: identifier,
                 transaction: transaction
             )
-
             return .merged(needsUpdate: false, identifier)
         }
 

@@ -29,7 +29,7 @@ class Deprecated_ChangePhoneNumberConfirmViewController: OWSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = NSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_VIEW_TITLE",
+        title = OWSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_VIEW_TITLE",
                                   comment: "Title for the 'change phone number' views in settings.")
 
         createContents()
@@ -58,7 +58,7 @@ class Deprecated_ChangePhoneNumberConfirmViewController: OWSViewController {
     private func updateContents() {
         view.backgroundColor = OWSTableViewController2.tableBackgroundColor(isUsingPresentedStyle: true)
 
-        let descriptionFormat = NSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_CONFIRM_DESCRIPTION_FORMAT",
+        let descriptionFormat = OWSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_CONFIRM_DESCRIPTION_FORMAT",
                                                   comment: "Format for the description text in the 'change phone number splash' view. Embeds: {{ %1$@ the old phone number, %2$@ the new phone number }}.")
         let oldPhoneNumberFormatted = PhoneNumber.bestEffortLocalizedPhoneNumber(withE164: oldPhoneNumber.toE164())
         let newPhoneNumberFormatted = PhoneNumber.bestEffortLocalizedPhoneNumber(withE164: newPhoneNumber.toE164())
@@ -76,7 +76,7 @@ class Deprecated_ChangePhoneNumberConfirmViewController: OWSViewController {
                                                 forSubstring: newPhoneNumberFormatted)
 
         let descriptionLabel = UILabel()
-        descriptionLabel.font = .ows_dynamicTypeBody
+        descriptionLabel.font = .dynamicTypeBody
         descriptionLabel.textColor = Theme.secondaryTextAndIconColor
         descriptionLabel.attributedText = descriptionAttributedText
         descriptionLabel.textAlignment = .center
@@ -84,7 +84,7 @@ class Deprecated_ChangePhoneNumberConfirmViewController: OWSViewController {
         descriptionLabel.lineBreakMode = .byWordWrapping
 
         let phoneNumberLabel = UILabel()
-        phoneNumberLabel.font = .ows_dynamicTypeTitle2.ows_semibold
+        phoneNumberLabel.font = .dynamicTypeTitle2.semibold()
         phoneNumberLabel.textColor = Theme.primaryTextColor
         phoneNumberLabel.text = newPhoneNumberFormatted
         phoneNumberLabel.textAlignment = .center
@@ -96,9 +96,9 @@ class Deprecated_ChangePhoneNumberConfirmViewController: OWSViewController {
         let phoneNumberBackground = phoneNumberStack.addBackgroundView(withBackgroundColor: Theme.backgroundColor)
         phoneNumberBackground.layer.cornerRadius = 10
 
-        let continueButton = OWSFlatButton.button(title: NSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_CONFIRM_BUTTON",
+        let continueButton = OWSFlatButton.button(title: OWSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_CONFIRM_BUTTON",
                                                                            comment: "Label for the 'confirm change phone number' button in the 'change phone number' views."),
-                                                  font: UIFont.ows_dynamicTypeBody.ows_semibold,
+                                                  font: UIFont.dynamicTypeBody.semibold(),
                                                   titleColor: .ows_white,
                                                   backgroundColor: .ows_accentBlue,
                                                   target: self,
@@ -106,9 +106,9 @@ class Deprecated_ChangePhoneNumberConfirmViewController: OWSViewController {
         continueButton.autoSetHeightUsingFont()
         continueButton.cornerRadius = 8
 
-        let editButton = OWSFlatButton.button(title: NSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_BACK_TO_EDIT_BUTTON",
+        let editButton = OWSFlatButton.button(title: OWSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_BACK_TO_EDIT_BUTTON",
                                                                          comment: "Label for the 'edit phone number' button in the 'change phone number' views."),
-                                                font: UIFont.ows_dynamicTypeBody,
+                                                font: UIFont.dynamicTypeBody,
                                                 titleColor: .ows_accentBlue,
                                                 backgroundColor: .clear,
                                                 target: self,
@@ -173,7 +173,7 @@ class Deprecated_ChangePhoneNumberConfirmViewController: OWSViewController {
         view.addSubview(progressUI)
         progressUI.autoPinEdgesToSuperviewEdges()
 
-        let labelFormat = NSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_PROGRESS_FORMAT",
+        let labelFormat = OWSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_PROGRESS_FORMAT",
                                             comment: "Format for the 'change phone number' progress view. Embeds: {{ the user's new phone number }}.")
         let labelText = String(format: labelFormat, newPhoneNumber.toE164())
         let progressView = AnimatedProgressView(loadingText: labelText)

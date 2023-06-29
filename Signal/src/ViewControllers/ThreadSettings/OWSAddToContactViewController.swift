@@ -3,15 +3,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
-import UIKit
 import Contacts
 import ContactsUI
 import SignalServiceKit
 import SignalMessaging
 import SignalUI
 
-@objc
 public class OWSAddToContactViewController: OWSViewController {
 
     private let address: SignalServiceAddress
@@ -21,7 +18,6 @@ public class OWSAddToContactViewController: OWSViewController {
 
     private let sortOrder: CNContactSortOrder = CNContactsUserDefaults.shared().sortOrder
 
-    @objc
     public init(address: SignalServiceAddress) {
         self.address = address
         super.init()
@@ -55,7 +51,7 @@ public class OWSAddToContactViewController: OWSViewController {
         tableView.separatorInset = UIEdgeInsets(top: 0, left: ContactCell.kSeparatorHInset, bottom: 0, right: 16)
         tableView.register(ContactCell.self, forCellReuseIdentifier: ContactCell.reuseIdentifier)
 
-        title = NSLocalizedString(
+        title = OWSLocalizedString(
             "CONVERSATION_SETTINGS_ADD_TO_EXISTING_CONTACT",
             comment: "Label for 'new contact' button in conversation settings view."
         )

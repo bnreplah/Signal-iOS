@@ -28,14 +28,13 @@ import SignalServiceKit
 //
 // We keep a global `environment` singleton to ensure that our app context,
 // database, logging, etc. are only ever setup once per *process*
-let environment = NSEEnvironment()
+private let globalEnvironment = NSEEnvironment()
 
-let hasShownFirstUnlockError = AtomicBool(false)
+private let hasShownFirstUnlockError = AtomicBool(false)
 
 class NotificationService: UNNotificationServiceExtension {
-
     private typealias ContentHandler = (UNNotificationContent) -> Void
-    private var contentHandler = AtomicOptional<ContentHandler>(nil)
+    private let contentHandler = AtomicOptional<ContentHandler>(nil)
 
     // MARK: -
 
@@ -45,8 +44,7 @@ class NotificationService: UNNotificationServiceExtension {
 
     private static func nseDidStart() -> Int {
         unfairLock.withLock {
-            if DebugFlags.internalLogging,
-               _logTimer == nil {
+            if DebugFlags.internalLogging, _logTimer == nil {
                 _logTimer = OffMainThreadTimer(timeInterval: 1.0, repeats: true) { _ in
                     NSELogger.uncorrelated.info("... memoryUsage: \(LocalDevice.memoryUsageString)")
                 }
@@ -57,7 +55,7 @@ class NotificationService: UNNotificationServiceExtension {
         }
     }
 
-    private static func nseDidComplete() -> Int {
+    private static func nseDidComplete() {
         unfairLock.withLock {
             _nseCounter = _nseCounter > 0 ? _nseCounter - 1 : 0
 
@@ -65,49 +63,23 @@ class NotificationService: UNNotificationServiceExtension {
                 _logTimer?.invalidate()
                 _logTimer = nil
             }
-            return _nseCounter
         }
     }
 
     // MARK: -
 
     // This method is thread-safe.
-    func completeSilently(timeHasExpired: Bool = false, logger: NSELogger) {
+    func completeSilently(timeHasExpired: Bool = false, badgeValue: UInt? = nil, logger: NSELogger) {
         defer { logger.flush() }
 
-        let nseCount = Self.nseDidComplete()
-
         guard let contentHandler = contentHandler.swap(nil) else {
-            if DebugFlags.internalLogging {
-                logger.warn("No contentHandler, memoryUsage: \(LocalDevice.memoryUsageString), nseCount: \(nseCount).")
-            }
             return
         }
 
-        let content = UNMutableNotificationContent()
-        content.badge = {
-            if let nseContext = CurrentAppContext() as? NSEContext {
-                if !timeHasExpired {
-                    // If we have time, we might as well get the current up-to-date badge count
-                    let freshCount = databaseStorage.read { InteractionFinder.unreadCountInAllThreads(transaction: $0.unwrapGrdbRead) }
-                    return NSNumber(value: freshCount)
-                } else if let cachedBadgeCount = nseContext.desiredBadgeNumber.get() {
-                    // If we don't have time to get a fresh count, let's use the cached count stored in our context
-                    return NSNumber(value: cachedBadgeCount)
-                } else {
-                    // The context never set a badge count, let's leave things as-is:
-                    return nil
-                }
-            } else {
-                // We never set up an NSEContext. Let's leave things as-is:
-                owsFailDebug("Missing NSE context!")
-                return nil
-            }
-        }()
+        Self.nseDidComplete()
 
-        if DebugFlags.internalLogging {
-            logger.info("Invoking contentHandler, memoryUsage: \(LocalDevice.memoryUsageString), nseCount: \(nseCount).")
-        }
+        let content = UNMutableNotificationContent()
+        content.badge = badgeValue.map { NSNumber(value: $0) }
 
         if timeHasExpired {
             contentHandler(content)
@@ -134,14 +106,14 @@ class NotificationService: UNNotificationServiceExtension {
         _ request: UNNotificationRequest,
         withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void
     ) {
-        environment.ensureGlobalState()
-
         let logger = NSELogger()
+
+        DispatchQueue.main.sync { globalEnvironment.setUpBeforeCheckingForFirstDeviceUnlock(logger: logger) }
 
         // Detect and handle "no GRDB file" and "no keychain access; device
         // not yet unlocked for first time" cases _before_ calling
         // setupIfNecessary().
-        if let errorContent = NSEEnvironment.verifyDBKeysAvailable(logger: logger) {
+        if let errorContent = globalEnvironment.verifyDBKeysAvailable(logger: logger) {
             if hasShownFirstUnlockError.tryToSetFlag() {
                 logger.error("DB Keys not accessible; showing error.", flushImmediately: true)
                 contentHandler(errorContent)
@@ -155,24 +127,14 @@ class NotificationService: UNNotificationServiceExtension {
             return
         }
 
-        if let errorContent = environment.setupIfNecessary(logger: logger) {
-            // This should not occur; see above.  If we've reached this
-            // point, the NSEEnvironment.isSetup flag is already set,
-            // but the environment has _not_ been setup successfully.
-            // We need to terminate the NSE to return to a good state.
-            logger.warn("Posting error notification and skipping processing.", flushImmediately: true)
-            contentHandler(errorContent)
-            fatalError("Posting error notification and skipping processing.")
-        }
+        DispatchQueue.main.sync { globalEnvironment.setUpAfterCheckingForFirstDeviceUnlock(logger: logger) }
 
         self.contentHandler.set(contentHandler)
-
-        owsAssertDebug(FeatureFlags.notificationServiceExtension)
 
         let nseCount = Self.nseDidStart()
 
         logger.info(
-            "Received notification in class: \(self), thread: \(Thread.current), pid: \(ProcessInfo.processInfo.processIdentifier), memoryUsage: \(LocalDevice.memoryUsageString), nseCount: \(nseCount)"
+            "Received notification in pid: \(ProcessInfo.processInfo.processIdentifier), memoryUsage: \(LocalDevice.memoryUsageString), nseCount: \(nseCount)"
         )
 
         AppReadiness.runNowOrWhenAppWillBecomeReady {
@@ -186,7 +148,7 @@ class NotificationService: UNNotificationServiceExtension {
         }
 
         AppReadiness.runNowOrWhenAppDidBecomeReadySync {
-            environment.askMainAppToHandleReceipt(logger: logger) { [weak self] mainAppHandledReceipt in
+            globalEnvironment.askMainAppToHandleReceipt(logger: logger) { [weak self] mainAppHandledReceipt in
                 guard !mainAppHandledReceipt else {
                     logger.info("Received notification handled by main application, memoryUsage: \(LocalDevice.memoryUsageString).")
                     self?.completeSilently(logger: logger)
@@ -212,7 +174,7 @@ class NotificationService: UNNotificationServiceExtension {
 
     // This method is thread-safe.
     private func fetchAndProcessMessages(logger: NSELogger) {
-        guard !AppExpiry.shared.isExpired else {
+        if DependenciesBridge.shared.appExpiry.isExpired {
             owsFailDebug("Not processing notifications for expired application.")
             return completeSilently(logger: logger)
         }
@@ -231,7 +193,7 @@ class NotificationService: UNNotificationServiceExtension {
             Logger.info("Using signal proxy for message fetch.")
         }
 
-        environment.processingMessageCounter.increment()
+        globalEnvironment.processingMessageCounter.increment()
 
         logger.info("Beginning message fetch.")
 
@@ -276,8 +238,12 @@ class NotificationService: UNNotificationServiceExtension {
         }.ensure(on: DispatchQueue.global()) { [weak self] in
             logger.info("Message fetch completed.")
             SignalProxy.stopRelayServer()
-            environment.processingMessageCounter.decrementOrZero()
-            self?.completeSilently(logger: logger)
+            globalEnvironment.processingMessageCounter.decrementOrZero()
+            // If we're completing normally, try to update the badge on the app icon.
+            let badgeValue = Self.databaseStorage.read { tx in
+                InteractionFinder.unreadCountInAllThreads(transaction: tx.unwrapGrdbRead)
+            }
+            self?.completeSilently(badgeValue: badgeValue, logger: logger)
         }.catch(on: DispatchQueue.global()) { error in
             logger.error("Error: \(error)")
         }

@@ -378,7 +378,7 @@ class PhotoCaptureViewController: OWSViewController, OWSNavigationChildControlle
     }()
     private lazy var textBackgroundSelectionButton = RoundGradientButton()
     private lazy var textViewAttachLinkButton: UIButton = {
-        let button = RoundMediaButton(image: UIImage(imageLiteralResourceName: "link-diagonal"), backgroundStyle: .blur)
+        let button = RoundMediaButton(image: UIImage(imageLiteralResourceName: "link"), backgroundStyle: .blur)
         button.contentEdgeInsets = UIEdgeInsets(margin: 3)
         button.layoutMargins = .zero
         return button
@@ -392,7 +392,7 @@ class PhotoCaptureViewController: OWSViewController, OWSNavigationChildControlle
     private lazy var doneButton: MediaDoneButton = {
         let button = MediaDoneButton(type: .custom)
         button.badgeNumber = 0
-        button.userInterfaceStyleOverride = .dark
+        button.overrideUserInterfaceStyle = .dark
         return button
     }()
     private var shouldHideDoneButton: Bool {
@@ -676,7 +676,7 @@ class PhotoCaptureViewController: OWSViewController, OWSNavigationChildControlle
         }
 
         // Don't "unrotate" the switch camera icon if the front facing camera had been selected.
-        let tranformFromCameraType: CGAffineTransform = cameraCaptureSession.desiredPosition == .front ? CGAffineTransform(rotationAngle: -.pi) : .identity
+        let transformFromCameraType: CGAffineTransform = cameraCaptureSession.desiredPosition == .front ? CGAffineTransform(rotationAngle: -.pi) : .identity
 
         var buttonsToUpdate: [UIView] = [ topBar.batchModeButton, topBar.flashModeButton, bottomBar.photoLibraryButton ]
         if let cameraZoomControl = frontCameraZoomControl {
@@ -687,7 +687,7 @@ class PhotoCaptureViewController: OWSViewController, OWSNavigationChildControlle
         }
         let updateOrientation = {
             buttonsToUpdate.forEach { $0.transform = transformFromOrientation }
-            self.bottomBar.switchCameraButton.transform = transformFromOrientation.concatenating(tranformFromCameraType)
+            self.bottomBar.switchCameraButton.transform = transformFromOrientation.concatenating(transformFromCameraType)
         }
 
         if isAnimated {
@@ -883,14 +883,16 @@ extension PhotoCaptureViewController {
         if let animationDuration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval,
            let rawAnimationCurve = userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? Int,
            let animationCurve = UIView.AnimationCurve(rawValue: rawAnimationCurve) {
-            UIView.beginAnimations("sheetResize", context: nil)
-            UIView.setAnimationBeginsFromCurrentState(true)
-            UIView.setAnimationCurve(animationCurve)
-            UIView.setAnimationDuration(animationDuration)
-            layoutUpdateBlock()
-            view.setNeedsLayout()
-            view.layoutIfNeeded()
-            UIView.commitAnimations()
+            UIView.animate(
+                withDuration: animationDuration,
+                delay: 0,
+                options: animationCurve.asAnimationOptions,
+                animations: { [self] in
+                    layoutUpdateBlock()
+                    view.setNeedsLayout()
+                    view.layoutIfNeeded()
+                }
+            )
         } else {
             UIView.performWithoutAnimation {
                 layoutUpdateBlock()
@@ -940,14 +942,26 @@ extension PhotoCaptureViewController {
     private func didTapTextStoryProceedButton() {
         Logger.verbose("")
 
-        let text = textStoryComposerView.text ?? ""
+        let body: StyleOnlyMessageBody
+        let textStyle: TextAttachment.TextStyle
+        switch textStoryComposerView.textContent {
+        case .empty:
+            body = StyleOnlyMessageBody(plaintext: "")
+            textStyle = .regular
+        case .styledRanges(let contentBody):
+            body = contentBody
+            textStyle = .regular
+        case .styled(let text, let style):
+            body = StyleOnlyMessageBody(plaintext: text)
+            textStyle = style
+        }
         let textForegroundColor = textStoryComposerView.textForegroundColor
         let textBackgroundColor = textStoryComposerView.textBackgroundColor
-        let textStyle = textStoryComposerView.textStyle
         let background = textStoryComposerView.background
 
+        // Styles are used only when forwading; we only get plaintext here.
         let unsentTextAttachment = UnsentTextAttachment(
-            text: text,
+            body: body,
             textStyle: textStyle,
             textForegroundColor: textForegroundColor,
             textBackgroundColor: textBackgroundColor,
@@ -1229,7 +1243,11 @@ extension PhotoCaptureViewController: InteractiveDismissDelegate {
         view.backgroundColor = .clear
     }
 
-    func interactiveDismissDidFinish(_ interactiveDismiss: UIPercentDrivenInteractiveTransition) {
+    func interactiveDismiss(_ interactiveDismiss: UIPercentDrivenInteractiveTransition,
+                            didChangeProgress: CGFloat,
+                            touchOffset: CGPoint) { }
+
+    func interactiveDismiss(_ interactiveDismiss: UIPercentDrivenInteractiveTransition, didFinishWithVelocity: CGVector?) {
         dismiss(animated: true)
     }
 
@@ -1374,8 +1392,7 @@ private class TextStoryComposerView: TextAttachmentView, UITextViewDelegate {
 
     init(text: String) {
         super.init(
-            text: text,
-            textStyle: .regular,
+            textContent: .styled(body: text, style: .regular),
             textForegroundColor: .white,
             textBackgroundColor: nil,
             background: TextStoryComposerView.defaultBackground,
@@ -1495,6 +1512,32 @@ private class TextStoryComposerView: TextAttachmentView, UITextViewDelegate {
 
     override var isEditing: Bool { textView.isFirstResponder }
 
+    private var text: String? {
+        get {
+            switch super.textContent {
+            case .empty:
+                return nil
+            case .styledRanges(let body):
+                owsFailDebug("Should not have styled ranges in story text composer")
+                return body.text
+            case .styled(let body, _):
+                return body
+            }
+        }
+        set {
+            super.textContent = .styled(body: newValue ?? "", style: textStyle)
+        }
+    }
+
+    private var textStyle: TextAttachment.TextStyle = .regular {
+        didSet {
+            guard let text = text else {
+                return
+            }
+            super.textContent = .styled(body: text, style: self.textStyle)
+        }
+    }
+
     var isEmpty: Bool {
         guard let text = text else { return true }
         return text.isEmpty && linkPreview == nil
@@ -1526,8 +1569,8 @@ private class TextStoryComposerView: TextAttachmentView, UITextViewDelegate {
         label.textAlignment = .center
         label.numberOfLines = 0
         label.textColor = .ows_whiteAlpha60
-        label.font = .ows_dynamicTypeLargeTitle1Clamped
-        label.text = NSLocalizedString("STORY_COMPOSER_TAP_ADD_TEXT",
+        label.font = .dynamicTypeLargeTitle1Clamped
+        label.text = OWSLocalizedString("STORY_COMPOSER_TAP_ADD_TEXT",
                                        comment: "Placeholder text in text stories compose UI")
         return label
     }()
@@ -1736,7 +1779,7 @@ private class TextStoryComposerView: TextAttachmentView, UITextViewDelegate {
     }
 
     private lazy var deleteLinkPreviewButton: UIButton = {
-        let button = RoundMediaButton(image: UIImage(imageLiteralResourceName: "x-24"), backgroundStyle: .blurLight)
+        let button = RoundMediaButton(image: Theme.iconImage(.buttonX), backgroundStyle: .blurLight)
         button.tintColor = Theme.lightThemePrimaryColor
         button.contentEdgeInsets = UIEdgeInsets(margin: 8)
         button.layoutMargins = UIEdgeInsets(margin: 2)

@@ -4,9 +4,8 @@
 //
 
 import SignalMessaging
-import UIKit
+import SignalUI
 
-@objc
 public class Deprecated_RegistrationPhoneNumberViewController: Deprecated_OnboardingBaseViewController {
 
     // MARK: - Properties
@@ -59,15 +58,13 @@ public class Deprecated_RegistrationPhoneNumberViewController: Deprecated_Onboar
     private let countryNameLabel: UILabel = {
         let label = UILabel()
         label.textColor = Theme.primaryTextColor
-        label.font = UIFont.ows_dynamicTypeBodyClamped
+        label.font = UIFont.dynamicTypeBodyClamped
         label.accessibilityIdentifier = "onboarding.phoneNumber." + "countryNameLabel"
         return label
     }()
 
     private let countryChevron: UIImageView = {
-        let countryIconImage = CurrentAppContext().isRTL ? "small_chevron_left" : "small_chevron_right"
-        let countryIcon = UIImage(named: countryIconImage)
-        let imageView = UIImageView(image: countryIcon?.withRenderingMode(.alwaysTemplate))
+        let imageView = UIImageView(image: UIImage(imageLiteralResourceName: "chevron-right-20"))
         imageView.tintColor = .ows_gray20
         imageView.accessibilityIdentifier = "onboarding.phoneNumber." + "countryImageView"
         return imageView
@@ -76,7 +73,7 @@ public class Deprecated_RegistrationPhoneNumberViewController: Deprecated_Onboar
     private lazy var callingCodeLabel: UILabel = {
         let label = UILabel()
         label.textColor = Theme.primaryTextColor
-        label.font = UIFont.ows_dynamicTypeBodyClamped
+        label.font = UIFont.dynamicTypeBodyClamped
         label.isUserInteractionEnabled = true
         label.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(countryCodeTapped)))
         label.accessibilityIdentifier = "onboarding.phoneNumber." + "callingCodeLabel"
@@ -85,7 +82,7 @@ public class Deprecated_RegistrationPhoneNumberViewController: Deprecated_Onboar
 
     private let phoneNumberTextField: UITextField = {
         let field = UITextField()
-        field.font = UIFont.ows_dynamicTypeBodyClamped
+        field.font = UIFont.dynamicTypeBodyClamped
         field.textColor = Theme.primaryTextColor
         field.textAlignment = .left
         field.textContentType = .telephoneNumber
@@ -95,15 +92,9 @@ public class Deprecated_RegistrationPhoneNumberViewController: Deprecated_Onboar
         // autofill at the expense of a less appropriate keyboard, here's where it'd
         // be done. See Wisors comment here:
         // https://developer.apple.com/forums/thread/120703
-        if #available(iOS 14, *) {
-            field.keyboardType = .numberPad
-        } else if #available(iOS 13, *) {
-            field.keyboardType = .numberPad // .numbersAndPunctuation
-        } else {
-            field.keyboardType = .numberPad
-        }
+        field.keyboardType = .numberPad
 
-        field.placeholder = NSLocalizedString(
+        field.placeholder = OWSLocalizedString(
             "ONBOARDING_PHONE_NUMBER_PLACEHOLDER",
             comment: "Placeholder string for phone number field during registration")
         field.accessibilityIdentifier = "onboarding.phoneNumber." + "phoneNumberTextField"
@@ -118,7 +109,7 @@ public class Deprecated_RegistrationPhoneNumberViewController: Deprecated_Onboar
         let label = UILabel()
         label.textColor = .ows_accentRed
         label.numberOfLines = 0
-        label.font = UIFont.ows_dynamicTypeSubheadlineClamped
+        label.font = UIFont.dynamicTypeSubheadlineClamped
         label.accessibilityIdentifier = "onboarding.phoneNumber." + "validationWarningLabel"
         return label
     }()
@@ -151,7 +142,7 @@ public class Deprecated_RegistrationPhoneNumberViewController: Deprecated_Onboar
 
         let proxyButton = ContextMenuButton(contextMenu: .init([
             .init(
-                title: NSLocalizedString(
+                title: OWSLocalizedString(
                     "USE_PROXY_BUTTON",
                     comment: "Button to activate the signal proxy"
                 ),
@@ -163,7 +154,7 @@ public class Deprecated_RegistrationPhoneNumberViewController: Deprecated_Onboar
             )
         ]))
         proxyButton.showsContextMenuAsPrimaryAction = true
-        proxyButton.setImage(Theme.iconImage(.more24), for: .normal)
+        proxyButton.setImage(Theme.iconImage(.buttonMore), for: .normal)
         proxyButton.tintColor = Theme.primaryIconColor
         proxyButton.autoSetDimensions(to: .square(40))
 
@@ -173,10 +164,10 @@ public class Deprecated_RegistrationPhoneNumberViewController: Deprecated_Onboar
 
         // Setup subviews and stack views
         let titleString = (Self.tsAccountManager.isReregistering
-                           ? NSLocalizedString(
+                           ? OWSLocalizedString(
                             "REGISTRATION_PHONE_NUMBER_TITLE",
                             comment: "During registration, users are asked to enter their phone number. This is the title on that screen.")
-                            : NSLocalizedString(
+                            : OWSLocalizedString(
                                 "ONBOARDING_PHONE_NUMBER_TITLE",
                                 comment: "Title of the 'onboarding phone number' view."))
 
@@ -188,7 +179,7 @@ public class Deprecated_RegistrationPhoneNumberViewController: Deprecated_Onboar
         countryRow.spacing = 10
         countryRow.isUserInteractionEnabled = true
         countryRow.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(countryRowTapped)))
-        _ = countryRow.addBottomStroke(color: .ows_gray20, strokeWidth: CGHairlineWidth())
+        _ = countryRow.addBottomStroke(color: .ows_gray20, strokeWidth: .hairlineWidth)
         countryChevron.setContentHuggingHorizontalHigh()
         countryChevron.setCompressionResistanceHigh()
 
@@ -196,7 +187,7 @@ public class Deprecated_RegistrationPhoneNumberViewController: Deprecated_Onboar
         phoneNumberRow.axis = .horizontal
         phoneNumberRow.alignment = .center
         phoneNumberRow.spacing = 10
-        phoneStrokeNormal = phoneNumberRow.addBottomStroke(color: .ows_gray20, strokeWidth: CGHairlineWidth())
+        phoneStrokeNormal = phoneNumberRow.addBottomStroke(color: .ows_gray20, strokeWidth: .hairlineWidth)
         phoneStrokeError = phoneNumberRow.addBottomStroke(color: .ows_accentRed, strokeWidth: 1)
         callingCodeLabel.autoSetDimension(.width, toSize: 45, relation: .greaterThanOrEqual)
         callingCodeLabel.setCompressionResistanceHigh()
@@ -358,7 +349,7 @@ public class Deprecated_RegistrationPhoneNumberViewController: Deprecated_Onboar
         guard tsAccountManager.isReregistering else {
             return nil
         }
-        guard let phoneNumberE164 = tsAccountManager.reregistrationPhoneNumber() else {
+        guard let phoneNumberE164 = tsAccountManager.reregistrationPhoneNumber else {
             owsFailDebug("Could not resume re-registration; missing phone number.")
             return nil
         }
@@ -466,12 +457,12 @@ public class Deprecated_RegistrationPhoneNumberViewController: Deprecated_Onboar
     private func updateValidationLabel() {
         switch phoneNumberError {
         case .invalidNumber:
-            validationWarningLabel.text = NSLocalizedString(
+            validationWarningLabel.text = OWSLocalizedString(
                 "ONBOARDING_PHONE_NUMBER_VALIDATION_WARNING",
                 comment: "Label indicating that the phone number is invalid in the 'onboarding phone number' view.")
 
         case let .rateLimit(expiration: expirationDate) where expirationDate > Date():
-            let rateLimitFormat = NSLocalizedString(
+            let rateLimitFormat = OWSLocalizedString(
                 "ONBOARDING_PHONE_NUMBER_RATE_LIMIT_WARNING_FORMAT",
                 comment: "Label indicating that registration has been ratelimited. Embeds {{remaining time string}}.")
 
@@ -492,7 +483,7 @@ public class Deprecated_RegistrationPhoneNumberViewController: Deprecated_Onboar
             // Both of our text blobs are about the same size. Ideally we don't want to move views when the error appears
             // So we pre-populate with filler text to try and maintain an approximately consistent intrinsic content size
             // If there's no error, the view will be hidden and compression resistance reduced.
-            validationWarningLabel.text = NSLocalizedString(
+            validationWarningLabel.text = OWSLocalizedString(
                 "ONBOARDING_PHONE_NUMBER_VALIDATION_WARNING",
                 comment: "Label indicating that the phone number is invalid in the 'onboarding phone number' view.")
         }
@@ -509,13 +500,13 @@ public class Deprecated_RegistrationPhoneNumberViewController: Deprecated_Onboar
 
     private func applyPhoneNumberFormatting() {
         AssertIsOnMainThread()
-        ViewControllerUtils.reformatPhoneNumber(phoneNumberTextField, callingCode: callingCode)
+        TextFieldFormatting.reformatPhoneNumberTextField(phoneNumberTextField, callingCode: callingCode)
     }
 
      // MARK: - Events
 
     @objc
-    func countryRowTapped(sender: UIGestureRecognizer) {
+    private func countryRowTapped(sender: UIGestureRecognizer) {
         guard sender.state == .recognized else {
             return
         }
@@ -523,7 +514,7 @@ public class Deprecated_RegistrationPhoneNumberViewController: Deprecated_Onboar
     }
 
     @objc
-    func countryCodeTapped(sender: UIGestureRecognizer) {
+    private func countryCodeTapped(sender: UIGestureRecognizer) {
         guard sender.state == .recognized else {
             return
         }
@@ -531,7 +522,7 @@ public class Deprecated_RegistrationPhoneNumberViewController: Deprecated_Onboar
     }
 
     @objc
-    func continuePressed() {
+    private func continuePressed() {
         Logger.info("")
 
         parseAndTryToRegister()
@@ -555,10 +546,10 @@ public class Deprecated_RegistrationPhoneNumberViewController: Deprecated_Onboar
         guard let phoneNumberText = phoneNumber?.ows_stripped(), !phoneNumberText.isEmpty else {
             phoneNumberError = .invalidNumber
             OWSActionSheets.showActionSheet(
-                title: NSLocalizedString(
+                title: OWSLocalizedString(
                     "REGISTRATION_VIEW_NO_PHONE_NUMBER_ALERT_TITLE",
                     comment: "Title of alert indicating that users needs to enter a phone number to register."),
-                message: NSLocalizedString(
+                message: OWSLocalizedString(
                     "REGISTRATION_VIEW_NO_PHONE_NUMBER_ALERT_MESSAGE",
                     comment: "Message of alert indicating that users needs to enter a phone number to register."))
             return
@@ -575,10 +566,10 @@ public class Deprecated_RegistrationPhoneNumberViewController: Deprecated_Onboar
 
             phoneNumberError = .invalidNumber
             OWSActionSheets.showActionSheet(
-                title: NSLocalizedString(
+                title: OWSLocalizedString(
                     "REGISTRATION_VIEW_INVALID_PHONE_NUMBER_ALERT_TITLE",
                     comment: "Title of alert indicating that users needs to enter a valid phone number to register."),
-                message: NSLocalizedString(
+                message: OWSLocalizedString(
                     "REGISTRATION_VIEW_INVALID_PHONE_NUMBER_ALERT_MESSAGE",
                     comment: "Message of alert indicating that users needs to enter a valid phone number to register."))
             return
@@ -592,7 +583,7 @@ public class Deprecated_RegistrationPhoneNumberViewController: Deprecated_Onboar
         }
 
         let formattedNumber = PhoneNumber.bestEffortLocalizedPhoneNumber(withE164: localNumber.toE164())
-        let progressViewFormat = NSLocalizedString(
+        let progressViewFormat = OWSLocalizedString(
             "REGISTRATION_VIEW_PHONE_NUMBER_SPINNER_LABEL_FORMAT",
             comment: "Label for the progress spinner shown during phone number registration. Embeds {{phone number}}.")
         progressSpinner.loadingText = String(format: progressViewFormat, formattedNumber)
@@ -670,11 +661,12 @@ extension Deprecated_RegistrationPhoneNumberViewController: UITextFieldDelegate 
 
         // If ViewControllerUtils applied the edit on our behalf, inform UIKit
         // so the edit isn't applied twice.
-        return ViewControllerUtils.phoneNumber(
+        return TextFieldFormatting.phoneNumberTextField(
             textField,
             shouldChangeCharactersIn: range,
             replacementString: string,
-            callingCode: callingCode)
+            callingCode: callingCode
+        )
     }
 
     @objc

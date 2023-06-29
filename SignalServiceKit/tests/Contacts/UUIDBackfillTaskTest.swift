@@ -38,24 +38,36 @@ final class UUIDBackfillTaskTest: SSKBaseTestSwift {
         }
     }
 
+    private lazy var localIdentifiers = LocalIdentifiers(
+        aci: ServiceId(UUID()),
+        pni: ServiceId(UUID()),
+        phoneNumber: "+16505550199"
+    )
+
     override func setUp() {
         super.setUp()
-
-        let localAddress = CommonGenerator.address()
-        tsAccountManager.registerForTests(withLocalNumber: localAddress.phoneNumber!, uuid: localAddress.uuid!)
+        tsAccountManager.registerForTests(withLocalNumber: localIdentifiers.phoneNumber, uuid: localIdentifiers.aci.uuidValue)
     }
 
     func testRetryOnError() throws {
         // Add a few phone number-only recipients.
-        let addressesMissingUUIDs = [
-            CommonGenerator.address(hasUUID: false),
-            CommonGenerator.address(hasUUID: false)
+        let phoneNumbers = [
+            E164("+16505550100")!,
+            E164("+16505550101")!
         ]
-        databaseStorage.write { transaction in
-            for address in addressesMissingUUIDs + [CommonGenerator.address()] {
-                SignalRecipient.fetchOrCreate(for: address, trustLevel: .high, transaction: transaction)
-                    .markAsRegistered(transaction: transaction)
+        databaseStorage.write { tx in
+            let recipientFetcher = DependenciesBridge.shared.recipientFetcher
+            for phoneNumber in phoneNumbers {
+                recipientFetcher.fetchOrCreate(phoneNumber: phoneNumber, tx: tx.asV2Write).markAsRegisteredAndSave(tx: tx)
             }
+            let recipientMerger = DependenciesBridge.shared.recipientMerger
+            let mergedRecipient = recipientMerger.applyMergeFromLinkedDevice(
+                localIdentifiers: localIdentifiers,
+                serviceId: ServiceId(UUID()),
+                phoneNumber: E164("+16505550102")!,
+                tx: tx.asV2Write
+            )
+            mergedRecipient.markAsRegisteredAndSave(tx: tx)
         }
 
         let manager = MockContactDiscoveryManager()
@@ -70,7 +82,7 @@ final class UUIDBackfillTaskTest: SSKBaseTestSwift {
         // We expect four requests.
         XCTAssertEqual(manager.requests.count, 4)
         // Which should match the addresses missing UUIDs.
-        let phoneNumbersMissingUUIDs = addressesMissingUUIDs.map { $0.phoneNumber! }
+        let phoneNumbersMissingUUIDs = phoneNumbers.map { $0.stringValue }
         XCTAssertEqual(Set(manager.requests), [Set(phoneNumbersMissingUUIDs)])
     }
 }

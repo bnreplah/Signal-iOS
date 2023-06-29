@@ -4,16 +4,14 @@
 //
 
 #import "ContactsViewHelper.h"
-#import "UIUtil.h"
 #import <ContactsUI/ContactsUI.h>
 #import <SignalCoreKit/NSString+OWS.h>
-#import <SignalMessaging/Environment.h>
+#import <SignalMessaging/OWSContactsManager.h>
 #import <SignalMessaging/OWSProfileManager.h>
 #import <SignalMessaging/SignalMessaging-Swift.h>
 #import <SignalServiceKit/AppContext.h>
 #import <SignalServiceKit/Contact.h>
 #import <SignalServiceKit/PhoneNumber.h>
-#import <SignalServiceKit/SignalAccount.h>
 #import <SignalServiceKit/TSAccountManager.h>
 #import <SignalUI/SignalUI-Swift.h>
 
@@ -152,15 +150,6 @@ NS_ASSUME_NONNULL_BEGIN
     return signalAccount;
 }
 
-- (SignalAccount *)fetchOrBuildSignalAccountForAddress:(SignalServiceAddress *)address
-{
-    OWSAssertDebug(address);
-    OWSAssertDebug(!CurrentAppContext().isNSE);
-
-    SignalAccount *_Nullable signalAccount = [self fetchSignalAccountForAddress:address];
-    return (signalAccount ?: [[SignalAccount alloc] initWithSignalServiceAddress:address]);
-}
-
 - (NSArray<SignalAccount *> *)allSignalAccounts
 {
     OWSAssertDebug(!CurrentAppContext().isNSE);
@@ -209,7 +198,7 @@ NS_ASSUME_NONNULL_BEGIN
 
     NSMutableArray<SignalAccount *> *accountsToProcess = [systemContactSignalAccounts mutableCopy];
     for (SignalServiceAddress *address in signalConnectionAddresses) {
-        [accountsToProcess addObject:[[SignalAccount alloc] initWithSignalServiceAddress:address]];
+        [accountsToProcess addObject:[[SignalAccount alloc] initWithAddress:address]];
     }
 
     NSMutableArray<SignalAccount *> *signalAccounts = [NSMutableArray new];
@@ -245,7 +234,7 @@ NS_ASSUME_NONNULL_BEGIN
 
     // Check for matches against "Note to Self".
     NSMutableArray<SignalAccount *> *signalAccountsToSearch = [self.signalAccounts mutableCopy];
-    SignalAccount *selfAccount = [[SignalAccount alloc] initWithSignalServiceAddress:self.localAddress];
+    SignalAccount *selfAccount = [[SignalAccount alloc] initWithAddress:self.localAddress];
     [signalAccountsToSearch addObject:selfAccount];
     return [self.fullTextSearcher filterSignalAccounts:signalAccountsToSearch
                                         withSearchText:searchText
@@ -349,6 +338,7 @@ NS_ASSUME_NONNULL_BEGIN
             newContact.imageData
                 = UIImagePNGRepresentation([self.profileManagerImpl profileAvatarForAddress:address
                                                                           downloadIfMissing:YES
+                                                                              authedAccount:AuthedAccount.implicit
                                                                                 transaction:transaction]);
         }];
 

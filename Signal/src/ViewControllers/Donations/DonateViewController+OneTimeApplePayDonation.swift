@@ -29,7 +29,9 @@ extension DonateViewController {
         guard let oneTime = state.oneTime, let amount = oneTime.amount else {
             owsFail("Amount or currency code are missing")
         }
+
         let boostBadge = oneTime.profileBadge
+        let badgesSnapshot = BadgeThanksSheet.currentProfileBadgesSnapshot()
 
         firstly(on: DispatchQueue.global()) {
             Stripe.boost(
@@ -45,7 +47,7 @@ extension DonateViewController {
 
             wrappedCompletion(.init(status: .success, errors: nil))
 
-            SubscriptionManager.createAndRedeemBoostReceipt(
+            SubscriptionManagerImpl.createAndRedeemBoostReceipt(
                 for: confirmedIntent.intentId,
                 withPaymentProcessor: .stripe,
                 amount: amount
@@ -55,7 +57,7 @@ extension DonateViewController {
                 from: self,
                 promise: DonationViewsUtil.waitForSubscriptionJob()
             ).done(on: DispatchQueue.main) {
-                self.didCompleteDonation(badge: boostBadge, thanksSheetType: .boost)
+                self.didCompleteDonation(badge: boostBadge, thanksSheetType: .boost, oldBadgesSnapshot: badgesSnapshot)
             }.catch(on: DispatchQueue.main) { [weak self] error in
                 self?.didFailDonation(error: error, mode: .oneTime, paymentMethod: .applePay)
             }

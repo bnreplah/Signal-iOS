@@ -28,7 +28,43 @@
 /* Accessibility label for a voice memo. */
 "ACCESSIBILITY_LABEL_VOICE_MEMO" = "הודעה קולית";
 
-/* Label for 'audio call' button in contact view. */
+/* Users can request a report of their account data. Before they get their account export, they are warned to only share account data with trustworthy sources. This is the button on that warning, and tapping it lets users continue. */
+"ACCOUNT_DATA_REPORT_CONFIRM_EXPORT_CONFIRM_BUTTON" = "יצוא דוח";
+
+/* Users can request a report of their account data. Before they get their account export, they are warned to only share account data with trustworthy sources. This is the message on that warning. */
+"ACCOUNT_DATA_REPORT_CONFIRM_EXPORT_MESSAGE" = "כדאי לשתף את נתוני חשבון Signal שלך רק עם אנשים או אפליקציות שבוטחים בהם.";
+
+/* Users can request a report of their account data. If this request fails (probably because of a network connection problem), they will see an error sheet. This is the message on that error. */
+"ACCOUNT_DATA_REPORT_ERROR_MESSAGE" = "כדאי לבדוק את החיבור שלך ולנסות שוב.";
+
+/* Users can request a report of their account data. If this request fails (probably because of a network connection problem), they will see an error sheet. This is the title on that error. */
+"ACCOUNT_DATA_REPORT_ERROR_TITLE" = "הפקת דוח נכשלה";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the subtitle on the button that switches to JSON mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_JSON_SUBTITLE" = "קובץ שניתן לקריאה על ידי מכונה";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the title on the button that switches to JSON mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_JSON_TITLE" = "יצוא כקובץ JSON";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the subtitle on the button that switches to plain text mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_TXT_SUBTITLE" = "קובץ טקסט קל לקריאה";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the title on the button that switches to plain text mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_TXT_TITLE" = "יצוא כקובץ TXT";
+
+/* Users can request a report of their account data. Users tap this button to export their data. */
+"ACCOUNT_DATA_REPORT_EXPORT_REPORT_BUTTON" = "יצוא דוח";
+
+/* Users can request a report of their account data. This text appears at the bottom of this screen, offering more information. */
+"ACCOUNT_DATA_REPORT_FOOTER" = "הדוח שלך נוצר רק בזמן הייצוא ואינו מאוחסן על ידי Signal במכשיר שלך.";
+
+/* Users can request a report of their account data. This is the subtitle on the screen where they do this, giving them more information. */
+"ACCOUNT_DATA_REPORT_SUBTITLE" = "אפשר להוריד ולייצא דוח של נתוני חשבון Signal שלך. הדוח הזה לא כולל הודעות או מדיה.";
+
+/* Users can request a report of their account data. This is the title on the screen where they do this. */
+"ACCOUNT_DATA_REPORT_TITLE" = "נתוני החשבון שלך";
+
+/* Label for 'voice call' button in contact view. */
 "ACTION_AUDIO_CALL" = "שיחת Signal";
 
 /* Label for 'invite' button in contact view. */
@@ -86,13 +122,13 @@
 "ALERT_ACTION_ACKNOWLEDGE" = "הבנתי";
 
 /* Format string for delivery issue sheet message. Embeds {{ sender name }}. */
-"ALERT_DELIVERY_ISSUE_MESSAGE_FORMAT" = "הודעה, מדבקה, תגובה, אישור קריאה או מדיה לא יכלו להימסר אליך מאת %1$@ בהתכתבות זו.";
+"ALERT_DELIVERY_ISSUE_MESSAGE_FORMAT" = "לא ניתן היה למסור לך הודעה, סטיקר, תגובה, אישור קריאה או מדיה מאת %1$@ בצ׳אט זה.";
 
 /* Title for delivery issue sheet */
 "ALERT_DELIVERY_ISSUE_TITLE" = "סוגיית מסירה";
 
 /* Format string for delivery issue sheet message where the original thread is unknown. Embeds {{ sender name }}. */
-"ALERT_DELIVERY_ISSUE_UNKNOWN_THREAD_MESSAGE_FORMAT" = "הודעה, מדבקה, תגובה, אישור קריאה או מדיה לא יכלו להימסר אליך מאת %1$@. ייתכן שהצד השני ניסה לשלוח את זה ישירות אליך, או בקבוצה.";
+"ALERT_DELIVERY_ISSUE_UNKNOWN_THREAD_MESSAGE_FORMAT" = "לא ניתן היה למסור לך הודעה, סטיקר, תגובה, אישור קריאה או מדיה מאת %1$@. יתכן שהצד השני ניסה לשלוח לך את זה ישירות, או בקבוצה.";
 
 /* The label for the 'discard' button in alerts and action sheets. */
 "ALERT_DISCARD_BUTTON" = "השמט";
@@ -115,8 +151,35 @@
 /* Label for button to learn more about message requests. */
 "ALERT_UNKNOWN_THREAD_WARNING_LEARN_MORE" = "על אודות בקשות הודעה";
 
+/* Audio file type in All Meda file type picker. */
+"ALL_MEDIA_FILE_TYPE_AUDIO" = "שמע";
+
+/* Media (i.e., graphical) file type in All Meda file type picker. */
+"ALL_MEDIA_FILE_TYPE_MEDIA" = "מדיה";
+
+/* Menu option to limit All Media view to displaying only GIFs */
+"ALL_MEDIA_FILTER_GIFS" = "קבצי GIF";
+
+/* Menu option to limit All Media view to displaying only photos */
+"ALL_MEDIA_FILTER_PHOTOS" = "תמונות";
+
+/* Menu option to limit All Media view to displaying only videos */
+"ALL_MEDIA_FILTER_VIDEOS" = "סרטונים";
+
+/* Menu option to show All Media items in a grid of square thumbnails */
+"ALL_MEDIA_GRID_MODE" = "גריד";
+
+/* Menu option to show All Media items in a single-column list */
+"ALL_MEDIA_LIST_MODE" = "רשימה";
+
 /* Label shown over thumbnails of GIFs in the All Media view */
 "ALL_MEDIA_THUMBNAIL_LABEL_GIF" = "GIF";
+
+/* Label shown by thumbnails of images in the All Media view */
+"ALL_MEDIA_THUMBNAIL_LABEL_IMAGE" = "תמונה";
+
+/* Label shown by thumbnails of videos in the All Media view */
+"ALL_MEDIA_THUMBNAIL_LABEL_VIDEO" = "סרטון";
 
 /* Title for the view of all your signal connections */
 "ALL_SIGNAL_CONNECTIONS_TITLE" = "כל חברי ה–Signal";
@@ -130,11 +193,14 @@
 /* Default message for the 'app launch failed' alert. */
 "APP_LAUNCH_FAILURE_ALERT_MESSAGE" = "Signal אינו יכול להיות מופעל. אנא שלח יומן ניפוי תקלים אל support@signal.org כך שנוכל לפתור סוגייה זו.";
 
-/* Title for the 'app launch failed' alert. */
-"APP_LAUNCH_FAILURE_ALERT_TITLE" = "שגיאה";
-
 /* Button to try launching the app even though the last launch failed */
 "APP_LAUNCH_FAILURE_CONTINUE" = "פתח את Signal במקום";
+
+/* Message for an error indicating that the app couldn't launch because some unexpected error happened with the user's registration status. */
+"APP_LAUNCH_FAILURE_CORRUPT_REGISTRATION_MESSAGE" = "מומלץ לשלוח יומן ניפוי באגים ל–support@signal.org כדי שנוכל לטפל בבעיה.";
+
+/* Title for an error indicating that the app couldn't launch because some unexpected error happened with the user's registration status. */
+"APP_LAUNCH_FAILURE_CORRUPT_REGISTRATION_TITLE" = "פתיחת Signal נכשלה";
 
 /* Error indicating that the app could not launch because the database could not be loaded. */
 "APP_LAUNCH_FAILURE_COULD_NOT_LOAD_DATABASE" = "לא היה ניתן לטעון מסד נתונים";
@@ -371,7 +437,7 @@
 "AUDIO_ACTIVITY_PLAYBACK_NAME_AUDIO_MESSAGE" = "הודעת שמע";
 
 /* Accessibility label for placing an audio call */
-"AUDIO_CALL_LABEL" = "שיחת שמע";
+"AUDIO_CALL_LABEL" = "שיחה קולית";
 
 /* action sheet button title to enable built in speaker during a call */
 "AUDIO_ROUTE_BUILT_IN_SPEAKER" = "רמקול";
@@ -416,7 +482,7 @@
 "BADGE_EXPIRED_BOOST_BODY" = "תג הבוסט שלכם פג תוקף והוא לא גלוי יותר בפרופיל שלכם.\n\nאפשר להמשיך להשתמש ב–Signal אבל כדי לתמוך בטכנולוגיה שנבנתה עבורכם, נשמח אם תשקלו להפוך לתורמים על בסיס חודשי.";
 
 /* String explaining to the user that their boost badge has expired while they are a current subscription sustainer on the badge expiry sheet. */
-"BADGE_EXPIRED_BOOST_CURRENT_SUSTAINER_BODY" = "תג הבוסט שלכם פג תוקף והוא לא גלוי יותר בפרופיל שלכם.\n\nאפשר להפעיל מחדש את תג הבוסט שלך למשך 30 ימים נוספים עם תרומה חד פעמית.";
+"BADGE_EXPIRED_BOOST_CURRENT_SUSTAINER_BODY" = "תג הבוסט שלך פג תוקף והוא לא גלוי יותר בפרופיל שלך.\n\nאפשר להפעיל מחדש את תג הבוסט שלך למשך 30 ימים נוספים עם תרומה חד פעמית.";
 
 /* Title for boost on the badge expiration sheet. */
 "BADGE_EXPIRED_BOOST_TITLE" = "תג פג";
@@ -434,7 +500,7 @@
 "BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_CHARGE_FAILURE_BODY_FORMAT" = "התרומה החודשית החוזרת שלך בוטלה. תג התרומה %1$@ כבר לא גלוי בפרופיל שלך.\n\nכדי להמשיך לתמוך ב–Signal ולהפעיל מחדש את התג שלך, אפשר לעדכן את פרטי התשלום ולתרום שוב.";
 
 /* Body of the sheet shown when your subscription is canceled due to inactivity */
-"BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_INACTIVITY_BODY_FORMAT" = "התרומה החודשית החוזרת שלך בוטלה אוטומטית כי לא היית פעיל במשך זמן רב מדי. תג ה%1$@ שלך לא גלוי יותר בפרופיל שלך.\n\nאפשר להמשיך להשתמש ב–Signal אבל כדי לתמוך באפליקציה ולהפעיל מחדש את התג שלך, כדאי לתרום עכשיו.";
+"BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_INACTIVITY_BODY_FORMAT" = "התרומה החודשית החוזרת שלך בוטלה אוטומטית כי לא התקיימה אצלך פעילות במשך זמן רב מדי. תג ה%1$@ שלך לא גלוי יותר בפרופיל שלך.\n\nאפשר להמשיך להשתמש ב–Signal אבל כדי לתמוך באפליקציה ולהפעיל מחדש את התג שלך, כדאי לתרום עכשיו.";
 
 /* When you make a donation to Signal, you will receive a badge. A thank-you sheet appears when this happens. This is the body text on that sheet. */
 "BADGE_THANKS_BODY" = "הרווחת תג תרומה מ–Signal! אפשר להציג אותו בפרופיל שלך כדי להשוויץ בתמיכה שלך.";
@@ -593,19 +659,19 @@
 "CALL_AGAIN_BUTTON_TITLE" = "חייג שוב";
 
 /* notification body */
-"CALL_AUDIO_INCOMING_NOTIFICATION_BODY" = "📞 שיחת שמע נכנסת…";
+"CALL_AUDIO_INCOMING_NOTIFICATION_BODY" = "📞 שיחה קולית נכנסת…";
 
 /* notification body for a missed call in the last 24 hours. Embeds {{time}}, e.g. '3:30 PM'. */
-"CALL_AUDIO_MISSED_24_HOURS_NOTIFICATION_BODY_FORMAT" = "📞 שיחת שמע שלא נענתה בשעה %1$@";
+"CALL_AUDIO_MISSED_24_HOURS_NOTIFICATION_BODY_FORMAT" = "📞 שיחה קולית שלא נענתה בשעה %1$@";
 
 /* notification body for a call that was just missed */
-"CALL_AUDIO_MISSED_NOTIFICATION_BODY" = "📞 שיחת שמע שלא נענתה";
+"CALL_AUDIO_MISSED_NOTIFICATION_BODY" = "📞 שיחה קולית שלא נענתה";
 
 /* notification body for a missed call from more than a week ago. Embeds {{short date}}, e.g. '6/28'. */
-"CALL_AUDIO_MISSED_PAST_NOTIFICATION_BODY_FORMAT" = "📞 שיחת שמע שלא נענתה בתאריך %1$@";
+"CALL_AUDIO_MISSED_PAST_NOTIFICATION_BODY_FORMAT" = "📞 שיחה קולית שלא נענתה בתאריך %1$@";
 
 /* notification body for a missed call from the last week. Embeds {{weekday}}, e.g. 'Monday'. */
-"CALL_AUDIO_MISSED_WEEK_NOTIFICATION_BODY_FORMAT" = "📞 שיחת שמע שלא נענתה ביום %1$@";
+"CALL_AUDIO_MISSED_WEEK_NOTIFICATION_BODY_FORMAT" = "📞 שיחה קולית שלא נענתה ביום %1$@";
 
 /* Alert message when calling and permissions for microphone are missing */
 "CALL_AUDIO_PERMISSION_MESSAGE" = "אתה יכול לאפשר גישה אל מיקרופון ביישום הגדרות של iOS כדי לבצע שיחות ולהקליט הודעות קוליות ב־Signal.";
@@ -689,7 +755,7 @@
 "CALL_VIEW_SWITCH_CAMERA_DIRECTION" = "החלף כיוון מצלמה";
 
 /* Accessibility label to switch to audio only */
-"CALL_VIEW_SWITCH_TO_AUDIO_LABEL" = "החלף אל שיחת שמע";
+"CALL_VIEW_SWITCH_TO_AUDIO_LABEL" = "החלפה לשיחה קולית";
 
 /* Accessibility label to switch to video call */
 "CALL_VIEW_SWITCH_TO_VIDEO_LABEL" = "החלף אל שיחת וידאו";
@@ -842,10 +908,10 @@
 "CHANGE_PHONE_NUMBER_PIN_EXPLANATION" = "הכנס את ה־PIN עבור המספר החדש של הטלפון. הוא שונה מקוד הווידוא שלך במסרון.";
 
 /* The incoming bubble text when setting a chat color. */
-"CHAT_COLOR_INCOMING_MESSAGE" = "הנה תצוגה מקדימה של צבע ההתכתבות.";
+"CHAT_COLOR_INCOMING_MESSAGE" = "הנה תצוגה מקדימה של צבע הצ׳אט.";
 
 /* The first incoming bubble text when setting a chat color. */
-"CHAT_COLOR_INCOMING_MESSAGE_1" = "הנה תצוגה מקדימה של צבע ההתכתבות.";
+"CHAT_COLOR_INCOMING_MESSAGE_1" = "הנה תצוגה מקדימה של צבע הצ׳אט.";
 
 /* The second incoming bubble text when setting a chat color. */
 "CHAT_COLOR_INCOMING_MESSAGE_2" = "בועה אחרת";
@@ -866,7 +932,7 @@
 "CHAT_COLOR_SETTINGS_DELETE_ALERT_TITLE" = "מחיקת צבע";
 
 /* Title for the chat color settings view. */
-"CHAT_COLOR_SETTINGS_TITLE" = "צבע התכתבות";
+"CHAT_COLOR_SETTINGS_TITLE" = "צבע צ׳אט";
 
 /* Title for the 'edit chat color confirm alert' in the chat color settings view. */
 "CHAT_COLOR_SETTINGS_UPDATE_ALERT_ALERT_TITLE" = "ערוך צבע";
@@ -875,16 +941,16 @@
 "CHAT_COLORS_AUTO_TOOLTIP" = "מתאים באופן אוטומטי את הצבע אל הטפט";
 
 /* Title for the chat list's default mode. */
-"CHAT_LIST_TITLE_INBOX" = "התכתבויות";
+"CHAT_LIST_TITLE_INBOX" = "צ׳אטים";
 
 /* Title for the color & wallpaper settings view. */
-"COLOR_AND_WALLPAPER_SETTINGS_TITLE" = "צבע התכתבות וטפט";
+"COLOR_AND_WALLPAPER_SETTINGS_TITLE" = "צבע צ׳אט ורקע";
 
 /* Activity Sheet label */
 "COMPARE_SAFETY_NUMBER_ACTION" = "השווה עם לוח עריכה";
 
 /* Accessibility hint describing what you can do with the compose button */
-"COMPOSE_BUTTON_HINT" = "בחר או חפש משתמש Signal כדי להתחיל איתו התכתבות.";
+"COMPOSE_BUTTON_HINT" = "אפשר לבחור או לחפש משתמש/ת Signal כדי להתחיל איתו או איתה צ׳אט.";
 
 /* Accessibility label from compose button. */
 "COMPOSE_BUTTON_LABEL" = "חַבֵּר";
@@ -905,7 +971,7 @@
 "COMPOSE_SCREEN_MISSING_CONTACTS_PERMISSION" = "אתה יכול לאפשר גישה אל אנשי קשר ביישום הגדרות של iOS כדי לראות אילו מאנשי הקשר שלך הם משתמשי Signal.";
 
 /* Configure reactions title text */
-"CONFIGURE_REACTIONS" = "תצר תגובות";
+"CONFIGURE_REACTIONS" = "התאמה אישית של תגובות";
 
 /* No comment provided by engineer. */
 "CONFIRM_DELETE_DATA_TEXT" = "זה יאפס את היישום ע״י מחיקת ההודעות שלך. היישום ייסגר לאחר שתהליך זה יושלם.";
@@ -986,7 +1052,7 @@
 "CONTACT_FIELD_ORGANIZATION" = "ארגון";
 
 /* Body for contact permission action sheet */
-"CONTACT_PERMISSION_ACTION_SHEET_BODY" = "כדי לראות שמות ותמונות של אנשי קשר בהתכתבויות שלך:";
+"CONTACT_PERMISSION_ACTION_SHEET_BODY" = "כדי לראות שמות ותמונות של אנשי קשר בצ׳אטים שלך:";
 
 /* First step for contact permission action sheet */
 "CONTACT_PERMISSION_ACTION_SHEET_STEP_ONE" = "הקש על ”לך אל הגדרות” למטה";
@@ -1004,7 +1070,7 @@
 "CONTACT_PERMISSION_REMINDER_MEGAPHONE_ACTION" = "הפעל";
 
 /* Body for contact permission reminder megaphone */
-"CONTACT_PERMISSION_REMINDER_MEGAPHONE_BODY" = "ראה שמות ותמונות של אנשי קשר בהתכתבויות שלך.";
+"CONTACT_PERMISSION_REMINDER_MEGAPHONE_BODY" = "אפשר לראות שמות ותמונות של אנשי קשר בצ׳אטים שלך.";
 
 /* Title for contact permission reminder megaphone */
 "CONTACT_PERMISSION_REMINDER_MEGAPHONE_TITLE" = "להפעיל אנשי קשר?";
@@ -1169,7 +1235,7 @@
 "CONVERSATION_PICKER_SECTION_GROUPS" = "קבוצות";
 
 /* table section header for section containing recent conversations */
-"CONVERSATION_PICKER_SECTION_RECENTS" = "התכתבויות אחרונות";
+"CONVERSATION_PICKER_SECTION_RECENTS" = "צ׳אטים אחרונים";
 
 /* table section header for section containing contacts */
 "CONVERSATION_PICKER_SECTION_SIGNAL_CONTACTS" = "אנשים";
@@ -1184,7 +1250,7 @@
 "CONVERSATION_SEARCH_NO_RESULTS" = "אין התאמות";
 
 /* title for conversation settings screen */
-"CONVERSATION_SETTINGS" = "הגדרות התכתבות";
+"CONVERSATION_SETTINGS" = "הגדרות צ׳אט";
 
 /* Label for 'add members' button in conversation settings view. */
 "CONVERSATION_SETTINGS_ADD_MEMBERS" = "הוסף חברי קבוצה";
@@ -1397,13 +1463,13 @@
 "COUNTRYCODE_SELECT_TITLE" = "בחר קוד מדינה";
 
 /* Body text for an interactive in-app prompt to set up a Signal username. */
-"CREATE_USERNAME_MEGAPHONE_BODY" = "Usernames let others message you without needing your phone number.";
+"CREATE_USERNAME_MEGAPHONE_BODY" = "שמות משתמש מאפשרים לאחרים לשלוח לך הודעה בלי להזדקק למספר הטלפון שלך.";
 
 /* Title for a button in an interactive in-app prompt to set up a Signal username, which will start a create-username flow. */
-"CREATE_USERNAME_MEGAPHONE_SET_UP_BUTTON_TITLE" = "Set Up";
+"CREATE_USERNAME_MEGAPHONE_SET_UP_BUTTON_TITLE" = "הגדרה";
 
 /* Title for an interactive in-app prompt to set up a Signal username. */
-"CREATE_USERNAME_MEGAPHONE_TITLE" = "Set up your Signal username";
+"CREATE_USERNAME_MEGAPHONE_TITLE" = "הגדרת שם המשתמש שלך ב–Signal";
 
 /* Credit/debit card donation error for decline failures where the card has expired. */
 "CREDIT_OR_DEBIT_CARD_DONATION_ERROR_EXPIRED_CARD" = "פג תוקף הכרטיס שלך. יש לוודא שפרטי הכרטיס שלך נכונים ולנסות שוב.";
@@ -1610,7 +1676,10 @@
 "DEREGISTRATION_REREGISTER_WITH_SAME_PHONE_NUMBER" = "רשום מחדש מספר טלפון זה";
 
 /* Label warning the user that they have been de-registered. */
-"DEREGISTRATION_WARNING" = "המכשיר אינו רשום יותר. מספר הטלפון שלך יכול להירשם אל Signal על מכשיר שונה. הקש כדי לרשום מחדש.";
+"DEREGISTRATION_WARNING" = "המכשיר הזה כבר לא רשום. זה כנראה בגלל שרשמת את מספר הטלפון שלך ב–Signal על מכשיר אחר.";
+
+/* If the user has been deregistered, they'll see a warning. This is This is the call to action on that warning. */
+"DEREGISTRATION_WARNING_ACTION_TITLE" = "רישום מכשיר מחדש";
 
 /* {{Short Date}} when device last communicated with Signal Server. */
 "DEVICE_LAST_ACTIVE_AT_LABEL" = "פעיל בפעם האחרונה %1$@";
@@ -1620,6 +1689,12 @@
 
 /* Alert title that can occur when viewing device manager. */
 "DEVICE_LIST_UPDATE_FAILED_TITLE" = "שגיאה בטעינת רשימת מכשירים";
+
+/* A label for this device in the device list. */
+"DEVICE_NAME_THIS_DEVICE" = "מכשיר זה";
+
+/* A label for an unnamed device in the device list. */
+"DEVICE_NAME_UNNAMED_DEVICE" = "מכשיר ללא שם";
 
 /* The stop action of the dialog asking the user if they want to cancel a device transfer */
 "DEVICE_TRANSFER_CANCEL_CONFIRMATION_ACTION" = "הפסק העברה";
@@ -1727,7 +1802,7 @@
 "DISAPPEARING_MESSAGES" = "הודעות נעלמות";
 
 /* Info Message when added to a group which has enabled disappearing messages. Embeds {{time amount}} before messages disappear. See the *_TIME_AMOUNT strings for context. */
-"DISAPPEARING_MESSAGES_CONFIGURATION_GROUP_EXISTING_FORMAT" = "הודעות בהתכתבות זו יעלמו לאחר %1$@.";
+"DISAPPEARING_MESSAGES_CONFIGURATION_GROUP_EXISTING_FORMAT" = "הודעות בצ׳אט זה יעלמו אחרי %1$@.";
 
 /* Disappearing message option to define a custom time */
 "DISAPPEARING_MESSAGES_CUSTOM_TIME" = "זמן ברירת מחדל";
@@ -1736,7 +1811,7 @@
 "DISAPPEARING_MESSAGES_DAYS" = "ימים";
 
 /* subheading in conversation settings */
-"DISAPPEARING_MESSAGES_DESCRIPTION" = "כאשר מאופשר, הודעות חדשות אשר נשלחות ומתקבלות בהתכתבות זו ייעלמו לאחר שייראו.";
+"DISAPPEARING_MESSAGES_DESCRIPTION" = "כאשר אפשרות זו מופעלת, הודעות חדשות שנשלחות ומתקבלות בצ׳אט זה ייעלמו לאחר שייראו.";
 
 /* Accessibility hint that contains current timeout information */
 "DISAPPEARING_MESSAGES_HINT" = "כרגע הודעות נעלמות לאחר %1$@";
@@ -1919,7 +1994,7 @@
 "DONATION_ON_BEHALF_OF_A_FRIEND_REPLY" = "תרומה";
 
 /* You sent a donation to a friend. This is the title of that message in the chat. Embeds {{short contact name}}. */
-"DONATION_ON_BEHALF_OF_A_FRIEND_SENT_TITLE_FORMAT" = "תרומה ל%1$@";
+"DONATION_ON_BEHALF_OF_A_FRIEND_SENT_TITLE_FORMAT" = "תרומה בשם %1$@";
 
 /* When you donate on behalf of a friend, a thank-you sheet will appear. This is the text on that sheet. Embeds {{recipient name}}. */
 "DONATION_ON_BEHALF_OF_A_FRIEND_THANKS_BODY_FORMAT" = "ביצעת תרומה ל–Signal בשם %1$@. הוא או היא יקבלו את האפשרות להשוויץ בתמיכה שלהם בפרופיל.";
@@ -2053,11 +2128,14 @@
 /* The alert title if user tries to exit update group view without saving changes. */
 "EDIT_GROUP_VIEW_UNSAVED_CHANGES_TITLE" = "שינויים בלתי שמורים";
 
+/* Label for Edit History modal */
+"EDIT_HISTORY_LABEL" = "היסטוריית עריכות";
+
 /* Short name for edit menu item to copy contents of media message. */
 "EDIT_ITEM_COPY_ACTION" = "העתק";
 
 /* body of email sent to contacts when inviting to install Signal. Embeds {{link to install Signal}} and {{link to the Signal home page}} */
-"EMAIL_INVITE_BODY" = "שלום,\n\nלאחרונה אני משתמש ב־Signal כדי לשמור על ההתכתבויות ב־iPhone שלי פרטיות. אני רוצה שגם תתקין אותו, ככה נוכל להיות בטוחים שרק אנחנו יכולים לקרוא את ההודעות שלנו או לשמוע את השיחות שלנו.\n\nSignal זמין עבור iPhone ו־Android. השג אותו כאן: %1$@\n\nSignal עובד כמו יישום ההתכתבויות הקיים שלך. אנחנו יכולים לשלוח תמונות וסרטונים, לבצע שיחות ולהתחיל התכתבויות קבוצתיות. החלק הכי טוב הוא שאף אחד לא יכול לראות שום דבר מזה, אפילו לא האנשים שיוצרים את Signal!\n\nאתה יכול לקרוא עוד אודות Open Whisper Systems, האנשים שיוצרים את Signal, כאן: %2$@";
+"EMAIL_INVITE_BODY" = "היי,\n\nלאחרונה השתמשתי ב–Signal כדי לשמור על הצ׳אטים ב־iPhone שלי פרטיים. זה יהיה מעולה אם גם לך תהיה את האפליקציה, כדי שנוכל לדעת בוודאות שרק לנו יש גישה להודעות ולשיחות הקוליות שלנו.\n\nSignal זמינה עבור iPhone ו–Android. אפשר להוריד אותה כאן: %1$@\n\nSignal עובדת כמו אפליקציית ההודעות הקיימת שלך. אפשר לשלוח תמונות וסרטונים, לבצע שיחות ולהתחיל צ׳אטים קבוצתיים. החלק הכי טוב הוא שאף אחד לא יכול לראות שום דבר מזה, אפילו לא האנשים שיוצרים את Signal!\n\nאפשר לקרוא עוד על Open Whisper Systems, האנשים שיוצרים את Signal, כאן: %2$@";
 
 /* subject of email sent to contacts when inviting to install Signal */
 "EMAIL_INVITE_SUBJECT" = "בוא נחליף אל Signal";
@@ -2082,6 +2160,9 @@
 
 /* The name for the emoji category 'Objects' */
 "EMOJI_CATEGORY_OBJECTS_NAME" = "חפצים";
+
+/* The name for the emoji section for emojis already used on the message */
+"EMOJI_CATEGORY_ON_MESSAGE_NAME" = "הודעה זו";
 
 /* The name for the emoji category 'Recents' */
 "EMOJI_CATEGORY_RECENTS_NAME" = "אחרונים";
@@ -2195,7 +2276,7 @@
 "ERROR_MESSAGE_NON_BLOCKING_IDENTITY_CHANGE_FORMAT" = "מספר הביטחון שלך עם %1$@ השתנה.";
 
 /* Text notifying the user that their secure session has been reset */
-"ERROR_MESSAGE_SESSION_REFRESH" = "שיח התכתבות רוענן";
+"ERROR_MESSAGE_SESSION_REFRESH" = "צ'אט רוענן";
 
 /* No comment provided by engineer. */
 "ERROR_MESSAGE_UNKNOWN_ERROR" = "התרחשה שגיאה לא ידועה";
@@ -2224,11 +2305,23 @@
 /* Format string for 'unregistered user' error. Embeds {{the unregistered user's name or signal id}}. */
 "ERROR_UNREGISTERED_USER_FORMAT" = "משתמש בלתי רשום: %1$@";
 
+/* Button to exit change number, shown in context menu. */
+"EXIT_CHANGE_NUMBER" = "יציאה משינוי מספר";
+
+/* Button to exit re-registration, shown in context menu. */
+"EXIT_REREGISTRATION" = "יציאה מהרשמה";
+
 /* Label notifying the user that the app has expired. */
-"EXPIRATION_ERROR" = "גרסת Signal שלך פגה! הקש כדי לעדכן אל הגרסה העדכנית ביותר.";
+"EXPIRATION_ERROR" = "גרסה זו של Signal כבר לא בתוקף. צריך לעדכן כדי לשלוח ולקבל הודעות.";
+
+/* If the user's app is too old, they'll be shown a warning asking them to upgrade. This is the text on the warning, and tapping it will open the App Store page for Signal. */
+"EXPIRATION_WARNING_ACTION_TITLE" = "עדכון כעת";
+
+/* Label warning the user that the app will expire soon. Embeds {{date}}. */
+"EXPIRATION_WARNING_SOON" = "גרסה זו של Signal תצא מתוקף ב–%1$@. כדאי לעדכן כדי להמשיך לשלוח הודעות.";
 
 /* Label warning the user that the app will expire today. */
-"EXPIRATION_WARNING_TODAY" = "גרסת Signal שלך תפוג היום. הקש כדי לעדכן לגרסה העדכנית ביותר.";
+"EXPIRATION_WARNING_TODAY" = "גרסה זו של Signal פגה תוקף היום. כדאי לעדכן כדי להמשיך לשלוח הודעות.";
 
 /* action sheet header when re-sending message which failed because of too many attempts */
 "FAILED_SENDING_BECAUSE_RATE_LIMIT" = "יותר מדי כישלונות עם איש קשר זה. אנא נסה שוב מאוחר יותר.";
@@ -2285,7 +2378,10 @@
 "FORWARD_MESSAGE_TITLE" = "העבר הלאה אל";
 
 /* Label indicating media gallery is empty */
-"GALLERY_TILES_EMPTY_GALLERY" = "אין לך מדיה כלשהי בהתכתבות זו.";
+"GALLERY_TILES_EMPTY_GALLERY" = "אין לך מדיה כלשהי בצ׳אט זה.";
+
+/* Label indicating media gallery with audio filter is empty */
+"GALLERY_TILES_EMPTY_GALLERY_AUDIO" = "אין לך שמע כלשהו בצ׳אט זה.";
 
 /* Label indicating loading is in progress */
 "GALLERY_TILES_LOADING_MORE_RECENT_LABEL" = "טוען מדיה חדשה יותר…";
@@ -2800,6 +2896,9 @@
 /* Message indicating that the local user was removed from the group by an unknown user. */
 "GROUP_LOCAL_USER_REMOVED_BY_UNKNOWN_USER" = "הוסרת מהקבוצה.";
 
+/* Message indicating that the local user's request to join the group was approved. */
+"GROUP_LOCAL_USER_REQUEST_APPROVED" = "הבקשה שלך להצטרף לקבוצה אושרה.";
+
 /* Message indicating that the local user's request to join the group was approved by another user. Embeds {{ %@ the name of the user who approved the request }}. */
 "GROUP_LOCAL_USER_REQUEST_APPROVED_BY_REMOTE_USER_FORMAT" = "%1$@ אישר/ה את בקשתך להצטרף אל הקבוצה.";
 
@@ -2884,9 +2983,6 @@
 /* Message indicating that a remote user's invite was revoked by the local user. Embeds {{remote user name}}. */
 "GROUP_REMOTE_USER_INVITE_REVOKED_BY_LOCAL_USER_FORMAT" = "הזמנה אל הקבוצה נשללה עבור %1$@.";
 
-/* Message indicating that a single remote user was invited to the group. Embeds {{remote user name}}. */
-"GROUP_REMOTE_USER_INVITED_1_FORMAT" = "%1$@ הוזמן/ה אל הקבוצה.";
-
 /* Message indicating that a remote user was invited to the group by the local user. Embeds {{remote user name}}. */
 "GROUP_REMOTE_USER_INVITED_BY_LOCAL_USER_FORMAT" = "הזמנת את %1$@ אל הקבוצה.";
 
@@ -2917,7 +3013,7 @@
 /* Message indicating that a remote user's request to join the group was rejected by the local user. Embeds {{requesting user name}}. */
 "GROUP_REMOTE_USER_REQUEST_REJECTED_BY_LOCAL_USER_FORMAT" = "דחית בקשה להצטרף אל הקבוצה מאת %1$@.";
 
-/* Message indicating that a remote user's request to join the group was rejected by another user. Embeds {{ %1$@ requesting user name, %2$@ approving user name }}. */
+/* Message indicating that a remote user's request to join the group was rejected by another user. Embeds {{ %1$@ requesting user name, %2$@ rejecting user name }}. */
 "GROUP_REMOTE_USER_REQUEST_REJECTED_BY_REMOTE_USER_FORMAT" = "%2$@ דחה/דחתה בקשה להצטרף אל קבוצה מאת %1$@.";
 
 /* Message indicating that a remote user's request to join the group was rejected. Embeds {{requesting user name}}. */
@@ -3025,12 +3121,6 @@
 /* Message indicating that the group was migrated. */
 "GROUP_WAS_MIGRATED" = "קבוצה זו שודרגה אל קבוצה חדשה.";
 
-/* Message indicating that the local user was dropped while migrating the group. */
-"GROUP_WAS_MIGRATED_USERS_DROPPED_LOCAL_USER" = "לא יכולת להתווסף אל הקבוצה החדשה והוסרת מהקבוצה.";
-
-/* Message indicating that the local user was invited while migrating the group. */
-"GROUP_WAS_MIGRATED_USERS_INVITED_LOCAL_USER" = "לא יכולת להתווסף אל הקבוצה החדשה והוזמנת להצטרף.";
-
 /* Message indicating that the local user left the group. */
 "GROUP_YOU_LEFT" = "עזבת את הקבוצה.";
 
@@ -3076,128 +3166,8 @@
 /* Label for 'invite friends to group' button. */
 "GROUPS_INVITE_FRIENDS_BUTTON" = "הזמן חברים";
 
-/* Body text for the first section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_1_BODY" = "קבוצות מיושנות הן קבוצות שאינן תואמות עם מאפיינים של קבוצה חדשה כמו מנהלנים ועדכוני קבוצה תיאוריים יותר.";
-
-/* Title for the first section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_1_TITLE" = "מהן קבוצות מיושנות?";
-
-/* Body text for the second section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_2_BODY" = "קבוצות מיושנות אינן יכולות להשתדרג עדין אל קבוצות חדשות, אבל אתה יכול ליצור קבוצה חדשה עם אותם חברי קבוצה אם יש להם את הגרסה האחרונה של Signal.\n\nSignal יציע דרך לשדרג קבוצות מיושנות בעתיד.";
-
-/* Title for the second section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_2_TITLE" = "האם אני יכול לשדרג קבוצה מיושנת?";
-
-/* Body text for the third section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_3_BODY" = "כדי ליצור קבוצה חדשה, כל חברי הקבוצה צריכים לעדכן אל הגרסה האחרונה של Signal.";
-
-/* Title for the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_TITLE" = "קבוצות מיושנות לעומת חדשות";
-
-/* Format for indicator that a group cannot be used until it is migrated. Embeds {{ a \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_BLOCKING_MIGRATION_FORMAT" = "שדרג קבוצה זו כדי להפעיל מאפיינים חדשים כמו @אזכורים ומנהלנים. חברי קבוצה שלא שיתפו את השם או התמונה שלהם בקבוצה זו יוזמנו להצטרף. %1$@.";
-
-/* Title for the 'can't upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_ALERT_TITLE" = "לא ניתן לשדרג אל קבוצה חדשה";
-
-/* Text indicating that a legacy group can't be upgraded because it has too many members. Embeds {{ The maximum number of members allowed in a group. }}. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_ALERT_TOO_MANY_MEMBERS_FORMAT" = "קבוצה זו אינה יכולה להשתדרג אל קבוצה חדשה מאחר שיש לה יותר מדי חברי קבוצה. גודל הקבוצה המרבי שיכול להשתדרג הוא %1$@.";
-
-/* Explanation of group migration for groups that can't yet be migrated in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_YET_1" = "כאשר כל חברי הקבוצה הנוכחיים ישתמשו בגרסה של Signal שמסוגלת להצטרף אל קבוצה חדשה, קבוצה זו תשודרג.";
-
-/* Explanation of group migration for groups that can't yet be migrated in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_YET_2" = "כל היסטוריית ההודעות והמדיה יישמרו מלפני השדרוג.";
-
-/* Brief explanation of legacy groups. Embeds {{ a \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_FORMAT" = "זוהי קבוצה מיושנת. מאפיינים כמו מנהלני קבוצה זמינים רק בקבוצות חדשות. %1$@";
-
-/* Indicates that a legacy group can't be upgraded because some members can't be migrated. Embeds {{ an \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_MEMBERS_CANT_BE_MIGRATED_FORMAT" = "זוהי קבוצה מיושנת והיא אינה מוכנה עדין להשתדרג אל קבוצה חדשה. %1$@.";
-
-/* Indicates that a legacy group can't be upgraded because it has too many members. Embeds {{ an \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_TOO_MANY_MEMBERS_FORMAT" = "קבוצה מיושנת זו אינה יכולה להשתדרג אל קבוצה חדשה מאחר שהיא גדולה מדי. %1$@.";
-
-/* Explanation of legacy groups. Embeds {{ an \"upgrade\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_WITH_UPGRADE_OFFER_FORMAT" = "זוהי קבוצה מיושנת. כדי להשיג גישה אל מאפיינים חדשים כמו @אזכורים ומנהלנים, %1$@.";
-
 /* Label indicating a legacy group. */
 "GROUPS_LEGACY_GROUP_INDICATOR" = "קבוצה מיושנת";
-
-/* Indicates that the local user needs to accept an invitation to rejoin the group after a group migration. */
-"GROUPS_LEGACY_GROUP_LOCAL_USER_INVITED" = "תצטרך לאשר הזמנה כדי להצטרף אל קבוצה זו שוב, ולא תקבל הודעות קבוצה עד שתאשר:";
-
-/* Title for the 'migrated group' alert view. */
-"GROUPS_LEGACY_GROUP_MIGRATED_GROUP_ALERT_TITLE" = "מהן קבוצות חדשות?";
-
-/* Explanation of group migration for a migrated group in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_MIGRATED_GROUP_DESCRIPTION" = "כל היסטוריית ההודעות והמדיה נשמרו מלפני השדרוג.";
-
-/* Explanation of new groups in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_NEW_GROUP_DESCRIPTION" = "לקבוצות חדשות יש מאפיינים כמו @אזכורים ומנהלני קבוצה, ויתמכו במאפיינים נוספים בעתיד.";
-
-/* Title for the 'new groups' alert view. */
-"GROUPS_LEGACY_GROUP_NEW_GROUPS_ALERT_TITLE" = "קבוצות חדשות";
-
-/* Label for the 'add members' button in the 're-add dropped group members' alert view. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_ADD_MEMBERS_BUTTON" = "הוסף חברי קבוצה";
-
-/* Title for the 're-add dropped group members' alert view. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_ALERT_TITLE_1" = "להוסיף חבר קבוצה?";
-
-/* Title for the 're-add dropped group members' alert view. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_ALERT_TITLE_N" = "להוסיף חברי קבוצה?";
-
-/* Label for the 'add members' button in the 're-add dropped groups members' banner. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_BUTTON" = "הוסף חברי קבוצה";
-
-/* Explanation of 're-adding dropped group member' in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_DESCRIPTION_1" = "חבר קבוצה זה לא היה יכול להתווסף באופן אוטומטי אל הקבוצה החדשה כאשר היא שודרגה:";
-
-/* Explanation of 're-adding dropped group member' in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_DESCRIPTION_N" = "חברי קבוצה אלו לא יכלו להתווסף באופן אוטומטי אל הקבוצה החדשה כאשר היא שודרגה:";
-
-/* Body text for the second section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_2_BODY" = "כל היסטוריית ההודעות והמדיה נשמרו מלפני השדרוג.";
-
-/* Body text for the 'dropped member' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_DROPPED_MEMBERS_1" = "חבר/ת קבוצה זה/זו הוסרו מהקבוצה ולא יוכלו להצטרף מחדש אל הקבוצה עד שהם ישדרגו:";
-
-/* Body text for the 'dropped members' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_DROPPED_MEMBERS_N" = "חברי קבוצה אלו הוסרו מהקבוצה והם לא יוכלו להצטרף מחדש אל הקבוצה עד שהם ישדרגו:";
-
-/* Body text for the 'invites member' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_INVITED_MEMBERS_1" = "חבר קבוצה זה יצטרך לאשר הזמנה כדי להצטרף אל קבוצה זו שוב, והוא לא יקבל הודעות קבוצה עד שהוא יאשר:";
-
-/* Body text for the 'invites members' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_INVITED_MEMBERS_N" = "חברי קבוצה אלו יצטרכו לאשר הזמנה כדי להצטרף אל קבוצה זו שוב, והם לא יקבלו הודעות קבוצה עד שהם יאשרו:";
-
-/* Body text for the 'possibly dropped member' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_POSSIBLY_DROPPED_MEMBERS_1" = "חבר/ת קבוצה זה/זו אינם מסוגלים להצטרף אל קבוצות חדשות, והם יוסרו מהקבוצה:";
-
-/* Body text for the 'possibly dropped members' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_POSSIBLY_DROPPED_MEMBERS_N" = "חברי קבוצה אלו אינם מסוגלים להצטרף אל קבוצות חדשות, והם יוסרו מהקבוצה:";
-
-/* Title for the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_TITLE" = "שדרג אל קבוצה חדשה";
-
-/* Label for the 'upgrade this group' button in the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_BUTTON" = "שדרג קבוצה זו";
-
-/* Message for error alert indicating the group update failed. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_FAILED_ERROR_MESSAGE" = "קבוצה זו אינה יכולה להשתדרג אל קבוצה חדשה כעת.";
-
-/* Message for error alert indicating the group update failed due to network connectivity. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_FAILED_ERROR_MESSAGE_NETWORK" = "קבוצה זו אינה יכולה להשתדרג אל קבוצה חדשה מאחר שאינך מחובר אל האינטרנט. נסה שוב מאוחר יותר.";
-
-/* Title for error alert indicating the group update failed. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_FAILED_ERROR_TITLE" = "לא היה ניתן להשלים שדרוג";
-
-/* Message indicating the group update succeeded. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_SUCCEEDED" = "קבוצה שודרגה אל קבוצה חדשה.";
-
-/* An \"upgrade\" link for upgrading legacy groups to new groups. */
-"GROUPS_LEGACY_GROUP_UPGRADE_LINK" = "שדרג קבוצה זו";
 
 /* Message for the 'replace group admin' alert. */
 "GROUPS_REPLACE_ADMIN_ALERT_MESSAGE" = "לפני שאתה עוזב, בחר מנהלן חדש עבור קבוצה זו.";
@@ -3227,7 +3197,7 @@
 "HELP_SUPPORT_CENTER" = "מרכז תמיכה";
 
 /* Label for 'archived conversations' button. */
-"HOME_VIEW_ARCHIVED_CONVERSATIONS" = "התכתבויות מאוחסנות בארכיון";
+"HOME_VIEW_ARCHIVED_CONVERSATIONS" = "צ׳אטים מאוחסנים בארכיון";
 
 /* Table cell subtitle label for a conversation the user has blocked. */
 "HOME_VIEW_BLOCKED_CONVERSATION" = "חסום/ה";
@@ -3248,7 +3218,7 @@
 "HOME_VIEW_FIRST_CONVERSATION_OFFER_3_CONTACTS_FORMAT" = "כמה מאנשי הקשר שלך כבר ב־Signal, כולל %1$@, %2$@ ו%3$@";
 
 /* A label offering to start a new conversation with your contacts, if you have no Signal contacts. */
-"HOME_VIEW_FIRST_CONVERSATION_OFFER_NO_CONTACTS" = "התחל את ההתכתבות הראשונה שלך כאן.";
+"HOME_VIEW_FIRST_CONVERSATION_OFFER_NO_CONTACTS" = "אפשר להתחיל את הצ׳אט הראשון שלך כאן.";
 
 /* Table cell subtitle label for a group the user has been added to. {Embeds inviter name} */
 "HOME_VIEW_MESSAGE_REQUEST_ADDED_TO_GROUP_FORMAT" = "%1$@ הוסיף אותך אל הקבוצה";
@@ -3263,7 +3233,7 @@
 "HOME_VIEW_TITLE_ARCHIVE" = "ארכיון";
 
 /* Title for the 'Select Chats' option in the ChatList. */
-"HOME_VIEW_TITLE_SELECT_CHATS" = "בחר התכתבויות";
+"HOME_VIEW_TITLE_SELECT_CHATS" = "בחירת צ׳אטים";
 
 /* Title 'Read All' button in the toolbar of the ChatList if multi-section is active. */
 "HOME_VIEW_TOOLBAR_READ_ALL" = "קרא הכול";
@@ -3311,7 +3281,7 @@
 "IN_CALL_RINGING" = "מצלצל…";
 
 /* Call setup status label */
-"IN_CALL_RINGING_AUDIO" = "שיחת שמע…";
+"IN_CALL_RINGING_AUDIO" = "שיחה קולית…";
 
 /* Call setup status label */
 "IN_CALL_RINGING_VIDEO" = "שיחת וידאו…";
@@ -3326,10 +3296,10 @@
 "INBOX_VIEW_ARCHIVE_MODE_MUTED_CHATS_REMINDER" = "צ׳אטים מושתקים שמאוחסנים בארכיון יישארו בארכיון כשהודעה חדשה מגיעה.";
 
 /* Label reminding the user that they are in archive mode, and that chats are unarchived when they receive a new message. */
-"INBOX_VIEW_ARCHIVE_MODE_REMINDER" = "התכתבויות שמאוחסנות בארכיון יועברו אל תיבת הדואר הנכנס כשהודעה חדשה מגיעה.";
+"INBOX_VIEW_ARCHIVE_MODE_REMINDER" = "צ׳אטים שמאוחסנים בארכיון יועברו אל תיבת הדואר הנכנס כשהודעה חדשה מגיעה.";
 
 /* Message shown in the conversation list when the inbox is empty. */
-"INBOX_VIEW_EMPTY_INBOX" = "אין עדיין התכתבויות.\nהתחל ע״י שליחת הודעה לחבר.";
+"INBOX_VIEW_EMPTY_INBOX" = "אין עדיין צ׳אטים.\nאפשר להתחיל באמצעות שליחת הודעה לחבר או חברה.";
 
 /* info message text in conversation view */
 "INCOMING_AUDIO_CALL" = "שיחה קולית נכנסת";
@@ -3395,13 +3365,13 @@
 "KEY_COMMAND_ALL_MEDIA" = "לך אל כל המדיה";
 
 /* A keyboard command to archive the current conversation. */
-"KEY_COMMAND_ARCHIVE" = "אחסן התכתבות בארכיון";
+"KEY_COMMAND_ARCHIVE" = "אחסון צ׳אט בארכיון";
 
 /* A keyboard command to open the current conversation's attachment picker. */
 "KEY_COMMAND_ATTACHMENTS" = "הראה צרופות";
 
 /* A keyboard command to open the current conversation's settings. */
-"KEY_COMMAND_CONVERSATION_INFO" = "לך אל מידע התכתבות";
+"KEY_COMMAND_CONVERSATION_INFO" = "מעבר למידע על צ׳אט";
 
 /* A keyboard command to focus the current conversation's input field. */
 "KEY_COMMAND_FOCUS_COMPOSER" = "התמקד בשורת הקלט";
@@ -3416,10 +3386,10 @@
 "KEY_COMMAND_NEW_MESSAGE" = "הודעה חדשה";
 
 /* A keyboard command to jump to the next conversation in the list. */
-"KEY_COMMAND_NEXT_CONVERSATION" = "לך אל ההתכתבות הבאה";
+"KEY_COMMAND_NEXT_CONVERSATION" = "מעבר לצ׳אט הבא";
 
 /* A keyboard command to jump to the previous conversation in the list. */
-"KEY_COMMAND_PREVIOUS_CONVERSATION" = "לך אל ההתכתבות הקודמת";
+"KEY_COMMAND_PREVIOUS_CONVERSATION" = "מעבר לצ׳אט הקודם";
 
 /* A keyboard command to begin a search on the conversation list. */
 "KEY_COMMAND_SEARCH" = "חיפוש";
@@ -3431,7 +3401,7 @@
 "KEY_COMMAND_STICKERS" = "הראה מדבקות";
 
 /* A keyboard command to unarchive the current conversation. */
-"KEY_COMMAND_UNARCHIVE" = "הוצא התכתבות מארכיון";
+"KEY_COMMAND_UNARCHIVE" = "הוצאת צ׳אט מארכיון";
 
 /* Label for the 'learn more' button. */
 "LEARN_MORE" = "למידע נוסף";
@@ -3445,6 +3415,21 @@
 /* Error indicating that a group could not be left. */
 "LEAVE_GROUP_FAILED" = "שגיאה התרחשה בעת עזיבת הקבוצה.";
 
+/* Text in a sheet explaining details about 'Legacy Groups'. */
+"LEGACY_GROUP_UNSUPPORTED_LEARN_MORE_BODY" = "״קבוצות ישנות״ הן קבוצת שלא תומכות בפיצ׳רים כמו @אזכורים ומנהלים. רוב הקבוצות הישנות שודרגו אוטומטית או ידנית ל״קבוצות חדשות״. עקב תקופה ארוכה של חוסר פעילות, לא ניתן עוד לשדרג קבוצה זו.\n\nכדי להמשיך את הצ׳אט הזה, צריך ליצור קבוצה חדשה.";
+
+/* Title for a sheet explaining details about 'Legacy Groups'. */
+"LEGACY_GROUP_UNSUPPORTED_LEARN_MORE_TITLE" = "קבוצות ישנות";
+
+/* Message explaining that this group can no longer be used because it is unsupported. Embeds a {{ learn more link }}. */
+"LEGACY_GROUP_UNSUPPORTED_MESSAGE" = "זו קבוצה ישנה, והיא לא כבר נתמכת. כדי להמשיך את השיחה הזו, צריך ליצור קבוצה חדשה. %1$@";
+
+/* Text in a sheet explaining details about 'New Groups'. */
+"LEGACY_GROUP_WHAT_ARE_NEW_GROUPS_BODY" = "לקבוצות חדשות יש מאפיינים כמו @אזכורים ומנהלני קבוצה, ויתמכו במאפיינים נוספים בעתיד.\n\nכל היסטוריית ההודעות והמדיה נשמרו מלפני השדרוג.";
+
+/* Title for a sheet explaining details about 'New Groups'. */
+"LEGACY_GROUP_WHAT_ARE_NEW_GROUPS_TITLE" = "מהן קבוצות חדשות?";
+
 /* report an invalid linking code */
 "LINK_DEVICE_INVALID_CODE_BODY" = "קוד QR זה אינו תקף. אנא וודא שאתה סורק את קוד ה־QR המוצג על המכשיר שאתה רוצה לקשר.";
 
@@ -3452,7 +3437,7 @@
 "LINK_DEVICE_INVALID_CODE_TITLE" = "קישור מכשיר נכשל";
 
 /* confirm the users intent to link a new device */
-"LINK_DEVICE_PERMISSION_ALERT_BODY" = "מכשיר זה יוכל לראות את הקבוצות ואנשי הקשר שלך, לקבל גישה אל ההתכתבויות שלך ולשלוח הודעות בשמך.";
+"LINK_DEVICE_PERMISSION_ALERT_BODY" = "מכשיר זה יוכל לראות את הקבוצות ואנשי הקשר שלך, לקבל גישה לצ׳אטים שלך ולשלוח הודעות בשמך.";
 
 /* confirm the users intent to link a new device */
 "LINK_DEVICE_PERMISSION_ALERT_TITLE" = "לקשר מכשיר זה?";
@@ -3553,11 +3538,20 @@
 /* Shown in place of message input text in media editor when 'View Once' is on. */
 "MEDIA_EDITOR_TEXT_FIELD_VIEW_ONCE_MEDIA" = "מדיה לצפייה חד פעמית";
 
+/* Explanatory text displayed when deleting N items in All Media screen. */
+"MEDIA_GALLERY_DELETE_MEDIA_BODY" = "This will permanently delete the selected files. Any message text associated with these items will also be deleted.";
+
 /* Format for the 'more items' indicator for media galleries. Embeds {{the number of additional items}}. */
 "MEDIA_GALLERY_MORE_ITEMS_FORMAT" = "+%1$@";
 
 /* Section header in media gallery collection view */
 "MEDIA_GALLERY_THIS_MONTH_HEADER" = "החודש";
+
+/* Text explaining that the user will forward all media from a message. */
+"MEDIA_PAGE_FORWARD_MEDIA_CONFIRM_MESSAGE" = "כל המדיה בהודעה זו תועבר.";
+
+/* Context menu item in media viewer. Refers to deleting currently displayed photo/video. */
+"MEDIA_VIEWER_DELETE_MEDIA_ACTION" = "מחיקה";
 
 /* button title to snooze a megaphone */
 "MEGAPHONE_REMIND_LATER" = "הזכר לי מאוחר יותר";
@@ -3654,6 +3648,9 @@
 
 /* Toast indicating that the user has copied the sent timestamp. */
 "MESSAGE_DETAIL_VIEW_DID_COPY_SENT_TIMESTAMP" = "זמן שליחה הועתק";
+
+/* Title for the 'edit history' section on the 'message details' view. */
+"MESSAGE_DETAILS_EDIT_HISTORY_TITLE" = "הצגת היסטוריית עריכות";
 
 /* Title for the 'sent from' section on the 'message details' view. */
 "MESSAGE_DETAILS_VIEW_SENT_FROM_TITLE" = "נשלחה מאת";
@@ -3797,10 +3794,10 @@
 "MESSAGE_REQUEST_VIEW_DELETE_BUTTON" = "מחיקה";
 
 /* A prompt notifying that the user must share their profile with this conversation. Embeds {{contact name}}. */
-"MESSAGE_REQUEST_VIEW_EXISTING_CONTACT_PROMPT_FORMAT" = "להמשיך התכתבות זו עם %1$@ ולשתף את השם והתמונה שלך איתו/איתה?";
+"MESSAGE_REQUEST_VIEW_EXISTING_CONTACT_PROMPT_FORMAT" = "להמשיך צ׳אט זה עם %1$@ ולשתף את השם והתמונה שלך איתו או איתה?";
 
 /* A prompt notifying that the user must share their profile with this group. */
-"MESSAGE_REQUEST_VIEW_EXISTING_GROUP_PROMPT" = "להמשיך התכתבות זו עם קבוצה זו ולשתף את השם והתמונה שלך עם חברי הקבוצה?";
+"MESSAGE_REQUEST_VIEW_EXISTING_GROUP_PROMPT" = "להמשיך צ׳אט זה עם קבוצה זו ולשתף את השם והתמונה שלך עם חברי הקבוצה?";
 
 /* A prompt asking if the user wants to accept a conversation invite. Embeds {{contact name}}. */
 "MESSAGE_REQUEST_VIEW_NEW_CONTACT_PROMPT_FORMAT" = "לאפשר אל %1$@ לשלוח לך הודעות ולשתף את השם והתמונה שלך איתו/איתה? הוא/היא לא יידע/תידע שקראת את ההודעה שלו/שלה עד שתאשר.";
@@ -3828,6 +3825,9 @@
 
 /* message status while message is downloading. */
 "MESSAGE_STATUS_DOWNLOADING" = "מוריד";
+
+/* status meesage for edited messages */
+"MESSAGE_STATUS_EDITED" = "נערך";
 
 /* status message for failed messages */
 "MESSAGE_STATUS_FAILED" = "שליחה נכשלה.";
@@ -4067,7 +4067,10 @@
 "NO_OTHER_GROUPS_IN_COMMON" = "אין קבוצות אחרות במשותף.";
 
 /* Label for 1:1 conversation with yourself. */
-"NOTE_TO_SELF" = "הערה לעצמי";
+"NOTE_TO_SELF" = "הערות לעצמי";
+
+/* Body for a notification representing a message request. */
+"NOTIFICATION_BODY_INCOMING_MESSAGE_REQUEST" = "בקשת הודעה";
 
 /* Lock screen notification text presented after user powers on their device without unlocking. Embeds {{device model}} (either 'iPad' or 'iPhone') */
 "NOTIFICATION_BODY_PHONE_LOCKED_FORMAT" = "ייתכן שקיבלת הודעות בזמן שה־%1$@ שלך הופעל מחדש.";
@@ -4140,6 +4143,9 @@
 
 /* Label indicating that the 2fa pin is invalid in the 'onboarding 2fa' view. */
 "ONBOARDING_2FA_INVALID_PIN" = "PIN שגוי";
+
+/* Label indicating that the 2fa pin is invalid in the 'onboarding 2fa' view, and you only have one more attempt */
+"ONBOARDING_2FA_INVALID_PIN_LAST_ATTEMPT" = "PIN שגוי. ניסיון 1 נותר.";
 
 /* Label for the 'skip and create new pin' button when reglock is disabled during onboarding. */
 "ONBOARDING_2FA_SKIP_AND_CREATE_NEW_PIN" = "דלג וצור PIN חדש";
@@ -4222,6 +4228,9 @@
 /* Title of the 'onboarding pin attempts exhausted' view when reglock is disabled. */
 "ONBOARDING_PIN_ATTEMPTS_EXHAUSTED_TITLE" = "PIN שגוי";
 
+/* Explanation of the 'onboarding pin attempts exhausted' view when it is unknown if reglock is enabled. */
+"ONBOARDING_PIN_ATTEMPTS_EXHAUSTED_WITH_UNKNOWN_REGLOCK_EXPLANATION" = "נגמרו לך ניחושי ה–PIN, אבל עדיין אפשר לנסות לגשת לחשבון Signal שלך באמצעות אימות מספר הטלפון שלך. למען הפרטיות והאבטחה שלך, החשבון שלך ישוחזר בלי מידע פרופיל שמור או הגדרות שמורות.";
+
 /* Title of the 'onboarding PIN' view. */
 "ONBOARDING_PIN_EXPLANATION" = "הכנס את ה־PIN שיצרת עבור החשבון שלך. הוא שונה מהמסרון של קוד האימות שלך.";
 
@@ -4255,6 +4264,18 @@
 /* Label for a progress spinner currently validating code */
 "ONBOARDING_VERIFICATION_CODE_VALIDATION_PROGRESS_LABEL" = "מוודא קוד…";
 
+/* First bullet point for the explainer sheet for registering via verification code. */
+"ONBOARDING_VERIFICATION_HELP_BULLET_1" = "כדאי לוודא שלטלפון שלך יש קליטה כדי לקבל את הודעת ה–SMS או השיחה שלך";
+
+/* Second bullet point for the explainer sheet for registering via verification code. */
+"ONBOARDING_VERIFICATION_HELP_BULLET_2" = "כדאי לוודא שיש לך אפשרות לקבל שיחת טלפון אל המספר";
+
+/* Third bullet point for the explainer sheet for registering via verification code. */
+"ONBOARDING_VERIFICATION_HELP_BULLET_3" = "כדאי לוודא שהזנת נכון את מספר הטלפון שלך";
+
+/* Label for a button to get help entering a verification code when registering. */
+"ONBOARDING_VERIFICATION_HELP_LINK" = "נתקלת בבעיות בהרשמה?";
+
 /* Label indicating that the verification code is incorrect in the 'onboarding verification' view. */
 "ONBOARDING_VERIFICATION_INVALID_CODE" = "קוד זה אינו נכון";
 
@@ -4272,6 +4293,21 @@
 
 /* Button text which opens the settings app */
 "OPEN_SETTINGS_BUTTON" = "הגדרות";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're on unsupported version. Some users can upgrade their device to a newer version of iOS to continue using Signal. If that's the case, they'll be shown this text. */
+"OS_EXPIRED_AND_CAN_UPGRADE_OS" = "אפליקציית Signal כבר לא פועלת במכשיר הזה. כדי להשתמש ב–Signal שוב, צריך לעדכן את המכשיר לגרסה חדשה יותר של iOS.";
+
+/* Signal doesn't support old devices. If that's the case, they'll be shown this action, and tapping it will open information about Signal's minimum supported operating systems. */
+"OS_EXPIRED_AND_DEVICE_IS_STUCK" = "אפליקציית Signal כבר לא פועלת במכשיר הזה. כדי להשתמש ב–Signal שוב, צריך להחליף למכשיר חדש יותר.";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're on an old version. Some users can upgrade their device to a newer version of iOS to continue using Signal. If that's the case, they'll be shown this action, and tapping it will open device update instructions. */
+"OS_SOON_TO_EXPIRE_ACTION_TITLE" = "עדכון כעת";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're an old version that will soon lose support. Some users can upgrade their device to a newer version of iOS to continue using Signal. If that's the case, they'll be shown this text. Embeds {{expiration date}}. */
+"OS_SOON_TO_EXPIRE_AND_CAN_UPGRADE_OS_FORMAT" = "בקרוב Signal תפסיק לתמוך בגרסת iOS של המכשיר שלך. כדי להמשיך להשתמש ב–Signal, צריך לעדכן את המכשיר לגרסה חדשה יותר של iOS עד %1$@.";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're on an old version that will soon lose support. This is the text on that warning when users can't upgrade iOS without getting a new device. Embeds {{expiration date}}. */
+"OS_SOON_TO_EXPIRE_AND_DEVICE_WILL_BE_STUCK_FORMAT" = "בקרוב Signal תפסיק לתמוך בגרסת iOS של המכשיר שלך. כדי להמשיך להשתמש ב–Signal, צריך להחליף למכשיר חדש יותר עד %1$@.";
 
 /* Info Message when another user disabled disappearing messages. Embeds {{name of other user}}. */
 "OTHER_DISABLED_DISAPPEARING_MESSAGES_CONFIGURATION" = "%1$@ השבית/ה הודעות נעלמות.";
@@ -4649,22 +4685,16 @@
 "PHONE_NUMBER_DISCOVERABILITY_EVERYBODY" = "כולם";
 
 /* A user friendly description of the 'everybody' phone number discoverability mode. */
-"PHONE_NUMBER_DISCOVERABILITY_EVERYBODY_DESCRIPTION" = "Anyone who has your phone number in their contacts will see you as a contact on Signal. Others will be able to reach you with your phone number when they start a new chat or group.";
+"PHONE_NUMBER_DISCOVERABILITY_EVERYBODY_DESCRIPTION" = "כל מי שיש לו את מספר הטלפון שלך ברשימת אנשי הקשר יראה אותך כאיש קשר ב–Signal. אנשים אחרים יוכלו ליצור איתך קשר באמצעות מספר הטלפון שלך כשהם יתחילו צ׳אט או קבוצה חדשים.";
 
 /* A user friendly name for the 'nobody' phone number discoverability mode. */
 "PHONE_NUMBER_DISCOVERABILITY_NOBODY" = "אף אחד";
 
 /* A user friendly description of the 'nobody' phone number discoverability mode. */
-"PHONE_NUMBER_DISCOVERABILITY_NOBODY_DESCRIPTION" = "Nobody on Signal will be able to reach you with your phone number.";
+"PHONE_NUMBER_DISCOVERABILITY_NOBODY_DESCRIPTION" = "אף אחד ב–Signal לא יוכל למצוא אותך באמצעות מספר הטלפון שלך.";
 
 /* A format for a label showing an example phone number. Embeds {{the example phone number}}. */
 "PHONE_NUMBER_EXAMPLE_FORMAT" = "דוגמה: %1$@";
-
-/* A user friendly name for the 'contacts only' phone number sharing mode. */
-"PHONE_NUMBER_SHARING_CONTACTS_ONLY" = "אנשי הקשר שלי";
-
-/* A user friendly description of the 'contacts only' phone number sharing mode. */
-"PHONE_NUMBER_SHARING_CONTACTS_ONLY_DESCRIPTION" = "רק אנשי הקשר שלך יראו את מספר הטלפון שלך ב־Signal.";
 
 /* A user friendly name for the 'everybody' phone number sharing mode. */
 "PHONE_NUMBER_SHARING_EVERYBODY" = "כולם";
@@ -4772,7 +4802,13 @@
 "PIN_CREATION_EXPLANATION" = "קודי PIN שומרים על מידע מאוחסן עם Signal מוצפן כך שרק אתה יכול להשיג גישה אליו. הפרופיל, ההגדרות ואנשי הקשר שלך ישוחזרו כשתתקין מחדש את Signal. לא תצטרך את ה־PIN שלך כדי לפתוח את היישום.";
 
 /* Learn more action on the pin creation view */
-"PIN_CREATION_LEARN_MORE" = "למד עוד על קודי PIN";
+"PIN_CREATION_LEARN_MORE" = "עוד על קודי PIN";
+
+/* Users can create PINs to restore their account data later. They can learn more about this on a sheet. This is the text on that sheet. */
+"PIN_CREATION_LEARN_MORE_TEXT" = "קודי PIN שומרים על המידע שלך שמאוחסן ב–Signal מוצפן כך שרק לך תהיה גישה אליו. הפרופיל, ההגדרות ואנשי הקשר שלך ישוחזרו בעת התקנה מחדש.";
+
+/* Users can create PINs to restore their account data later. They can learn more about this on a sheet. This is the title on that sheet. */
+"PIN_CREATION_LEARN_MORE_TITLE" = "עוד על קודי PIN של Signal";
 
 /* Label indicating that the attempted PIN does not match the first PIN */
 "PIN_CREATION_MISMATCH_ERROR" = "קודי PIN אינם תואמים. נסה שוב.";
@@ -4820,13 +4856,16 @@
 "PIN_CREATION_WEAK_ERROR" = "בחר PIN חזק יותר";
 
 /* If your attempted PIN is too weak, you'll see an error message. This is the text on the error dialog. */
-"PIN_CREATION_WEAK_ERROR_MESSAGE" = "PINs keep your information stored with Signal encrypted so only you can access it. Choose a stronger PIN to protect your account.";
+"PIN_CREATION_WEAK_ERROR_MESSAGE" = "קודי PIN שומרים על המידע שלך שמאוחסן ב–Signal מוצפן כך שרק לך תהיה גישה אליו. יש לבחור PIN חזק יותר כדי להגן על החשבון שלך.";
 
 /* Error body indicating that the attempt to disable a PIN failed. */
 "PIN_DISABLE_ERROR_MESSAGE" = "ה־PIN שלך לא היה יכול להיות מושבת. ניידע אותך שוב מאוחר יותר.";
 
 /* Error title indicating that the attempt to disable a PIN failed. */
 "PIN_DISABLE_ERROR_TITLE" = "השבתת PIN נכשלה";
+
+/* If the user is re-registering, they need to enter their PIN to restore all their data. In some cases, they can skip this entry and lose some data. This text is shown on a button that lets them begin to do this. */
+"PIN_ENTER_EXISTING_SKIP" = "דילוג על PIN";
 
 /* Error title indicating that the attempt to recreate a PIN failed. */
 "PIN_RECREATION_ERROR_TITLE" = "יצירת PIN נכשלה";
@@ -4871,7 +4910,7 @@
 "PIN_REMINDER_TOO_SHORT_ERROR" = "PIN חייב להיות לפחות 4 ספרות.";
 
 /* An explanation that you have already pinned the maximum number of conversations. */
-"PINNED_CONVERSATION_LIMIT" = "אתה יכול להצמיד עד 4 התכתבויות בלבד.";
+"PINNED_CONVERSATION_LIMIT" = "אפשר להצמיד עד 4 צ׳אטים בלבד.";
 
 /* The title for pinned conversation section on the conversation list */
 "PINNED_SECTION_TITLE" = "מוצמד";
@@ -4897,7 +4936,7 @@
 /* Badge indicating that the user is verified. */
 "PRIVACY_IDENTITY_IS_VERIFIED_BADGE" = "מוודא";
 
-/* Label indicating that the user is verified. Embeds {{the user's name or phone number}}. */
+/* Label indicating that the user is verified. Embeds  user's name or phone number}}. */
 "PRIVACY_IDENTITY_IS_VERIFIED_FORMAT" = "%1$@ מוודא.";
 
 /* Button that shows the 'scan with camera' view. */
@@ -4910,7 +4949,7 @@
 "PRIVACY_VERIFICATION_FAILED_I_HAVE_WRONG_KEY_FOR_THEM" = "זה לא נראה כמו מספר הביטחון שלך עם %1$@. האם אתה מוודא את איש הקשר הנכון?";
 
 /* Alert body */
-"PRIVACY_VERIFICATION_FAILED_MISMATCHED_SAFETY_NUMBERS_IN_CLIPBOARD" = "המספר בלוח העריכה שלך לא נראה כמו מספר הביטחון הנכון עבור התכתבות זו.";
+"PRIVACY_VERIFICATION_FAILED_MISMATCHED_SAFETY_NUMBERS_IN_CLIPBOARD" = "המספר בלוח העריכה שלך לא נראה כמו מספר הבטיחות הנכון עבור צ׳אט זה.";
 
 /* Alert body for user error */
 "PRIVACY_VERIFICATION_FAILED_NO_SAFETY_NUMBERS_IN_CLIPBOARD" = "Signal לא היה יכול למצוא מספר ביטחון כלשהו בלוח העריכה שלך. האם העתקת אותו כראוי?";
@@ -4970,7 +5009,7 @@
 "PROFILE_BIO_VIEW_DEFAULT_BIO_ENCRYPTED" = "מוצפן";
 
 /* The 'free to chat' default bio in the profile bio view. */
-"PROFILE_BIO_VIEW_DEFAULT_BIO_FREE_TO_CHAT" = "פנוי לשיחה";
+"PROFILE_BIO_VIEW_DEFAULT_BIO_FREE_TO_CHAT" = "פנוי/ה לצ׳אט";
 
 /* The 'Speak Freely' default bio in the profile bio view. */
 "PROFILE_BIO_VIEW_DEFAULT_BIO_SPEAK_FREELY" = "דבר בחופשיות";
@@ -5002,8 +5041,14 @@
 /* Placeholder when the user doesn't have a 'name' defined for profile settings screen. */
 "PROFILE_SETTINGS_NAME_PLACEHOLDER" = "שם";
 
+/* Title for a menu action allowing users to edit their existing username. */
+"PROFILE_SETTINGS_USERNAME_EDIT_USERNAME_ACTION" = "עריכת שם משתמש";
+
 /* A placeholder value shown in the profile settings screen on a tappable item leading to a username selection flow, for when the user doesn't have a username. */
 "PROFILE_SETTINGS_USERNAME_PLACEHOLDER" = "שם משתמש";
+
+/* Title for a menu action allowing users to view their username link QR code. */
+"PROFILE_SETTINGS_USERNAME_VIEW_QR_CODE_ACTION" = "הצגת קוד QR";
 
 /* Error message shown when user tries to update profile with a family name that is too long. */
 "PROFILE_VIEW_ERROR_FAMILY_NAME_TOO_LONG" = "שם המשפחה שלך ארוך מדי.";
@@ -5024,7 +5069,7 @@
 "PROFILE_VIEW_NO_CONNECTION" = "פרופיל יכול להתעדכן רק בעת חיבור אל האינטרנט.";
 
 /* Description of the user profile. */
-"PROFILE_VIEW_PROFILE_DESCRIPTION" = "הפרופיל שלך מוצפן מקצה־אל־קצה. הפרופיל שלך ושינויים שלו יהיו גלויים אל אנשי הקשר שלך וכאשר תתחיל או תאשר התכתבויות חדשות.";
+"PROFILE_VIEW_PROFILE_DESCRIPTION" = "הפרופיל שלך מוצפן מקצה לקצה. הפרופיל שלך ושינויים בו יהיו גלויים לאנשי הקשר שלך ובעת התחלת או קבלת צ׳אטים חדשים.";
 
 /* Button to save the profile view in the profile view. */
 "PROFILE_VIEW_SAVE_BUTTON" = "שמור";
@@ -5102,40 +5147,40 @@
 "REACTION_DETAIL_ALL_FORMAT" = "כל ה · %1$@";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_BODY_FORMAT" = "הגיב עם %1$@ אל ההודעה שלך";
+"REACTION_INCOMING_NOTIFICATION_BODY_FORMAT" = "הגיב/ה %1$@ להודעה שלך";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_ALBUM_BODY_FORMAT" = "הגיב עם %1$@ אל האלבום שלך";
+"REACTION_INCOMING_NOTIFICATION_TO_ALBUM_BODY_FORMAT" = "הגיב/ה %1$@ לאלבום שלך";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_AUDIO_BODY_FORMAT" = "הגיב עם %1$@ אל השמע שלך";
+"REACTION_INCOMING_NOTIFICATION_TO_AUDIO_BODY_FORMAT" = "הגיב/ה %1$@ להודעה הקולית שלך";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_CONTACT_SHARE_BODY_FORMAT" = "הגיב עם %1$@ אל שיתוף איש הקשר שלך";
+"REACTION_INCOMING_NOTIFICATION_TO_CONTACT_SHARE_BODY_FORMAT" = "הגיב/ה %1$@ לשיתוף איש הקשר שלך";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_FILE_BODY_FORMAT" = "הגיב עם %1$@ אל הקובץ שלך";
+"REACTION_INCOMING_NOTIFICATION_TO_FILE_BODY_FORMAT" = "הגיב/ה %1$@ לקובץ שלך";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_GIF_BODY_FORMAT" = "הגיב %1$@ אל ה־GIF שלך";
+"REACTION_INCOMING_NOTIFICATION_TO_GIF_BODY_FORMAT" = "הגיב/ה %1$@ ל–GIF שלך";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_PHOTO_BODY_FORMAT" = "הגיב עם %1$@ אל התמונה שלך";
+"REACTION_INCOMING_NOTIFICATION_TO_PHOTO_BODY_FORMAT" = "הגיב/ה %1$@ לתמונה שלך";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_STICKER_MESSAGE_BODY_FORMAT" = "הגיב עם %1$@ אל המדבקה שלך";
+"REACTION_INCOMING_NOTIFICATION_TO_STICKER_MESSAGE_BODY_FORMAT" = "הגיב/ה %1$@ לסטיקר שלך";
 
 /* notification body. Embeds {{reaction emoji}} and {{body text}} */
-"REACTION_INCOMING_NOTIFICATION_TO_TEXT_MESSAGE_BODY_FORMAT" = "הגיב עם %1$@ אל: \"%2$@\"";
+"REACTION_INCOMING_NOTIFICATION_TO_TEXT_MESSAGE_BODY_FORMAT" = "הגיב/ה %1$@ ל: \"%2$@\"";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_VIDEO_BODY_FORMAT" = "הגיב עם %1$@ אל הסרטון שלך";
+"REACTION_INCOMING_NOTIFICATION_TO_VIDEO_BODY_FORMAT" = "הגיב/ה %1$@ לסרטון שלך";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_VIEW_ONCE_MESSAGE_BODY_FORMAT" = "הגיב עם %1$@ אל המדיה לצפייה חד־פעמית שלך";
+"REACTION_INCOMING_NOTIFICATION_TO_VIEW_ONCE_MESSAGE_BODY_FORMAT" = "הגיב/ה %1$@ למדיה לצפייה חד–פעמית שלך";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_VOICE_MESSAGE_BODY_FORMAT" = "הגיב עם %1$@ אל ההודעה הקולית שלך";
+"REACTION_INCOMING_NOTIFICATION_TO_VOICE_MESSAGE_BODY_FORMAT" = "הגיב/ה %1$@ להודעה הקולית שלך";
 
 /* Pressing this button marks a thread as read */
 "READ_ACTION" = "נקרא";
@@ -5164,8 +5209,11 @@
 /* Alert body for a forgotten SVR (V2) PIN */
 "REGISTER_2FA_FORGOT_SVR_PIN_ALERT_MESSAGE" = "ה־PIN שלך הוא קוד בן 4+ תווים שיכולים להיות מספריים או אלפאנומריים. אם אינך זוכר את ה־PIN שלך, תהיה חייב להמתין 7 ימים כדי לרשום שוב את החשבון שלך.";
 
-/* Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock */
-"REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_ALERT_MESSAGE" = "ה־PIN שלך הוא קוד בן 4+ ספרות שיצרת שיכול להיות מספרי או אלפאנומרי. אם אתה לא זוכר את ה־PIN שלך, אתה יכול ליצור אחד חדש. אתה יכול להירשם ולהשתמש בחשבון שלך אבל תאבד מספר הגדרות מסוימות כמו מידע הפרופיל שלך.";
+/* Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock and they cannot necessarily create a new PIN */
+"REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_ALERT_MESSAGE" = "ה–PIN שלך הוא קוד בעל 4 תווים או יותר שיצרת ויכול להיות מספרי או אלפא–נומרי. אם שכחת את ה–PIN שלך, אפשר להירשם ולהשתמש בחשבון שלך אבל יאבדו לך הגדרות מסוימות כמו מידע הפרופיל שלך.";
+
+/* Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock and they can create a new PIN */
+"REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_AND_CAN_CREATE_NEW_PIN_ALERT_MESSAGE" = "ה–PIN שלך הוא קוד בן 4 תווים או יותר שיצרת ויכול להיות מספרי או אלפא–נומרי. אם שכחת את ה–PIN שלך, אפשר ליצור אחד חדש. אפשר להירשם ולהשתמש בחשבון שלך אבל יאבדו לך הגדרות מסוימות כמו מידע הפרופיל שלך.";
 
 /* Alert body for a forgotten V1 PIN */
 "REGISTER_2FA_FORGOT_V1_PIN_ALERT_MESSAGE" = "ה־PIN שלך הוא קוד מספרי בן 4+ ספרות. אם אינך זוכר את ה־PIN שלך, תהיה חייב להמתין 7 ימים כדי לרשום שוב את החשבון שלך.";
@@ -5179,6 +5227,9 @@
 /* No comment provided by engineer. */
 "REGISTER_CONTACTS_WELCOME" = "ברוך הבא!";
 
+/* Body of action sheet shown when rate-limited during registration. */
+"REGISTER_RATE_LIMITING_ALERT" = "ניסית יותר מדי פעמים בפרק זמן קצר. צריך להמתין כמה דקות לפני הניסיון הבא.";
+
 /* action sheet body */
 "REGISTER_RATE_LIMITING_BODY" = "ניסית לעיתים קרובות מדי. אנא המתן דקה לפני שתנסה שוב.";
 
@@ -5188,17 +5239,26 @@
 /* Title of alert shown when push tokens sync job fails. */
 "REGISTRATION_BODY" = "נכשל בהרשמה מחדש עבור התראות דחיפה.";
 
+/* During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the action button on that alert. */
+"REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_ACTION" = "עדכון";
+
+/* During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the description text on that alert. */
+"REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_DESCRIPTION" = "כדי להמשיך ברישום, צריך לעדכן לגרסה האחרונה של Signal.";
+
+/* During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the title on that alert. */
+"REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_TITLE" = "נדרש עדכון";
+
 /* During registration, users may be shown a CAPTCHA to verify that they're human. This text is shown above the CAPTCHA. */
-"REGISTRATION_CAPTCHA_TITLE" = "We need to verify that you’re human";
+"REGISTRATION_CAPTCHA_TITLE" = "אנחנו צריכים לוודא שלא מדובר ברובוט";
 
 /* Label for the country code field */
 "REGISTRATION_DEFAULT_COUNTRY_NAME" = "קוד מדינה";
 
 /* If a user is installing Signal on a new phone, they may be asked whether they want to transfer their account from their old device. This is a description on the screen that asks them this question. */
-"REGISTRATION_DEVICE_TRANSFER_CHOICE_EXPLANATION" = "Continuing will disable Signal on other devices currently registered with the same phone number.";
+"REGISTRATION_DEVICE_TRANSFER_CHOICE_EXPLANATION" = "המשך ישבית את Signal במכשירים אחרים שרשומים כרגע עם אותו מספר טלפון.";
 
 /* If a user is installing Signal on a new phone, they may be asked whether they want to transfer their account from their old device. This is the title on the screen that asks them this question. */
-"REGISTRATION_DEVICE_TRANSFER_CHOICE_TITLE" = "Transfer Account & Messages";
+"REGISTRATION_DEVICE_TRANSFER_CHOICE_TITLE" = "העברת חשבון והודעות";
 
 /* Placeholder text for the phone number textfield */
 "REGISTRATION_ENTERNUMBER_DEFAULT_TEXT" = "הכנס מספר";
@@ -5215,59 +5275,98 @@
 /* Alert title for network failure during registration */
 "REGISTRATION_ERROR_NETWORK_FAILURE_ALERT_TITLE" = "בדוק חיבור";
 
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This is the description on that screen, explaining what's going on. Embeds {{ duration }}, such as \"7 days\". */
+"REGISTRATION_LOCK_TIMEOUT_DESCRIPTION_FORMAT" = "החשבון שלך שלך ננעל כדי להגן על הפרטיות והאבטחה שלך. לאחר %1$@ של חוסר פעילות בחשבון שלך, תהיה לך אפשרות להירשם מחדש עם מספר טלפון זה ללא צורך ב–PIN שלך. כל התוכן יימחק.";
+
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This button appears on that screen. Tapping it will tell the user more information. */
+"REGISTRATION_LOCK_TIMEOUT_LEARN_MORE_BUTTON" = "מידע נוסף על חשבונות נעולים";
+
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This button appears on that screen. Tapping it will bump the user back, earlier in registration, so they can register with a different phone number. */
+"REGISTRATION_LOCK_TIMEOUT_RESET_PHONE_NUMBER_BUTTON" = "שימוש במספר אחר";
+
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This is the title of that screen. */
+"REGISTRATION_LOCK_TIMEOUT_TITLE" = "החשבון ננעל";
+
+/* A network error occurred during registration, and an error is shown to the user. This is the body on that error sheet. */
+"REGISTRATION_NETWORK_ERROR_BODY" = "כדי להמשיך, יש לבדוק את חיבור האינטרנט של הטלפון שלך ולנסות שוב.";
+
+/* A network error occurred during registration, and an error is shown to the user. This is the title on that error sheet. */
+"REGISTRATION_NETWORK_ERROR_TITLE" = "בדיקת חיבור";
+
 /* No comment provided by engineer. */
 "REGISTRATION_NON_VALID_NUMBER" = "תסדיר זה של מספר הטלפון אינו נתמך. אנא צור קשר עם התמיכה.";
 
 /* During registration, users are asked to enter their phone number. This is the subtitle on that screen, which gives users some instructions. */
-"REGISTRATION_PHONE_NUMBER_SUBTITLE" = "Enter your phone number to get started.";
+"REGISTRATION_PHONE_NUMBER_SUBTITLE" = "יש להכניס את מספר הטלפון שלך כדי להתחיל.";
 
 /* During registration, users are asked to enter their phone number. This is the title on that screen. */
-"REGISTRATION_PHONE_NUMBER_TITLE" = "Your Phone Number";
+"REGISTRATION_PHONE_NUMBER_TITLE" = "מספר הטלפון שלך";
+
+/* Message for confirmation alert when requesting a voice code during phone number registration. */
+"REGISTRATION_PHONE_NUMBER_VOICE_CODE_ALERT_MESSAGE" = "תתבצע שיחה כדי לאמת מספר זה. האם מספר הטלפון שלך למעלה נכון?";
 
 /* Label for the phone number textfield */
 "REGISTRATION_PHONENUMBER_BUTTON" = "מספר טלפון";
 
 /* During registration, users are asked to create a PIN code. They'll be taken to a screen to confirm their PIN, much like confirming a password. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_CONFIRM_SUBTITLE" = "Re-enter the PIN you just created.";
+"REGISTRATION_PIN_CONFIRM_SUBTITLE" = "יש להכניס שוב את ה–PIN שעכשיו יצרת.";
 
 /* During registration, users are asked to create a PIN code. They'll be taken to a screen to confirm their PIN, much like confirming a password. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_CONFIRM_TITLE" = "Confirm your PIN";
+"REGISTRATION_PIN_CONFIRM_TITLE" = "אישור ה–PIN שלך";
 
 /* During registration, users are asked to create a PIN code. This is the subtitle on the screen where this happens. A \"learn more\" link will be added to the end of this string. */
-"REGISTRATION_PIN_CREATE_SUBTITLE" = "PINs can help you restore your account and keep your info encrypted with Signal.";
+"REGISTRATION_PIN_CREATE_SUBTITLE" = "קודי PIN יכולים לעזור לך לשחזר את החשבון שלך ולשמור על המידע שלך מוצפן עם Signal.";
 
 /* During registration, users are asked to create a PIN code. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_CREATE_TITLE" = "Create your PIN";
+"REGISTRATION_PIN_CREATE_TITLE" = "יצירת ה–PIN שלך";
 
 /* During re-registration, users may be asked to re-enter their PIN code. This is the subtitle on the screen where this happens. A \"learn more\" link will be added to the end of this string. */
-"REGISTRATION_PIN_ENTER_EXISTING_SUBTITLE" = "PINs can help you restore your account and keep your info encrypted with Signal.";
+"REGISTRATION_PIN_ENTER_EXISTING_SUBTITLE" = "קודי PIN יכולים לעזור לך לשחזר את החשבון שלך ולשמור על המידע שלך מוצפן עם Signal.";
 
 /* During re-registration, users may be asked to re-enter their PIN code. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_ENTER_EXISTING_TITLE" = "Enter your PIN";
+"REGISTRATION_PIN_ENTER_EXISTING_TITLE" = "הזנת ה–PIN שלך";
 
 /* During registration, users set up their profile. Users input a family name. This is the placeholder for that field. */
-"REGISTRATION_PROFILE_SETUP_FAMILY_NAME_FIELD_PLACEHOLDER" = "Last Name";
+"REGISTRATION_PROFILE_SETUP_FAMILY_NAME_FIELD_PLACEHOLDER" = "שם משפחה";
+
+/* During registration, users can choose who can see their phone number. */
+"REGISTRATION_PROFILE_SETUP_FIND_MY_NUMBER_TITLE" = "מי יכול למצוא אותי לפי המספר שלי?";
 
 /* During registration, users set up their profile. Users input a given name. This is the placeholder for that field. */
-"REGISTRATION_PROFILE_SETUP_GIVEN_NAME_FIELD_PLACEHOLDER" = "First Name";
+"REGISTRATION_PROFILE_SETUP_GIVEN_NAME_FIELD_PLACEHOLDER" = "שם פרטי";
 
 /* During registration, users set up their profile. They can learn more about the privacy of their profile by clicking a \"learn more\" button. This is the message on a sheet that appears when they do that. */
-"REGISTRATION_PROFILE_SETUP_MORE_INFO_DETAILS" = "Your name, photo and changes to it will be visible to your contacts and when you start or accept new chats.";
+"REGISTRATION_PROFILE_SETUP_MORE_INFO_DETAILS" = "השם, התמונה שלך והשינויים בהם יהיו גלויים לאנשי הקשר שלך ובעת התחלת או קבלת צ׳אטים חדשים.";
 
 /* During registration, users set up their profile. They can learn more about the privacy of their profile by clicking a \"learn more\" button. This is the title on a sheet that appears when they do that. */
-"REGISTRATION_PROFILE_SETUP_MORE_INFO_TITLE" = "About Profile Privacy";
+"REGISTRATION_PROFILE_SETUP_MORE_INFO_TITLE" = "אודות מדיניות הפרטיות";
 
 /* During registration, users set up their profile. This is the subtitle on the screen where this is done. It tells users about the privacy of their profile. A \"learn more\" link will be added to the end of this string. */
-"REGISTRATION_PROFILE_SETUP_SUBTITLE" = "Profiles are visible to people you message, contacts, and groups.";
+"REGISTRATION_PROFILE_SETUP_SUBTITLE" = "הפרופילים גלויים לאנשים ששולחים להם הודעות, לאנשי קשר ולקבוצות.";
 
 /* During registration, users set up their profile. This is the title on the screen where this is done. */
-"REGISTRATION_PROFILE_SETUP_TITLE" = "Set up your profile";
+"REGISTRATION_PROFILE_SETUP_TITLE" = "הגדרת הפרופיל שלך";
+
+/* Error shown if an SMS/call service provider is permanently unable to send a verification code to the provided number. */
+"REGISTRATION_PROVIDER_FAILURE_MESSAGE_PERMANENT" = "Signal לא יכולה לשלוח קוד SMS למספר שלך עקב תקלה חיצונית.";
+
+/* Error shown if an SMS/call service provider is temporarily unable to send a verification code to the provided number. */
+"REGISTRATION_PROVIDER_FAILURE_MESSAGE_TRANSIENT" = "Signal לא הצליחה לשלוח קוד SMS כרגע עקב תקלה חיצונית, יש לנסות שוב מאוחר יותר.";
 
 /* No comment provided by engineer. */
 "REGISTRATION_RESTRICTED_MESSAGE" = "אתה צריך להירשם לפני שתוכל לשלוח הודעה.";
 
+/* Alert shown when running out of attempts at submitting a verification code. */
+"REGISTRATION_SUBMIT_CODE_ATTEMPTS_EXHAUSTED_ALERT" = "ניסית להכניס את הקוד יותר מדי פעמים. צריך לשלוח את הקוד מחדש ולנסות שוב.";
+
+/* Alert shown when submitting a verification code too many times. Embeds {{ duration }}, such as \"5:00\" */
+"REGISTRATION_SUBMIT_CODE_RATE_LIMIT_ALERT_FORMAT" = "ניסית להכניס את הקוד יותר מדי פעמים. יש לנסות שוב עוד %1$@";
+
 /* Error message indicating that device transfer from another device might be possible. */
 "REGISTRATION_TRANSFER_AVAILABLE_DESCRIPTION" = "היה חשבון רשום בעבר עם מספר זה שהוא זמין להעברה.";
+
+/* During registration and re-registration, users may have to enter a code to verify ownership of their phone number. If they enter an invalid code, they will see this error message. */
+"REGISTRATION_VERIFICATION_ERROR_INVALID_VERIFICATION_CODE" = "הקוד שהכנסת לא חוקי. כדאי לבדוק את הקוד ולנסות שוב.";
 
 /* Alert view title */
 "REGISTRATION_VERIFICATION_FAILED_TITLE" = "וידוא נכשל";
@@ -5317,6 +5416,12 @@
 /* No comment provided by engineer. */
 "REREGISTER_FOR_PUSH" = "הירשם מחדש אל התראות דחיפה";
 
+/* If the user is re-registering, they may need to enter their PIN to restore all their data. If they enter the incorrect PIN, they will be shown a warning. In some cases (such as for this string), the user has the option to skip PIN entry and will lose some data. Embeds {{ number of attempts }}, such as \"3 attempts\". */
+"REREGISTER_INVALID_PIN_WARNING_SKIPPABLE_FORMAT" = "%1$@. אם ייגמרו לך הנסיונות, תהיה לך אפשר ליצור PIN חדש. ניתן להירשם ולהשתמש בחשבון שלך אבל אז יאבדו כמה הגדרות שמורות כמו נתוני הפרופיל שלך.";
+
+/* If the user is re-registering, they may need to enter their PIN to restore all their data. If they enter the incorrect PIN, they will be shown a warning. Embeds {{ number of attempts }}, such as \"3 attempts\". */
+"REREGISTER_INVALID_PIN_WARNING_UNSKIPPABLE_FORMAT" = "%1$@. אם ייגמרו לך הניסיונות, החשבון שלך יינעל ל–7 ימים. אחרי 7 ימים של אי–פעילות, תהיה לך אפשר להירשם מחדש בלי ה–PIN שלך. כל התוכן יימחק.";
+
 /* Configure reactions reset button text */
 "RESET" = "אפס";
 
@@ -5343,6 +5448,9 @@
 
 /* Title for the 'safety number confirmation' view */
 "SAFETY_NUMBER_CONFIRMATION_TITLE" = "שינויי מספר ביטחון";
+
+/* Text explaining that the given contact has had their safety number verified. */
+"SAFETY_NUMBER_CONFIRMATION_VERIFIED" = "מאומת";
 
 /* View safety number action for the 'safety number confirmation' view */
 "SAFETY_NUMBER_CONFIRMATION_VIEW_ACTION" = "הצג";
@@ -5402,7 +5510,7 @@
 "SEARCH_SECTION_CONTACTS" = "אנשי קשר אחרים";
 
 /* section header for search results that match existing 1:1 chats */
-"SEARCH_SECTION_CONVERSATIONS" = "התכתבויות";
+"SEARCH_SECTION_CONVERSATIONS" = "צ׳אטים";
 
 /* section header for search results that match existing groups */
 "SEARCH_SECTION_GROUPS" = "קבוצות";
@@ -5513,10 +5621,10 @@
 "SENT_MEDIA_QUALITY_STANDARD" = "תקנית";
 
 /* Description for the session refresh alert */
-"SESSION_REFRESH_ALERT_MESSAGE" = "Signal משתמש בהצפנה מקצה־אל־קצה והוא עשוי להצטרך לרענן את שיח ההתכתבות שלך לפעמים. זה לא משפיע על אבטחת ההתכתבות שלך אבל ייתכן שהחמצת הודעה מאיש קשר זה ואתה יכול לבקש ממנו לשלוח אותה מחדש.";
+"SESSION_REFRESH_ALERT_MESSAGE" = "Signal משתמשת בהצפנה מקצה לקצה ויתכן שהיא תצטרך לרענן את הצ'אט שלך מדי פעם. זה לא משפיע על אבטחת הצ'אט שלך, אבל יכול להיות שפספסת הודעה מאיש קשר זה ואפשר לבקש ממנו לשלוח אותה מחדש.";
 
 /* Title for the session refresh alert */
-"SESSION_REFRESH_ALERT_TITLE" = "שיח התכתבות רוענן";
+"SESSION_REFRESH_ALERT_TITLE" = "צ'אט רוענן";
 
 /* Title for the wallpaper choose from photos option */
 "SET_WALLPAPER_CHOOSE_PHOTO" = "בחר מתוך תמונות";
@@ -5529,6 +5637,9 @@
 
 /* Title for the 'account' link in settings. */
 "SETTINGS_ACCOUNT" = "חשבון";
+
+/* Label for button in settings to get your account data report */
+"SETTINGS_ACCOUNT_DATA_REPORT_BUTTON" = "נתוני החשבון שלך";
 
 /* Title for the 'add to block list' view. */
 "SETTINGS_ADD_TO_BLOCK_LIST_TITLE" = "חסימה";
@@ -5638,7 +5749,7 @@
 /* Title for the 'old phone number' section in the 'change phone number' settings. */
 "SETTINGS_CHANGE_PHONE_NUMBER_OLD_PHONE_NUMBER_SECTION_TITLE" = "המספר הישן שלך";
 
-/* Label for the 'country code' row in the 'change phone number' settings. */
+/* Label for the 'phone number' row in the 'change phone number' settings. */
 "SETTINGS_CHANGE_PHONE_NUMBER_PHONE_NUMBER_FIELD" = "מספר טלפון";
 
 /* Format for the 'change phone number' progress view. Embeds: {{ the user's new phone number }}. */
@@ -5654,10 +5765,10 @@
 "SETTINGS_CHANGE_PHONE_NUMBER_VIEW_TITLE" = "שנה מספר";
 
 /* Title for the 'chats' link in settings. */
-"SETTINGS_CHATS" = "התכתבויות";
+"SETTINGS_CHATS" = "צ׳אטים";
 
 /* No comment provided by engineer. */
-"SETTINGS_CLEAR_HISTORY" = "ניקוי היסטוריית התכתבויות";
+"SETTINGS_CLEAR_HISTORY" = "ניקוי היסטוריית צ׳אט";
 
 /* Footer for the 'about' help section */
 "SETTINGS_COPYRIGHT" = "זכויות יוצרים Signal Messenger\nברישיון תחת AGPLv3";
@@ -5723,7 +5834,7 @@
 "SETTINGS_DISAPPEARING_MESSAGES" = "הודעות נעלמות";
 
 /* Explanation for the 'disappearing messages' privacy settings. */
-"SETTINGS_DISAPPEARING_MESSAGES_FOOTER" = "הגדר קוצב זמן ברירת מחדל של הודעות נעלמות עבור כל ההתכתבויות החדשות שהותחלו על ידך.";
+"SETTINGS_DISAPPEARING_MESSAGES_FOOTER" = "אפשר להגדיר קוצב זמן ברירת מחדל של הודעות נעלמות עבור כל הצ'אטים החדשים שהותחלו על ידך.";
 
 /* Title for the 'donate to signal' link in settings. */
 "SETTINGS_DONATE" = "תרומה ל–Signal";
@@ -5735,7 +5846,7 @@
 "SETTINGS_INVITE_TITLE" = "הזמן את חבריך";
 
 /* Label for settings view that allows user to change the chat color and wallpaper. */
-"SETTINGS_ITEM_COLOR_AND_WALLPAPER" = "צבע התכתבות וטפט";
+"SETTINGS_ITEM_COLOR_AND_WALLPAPER" = "צבע צ׳אט ורקע";
 
 /* Label for settings view that allows user to change the notification sound. */
 "SETTINGS_ITEM_NOTIFICATION_SOUND" = "צליל הודעה";
@@ -5870,10 +5981,10 @@
 "SETTINGS_PAYMENTS_DEACTIVATE_TITLE" = "בטל הפעלת תשלומים";
 
 /* Explanation of the 'deactivate payments with balance' process in the 'deactivate payments' settings. */
-"SETTINGS_PAYMENTS_DEACTIVATE_WITH_BALANCE_EXPLANATION" = "מומלץ שתעביר את הכספים שלך אל כתובת ארנק אחרת לפני ביטול הפעלת תשלומים. אם תבחר לא להעביר את הכספים שלך עכשיו, הם יישארו בארנק שמקושר אל Signal אם תפעיל מחדש תשלומים.";
+"SETTINGS_PAYMENTS_DEACTIVATE_WITH_BALANCE_EXPLANATION" = "מומלץ להעביר את הכספים שלך לכתובת ארנק אחרת לפני ביטול ההפעלה של תשלומים. במקרה של בחירה לא להעביר את הכספים עכשיו, הם יישארו בארנק שמקושר אל Signal בעת הפעלה מחדש של תשלומים.";
 
 /* Description for the 'deactivate payments confirmation' UI in the payment settings. */
-"SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_DESCRIPTION" = "המאזן שלך יישאר בארנק שמקושר אל Signal אם תבחר להפעיל מחדש תשלומים.";
+"SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_DESCRIPTION" = "היתרה שלך תישאר בארנק שמקושר אל Signal במקרה של בחירה להפעיל מחדש את תשלומים.";
 
 /* Title for the 'deactivate payments confirmation' UI in the payment settings. */
 "SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_TITLE" = "לבטל הפעלה בלי להעביר?";
@@ -5960,7 +6071,7 @@
 "SETTINGS_PAYMENTS_OPT_IN_MESSAGE" = "השתמש ב־Signal כדי לשלוח ולקבל MobileCoin, מטבע דיגיטלי חדש ממוקד פרטיות. הפעל כדי להתחיל.";
 
 /* Label for 'activate' button in the 'payments opt-in' view in the app settings. */
-"SETTINGS_PAYMENTS_OPT_IN_REACTIVATE_BUTTON" = "הפעל מחדש תשלומים";
+"SETTINGS_PAYMENTS_OPT_IN_REACTIVATE_BUTTON" = "הפעלה מחדש של תשלומים";
 
 /* Title for the 'payments opt-in' view in the app settings. */
 "SETTINGS_PAYMENTS_OPT_IN_TITLE" = "היכרות עם תשלומים (בטא)";
@@ -6278,16 +6389,16 @@
 "SETTINGS_PAYMENTS_WALLET_ADDRESS_LABEL" = "כתובת הארנק שלך";
 
 /* The title for the phone number discoverability setting section. */
-"SETTINGS_PHONE_NUMBER_DISCOVERABILITY_TITLE" = "Who Can Find Me By Number";
+"SETTINGS_PHONE_NUMBER_DISCOVERABILITY_TITLE" = "מי יכול למצוא אותי לפי המספר שלי?";
 
 /* Description label for Phone Number Privacy */
-"SETTINGS_PHONE_NUMBER_PRIVACY_DESCRIPTION_LABEL" = "Choose who can see your phone number and who can contact you on Signal with it.";
+"SETTINGS_PHONE_NUMBER_PRIVACY_DESCRIPTION_LABEL" = "אפשר לבחור מי יוכל לראות את מספר הטלפון שלך ומי יוכל ליצור איתך קשר באמצעותו ב–Signal.";
 
 /* The title for phone number privacy settings. */
-"SETTINGS_PHONE_NUMBER_PRIVACY_TITLE" = "Phone Number";
+"SETTINGS_PHONE_NUMBER_PRIVACY_TITLE" = "מספר טלפון";
 
 /* The title for the phone number sharing setting section. */
-"SETTINGS_PHONE_NUMBER_SHARING_TITLE" = "Who Can See My Number";
+"SETTINGS_PHONE_NUMBER_SHARING_TITLE" = "מי יכול לראות את המספר שלי?";
 
 /* The button text for the dialog asking user to confirm their PIN to disable reminders */
 "SETTINGS_PIN_REMINDER_DISABLE_CONFIRMATION_ACTION" = "כבה תזכורות";
@@ -6392,10 +6503,10 @@
 "SETTINGS_SHARING_SUGGESTIONS" = "שתף אנשי קשר עם iOS";
 
 /* Footer for setting for enabling & disabling contact sharing with iOS. */
-"SETTINGS_SHARING_SUGGESTIONS_FOOTER" = "התר גישת iOS אל אנשי קשר והתכתבויות של Signal עבור מאפיינים כמו הצעות שיתוף.";
+"SETTINGS_SHARING_SUGGESTIONS_FOOTER" = "התרת גישת iOS לאנשי קשר וצ׳אטים של Signal עבור פיצ׳רים כמו הצעות שיתוף.";
 
 /* Footer for setting for enabling & disabling contact and notification sharing with iOS. */
-"SETTINGS_SHARING_SUGGESTIONS_NOTIFICATIONS_FOOTER" = "התר גישת iOS אל אנשי קשר והתכתבויות של Signal עבור מאפיינים כמו הצעות שיתוף והתראות.";
+"SETTINGS_SHARING_SUGGESTIONS_NOTIFICATIONS_FOOTER" = "התרת גישת iOS לאנשי קשר וצ׳אטים של Signal עבור פיצ׳רים כמו הצעות שיתוף והתראות.";
 
 /* Label for the 'enable registration lock' switch of the privacy settings. */
 "SETTINGS_TWO_FACTOR_AUTH_SWITCH_LABEL" = "נעילת הרשמה";
@@ -6467,7 +6578,7 @@
 "SHOW_SAFETY_NUMBER_ACTION" = "הראה מספר ביטחון";
 
 /* notification action */
-"SHOW_THREAD_BUTTON_TITLE" = "הראה התכתבות";
+"SHOW_THREAD_BUTTON_TITLE" = "הצגת צ׳אט";
 
 /* body sent to contacts when inviting to Install Signal */
 "SMS_INVITE_BODY" = "אני מזמין אותך להתקין Signal! הנה הקישור:";
@@ -6569,7 +6680,7 @@
 "STORIES_FORWARD_STORY_ACTION" = "העבר הלאה";
 
 /* Context menu action to open the chat associated with the selected story */
-"STORIES_GO_TO_CHAT_ACTION" = "לך אל התכתבות";
+"STORIES_GO_TO_CHAT_ACTION" = "מעבר לצ׳אט";
 
 /* Text indicating you can't reply to a group story because you're not a member of the group */
 "STORIES_GROUP_REPLY_NOT_A_MEMBER" = "אין לך אפשרות להשיב לסטורי הזה בגלל שאינך חלק מהקבוצה הזו יותר.";
@@ -6611,7 +6722,7 @@
 "STORIES_REPLIES_AND_REACTIONS_HEADER" = "תשובות ותגובות";
 
 /* Toggle text for the 'replies & reactions' switch in stories settings */
-"STORIES_REPLIES_AND_REACTIONS_TOGGLE" = "אפשר תשובות ותגובות";
+"STORIES_REPLIES_AND_REACTIONS_TOGGLE" = "הפעלת תשובות ותגובות";
 
 /* Title text for the 'replies' tab on the stories views & replies sheet */
 "STORIES_REPLIES_TAB" = "תשובות";
@@ -6961,6 +7072,36 @@
 /* Tap to Replace Emoji string for reaction configuration */
 "TAP_REPLACE_EMOJI" = "הקש כדי להחליף אימוג'י";
 
+/* Option in selected text edit menu to make text bold */
+"TEXT_MENU_BOLD" = "Bold";
+
+/* Option in selected text edit menu to clear all text formatting in the selected text range */
+"TEXT_MENU_CLEAR_FORMATTING" = "Clear Formatting";
+
+/* Option in selected text edit menu to view text formatting options */
+"TEXT_MENU_FORMAT" = "עיצוב";
+
+/* Option in selected text edit menu to make text italic */
+"TEXT_MENU_ITALIC" = "נטוי";
+
+/* Option in selected text edit menu to look up word definitions */
+"TEXT_MENU_LOOK_UP" = "חיפוש";
+
+/* Option in selected text edit menu to make text monospace */
+"TEXT_MENU_MONOSPACE" = "רוחב אחיד";
+
+/* Option in selected text edit menu to replace text with suggestions */
+"TEXT_MENU_REPLACE" = "החלפה";
+
+/* Option in selected text edit menu to share selected text */
+"TEXT_MENU_SHARE" = "שתף";
+
+/* Option in selected text edit menu to make text spoiler */
+"TEXT_MENU_SPOILER" = "ספוילר";
+
+/* Option in selected text edit menu to make text strikethrough */
+"TEXT_MENU_STRIKETHROUGH" = "קו חוצה";
+
 /* text indicating the message was remotely deleted */
 "THIS_MESSAGE_WAS_DELETED" = "הודעה זו נמחקה.";
 
@@ -6968,7 +7109,7 @@
 "THREAD_DETAILS_MORE_MUTUAL_GROUP" = "חבר קבוצה של %1$@, %2$@ ועוד %3$lu קבוצות נוספות";
 
 /* Subtitle appearing at the top of the users 'note to self' conversation */
-"THREAD_DETAILS_NOTE_TO_SELF_EXPLANATION" = "אתה יכול להוסיף הערות לעצמך בהתכתבות זו. אם לחשבון שלך יש מכשירים מקושרים כלשהם, הערות חדשות יסונכרנו.";
+"THREAD_DETAILS_NOTE_TO_SELF_EXPLANATION" = "אפשר להוסיף הערות לעצמך בצ'אט זה. אם מקושרים לחשבון שלך מכשירים כלשהם, הערות חדשות יסונכרנו.";
 
 /* A string indicating a mutual group the user shares with this contact. Embeds {{mutual group name}} */
 "THREAD_DETAILS_ONE_MUTUAL_GROUP" = "חבר קבוצה של %1$@";
@@ -7082,22 +7223,25 @@
 "UNLINK_CONFIRMATION_ALERT_TITLE" = "לבטל קישור \"%1$@\"?";
 
 /* Label warning the user that they have been unlinked from their primary device. */
-"UNLINKED_WARNING" = "המכשיר אינו מקושר יותר. קשר מחדש את Signal עם הטלפון שלך כדי להמשיך להתכתב.";
+"UNLINKED_WARNING" = "המכשיר הזה כבר לא מקושר. אפשר לקשר מחדש את Signal עם הטלפון שלך כדי להמשיך לשלוח הודעות.";
+
+/* If this device has become unlinked from their primary device, they'll see a warning. This is the call to action on that warning. */
+"UNLINKED_WARNING_ACTION_TITLE" = "קישור מכשיר מחדש";
 
 /* Alert title when unlinking device fails */
 "UNLINKING_FAILED_ALERT_TITLE" = "Signal לא היה יכול לבטל את קישור המכשיר שלך.";
-
-/* Label text in device manager for a device with no name */
-"UNNAMED_DEVICE" = "מכשיר ללא שם";
 
 /* Pressing this button un-pins a thread */
 "UNPIN_ACTION" = "בטל הצמדה";
 
 /* The title for unpinned conversation section on the conversation list */
-"UNPINNED_SECTION_TITLE" = "התכתבויות";
+"UNPINNED_SECTION_TITLE" = "צ׳אטים";
 
 /* Pressing this button marks a thread as unread */
 "UNREAD_ACTION" = "לא נקרא";
+
+/* Label warning the user that the validation of their username has failed. */
+"UNREGISTERED_USERNAME_WARNING" = "משהו השתבש עם שם המשתמש שלך והוא כבר לא מקושר לחשבון שלך. אפשר לנסות להגדיר אותו שוב או לבחור אחד חדש.";
 
 /* No comment provided by engineer. */
 "UNSUPPORTED_ATTACHMENT" = "התקבל סוג בלתי נתמך של צרופה.";
@@ -7138,6 +7282,21 @@
 /* Description of username link */
 "USERNAME_LINK_DESCRIPTION" = "לכל שם משתמש יש לינק ייחודי שאפשר לשתף עם חברים כדי שהם יוכלו להתחיל איתך צ׳אט";
 
+/* Title for a button to pick the color of your username link QR code. Lowercase styling is intentional. */
+"USERNAME_LINK_QR_CODE_VIEW_COLOR_BUTTON" = "צבע";
+
+/* Text for a label explaining what the username link and QR code give others access to. */
+"USERNAME_LINK_QR_CODE_VIEW_DISCLAIMER_LABEL" = "כדאי לשתף את קוד ה–QR שלך רק עם אנשים שבוטחים בהם. כשמשתפים, אחרים יכולים לראות את שם המשתמש שלך ולהתחיל איתך צ׳אט.";
+
+/* Title for a button that allows users to reset their username link and QR code. */
+"USERNAME_LINK_QR_CODE_VIEW_RESET_BUTTON_TITLE" = "אפס";
+
+/* Title for a button to share your username link QR code. Lowercase styling is intentional. */
+"USERNAME_LINK_QR_CODE_VIEW_SHARE_BUTTON" = "שתף";
+
+/* A title for a view that allows you to view and interact with a QR code for your username link. */
+"USERNAME_LINK_QR_CODE_VIEW_TITLE_CODE" = "קוד";
+
 /* A message indicating that username lookup failed. */
 "USERNAME_LOOKUP_ERROR_MESSAGE" = "התרחשה שגיאה בעת חיפוש שם המשתמש. יש לנסות שוב מאוחר יותר.";
 
@@ -7153,8 +7312,8 @@
 /* Title for an action sheet indicating that the given username is not associated with a registered Signal account. */
 "USERNAME_LOOKUP_NOT_FOUND_TITLE" = "משתמש/ת לא נמצא/ה";
 
-/* A prefix appended to all usernames when displayed */
-"USERNAME_PREFIX" = "@";
+/* An error message shown when the user has typed a username that starts with a digit, which is invalid. */
+"USERNAME_SELECTION_CANNOT_START_WITH_DIGIT_ERROR_MESSAGE" = "שמות משתמש לא יכולים להתחיל במספר.";
 
 /* The title of an action sheet button that will delete a user's username. */
 "USERNAME_SELECTION_DELETE_USERNAME_ACTION_TITLE" = "מחיקת שם משתמש";
@@ -7265,7 +7424,7 @@
 "WALLPAPER_PREVIEW_INCOMING_MESSAGE_PRESET" = "החלק כדי להציג מראש עוד טפטים.";
 
 /* The outgoing bubble text when setting a wallpaper for all chats. */
-"WALLPAPER_PREVIEW_OUTGOING_MESSAGE_ALL_CHATS" = "טפט הוגדר עבור כל ההתכתבויות.";
+"WALLPAPER_PREVIEW_OUTGOING_MESSAGE_ALL_CHATS" = "הגדרת רקע עבור כל הצ׳אטים.";
 
 /* The outgoing bubble text when setting a wallpaper for specific chat. Embeds {{chat name}} */
 "WALLPAPER_PREVIEW_OUTGOING_MESSAGE_FORMAT" = "טפט הוגדר עבור %1$@.";
@@ -7274,16 +7433,16 @@
 "WALLPAPER_PREVIEW_TITLE" = "תצוגה מקדימה";
 
 /* Clear chat color action in wallpaper settings view. */
-"WALLPAPER_SETTINGS_CLEAR_CHAT_COLOR" = "נקה צבע התכתבות";
+"WALLPAPER_SETTINGS_CLEAR_CHAT_COLOR" = "ניקוי צבע צ׳אט";
 
 /* Confirmation dialog when clearing the chat color for a specific chat. */
-"WALLPAPER_SETTINGS_CLEAR_CHAT_COLOR_CHAT_CONFIRMATION" = "לנקות צבע התכתבות עבור התכתבות זו?";
+"WALLPAPER_SETTINGS_CLEAR_CHAT_COLOR_CHAT_CONFIRMATION" = "לנקות צבע צ׳אט עבור צ׳אט זה?";
 
 /* Clear wallpaper action in wallpaper settings view. */
 "WALLPAPER_SETTINGS_CLEAR_WALLPAPER" = "נקה טפט";
 
 /* Confirmation dialog when clearing the wallpaper for a specific chat. */
-"WALLPAPER_SETTINGS_CLEAR_WALLPAPER_CHAT_CONFIRMATION" = "לנקות טפט עבור התכתבות זו?";
+"WALLPAPER_SETTINGS_CLEAR_WALLPAPER_CHAT_CONFIRMATION" = "לנקות רקע עבור צ׳אט זה?";
 
 /* Dim wallpaper action in wallpaper settings view. */
 "WALLPAPER_SETTINGS_DIM_WALLPAPER" = "ערכת נושא כהה מעמעמת טפטים";
@@ -7301,13 +7460,13 @@
 "WALLPAPER_SETTINGS_RESET_ALL_WALLPAPERS" = "אפס את כל הטפטים";
 
 /* Message of confirmation dialog when resetting the global wallpaper settings. */
-"WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_MESSAGE" = "האם אתה רוצה לדרוס את כל צבעי ההתכתבות?";
+"WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_MESSAGE" = "לדרוס את כל צבעי הצ'אט?";
 
 /* Title of confirmation dialog when resetting the global wallpaper settings. */
-"WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_TITLE" = "אפס צבעי התכתבות";
+"WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_TITLE" = "איפוס צבעי צ'אט";
 
 /* Reset conversation chat color action in wallpaper settings view. */
-"WALLPAPER_SETTINGS_RESET_CONVERSATION_CHAT_COLOR" = "אפס צבע התכתבות";
+"WALLPAPER_SETTINGS_RESET_CONVERSATION_CHAT_COLOR" = "איפוס צבע צ'אט";
 
 /* Reset conversation wallpaper action in wallpaper settings view. */
 "WALLPAPER_SETTINGS_RESET_CONVERSATION_WALLPAPER" = "אפס טפט";
@@ -7316,7 +7475,7 @@
 "WALLPAPER_SETTINGS_RESET_DEFAULT_CHAT_COLOR" = "אפס צבעי ברירת מחדל";
 
 /* Reset global chat colors action in wallpaper settings view. */
-"WALLPAPER_SETTINGS_RESET_DEFAULT_CHAT_COLORS" = "אפס צבעי התכתבות";
+"WALLPAPER_SETTINGS_RESET_DEFAULT_CHAT_COLORS" = "איפוס צבעי צ'אט";
 
 /* Label for 'reset default wallpaper' action in the global wallpaper settings. */
 "WALLPAPER_SETTINGS_RESET_DEFAULT_WALLPAPER" = "אפס טפט ברירת מחדל";
@@ -7331,7 +7490,7 @@
 "WALLPAPER_SETTINGS_RESET_WALLPAPERS_CONFIRMATION_TITLE" = "אפס טפט";
 
 /* Set chat color action in color and wallpaper settings view. */
-"WALLPAPER_SETTINGS_SET_CHAT_COLOR" = "צבע התכתבות";
+"WALLPAPER_SETTINGS_SET_CHAT_COLOR" = "צבע צ׳אט";
 
 /* Set wallpaper action in wallpaper settings view. */
 "WALLPAPER_SETTINGS_SET_WALLPAPER" = "הגדר טפט";

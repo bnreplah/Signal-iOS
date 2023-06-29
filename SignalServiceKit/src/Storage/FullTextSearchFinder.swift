@@ -9,14 +9,14 @@ import GRDB
 public enum FullTextSearchFinder {
     public static let matchTag = "match"
 
-    public static func enumerateObjects(searchText: String, collections: [String], maxResults: UInt, transaction: SDSAnyReadTransaction, block: @escaping (Any, String, UnsafeMutablePointer<ObjCBool>) -> Void) {
+    public static func enumerateObjects(searchText: String, collections: [String], maxResults: UInt, transaction: SDSAnyReadTransaction, block: (Any, String, inout Bool) -> Void) {
         switch transaction.readTransaction {
         case .grdbRead(let grdbRead):
             GRDBFullTextSearchFinder.enumerateObjects(searchText: searchText, collections: collections, maxResults: maxResults, transaction: grdbRead, block: block)
         }
     }
 
-    public static func enumerateObjects<T: SDSIndexableModel>(searchText: String, maxResults: UInt, transaction: SDSAnyReadTransaction, block: @escaping (T, String, UnsafeMutablePointer<ObjCBool>) -> Void) {
+    public static func enumerateObjects<T: SDSIndexableModel>(searchText: String, maxResults: UInt, transaction: SDSAnyReadTransaction, block: (T, String, inout Bool) -> Void) {
         switch transaction.readTransaction {
         case .grdbRead(let grdbRead):
             GRDBFullTextSearchFinder.enumerateObjects(searchText: searchText, maxResults: maxResults, transaction: grdbRead, block: block)
@@ -265,7 +265,10 @@ enum GRDBFullTextSearchFinder {
             // different address.
             return false
         }
-        if let message = model as? TSMessage, message.isGroupStoryReply {
+        if
+            let message = model as? TSMessage,
+            (message.isGroupStoryReply || message.editState == .pastRevision)
+        {
             return false
         }
         return true
@@ -487,7 +490,12 @@ enum GRDBFullTextSearchFinder {
 
     // MARK: - Querying
 
-    public static func enumerateObjects<T: SDSIndexableModel>(searchText: String, maxResults: UInt, transaction: GRDBReadTransaction, block: @escaping (T, String, UnsafeMutablePointer<ObjCBool>) -> Void) {
+    public static func enumerateObjects<T: SDSIndexableModel>(
+        searchText: String,
+        maxResults: UInt,
+        transaction: GRDBReadTransaction,
+        block: (T, String, inout Bool) -> Void
+    ) {
         enumerateObjects(
             searchText: searchText,
             collections: [T.collection()],
@@ -500,12 +508,17 @@ enum GRDBFullTextSearchFinder {
             guard let object = object as? T else {
                 return owsFailDebug("Unexpected object type")
             }
-            block(object, snippet, stop)
+            block(object, snippet, &stop)
         }
     }
 
-    public static func enumerateObjects(searchText: String, collections: [String], maxResults: UInt, transaction: GRDBReadTransaction, block: @escaping (Any, String, UnsafeMutablePointer<ObjCBool>) -> Void) {
-
+    public static func enumerateObjects(
+        searchText: String,
+        collections: [String],
+        maxResults: UInt,
+        transaction: GRDBReadTransaction,
+        block: (Any, String, inout Bool) -> Void
+    ) {
         let query = FullTextSearchFinder.query(searchText: searchText)
 
         if query.isEmpty {
@@ -517,7 +530,7 @@ enum GRDBFullTextSearchFinder {
 
         // Search with the query interface or SQL
         do {
-            var stop: ObjCBool = false
+            var stop = false
 
             // GRDB TODO: We could use bm25() instead of rank to order results.
             let indexOfContentColumnInFTSTable = 0
@@ -554,7 +567,7 @@ enum GRDBFullTextSearchFinder {
                 }
 
                 block(model, snippet, &stop)
-                guard !stop.boolValue else {
+                if stop {
                     break
                 }
             }
@@ -601,7 +614,10 @@ class AnySearchIndexer: Dependencies {
     }
 
     private static let groupMemberIndexer: SearchIndexer<TSGroupMember> = SearchIndexer { (groupMember: TSGroupMember, transaction: SDSAnyReadTransaction) in
-        return recipientIndexer.index(groupMember.address, transaction: transaction)
+        return recipientIndexer.index(
+            SignalServiceAddress(uuid: groupMember.serviceId?.uuidValue, phoneNumber: groupMember.phoneNumber),
+            transaction: transaction
+        )
     }
 
     private static let contactThreadIndexer: SearchIndexer<TSContactThread> = SearchIndexer { (contactThread: TSContactThread, transaction: SDSAnyReadTransaction) in
@@ -616,7 +632,28 @@ class AnySearchIndexer: Dependencies {
         return result
     }
 
-    private static let recipientIndexer: SearchIndexer<SignalServiceAddress> = SearchIndexer { recipientAddress, transaction in
+    private static let accountIndexer: SearchIndexer<SignalAccount> = SearchIndexer { account, tx in
+        var nameStrings = Set<String>()
+        let insert: (String?) -> Void = { if let s = $0 { nameStrings.insert(s) } }
+
+        // In the UI, we give preference to the system contact name
+        // (as opposed to the contact's self-selected profile name),
+        // so our first choice is to index by system contact names.
+        insert(account.contactPreferredDisplayName())
+        if let nameComponents = account.contactPersonNameComponents() {
+            insert(nameComponents.givenName)
+            insert(nameComponents.familyName)
+            insert(nameComponents.nickname)
+        }
+        if nameStrings.isEmpty {
+            // If the system contact has no names, fall back to
+            // the user's self-selected profile name.
+            insert(profileManager.fullName(for: account.recipientAddress, transaction: tx))
+        }
+        return contactIndexStrings(nameStrings: nameStrings, recipientAddress: account.recipientAddress, transaction: tx)
+    }
+
+    private static let recipientIndexer: SearchIndexer<SignalServiceAddress> = SearchIndexer { recipientAddress, tx in
         // A contact should always be searchable by their display name, as well
         // as by name components from system contacts if available. Note that
         // not all name components are available, as we only store
@@ -625,14 +662,21 @@ class AnySearchIndexer: Dependencies {
         // We may likely end up with duplicate text in the index since the
         // display name will likely include some or all of the name components,
         // but that's fine.
-        var nameStrings: Set<String> = [contactsManager.displayName(for: recipientAddress, transaction: transaction)]
-        if let nameComponents = contactsManager.nameComponents(for: recipientAddress, transaction: transaction) {
+
+        // TODO: `displayName` is a performance bottleneck. Its slowness is ultimately
+        // due to fetching SignalAccounts from the SignalAccountReadCache. The role of
+        // read caches in the app is being revisited and may solve this problem.
+        var nameStrings: Set<String> = [contactsManager.displayName(for: recipientAddress, transaction: tx)]
+        if let nameComponents = contactsManager.nameComponents(for: recipientAddress, transaction: tx) {
             let insert: (String?) -> Void = { if let s = $0 { nameStrings.insert(s) } }
             insert(nameComponents.givenName)
             insert(nameComponents.familyName)
             insert(nameComponents.nickname)
         }
+        return contactIndexStrings(nameStrings: nameStrings, recipientAddress: recipientAddress, transaction: tx)
+    }
 
+    private static func contactIndexStrings(nameStrings: Set<String>, recipientAddress: SignalServiceAddress, transaction: SDSAnyReadTransaction) -> String {
         let nationalNumber: String? = { (recipientId: String?) -> String? in
             guard let recipientId = recipientId else { return nil }
 
@@ -645,7 +689,7 @@ class AnySearchIndexer: Dependencies {
                 return ""
             }
 
-            guard let digitScalars = phoneNumber.nationalNumber?.unicodeScalars.filter({ CharacterSet.decimalDigits.contains($0) }) else {
+            guard let digitScalars = phoneNumber.nationalNumberFormatted?.unicodeScalars.filter({ CharacterSet.decimalDigits.contains($0) }) else {
                 owsFailDebug("unexpected unparsable recipientId: \(recipientId)")
                 return ""
             }
@@ -687,7 +731,7 @@ class AnySearchIndexer: Dependencies {
             }
             return self.messageIndexer.index(message, transaction: transaction)
         } else if let signalAccount = object as? SignalAccount {
-            return self.recipientIndexer.index(signalAccount.recipientAddress, transaction: transaction)
+            return self.accountIndexer.index(signalAccount, transaction: transaction)
         } else if let signalRecipient = object as? SignalRecipient {
             return self.recipientIndexer.index(signalRecipient.address, transaction: transaction)
         } else {

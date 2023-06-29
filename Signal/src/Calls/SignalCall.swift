@@ -3,10 +3,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
+import SignalMessaging
 import SignalRingRTC
 import SignalServiceKit
-import SignalMessaging
+import SignalUI
 
 // All Observer methods will be invoked from the main thread.
 public protocol CallObserver: AnyObject {
@@ -65,7 +65,6 @@ public class SignalCall: NSObject, CallManagerCallReference {
         case removed
     }
 
-    @objc
     var isGroupCall: Bool {
         switch mode {
         case .group: return true
@@ -90,7 +89,6 @@ public class SignalCall: NSObject, CallManagerCallReference {
         }
     }
 
-    @objc
     var individualCall: IndividualCall! {
         owsAssertDebug(isIndividualCall)
         guard case .individual(let call) = mode else {

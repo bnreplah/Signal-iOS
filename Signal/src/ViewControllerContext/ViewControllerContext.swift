@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
+import SignalServiceKit
 
 /// Container for manager (business logic) objects that view controllers (or, better yet,
 /// view models) interact with to query data and apply updates.
@@ -18,19 +18,22 @@ public class ViewControllerContext {
 
     public let db: DB
 
-    public let keyBackupService: KeyBackupServiceProtocol
+    public let svr: SecureValueRecovery
+    public let schedulers: Schedulers
 
     public let usernameLookupManager: UsernameLookupManager
     public let usernameEducationManager: UsernameEducationManager
 
     public init(
         db: DB,
-        keyBackupService: KeyBackupServiceProtocol,
+        svr: SecureValueRecovery,
+        schedulers: Schedulers,
         usernameLookupManager: UsernameLookupManager,
         usernameEducationManager: UsernameEducationManager
     ) {
         self.db = db
-        self.keyBackupService = keyBackupService
+        self.svr = svr
+        self.schedulers = schedulers
         self.usernameLookupManager = usernameLookupManager
         self.usernameEducationManager = usernameEducationManager
     }
@@ -46,7 +49,8 @@ public class ViewControllerContext {
 
         return ViewControllerContext(
             db: bridge.db,
-            keyBackupService: bridge.keyBackupService,
+            svr: bridge.svr,
+            schedulers: bridge.schedulers,
             usernameLookupManager: bridge.usernameLookupManager,
             usernameEducationManager: bridge.usernameEducationManager
         )

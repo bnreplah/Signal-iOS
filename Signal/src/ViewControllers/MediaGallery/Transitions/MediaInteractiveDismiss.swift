@@ -3,8 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
-import SignalCoreKit
+import SignalServiceKit
 import SignalUI
 
 protocol InteractivelyDismissableViewController: UIViewController {
@@ -16,24 +15,9 @@ protocol InteractiveDismissDelegate: AnyObject {
     func interactiveDismiss(_ interactiveDismiss: UIPercentDrivenInteractiveTransition,
                             didChangeProgress: CGFloat,
                             touchOffset: CGPoint)
-    func interactiveDismissDidFinish(_ interactiveDismiss: UIPercentDrivenInteractiveTransition)
-    func interactiveDismissDidCancel(_ interactiveDismiss: UIPercentDrivenInteractiveTransition)
-}
-
-extension InteractiveDismissDelegate {
-    func interactiveDismissDidBegin(_ interactiveDismiss: UIPercentDrivenInteractiveTransition) {
-
-    }
     func interactiveDismiss(_ interactiveDismiss: UIPercentDrivenInteractiveTransition,
-                            didChangeProgress: CGFloat,
-                            touchOffset: CGPoint
-    ) { }
-    func interactiveDismissDidFinish(_ interactiveDismiss: UIPercentDrivenInteractiveTransition) {
-
-    }
-    func interactiveDismissDidCancel(_ interactiveDismiss: UIPercentDrivenInteractiveTransition) {
-
-    }
+                            didFinishWithVelocity: CGVector?)
+    func interactiveDismissDidCancel(_ interactiveDismiss: UIPercentDrivenInteractiveTransition)
 }
 
 class MediaInteractiveDismiss: UIPercentDrivenInteractiveTransition {
@@ -58,21 +42,20 @@ class MediaInteractiveDismiss: UIPercentDrivenInteractiveTransition {
 
     // MARK: - Private
 
-    private var fastEnoughToCompleteTransition = false
-    private var farEnoughToCompleteTransition = false
+    private static let distanceToCompletion: CGFloat = 88
 
-    private var shouldCompleteTransition: Bool {
-        if farEnoughToCompleteTransition {
-            Logger.verbose("farEnoughToCompleteTransition")
-            return true
+    // Copy-pasted from SDK documentation.
+    private func initialAnimationVelocity(for gestureVelocity: CGPoint, from currentPosition: CGPoint, to finalPosition: CGPoint) -> CGVector {
+        var animationVelocity = CGVector.zero
+        let xDistance = finalPosition.x - currentPosition.x
+        let yDistance = finalPosition.y - currentPosition.y
+        if xDistance != 0 {
+            animationVelocity.dx = gestureVelocity.x / xDistance
         }
-
-        if fastEnoughToCompleteTransition {
-            Logger.verbose("fastEnoughToCompleteTransition")
-            return true
+        if yDistance != 0 {
+            animationVelocity.dy = gestureVelocity.y / yDistance
         }
-
-        return false
+        return animationVelocity
     }
 
     @objc
@@ -86,49 +69,55 @@ class MediaInteractiveDismiss: UIPercentDrivenInteractiveTransition {
             gestureRecognizer.setTranslation(.zero, in: coordinateSpace)
         }
 
-        let distanceToCompletion: CGFloat = 88
-        let velocityThreshold: CGFloat = 500
-
         switch gestureRecognizer.state {
         case .began:
             interactionInProgress = true
             targetViewController?.performInteractiveDismissal(animated: true)
 
         case .changed:
-            let velocity = abs(gestureRecognizer.velocity(in: coordinateSpace).y)
-            if velocity > velocityThreshold {
-                fastEnoughToCompleteTransition = true
-            }
-
             let offset = gestureRecognizer.translation(in: coordinateSpace)
-            let progress = CGFloatClamp01(offset.length / distanceToCompletion)
-            // `farEnoughToCompleteTransition` is cancelable if the user reverses direction
-            farEnoughToCompleteTransition = progress == 1
-
+            let progress = CGFloatClamp01(offset.length / Self.distanceToCompletion)
             update(progress)
 
             interactiveDismissDelegate?.interactiveDismiss(self, didChangeProgress: progress, touchOffset: offset)
 
         case .cancelled:
-            interactiveDismissDelegate?.interactiveDismissDidFinish(self)
             cancel()
+            interactiveDismissDelegate?.interactiveDismissDidCancel(self)
 
             interactionInProgress = false
-            farEnoughToCompleteTransition = false
-            fastEnoughToCompleteTransition = false
+
+            targetViewController?.setNeedsStatusBarAppearanceUpdate()
 
         case .ended:
-            if shouldCompleteTransition {
+            let finishTransition = percentComplete == 1
+            if finishTransition {
                 finish()
             } else {
                 cancel()
             }
 
-            interactiveDismissDelegate?.interactiveDismissDidFinish(self)
+            let gestureVelocity = gestureRecognizer.velocity(in: coordinateSpace)
+            let animationVelocity = initialAnimationVelocity(
+                for: gestureVelocity,
+                from: .zero,
+                to: gestureRecognizer.translation(in: coordinateSpace)
+            )
+            // Call `interactiveDismiss(_:, didFinishWithVelocity:) even when transition is canceled
+            // to restore initial state with a proper spring animation.
+            interactiveDismissDelegate?.interactiveDismiss(self, didFinishWithVelocity: animationVelocity)
+
+            // This logic is necessary to ensure correct status bar state
+            // both when transition is finished or canceled.
+            if finishTransition {
+                targetViewController?.setNeedsStatusBarAppearanceUpdate()
+            }
 
             interactionInProgress = false
-            farEnoughToCompleteTransition = false
-            fastEnoughToCompleteTransition = false
+
+            if !finishTransition {
+                targetViewController?.setNeedsStatusBarAppearanceUpdate()
+            }
 
         default:
             break

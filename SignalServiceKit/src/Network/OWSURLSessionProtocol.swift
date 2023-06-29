@@ -174,7 +174,6 @@ public protocol OWSURLSessionProtocol: AnyObject, Dependencies {
         progress progressBlock: ProgressBlock?
     ) -> Promise<OWSUrlDownloadResponse>
 
-    @available(iOS 13, *)
     func webSocketTask(
         requestUrl: URL,
         didOpenBlock: @escaping (String?) -> Void,
@@ -268,13 +267,14 @@ public extension OWSURLSessionProtocol {
     }
 
     func dataTaskPromise(
+        on scheduler: Scheduler = DispatchQueue.global(),
         _ urlString: String,
         method: HTTPMethod,
         headers: [String: String]? = nil,
         body: Data? = nil,
         ignoreAppExpiry: Bool = false
     ) -> Promise<HTTPResponse> {
-        firstly(on: DispatchQueue.global()) { () -> Promise<HTTPResponse> in
+        firstly(on: scheduler) { () -> Promise<HTTPResponse> in
             let request = try self.endpoint.buildRequest(urlString, method: method, headers: headers, body: body)
             return self.dataTaskPromise(request: request, ignoreAppExpiry: ignoreAppExpiry)
         }
@@ -298,13 +298,14 @@ public extension OWSURLSessionProtocol {
     }
 
     func downloadTaskPromise(
+        on scheduler: Scheduler = DispatchQueue.global(),
         _ urlString: String,
         method: HTTPMethod,
         headers: [String: String]? = nil,
         body: Data? = nil,
         progress progressBlock: ProgressBlock? = nil
     ) -> Promise<OWSUrlDownloadResponse> {
-        firstly(on: DispatchQueue.global()) { () -> Promise<OWSUrlDownloadResponse> in
+        firstly(on: scheduler) { () -> Promise<OWSUrlDownloadResponse> in
             let request = try self.endpoint.buildRequest(urlString, method: method, headers: headers, body: body)
             return self.downloadTaskPromise(request: request, progress: progressBlock)
         }

@@ -6,12 +6,7 @@
 import SignalMessaging
 import SignalServiceKit
 
-@objc(OWSSyncPushTokensJob)
 class SyncPushTokensJob: NSObject {
-
-    @objc
-    public static let PushTokensDidChange = Notification.Name("PushTokensDidChange")
-
     enum Mode {
         case normal
         case forceUpload
@@ -21,13 +16,11 @@ class SyncPushTokensJob: NSObject {
 
     private let mode: Mode
 
-    // If these are set, they will be set on the request
-    // to the signal server. Otherwise gloabl values will be used.
-    public var authUsername: String?
-    public var authPassword: String?
+    public let auth: ChatServiceAuth
 
-    required init(mode: Mode) {
+    required init(mode: Mode, auth: ChatServiceAuth = .implicit()) {
         self.mode = mode
+        self.auth = auth
     }
 
     private static let hasUploadedTokensOnce = AtomicBool(false)
@@ -77,13 +70,13 @@ class SyncPushTokensJob: NSObject {
 
             var shouldUploadTokens = false
 
-            if self.preferences.getPushToken() != pushToken || self.preferences.getVoipToken() != voipToken {
+            if self.preferences.pushToken != pushToken || self.preferences.voipToken != voipToken {
                 Logger.info("Push tokens changed.")
                 shouldUploadTokens = true
             } else if self.mode == .forceUpload {
                 Logger.info("Forced uploading, even though tokens didn't change.")
                 shouldUploadTokens = true
-            } else if Self.appVersion.lastAppVersion != Self.appVersion.currentAppReleaseVersion {
+            } else if AppVersion.shared.lastAppVersion != AppVersion.shared.currentAppReleaseVersion {
                 Logger.info("Uploading due to fresh install or app upgrade.")
                 shouldUploadTokens = true
             } else if !Self.hasUploadedTokensOnce.get() {
@@ -98,14 +91,14 @@ class SyncPushTokensJob: NSObject {
 
             Logger.warn("uploading tokens to account servers. pushToken: \(redact(pushToken)), voipToken: \(redact(voipToken))")
             return firstly {
-                if let authUsername = self.authUsername, let authPassword = self.authPassword {
+                switch self.auth.credentials {
+                case .implicit:
+                    return self.accountManager.updatePushTokens(pushToken: pushToken, voipToken: voipToken)
+                case .explicit:
                     let request = OWSRequestFactory.registerForPushRequest(withPushIdentifier: pushToken, voipIdentifier: voipToken)
                     request.shouldHaveAuthorizationHeaders = true
-                    request.authUsername = authUsername
-                    request.authPassword = authPassword
+                    request.setAuth(self.auth)
                     return self.accountManager.updatePushTokens(request: request)
-                } else {
-                    return self.accountManager.updatePushTokens(pushToken: pushToken, voipToken: voipToken)
                 }
             }.done(on: DispatchQueue.global()) { _ in
                 self.recordPushTokensLocally(pushToken: pushToken, voipToken: voipToken)
@@ -117,14 +110,7 @@ class SyncPushTokensJob: NSObject {
         }
     }
 
-    // MARK: - objc wrappers, since objc can't use swift parameterized types
-
-    @objc
-    class func run() {
-        run(mode: .normal)
-    }
-
-    class func run(mode: Mode) {
+    class func run(mode: Mode = .normal) {
         firstly {
             SyncPushTokensJob(mode: mode).run()
         }.done(on: DispatchQueue.global()) {
@@ -140,28 +126,20 @@ class SyncPushTokensJob: NSObject {
         assert(!Thread.isMainThread)
         Logger.warn("Recording push tokens locally. pushToken: \(redact(pushToken)), voipToken: \(redact(voipToken))")
 
-        var didTokensChange = false
-
-        if pushToken != self.preferences.getPushToken() {
+        if pushToken != preferences.pushToken {
             Logger.info("Recording new plain push token")
-            self.preferences.setPushToken(pushToken)
-            didTokensChange = true
+            preferences.setPushToken(pushToken)
 
             // Tokens should now be aligned with stored tokens.
-            owsAssertDebug(pushToken == self.preferences.getPushToken())
+            owsAssertDebug(pushToken == preferences.pushToken)
         }
 
-        if voipToken != self.preferences.getVoipToken() {
+        if voipToken != preferences.voipToken {
             Logger.info("Recording new voip token")
-            self.preferences.setVoipToken(voipToken)
-            didTokensChange = true
+            preferences.setVoipToken(voipToken)
 
             // Tokens should now be aligned with stored tokens.
-            owsAssertDebug(voipToken == self.preferences.getVoipToken())
-        }
-
-        if didTokensChange {
-            NotificationCenter.default.postNotificationNameAsync(SyncPushTokensJob.PushTokensDidChange, object: nil)
+            owsAssertDebug(voipToken == preferences.voipToken)
         }
     }
 }

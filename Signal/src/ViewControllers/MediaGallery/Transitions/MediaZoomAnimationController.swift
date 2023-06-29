@@ -20,7 +20,7 @@ class MediaZoomAnimationController: NSObject {
 
 extension MediaZoomAnimationController: UIViewControllerAnimatedTransitioning {
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return kIsDebuggingMediaPresentationAnimations ? 1.5 : 0.25
+        return kIsDebuggingMediaPresentationAnimations ? 2.5 : 0.25
     }
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
@@ -104,13 +104,22 @@ extension MediaZoomAnimationController: UIViewControllerAnimatedTransitioning {
             return
         }
 
-        let transitionView = UIImageView(image: presentationImage)
+        let clippingView = UIView(frame: containerView.bounds)
+        clippingView.clipsToBounds = true
+        if let clippingAreaInsets = fromMediaContext.clippingAreaInsets, clippingAreaInsets.isNonEmpty {
+            let maskLayer = CALayer()
+            maskLayer.frame = clippingView.layer.bounds.inset(by: clippingAreaInsets)
+            maskLayer.backgroundColor = UIColor.black.cgColor
+            clippingView.layer.mask = maskLayer
+        }
+        containerView.addSubview(clippingView)
+
+        let transitionView = MediaTransitionImageView(image: presentationImage)
         transitionView.contentMode = .scaleAspectFill
         transitionView.layer.masksToBounds = true
-        transitionView.layer.cornerRadius = fromMediaContext.cornerRadius
-
-        containerView.addSubview(transitionView)
+        transitionView.shape = fromMediaContext.mediaViewShape
         transitionView.frame = fromMediaContext.presentationFrame
+        clippingView.addSubview(transitionView)
 
         let fromTransitionalOverlayView: UIView?
         if let (overlayView, overlayViewFrame) = fromContextProvider.snapshotOverlayView(in: containerView) {
@@ -147,13 +156,21 @@ extension MediaZoomAnimationController: UIViewControllerAnimatedTransitioning {
             fromTransitionalOverlayView?.alpha = 0.0
             toView.alpha = 1.0
             toTransitionalOverlayView?.alpha = 1.0
+            transitionView.shape = toMediaContext.mediaViewShape
             transitionView.frame = toMediaContext.presentationFrame
-            transitionView.layer.cornerRadius = toMediaContext.cornerRadius
+
+            if let clippingAreaInsets = toMediaContext.clippingAreaInsets, clippingAreaInsets.isNonEmpty {
+                let maskLayer = CALayer()
+                maskLayer.frame = clippingView.layer.bounds.inset(by: clippingAreaInsets)
+                maskLayer.backgroundColor = UIColor.black.cgColor
+                clippingView.layer.mask = maskLayer
+            }
         }
         animator.addCompletion { _ in
             fromContextProvider.mediaDidPresent(fromContext: fromMediaContext)
             toContextProvider.mediaDidPresent(toContext: toMediaContext)
-            transitionView.removeFromSuperview()
+
+            clippingView.removeFromSuperview()
             fromTransitionalOverlayView?.removeFromSuperview()
             toTransitionalOverlayView?.removeFromSuperview()
 

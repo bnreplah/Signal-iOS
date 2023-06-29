@@ -7,6 +7,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class ChatServiceAuth;
 @class SDSAnyWriteTransaction;
 
 typedef NS_CLOSED_ENUM(uint8_t, OWSIdentity);
@@ -20,10 +21,18 @@ typedef NS_CLOSED_ENUM(uint8_t, OWSIdentity);
 // This should only be called from the TSPreKeyManager.operationQueue
 + (void)refreshPreKeysDidSucceed;
 
+#pragma mark -
+
+@property (class, nonatomic, readonly) NSOperationQueue *operationQueue;
+
 #pragma mark - Check/Request Initiation
 
 + (void)rotateSignedPreKeysWithSuccess:(void (^)(void))successHandler failure:(void (^)(NSError *error))failureHandler;
 
++ (void)createPreKeysWithAuth:(ChatServiceAuth *)auth
+                      success:(void (^)(void))successHandler
+                      failure:(void (^)(NSError *error))failureHandler;
+/// Uses implicit auth.
 + (void)createPreKeysWithSuccess:(void (^)(void))successHandler failure:(void (^)(NSError *error))failureHandler;
 
 + (void)createPreKeysForIdentity:(OWSIdentity)identity

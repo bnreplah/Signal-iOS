@@ -112,15 +112,19 @@ extension ConversationViewController {
         let shortName = self.databaseStorage.read { transaction in
             self.contactsManager.shortDisplayName(for: authorAddress, transaction: transaction)
         }
-        return BadgeThanksSheet(badge: profileBadge, type: .gift(
-            shortName: shortName,
-            notNowAction: { [weak self] in self?.showRedeemBadgeLaterText() },
-            incomingMessage: incomingMessage
-        ))
+        return BadgeThanksSheet(
+            newBadge: profileBadge,
+            newBadgeType: .gift(
+                shortName: shortName,
+                notNowAction: { [weak self] in self?.showRedeemBadgeLaterText() },
+                incomingMessage: incomingMessage
+            ),
+            oldBadgesSnapshot: BadgeThanksSheet.currentProfileBadgesSnapshot()
+        )
     }
 
     private func showRedeemBadgeLaterText() {
-        let text = NSLocalizedString(
+        let text = OWSLocalizedString(
             "DONATION_ON_BEHALF_OF_A_FRIEND_REDEEM_BADGE_LATER",
             comment: "When you receive a badge as a result of a donation from a friend, a screen is shown. This toast is shown when dismissing that screen if you do not redeem the badge."
         )

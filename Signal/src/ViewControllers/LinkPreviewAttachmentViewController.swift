@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
+import SignalServiceKit
 import SignalUI
-import UIKit
 
 protocol LinkPreviewAttachmentViewControllerDelegate: AnyObject {
     func linkPreviewAttachmentViewController(_ viewController: LinkPreviewAttachmentViewController,
@@ -38,13 +38,13 @@ class LinkPreviewAttachmentViewController: InteractiveSheetViewController {
         let textField = UITextField()
         textField.autocapitalizationType = .none
         textField.autocorrectionType = .no
-        textField.font = .ows_dynamicTypeBodyClamped
+        textField.font = .dynamicTypeBodyClamped
         textField.keyboardAppearance = .dark
         textField.keyboardType = .URL
         textField.textColor = .ows_gray05
         textField.textContentType = .URL
         textField.attributedPlaceholder = NSAttributedString(
-            string: NSLocalizedString("STORY_COMPOSER_URL_FIELD_PLACEHOLDER",
+            string: OWSLocalizedString("STORY_COMPOSER_URL_FIELD_PLACEHOLDER",
                                       comment: "Placeholder text for URL input field in Text Story composer UI."),
             attributes: [ .foregroundColor: UIColor.ows_gray25 ])
         textField.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
@@ -54,12 +54,11 @@ class LinkPreviewAttachmentViewController: InteractiveSheetViewController {
         let view = PillView()
         view.backgroundColor = .ows_gray80
         view.addSubview(textField)
-        textField.autoPinEdgesToSuperviewEdges(withInsets: UIEdgeInsets(hMargin: 16, vMargin: 7))
+        textField.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(hMargin: 16, vMargin: 7))
         return view
     }()
     private let doneButton: UIButton = {
-        let button = RoundMediaButton(image: UIImage(imageLiteralResourceName: "check-24"),
-                                      backgroundStyle: .solid(.ows_accentBlue))
+        let button = RoundMediaButton(image: Theme.iconImage(.checkmark), backgroundStyle: .solid(.ows_accentBlue))
         button.layoutMargins = .zero
         button.contentEdgeInsets = UIEdgeInsets(margin: 10)
         button.layoutMargins = UIEdgeInsets(margin: 4)
@@ -188,14 +187,11 @@ class LinkPreviewAttachmentViewController: InteractiveSheetViewController {
             let rawAnimationCurve = userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? Int,
             let animationCurve = UIView.AnimationCurve(rawValue: rawAnimationCurve)
         {
-            UIView.beginAnimations("sheetResize", context: nil)
-            UIView.setAnimationBeginsFromCurrentState(true)
-            UIView.setAnimationCurve(animationCurve)
-            UIView.setAnimationDuration(animationDuration)
-            layoutUpdateBlock()
-            view.setNeedsLayout()
-            view.layoutIfNeeded()
-            UIView.commitAnimations()
+            UIView.animate(withDuration: animationDuration, delay: 0, options: animationCurve.asAnimationOptions) { [self] in
+                layoutUpdateBlock()
+                view.setNeedsLayout()
+                view.layoutIfNeeded()
+            }
         } else {
             UIView.performWithoutAnimation {
                 layoutUpdateBlock()
@@ -267,17 +263,17 @@ class LinkPreviewAttachmentViewController: InteractiveSheetViewController {
         // MARK: - Layout
 
         private lazy var placeholderView: UIView = {
-            let icon = UIImageView(image: UIImage(imageLiteralResourceName: "link-diagonal"))
+            let icon = UIImageView(image: UIImage(imageLiteralResourceName: "link"))
             icon.tintColor = .ows_gray45
             icon.setContentHuggingHigh()
 
             let label = UILabel()
-            label.font = .ows_dynamicTypeBody2Clamped
+            label.font = .dynamicTypeBody2Clamped
             label.lineBreakMode = .byWordWrapping
             label.numberOfLines = 0
             label.textAlignment = .center
             label.textColor = .ows_gray45
-            label.text = NSLocalizedString("STORY_COMPOSER_LINK_PREVIEW_PLACEHOLDER",
+            label.text = OWSLocalizedString("STORY_COMPOSER_LINK_PREVIEW_PLACEHOLDER",
                                            comment: "Displayed in text story composer when user is about to attach a link with preview")
 
             let stackView = UIStackView(arrangedSubviews: [ icon, label ])
@@ -287,7 +283,7 @@ class LinkPreviewAttachmentViewController: InteractiveSheetViewController {
             return stackView
         }()
 
-        private lazy var activityIndicatorView = UIActivityIndicatorView(style: .whiteLarge)
+        private lazy var activityIndicatorView = UIActivityIndicatorView(style: .large)
         private lazy var loadingView: UIView = {
             let view = UIView()
             view.addSubview(activityIndicatorView)
@@ -298,17 +294,17 @@ class LinkPreviewAttachmentViewController: InteractiveSheetViewController {
         private var linkPreviewView: TextAttachmentView.LinkPreviewView?
 
         private lazy var errorView: UIView = {
-            let exclamationMark = UIImageView(image: UIImage(imageLiteralResourceName: "error-outline-24"))
+            let exclamationMark = UIImageView(image: UIImage(imageLiteralResourceName: "error-circle"))
             exclamationMark.tintColor = .ows_gray15
             exclamationMark.setContentHuggingHigh()
 
             let label = UILabel()
-            label.font = .ows_dynamicTypeBody2Clamped
+            label.font = .dynamicTypeBody2Clamped
             label.lineBreakMode = .byWordWrapping
             label.numberOfLines = 0
             label.textAlignment = .center
             label.textColor = .ows_gray05
-            label.text = NSLocalizedString("STORY_COMPOSER_LINK_PREVIEW_ERROR",
+            label.text = OWSLocalizedString("STORY_COMPOSER_LINK_PREVIEW_ERROR",
                                            comment: "Displayed when failed to fetch link preview in Text Story composer.")
 
             let stackView = UIStackView(arrangedSubviews: [ exclamationMark, label ])

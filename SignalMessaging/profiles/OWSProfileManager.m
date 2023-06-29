@@ -4,7 +4,6 @@
 //
 
 #import "OWSProfileManager.h"
-#import "Environment.h"
 #import <SignalCoreKit/Cryptography.h>
 #import <SignalCoreKit/NSData+OWS.h>
 #import <SignalCoreKit/NSDate+OWS.h>
@@ -20,7 +19,6 @@
 #import <SignalServiceKit/OWSProfileKeyMessage.h>
 #import <SignalServiceKit/OWSUpload.h>
 #import <SignalServiceKit/OWSUserProfile.h>
-#import <SignalServiceKit/SSKEnvironment.h>
 #import <SignalServiceKit/SignalServiceKit-Swift.h>
 #import <SignalServiceKit/TSAccountManager.h>
 #import <SignalServiceKit/TSGroupThread.h>
@@ -113,14 +111,14 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
         if (CurrentAppContext().isMainApp && !CurrentAppContext().isRunningTests
             && TSAccountManager.shared.isRegistered) {
             [self logLocalAvatarStatus];
-            [self fetchLocalUsersProfile];
+            [self fetchLocalUsersProfileWithAuthedAccount:AuthedAccount.implicit];
         }
     });
 
     AppReadinessRunNowOrWhenAppDidBecomeReadyAsync(^{
         if (TSAccountManager.shared.isRegistered) {
             [self rotateLocalProfileKeyIfNecessary];
-            [self updateProfileOnServiceIfNecessary];
+            [self updateProfileOnServiceIfNecessaryWithAuthedAccount:AuthedAccount.implicit];
             [OWSProfileManager updateStorageServiceIfNecessary];
         }
     });
@@ -216,12 +214,12 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
 {
     // Since localUserProfile can create a transaction, we want to make sure it's not called for the first
     // time unexpectedly (e.g. in a nested transaction.)
-    __unused OWSUserProfile *profile = [self localUserProfile];
+    __unused OWSUserProfile *profile = [self localUserProfileWithAuthedAccount:AuthedAccount.implicit];
 }
 
 #pragma mark - Local Profile
 
-- (OWSUserProfile *)localUserProfile
+- (OWSUserProfile *)localUserProfileWithAuthedAccount:(AuthedAccount *)authedAccount
 {
     OWSAssertDebug(GRDBSchemaMigrator.areMigrationsComplete);
     @synchronized(self) {
@@ -248,6 +246,7 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
 
     DatabaseStorageWrite(self.databaseStorage, ^(SDSAnyWriteTransaction *transaction) {
         localUserProfile = [OWSUserProfile getOrBuildUserProfileForAddress:OWSUserProfile.localProfileAddress
+                                                             authedAccount:authedAccount
                                                                transaction:transaction];
     });
 
@@ -346,12 +345,17 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
     return self.localUserProfile.profileBadgeInfo;
 }
 
+- (BOOL)localProfileIsPniCapable
+{
+    return self.localUserProfile.isPniCapable;
+}
+
 - (OWSProfileSnapshot *)localProfileSnapshotWithShouldIncludeAvatar:(BOOL)shouldIncludeAvatar
 {
     return [self profileSnapshotForUserProfile:self.localUserProfile shouldIncludeAvatar:shouldIncludeAvatar];
 }
 
-#ifdef DEBUG
+#ifdef USE_DEBUG_UI
 - (void)logLocalProfile
 {
     OWSLogVerbose(@"Local profile: %@", self.localUserProfile.dictionaryValue);
@@ -419,34 +423,44 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
     return data;
 }
 
-- (void)fetchLocalUsersProfile
+- (void)fetchLocalUsersProfileWithAuthedAccount:(AuthedAccount *)authedAccount
 {
-    SignalServiceAddress *_Nullable localAddress = self.tsAccountManager.localAddress;
+
+    SignalServiceAddress *_Nullable localAddress;
+    SignalServiceAddress *authAddress = [authedAccount localUserAddress];
+    if (authAddress != nil) {
+        localAddress = authAddress;
+    } else {
+        localAddress = self.tsAccountManager.localAddress;
+    }
     if (!localAddress.isValid) {
         return;
     }
-    [self fetchProfileForAddress:localAddress];
+    [self fetchProfileForAddress:localAddress authedAccount:authedAccount];
 }
 
-- (void)fetchProfileForAddress:(SignalServiceAddress *)address
+- (void)fetchProfileForAddress:(SignalServiceAddress *)address authedAccount:(AuthedAccount *)authedAccount
 {
-    [ProfileFetcherJob fetchProfileWithAddress:address ignoreThrottling:YES];
+    [ProfileFetcherJob fetchProfileWithAddress:address ignoreThrottling:YES authedAccount:authedAccount];
 }
 
-- (AnyPromise *)fetchLocalUsersProfilePromise
+- (AnyPromise *)fetchLocalUsersProfilePromiseWithAuthedAccount:(AuthedAccount *)authedAccount
 {
     SignalServiceAddress *_Nullable localAddress = self.tsAccountManager.localAddress;
     if (!localAddress.isValid) {
         return [AnyPromise promiseWithError:OWSErrorMakeAssertionError(@"Missing local address.")];
     }
-    return [ProfileFetcherJob fetchProfilePromiseObjcWithAddress:localAddress mainAppOnly:NO ignoreThrottling:YES];
+    return [ProfileFetcherJob fetchProfilePromiseObjcWithAddress:localAddress
+                                                     mainAppOnly:NO
+                                                ignoreThrottling:YES
+                                                   authedAccount:authedAccount];
 }
 
-- (void)reuploadLocalProfile
+- (void)reuploadLocalProfileWithAuthedAccount:(AuthedAccount *)authedAccount
 {
-    [self reuploadLocalProfilePromise].done(^(id value) { OWSLogInfo(@"Done."); }).catch(^(NSError *error) {
-        OWSFailDebugUnlessNetworkFailure(error);
-    });
+    [self reuploadLocalProfilePromiseWithAuthedAccount:authedAccount]
+        .done(^(id value) { OWSLogInfo(@"Done."); })
+        .catch(^(NSError *error) { OWSFailDebugUnlessNetworkFailure(error); });
 }
 
 #pragma mark - Profile Key Rotation
@@ -520,7 +534,8 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
 
         [self rotateProfileKeyWithIntersectingPhoneNumbers:victimPhoneNumbers
                                          intersectingUUIDs:victimUUIDs
-                                      intersectingGroupIds:victimGroupIds]
+                                      intersectingGroupIds:victimGroupIds
+                                             authedAccount:AuthedAccount.implicit]
             .done(^(id value) { success(); })
             .catch(^(NSError *error) { failure(error); });
     });
@@ -592,6 +607,7 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
     DatabaseStorageWrite(self.databaseStorage, ^(SDSAnyWriteTransaction *transaction) {
         [userProfile clearWithProfileKey:[OWSAES256Key generateRandomKey]
                        userProfileWriter:UserProfileWriter_Debugging
+                           authedAccount:AuthedAccount.implicit
                              transaction:transaction
                               completion:nil];
     });
@@ -602,6 +618,7 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
 
 - (void)setLocalProfileKey:(OWSAES256Key *)key
          userProfileWriter:(UserProfileWriter)userProfileWriter
+             authedAccount:(AuthedAccount *)authedAccount
                transaction:(SDSAnyWriteTransaction *)transaction
 {
     OWSAssertDebug(GRDBSchemaMigrator.areMigrationsComplete);
@@ -615,10 +632,11 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
         if (!_localUserProfile) {
             // We assert on the ivar directly here, as we want this to be cached already
             // by the time this method is called. If it's not, we've changed our caching
-            // logic and should re-evalulate this method.
+            // logic and should re-evaluate this method.
             OWSFailDebug(@"Missing local profile when setting key.");
 
             localUserProfile = [OWSUserProfile getOrBuildUserProfileForAddress:OWSUserProfile.localProfileAddress
+                                                                 authedAccount:authedAccount
                                                                    transaction:transaction];
 
             _localUserProfile = localUserProfile;
@@ -629,6 +647,7 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
 
     [localUserProfile updateWithProfileKey:key
                          userProfileWriter:userProfileWriter
+                             authedAccount:authedAccount
                                transaction:transaction
                                 completion:nil];
 }
@@ -845,7 +864,7 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
     [transaction addSyncCompletion:^{
         // Mark the removed whitelisted addresses for update
         if (shouldUpdateStorageServiceForUserProfileWriter(userProfileWriter)) {
-            [self.storageServiceManager recordPendingUpdatesWithUpdatedAddresses:addressesToRemove.allObjects];
+            [self.storageServiceManagerObjc recordPendingUpdatesWithUpdatedAddresses:addressesToRemove.allObjects];
         }
 
         for (SignalServiceAddress *address in addressesToRemove) {
@@ -887,7 +906,7 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
     [transaction addSyncCompletion:^{
         // Mark the new whitelisted addresses for update
         if (shouldUpdateStorageServiceForUserProfileWriter(userProfileWriter)) {
-            [self.storageServiceManager recordPendingUpdatesWithUpdatedAddresses:addressesToAdd.allObjects];
+            [self.storageServiceManagerObjc recordPendingUpdatesWithUpdatedAddresses:addressesToAdd.allObjects];
         }
 
         for (SignalServiceAddress *address in addressesToAdd) {
@@ -1063,8 +1082,8 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
             OWSFailDebug(@"Missing groupThread.");
             return;
         }
-        
-        [self.storageServiceManager recordPendingUpdatesWithGroupModel:groupThread.groupModel];
+
+        [self.storageServiceManagerObjc recordPendingUpdatesWithGroupModel:groupThread.groupModel];
     }];
 }
 
@@ -1162,12 +1181,14 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
 - (void)setProfileKeyData:(NSData *)profileKeyData
                forAddress:(SignalServiceAddress *)address
         userProfileWriter:(UserProfileWriter)userProfileWriter
+            authedAccount:(AuthedAccount *)authedAccount
               transaction:(SDSAnyWriteTransaction *)transaction
 {
     [self setProfileKeyData:profileKeyData
                  forAddress:address
         onlyFillInIfMissing:NO
           userProfileWriter:userProfileWriter
+              authedAccount:authedAccount
                 transaction:transaction];
 }
 
@@ -1175,6 +1196,7 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
                forAddress:(SignalServiceAddress *)addressParam
       onlyFillInIfMissing:(BOOL)onlyFillInIfMissing
         userProfileWriter:(UserProfileWriter)userProfileWriter
+            authedAccount:(AuthedAccount *)authedAccount
               transaction:(SDSAnyWriteTransaction *)transaction
 {
     SignalServiceAddress *address = [OWSUserProfile resolveUserProfileAddress:addressParam];
@@ -1185,7 +1207,9 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
         return;
     }
 
-    OWSUserProfile *userProfile = [OWSUserProfile getOrBuildUserProfileForAddress:address transaction:transaction];
+    OWSUserProfile *userProfile = [OWSUserProfile getOrBuildUserProfileForAddress:address
+                                                                    authedAccount:authedAccount
+                                                                      transaction:transaction];
     OWSAssertDebug(userProfile);
 
     if (onlyFillInIfMissing && userProfile.profileKey != nil) {
@@ -1206,24 +1230,26 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
 
     [userProfile updateWithProfileKey:profileKey
                     userProfileWriter:userProfileWriter
+                        authedAccount:authedAccount
                           transaction:transaction
                            completion:^{
                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                    // If this is the profile for the local user, we always want to defer to local state
                                    // so skip the update profile for address call.
-                                   if ([OWSUserProfile isLocalProfileAddress:address]) {
+                                   if ([OWSUserProfile isLocalProfileAddress:address] ||
+                                       [authedAccount isAddressForLocalUser:address]) {
                                        return;
                                    }
-
                                    [self.udManager setUnidentifiedAccessMode:UnidentifiedAccessModeUnknown
                                                                      address:address];
-                                   [self fetchProfileForAddress:address];
+                                   [self fetchProfileForAddress:address authedAccount:authedAccount];
                                });
                            }];
 }
 
 - (void)fillInMissingProfileKeys:(NSDictionary<SignalServiceAddress *, NSData *> *)profileKeys
                userProfileWriter:(UserProfileWriter)userProfileWriter
+                   authedAccount:(AuthedAccount *)authedAccount
 {
     DatabaseStorageAsyncWrite(self.databaseStorage, ^(SDSAnyWriteTransaction *transaction) {
         for (SignalServiceAddress *address in profileKeys) {
@@ -1247,6 +1273,7 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
                          forAddress:address
                 onlyFillInIfMissing:YES
                   userProfileWriter:userProfileWriter
+                      authedAccount:authedAccount
                         transaction:transaction];
         }
     });
@@ -1256,15 +1283,22 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
                  familyName:(nullable NSString *)familyName
                  forAddress:(SignalServiceAddress *)addressParam
           userProfileWriter:(UserProfileWriter)userProfileWriter
+              authedAccount:(AuthedAccount *)authedAccount
                 transaction:(SDSAnyWriteTransaction *)transaction
 {
     SignalServiceAddress *address = [OWSUserProfile resolveUserProfileAddress:addressParam];
+    if ([authedAccount isAddressForLocalUser:address]) {
+        address = [OWSUserProfile localProfileAddress];
+    }
     OWSAssertDebug(address.isValid);
 
-    OWSUserProfile *userProfile = [OWSUserProfile getOrBuildUserProfileForAddress:address transaction:transaction];
+    OWSUserProfile *userProfile = [OWSUserProfile getOrBuildUserProfileForAddress:address
+                                                                    authedAccount:authedAccount
+                                                                      transaction:transaction];
     [userProfile updateWithGivenName:givenName
                           familyName:familyName
                    userProfileWriter:userProfileWriter
+                       authedAccount:authedAccount
                          transaction:transaction
                           completion:nil];
 }
@@ -1274,21 +1308,28 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
               avatarUrlPath:(nullable NSString *)avatarUrlPath
                  forAddress:(SignalServiceAddress *)addressParam
           userProfileWriter:(UserProfileWriter)userProfileWriter
+              authedAccount:(AuthedAccount *)authedAccount
                 transaction:(SDSAnyWriteTransaction *)transaction
 {
     SignalServiceAddress *address = [OWSUserProfile resolveUserProfileAddress:addressParam];
+    if ([authedAccount isAddressForLocalUser:address]) {
+        address = [OWSUserProfile localProfileAddress];
+    }
     OWSAssertDebug(address.isValid);
 
-    OWSUserProfile *userProfile = [OWSUserProfile getOrBuildUserProfileForAddress:address transaction:transaction];
+    OWSUserProfile *userProfile = [OWSUserProfile getOrBuildUserProfileForAddress:address
+                                                                    authedAccount:authedAccount
+                                                                      transaction:transaction];
     [userProfile updateWithGivenName:givenName
                           familyName:familyName
                        avatarUrlPath:avatarUrlPath
                    userProfileWriter:userProfileWriter
+                       authedAccount:authedAccount
                          transaction:transaction
                           completion:nil];
 
     if (userProfile.avatarUrlPath.length > 0 && userProfile.avatarFileName.length < 1) {
-        [self downloadAvatarForUserProfile:userProfile];
+        [self downloadAvatarForUserProfile:userProfile authedAccount:authedAccount];
     }
 }
 
@@ -1388,6 +1429,7 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
 
 - (nullable UIImage *)profileAvatarForAddress:(SignalServiceAddress *)address
                             downloadIfMissing:(BOOL)downloadIfMissing
+                                authedAccount:(AuthedAccount *)authedAccount
                                   transaction:(SDSAnyReadTransaction *)transaction
 {
     OWSAssertDebug(address.isValid);
@@ -1400,7 +1442,7 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
 
     if (downloadIfMissing && (userProfile.avatarUrlPath.length > 0)) {
         // Try to fill in missing avatar.
-        [self downloadAvatarForUserProfile:userProfile];
+        [self downloadAvatarForUserProfile:userProfile authedAccount:authedAccount];
     }
 
     return nil;
@@ -1438,6 +1480,7 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
 
 - (nullable NSString *)profileAvatarURLPathForAddress:(SignalServiceAddress *)address
                                     downloadIfMissing:(BOOL)downloadIfMissing
+                                        authedAccount:(AuthedAccount *)authedAccount
                                           transaction:(SDSAnyReadTransaction *)transaction
 {
     OWSAssertDebug(address.isValid);
@@ -1446,7 +1489,7 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
 
     if (downloadIfMissing && userProfile.avatarUrlPath.length > 0 && userProfile.avatarFileName.length == 0) {
         // Try to fill in missing avatar.
-        [self downloadAvatarForUserProfile:userProfile];
+        [self downloadAvatarForUserProfile:userProfile authedAccount:authedAccount];
     }
 
     return userProfile.avatarUrlPath;
@@ -1531,7 +1574,7 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
 // We may know a profile's avatar URL (avatarUrlPath != nil) but not
 // have downloaded the avatar data yet (avatarFileName == nil).
 // We use this method to fill in these missing avatars.
-- (void)downloadAvatarForUserProfile:(OWSUserProfile *)userProfile
+- (void)downloadAvatarForUserProfile:(OWSUserProfile *)userProfile authedAccount:(AuthedAccount *)authedAccount
 {
     OWSAssertDebug(userProfile);
 
@@ -1597,7 +1640,9 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
 
                 DatabaseStorageWrite(self.databaseStorage, ^(SDSAnyWriteTransaction *transaction) {
                     OWSUserProfile *currentUserProfile =
-                        [OWSUserProfile getOrBuildUserProfileForAddress:userProfile.address transaction:transaction];
+                        [OWSUserProfile getOrBuildUserProfileForAddress:userProfile.address
+                                                          authedAccount:authedAccount
+                                                            transaction:transaction];
 
                     if (currentUserProfile.avatarFileName.length > 0) {
                         OWSLogVerbose(@"Aborting; avatar already present.");
@@ -1610,13 +1655,15 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
                         // If the profileKey or avatarUrlPath has changed,
                         // abort and kick off a new download if necessary.
                         if (currentUserProfile.avatarFileName == nil) {
-                            [transaction
-                                addAsyncCompletionOffMain:^{ [self downloadAvatarForUserProfile:currentUserProfile]; }];
+                            [transaction addAsyncCompletionOffMain:^{
+                                [self downloadAvatarForUserProfile:currentUserProfile authedAccount:authedAccount];
+                            }];
                         }
                     }
 
                     [currentUserProfile updateWithAvatarFileName:filename
                                                userProfileWriter:UserProfileWriter_AvatarDownload
+                                                   authedAccount:authedAccount
                                                      transaction:transaction];
                 });
 
@@ -1631,16 +1678,21 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
                      familyName:(nullable NSString *)familyName
                             bio:(nullable NSString *)bio
                        bioEmoji:(nullable NSString *)bioEmoji
-               isStoriesCapable:(BOOL)isStoriesCapable
                   avatarUrlPath:(nullable NSString *)avatarUrlPath
           optionalAvatarFileUrl:(nullable NSURL *)optionalAvatarFileUrl
                   profileBadges:(nullable NSArray<OWSUserProfileBadgeInfo *> *)profileBadges
-           canReceiveGiftBadges:(BOOL)canReceiveGiftBadges
                   lastFetchDate:(NSDate *)lastFetchDate
+               isStoriesCapable:(BOOL)isStoriesCapable
+           canReceiveGiftBadges:(BOOL)canReceiveGiftBadges
+                   isPniCapable:(BOOL)isPniCapable
               userProfileWriter:(UserProfileWriter)userProfileWriter
+                  authedAccount:(AuthedAccount *)authedAccount
                     transaction:(SDSAnyWriteTransaction *)writeTx
 {
     SignalServiceAddress *address = [OWSUserProfile resolveUserProfileAddress:addressParam];
+    if ([authedAccount isAddressForLocalUser:address]) {
+        address = [OWSUserProfile localProfileAddress];
+    }
     OWSAssertDebug(address.isValid);
     OWSAssertDebug(NSThread.isMainThread == NO);
 
@@ -1656,25 +1708,31 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
         optionalAvatarFileUrl,
         NSStringForUserProfileWriter(userProfileWriter));
 
-    OWSUserProfile *userProfile = [OWSUserProfile getOrBuildUserProfileForAddress:address transaction:writeTx];
+    OWSUserProfile *userProfile = [OWSUserProfile getOrBuildUserProfileForAddress:address
+                                                                    authedAccount:authedAccount
+                                                                      transaction:writeTx];
     if (!userProfile.profileKey) {
-        [userProfile updateWithIsStoriesCapable:isStoriesCapable
-                           canReceiveGiftBadges:canReceiveGiftBadges
-                                  lastFetchDate:lastFetchDate
-                              userProfileWriter:userProfileWriter
-                                    transaction:writeTx];
+        [userProfile updateWithLastFetchDate:lastFetchDate
+                            isStoriesCapable:isStoriesCapable
+                        canReceiveGiftBadges:canReceiveGiftBadges
+                                isPniCapable:isPniCapable
+                           userProfileWriter:userProfileWriter
+                               authedAccount:authedAccount
+                                 transaction:writeTx];
     } else if (optionalAvatarFileUrl.lastPathComponent) {
         [userProfile updateWithGivenName:givenName
                               familyName:familyName
                                      bio:bio
                                 bioEmoji:bioEmoji
-                        isStoriesCapable:isStoriesCapable
                                   badges:profileBadges
-                    canReceiveGiftBadges:canReceiveGiftBadges
                            avatarUrlPath:avatarUrlPath
                           avatarFileName:optionalAvatarFileUrl.lastPathComponent
                            lastFetchDate:lastFetchDate
+                        isStoriesCapable:isStoriesCapable
+                    canReceiveGiftBadges:canReceiveGiftBadges
+                            isPniCapable:isPniCapable
                        userProfileWriter:userProfileWriter
+                           authedAccount:authedAccount
                              transaction:writeTx
                               completion:nil];
     } else {
@@ -1682,12 +1740,14 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
                               familyName:familyName
                                      bio:bio
                                 bioEmoji:bioEmoji
-                        isStoriesCapable:isStoriesCapable
                                   badges:profileBadges
-                    canReceiveGiftBadges:canReceiveGiftBadges
                            avatarUrlPath:avatarUrlPath
                            lastFetchDate:lastFetchDate
+                        isStoriesCapable:isStoriesCapable
+                    canReceiveGiftBadges:canReceiveGiftBadges
+                            isPniCapable:isPniCapable
                        userProfileWriter:userProfileWriter
+                           authedAccount:authedAccount
                              transaction:writeTx
                               completion:nil];
     }
@@ -1698,7 +1758,10 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
             OWSLogError(@"downloaded file is missing for profile: %@, userProfileWriter: %@",
                 userProfile.address,
                 NSStringForUserProfileWriter(userProfileWriter));
-            [userProfile updateWithAvatarFileName:nil userProfileWriter:userProfileWriter transaction:writeTx];
+            [userProfile updateWithAvatarFileName:nil
+                                userProfileWriter:userProfileWriter
+                                    authedAccount:authedAccount
+                                      transaction:writeTx];
         }
     }
 
@@ -1707,7 +1770,7 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
     // download this avatar. downloadAvatarForUserProfile will de-bounce
     // downloads.
     if (userProfile.avatarUrlPath.length > 0 && userProfile.avatarFileName.length < 1) {
-        [self downloadAvatarForUserProfile:userProfile];
+        [self downloadAvatarForUserProfile:userProfile authedAccount:authedAccount];
     }
 }
 
@@ -1787,22 +1850,24 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
 #pragma mark - Messaging History
 
 - (void)didSendOrReceiveMessageFromAddress:(SignalServiceAddress *)addressParam
+                             authedAccount:(AuthedAccount *)authedAccount
                                transaction:(SDSAnyWriteTransaction *)transaction
 {
-    SignalServiceAddress *address = [OWSUserProfile resolveUserProfileAddress:addressParam];
-    OWSAssertDebug(address.isValid);
-
-    if (address.isLocalAddress) {
+    if (addressParam.isLocalAddress || [authedAccount isAddressForLocalUser:addressParam]) {
         return;
     }
 
-    OWSUserProfile *userProfile = [OWSUserProfile getOrBuildUserProfileForAddress:address transaction:transaction];
+    SignalServiceAddress *address = [OWSUserProfile resolveUserProfileAddress:addressParam];
+    OWSAssertDebug(address.isValid);
+
+    OWSUserProfile *userProfile = [OWSUserProfile getOrBuildUserProfileForAddress:address
+                                                                    authedAccount:authedAccount
+                                                                      transaction:transaction];
 
     if (userProfile.lastMessagingDate != nil) {
-        // lastMessagingDate is coarse; we don't need to track
-        // every single message sent or received.  It is sufficient
-        // to update it only when the value changes by more than
-        // an hour.
+        // lastMessagingDate is coarse; we don't need to track every single message
+        // sent or received. It is sufficient to update it only when the value
+        // changes by more than an hour.
         NSTimeInterval lastMessagingInterval = fabs(userProfile.lastMessagingDate.timeIntervalSinceNow);
         const NSTimeInterval lastMessagingResolution = 1 * kHourInterval;
         if (lastMessagingInterval < lastMessagingResolution) {
@@ -1812,6 +1877,7 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
 
     [userProfile updateWithLastMessagingDate:[NSDate new]
                            userProfileWriter:UserProfileWriter_MetadataUpdate
+                               authedAccount:authedAccount
                                  transaction:transaction];
 }
 
@@ -1823,14 +1889,14 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
 
     // TODO: Sync if necessary.
 
-    [self updateProfileOnServiceIfNecessary];
+    [self updateProfileOnServiceIfNecessaryWithAuthedAccount:AuthedAccount.implicit];
 }
 
 - (void)reachabilityChanged:(NSNotification *)notification
 {
     OWSAssertIsOnMainThread();
 
-    [self updateProfileOnServiceIfNecessary];
+    [self updateProfileOnServiceIfNecessaryWithAuthedAccount:AuthedAccount.implicit];
 }
 
 - (void)blockListDidChange:(NSNotification *)notification {
@@ -1839,7 +1905,7 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
     AppReadinessRunNowOrWhenAppDidBecomeReadyAsync(^{ [self rotateLocalProfileKeyIfNecessary]; });
 }
 
-#ifdef DEBUG
+#ifdef USE_DEBUG_UI
 + (void)discardAllProfileKeysWithTransaction:(SDSAnyWriteTransaction *)transaction
 {
     NSArray<OWSUserProfile *> *userProfiles = [OWSUserProfile anyFetchAllWithTransaction:transaction];
@@ -1850,7 +1916,9 @@ static NSString *const kLastGroupProfileKeyCheckTimestampKey = @"lastGroupProfil
         if (userProfile.profileKey == nil) {
             continue;
         }
-        [userProfile discardProfileKeyWithUserProfileWriter:UserProfileWriter_Debugging transaction:transaction];
+        [userProfile discardProfileKeyWithUserProfileWriter:UserProfileWriter_Debugging
+                                              authedAccount:AuthedAccount.implicit
+                                                transaction:transaction];
     }
 }
 #endif

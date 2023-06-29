@@ -27,8 +27,7 @@ public class CallMessagePushPayload: CustomStringConvertible {
     }
 }
 
-@objc
-public class CallMessageRelay: NSObject {
+public class CallMessageRelay: Dependencies {
     private static let pendingCallMessageStore = SDSKeyValueStore(collection: "PendingCallMessageStore")
 
     public static func handleVoipPayload(_ payload: CallMessagePushPayload) {
@@ -67,7 +66,7 @@ public class CallMessageRelay: NSObject {
                     wasReceivedByUD: payload.wasReceivedByUD,
                     serverDeliveryTimestamp: adjustedDeliveryTimestamp,
                     shouldDiscardVisibleMessages: false,
-                    transaction: transaction
+                    tx: transaction
                 )
             }
         }

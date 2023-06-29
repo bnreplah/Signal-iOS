@@ -3,11 +3,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
-import UIKit
+import CoreMedia
+import SignalServiceKit
+import SignalUI
 import YYImage
 
-@objc
 class ViewOnceMessageViewController: OWSViewController {
 
     class Content {
@@ -49,7 +49,6 @@ class ViewOnceMessageViewController: OWSViewController {
 
     // MARK: -
 
-    @objc
     public class func tryToPresent(interaction: TSInteraction,
                                    from fromViewController: UIViewController) {
         AssertIsOnMainThread()
@@ -235,7 +234,7 @@ class ViewOnceMessageViewController: OWSViewController {
         mediaView.autoSetDimension(.width, toSize: controlsWidth, relation: .greaterThanOrEqual)
         mediaView.autoSetDimension(.height, toSize: controlsHeight, relation: .greaterThanOrEqual)
 
-        let dismissButton = OWSButton(imageName: "x-24", tintColor: Theme.darkThemePrimaryColor) { [weak self] in
+        let dismissButton = OWSButton(imageName: Theme.iconName(.buttonX), tintColor: Theme.darkThemePrimaryColor) { [weak self] in
             self?.dismissButtonPressed()
         }
         dismissButton.layer.shadowColor = Theme.darkThemeBackgroundColor.cgColor
@@ -312,7 +311,7 @@ class ViewOnceMessageViewController: OWSViewController {
             let videoContainer = UIView()
 
             let videoUrl = URL(fileURLWithPath: content.filePath)
-            let player = OWSVideoPlayer(url: videoUrl, shouldLoop: true)
+            let player = VideoPlayer(url: videoUrl, shouldLoop: true)
             self.videoPlayer = player
             player.delegate = self
 
@@ -324,7 +323,7 @@ class ViewOnceMessageViewController: OWSViewController {
 
             let label = UILabel()
             label.textColor = Theme.darkThemePrimaryColor
-            label.font = UIFont.ows_dynamicTypeBody.ows_monospaced
+            label.font = UIFont.dynamicTypeBody.monospaced()
             label.setShadow()
 
             videoContainer.addSubview(label)
@@ -366,7 +365,7 @@ class ViewOnceMessageViewController: OWSViewController {
     // MARK: Video
 
     var videoPlayerProgressObserver: Any?
-    var videoPlayer: OWSVideoPlayer?
+    var videoPlayer: VideoPlayer?
 
     func setupDatabaseObservation() {
         databaseStorage.appendDatabaseChangeDelegate(self)
@@ -410,7 +409,7 @@ class ViewOnceMessageViewController: OWSViewController {
     // MARK: - Events
 
     @objc
-    func applicationWillEnterForeground() throws {
+    private func applicationWillEnterForeground() throws {
         AssertIsOnMainThread()
 
         Logger.debug("")
@@ -449,8 +448,8 @@ extension ViewOnceMessageViewController: DatabaseChangeDelegate {
     }
 }
 
-extension ViewOnceMessageViewController: OWSVideoPlayerDelegate {
-    func videoPlayerDidPlayToCompletion(_ videoPlayer: OWSVideoPlayer) {
+extension ViewOnceMessageViewController: VideoPlayerDelegate {
+    func videoPlayerDidPlayToCompletion(_ videoPlayer: VideoPlayer) {
         // no-op
     }
 }

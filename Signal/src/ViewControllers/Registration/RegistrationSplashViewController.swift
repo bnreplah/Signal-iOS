@@ -3,15 +3,16 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
-import UIKit
 import SafariServices
 import SignalMessaging
+import SignalUI
 
 // MARK: - RegistrationSplashPresenter
 
 public protocol RegistrationSplashPresenter: AnyObject {
     func continueFromSplash()
+
+    func switchToDeviceLinkingMode()
 }
 
 // MARK: - RegistrationSplashViewController
@@ -51,7 +52,7 @@ public class RegistrationSplashViewController: OWSViewController {
             let modeSwitchButton = UIButton()
 
             modeSwitchButton.setTemplateImageName(
-                UIDevice.current.isIPad ? "link-24" : "link-broken-24",
+                UIDevice.current.isIPad ? "link" : "link-slash",
                 tintColor: .ows_gray25
             )
             modeSwitchButton.addTarget(self, action: #selector(didTapModeSwitch), for: .touchUpInside)
@@ -81,7 +82,7 @@ public class RegistrationSplashViewController: OWSViewController {
                     comment: "Title of the 'onboarding splash' view."
                 )
             } else {
-                return "Internal Staging Build\n\(appVersion.currentAppVersion4)"
+                return "Internal Staging Build\n\(AppVersion.shared.currentAppVersion4)"
             }
         }()
         let titleLabel = UILabel.titleLabelForRegistration(text: titleText)
@@ -96,7 +97,7 @@ public class RegistrationSplashViewController: OWSViewController {
             comment: "Link to the 'terms and privacy policy' in the 'onboarding splash' view."
         )
         explanationLabel.textColor = Theme.accentBlueColor
-        explanationLabel.font = UIFont.ows_dynamicTypeSubheadlineClamped
+        explanationLabel.font = UIFont.dynamicTypeSubheadlineClamped
         explanationLabel.numberOfLines = 0
         explanationLabel.textAlignment = .center
         explanationLabel.lineBreakMode = .byWordWrapping
@@ -126,7 +127,8 @@ public class RegistrationSplashViewController: OWSViewController {
     @objc
     private func didTapModeSwitch() {
         Logger.info("")
-        owsFail("TODO[Registration] Not implemented")
+
+        presenter?.switchToDeviceLinkingMode()
     }
 
     @objc

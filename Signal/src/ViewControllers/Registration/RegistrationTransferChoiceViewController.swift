@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
+import SignalServiceKit
+import SignalUI
 
 // MARK: - RegistrationTransferChoicePresenter
 
@@ -77,14 +78,14 @@ class RegistrationTransferChoiceViewController: OWSViewController {
         titleLabel.text = title
         titleLabel.numberOfLines = 0
         titleLabel.lineBreakMode = .byWordWrapping
-        titleLabel.font = UIFont.ows_dynamicTypeBody.ows_semibold
+        titleLabel.font = UIFont.dynamicTypeBody.semibold()
         titleLabel.textColor = Theme.primaryTextColor
 
         let bodyLabel = UILabel()
         bodyLabel.text = body
         bodyLabel.numberOfLines = 0
         bodyLabel.lineBreakMode = .byWordWrapping
-        bodyLabel.font = .ows_dynamicTypeBody2
+        bodyLabel.font = .dynamicTypeBody2
         bodyLabel.textColor = Theme.secondaryTextAndIconColor
 
         let topSpacer = UIView.vStretchingSpacer()
@@ -103,11 +104,12 @@ class RegistrationTransferChoiceViewController: OWSViewController {
 
         // Disclosure Indicator
 
-        let disclosureIconName = CurrentAppContext().isRTL ? "chevron-left-20" : "chevron-right-20"
-
         let disclosureContainer = UIView()
         let disclosureView = UIImageView()
-        disclosureView.setTemplateImageName(disclosureIconName, tintColor: Theme.secondaryTextAndIconColor)
+        disclosureView.setTemplateImage(
+            UIImage(imageLiteralResourceName: "chevron-right-20"),
+            tintColor: Theme.secondaryTextAndIconColor
+        )
         disclosureView.contentMode = .scaleAspectFit
         disclosureContainer.addSubview(disclosureView)
         disclosureView.autoPinEdgesToSuperviewEdges()
@@ -174,6 +176,8 @@ class RegistrationTransferChoiceViewController: OWSViewController {
     }
 
     private func initialRender() {
+        navigationItem.setHidesBackButton(true, animated: false)
+
         let scrollView = UIScrollView()
         view.addSubview(scrollView)
         scrollView.autoPinEdgesToSuperviewMargins()

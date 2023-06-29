@@ -10,7 +10,6 @@
 #import "OWSIncomingSentMessageTranscript.h"
 #import "OWSReceiptManager.h"
 #import "OWSUnknownProtocolVersionMessage.h"
-#import "SSKEnvironment.h"
 #import "TSAttachmentPointer.h"
 #import "TSGroupThread.h"
 #import "TSInfoMessage.h"
@@ -44,6 +43,11 @@ NS_ASSUME_NONNULL_BEGIN
     }
 
     if (transcript.isEndSessionMessage) {
+        if (!transcript.recipientAddress) {
+            OWSFailDebug(@"Missing recipient address for end session message!");
+            return;
+        }
+
         OWSLogInfo(@"EndSession was sent to recipient: %@.", transcript.recipientAddress);
         SSKSessionStore *sessionStore = [self signalProtocolStoreForIdentity:OWSIdentityACI].sessionStore;
         [sessionStore archiveAllSessionsForAddress:transcript.recipientAddress transaction:transaction];
@@ -131,11 +135,11 @@ NS_ASSUME_NONNULL_BEGIN
         return;
     }
 
-    if (!transcript.thread.isGroupV2Thread) {
-        [GroupManager remoteUpdateDisappearingMessagesWithContactOrV1GroupThread:transcript.thread
-                                                        disappearingMessageToken:transcript.disappearingMessageToken
-                                                        groupUpdateSourceAddress:localAddress
-                                                                     transaction:transaction];
+    if (!transcript.thread.isGroupThread) {
+        [GroupManager remoteUpdateDisappearingMessagesWithContactThread:transcript.thread
+                                               disappearingMessageToken:transcript.disappearingMessageToken
+                                               groupUpdateSourceAddress:localAddress
+                                                            transaction:transaction];
     }
 
     if (transcript.isExpirationTimerUpdate) {
@@ -181,10 +185,10 @@ NS_ASSUME_NONNULL_BEGIN
     }
     OWSAssertDebug(outgoingMessage.hasRenderableContent);
 
-    [outgoingMessage updateWithWasSentFromLinkedDeviceWithUDRecipientAddresses:transcript.udRecipientAddresses
-                                                       nonUdRecipientAddresses:transcript.nonUdRecipientAddresses
-                                                                  isSentUpdate:NO
-                                                                   transaction:transaction];
+    [outgoingMessage updateWithWasSentFromLinkedDeviceWithUDRecipients:transcript.udRecipients
+                                                       nonUdRecipients:transcript.nonUdRecipients
+                                                          isSentUpdate:NO
+                                                           transaction:transaction];
     // The insert and update methods above may start expiration for this message, but
     // transcript.expirationStartedAt may be earlier, so we need to pass that to
     // the OWSDisappearingMessagesJob in case it needs to back-date the expiration.
@@ -232,7 +236,7 @@ NS_ASSUME_NONNULL_BEGIN
     OWSAssertDebug(transcript);
     OWSAssertDebug(transaction);
 
-    if (transcript.udRecipientAddresses.count < 1 && transcript.nonUdRecipientAddresses.count < 1) {
+    if (transcript.udRecipients.count < 1 && transcript.nonUdRecipients.count < 1) {
         OWSFailDebug(@"Ignoring empty 'recipient update' transcript.");
         return;
     }
@@ -286,30 +290,21 @@ NS_ASSUME_NONNULL_BEGIN
             // b) It's safe to discard suspicious "sent updates."
             continue;
         }
-        TSThread *thread = [message threadWithTransaction:transaction];
-        if (!thread.isGroupThread) {
-            continue;
-        }
-        if (![((TSGroupThread *)thread).groupModel.groupId isEqual:groupId]) {
-            continue;
-        }
-
-        if (!message.isFromLinkedDevice) {
-            OWSFailDebug(@"Ignoring 'recipient update' for message which was sent locally.");
+        if (![message.uniqueThreadId isEqualToString:groupThread.uniqueId]) {
             continue;
         }
 
         OWSLogInfo(@"Processing 'recipient update' transcript in thread: %@, timestamp: %llu, nonUdRecipientIds: %d, "
                    @"udRecipientIds: %d.",
-            thread.uniqueId,
+            groupThread.uniqueId,
             timestamp,
-            (int)transcript.nonUdRecipientAddresses.count,
-            (int)transcript.udRecipientAddresses.count);
+            (int)transcript.nonUdRecipients.count,
+            (int)transcript.udRecipients.count);
 
-        [message updateWithWasSentFromLinkedDeviceWithUDRecipientAddresses:transcript.udRecipientAddresses
-                                                   nonUdRecipientAddresses:transcript.nonUdRecipientAddresses
-                                                              isSentUpdate:YES
-                                                               transaction:transaction];
+        [message updateWithWasSentFromLinkedDeviceWithUDRecipients:transcript.udRecipients
+                                                   nonUdRecipients:transcript.nonUdRecipients
+                                                      isSentUpdate:YES
+                                                       transaction:transaction];
 
         messageFound = YES;
     }

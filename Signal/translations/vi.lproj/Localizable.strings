@@ -28,7 +28,43 @@
 /* Accessibility label for a voice memo. */
 "ACCESSIBILITY_LABEL_VOICE_MEMO" = "Tin nhắn thoại";
 
-/* Label for 'audio call' button in contact view. */
+/* Users can request a report of their account data. Before they get their account export, they are warned to only share account data with trustworthy sources. This is the button on that warning, and tapping it lets users continue. */
+"ACCOUNT_DATA_REPORT_CONFIRM_EXPORT_CONFIRM_BUTTON" = "Xuất Báo cáo";
+
+/* Users can request a report of their account data. Before they get their account export, they are warned to only share account data with trustworthy sources. This is the message on that warning. */
+"ACCOUNT_DATA_REPORT_CONFIRM_EXPORT_MESSAGE" = "Chỉ chia sẻ dữ liệu tài khoản Signal của bạn với người hoặc ứng dụng bạn tin tưởng.";
+
+/* Users can request a report of their account data. If this request fails (probably because of a network connection problem), they will see an error sheet. This is the message on that error. */
+"ACCOUNT_DATA_REPORT_ERROR_MESSAGE" = "Kiểm tra kết nối của bạn và thử lại.";
+
+/* Users can request a report of their account data. If this request fails (probably because of a network connection problem), they will see an error sheet. This is the title on that error. */
+"ACCOUNT_DATA_REPORT_ERROR_TITLE" = "Không thể tạo báo cáo";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the subtitle on the button that switches to JSON mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_JSON_SUBTITLE" = "Tệp dành cho thiết bị";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the title on the button that switches to JSON mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_JSON_TITLE" = "Xuất định dạng JSON";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the subtitle on the button that switches to plain text mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_TXT_SUBTITLE" = "Tệp văn bản dễ đọc";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the title on the button that switches to plain text mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_TXT_TITLE" = "Xuất định dạng TXT";
+
+/* Users can request a report of their account data. Users tap this button to export their data. */
+"ACCOUNT_DATA_REPORT_EXPORT_REPORT_BUTTON" = "Xuất Báo cáo";
+
+/* Users can request a report of their account data. This text appears at the bottom of this screen, offering more information. */
+"ACCOUNT_DATA_REPORT_FOOTER" = "Báo cáo của bạn chỉ được tạo ra tại thời điểm bạn chọn xuất báo cáo và không được lưu bởi Signal trên thiết bị của bạn.";
+
+/* Users can request a report of their account data. This is the subtitle on the screen where they do this, giving them more information. */
+"ACCOUNT_DATA_REPORT_SUBTITLE" = "Tải xuống và xuất báo cáo về dữ liệu tài khoản Signal của bạn. Báo cáo này không bao gồm nội dung tin nhắn hay tệp đa phương tiện nào.";
+
+/* Users can request a report of their account data. This is the title on the screen where they do this. */
+"ACCOUNT_DATA_REPORT_TITLE" = "Dữ liệu Tài khoản của bạn";
+
+/* Label for 'voice call' button in contact view. */
 "ACTION_AUDIO_CALL" = "Cuộc gọi Signal";
 
 /* Label for 'invite' button in contact view. */
@@ -86,13 +122,13 @@
 "ALERT_ACTION_ACKNOWLEDGE" = "Đã cài đặt xong";
 
 /* Format string for delivery issue sheet message. Embeds {{ sender name }}. */
-"ALERT_DELIVERY_ISSUE_MESSAGE_FORMAT" = "Một tin nhắn, nhãn dán, thông tin hoặc tập tin đa phương tiện đã không gửi được cho bạn từ %1$@ trong khung chat này.";
+"ALERT_DELIVERY_ISSUE_MESSAGE_FORMAT" = "Một tin nhắn, nhãn dán, thông tin hoặc tệp đa phương tiện đã không gửi được cho bạn từ %1$@ trong cuộc trò chuyện này.";
 
 /* Title for delivery issue sheet */
 "ALERT_DELIVERY_ISSUE_TITLE" = "Vấn đề Truyền tải";
 
 /* Format string for delivery issue sheet message where the original thread is unknown. Embeds {{ sender name }}. */
-"ALERT_DELIVERY_ISSUE_UNKNOWN_THREAD_MESSAGE_FORMAT" = "Một tin nhắn, nhãn dán, thông tin hoặc tập tin đa phương tiện đã không gửi được cho bạn từ %1$@. Có thể họ đã gửi trực tiếp cho bạn hoặc gửi trong một nhóm nào đó.";
+"ALERT_DELIVERY_ISSUE_UNKNOWN_THREAD_MESSAGE_FORMAT" = "Một tin nhắn, nhãn dán, thông tin hoặc tệp đa phương tiện đã không gửi được cho bạn từ %1$@. Có thể họ đã gửi trực tiếp cho bạn hoặc gửi trong một nhóm nào đó.";
 
 /* The label for the 'discard' button in alerts and action sheets. */
 "ALERT_DISCARD_BUTTON" = "Bỏ";
@@ -115,8 +151,35 @@
 /* Label for button to learn more about message requests. */
 "ALERT_UNKNOWN_THREAD_WARNING_LEARN_MORE" = "Về Yêu cầu Nhắn tin";
 
+/* Audio file type in All Meda file type picker. */
+"ALL_MEDIA_FILE_TYPE_AUDIO" = "Âm thanh";
+
+/* Media (i.e., graphical) file type in All Meda file type picker. */
+"ALL_MEDIA_FILE_TYPE_MEDIA" = "Đa phương tiện";
+
+/* Menu option to limit All Media view to displaying only GIFs */
+"ALL_MEDIA_FILTER_GIFS" = "Ảnh GIF";
+
+/* Menu option to limit All Media view to displaying only photos */
+"ALL_MEDIA_FILTER_PHOTOS" = "Ảnh";
+
+/* Menu option to limit All Media view to displaying only videos */
+"ALL_MEDIA_FILTER_VIDEOS" = "Video";
+
+/* Menu option to show All Media items in a grid of square thumbnails */
+"ALL_MEDIA_GRID_MODE" = "Lưới";
+
+/* Menu option to show All Media items in a single-column list */
+"ALL_MEDIA_LIST_MODE" = "Danh sách";
+
 /* Label shown over thumbnails of GIFs in the All Media view */
 "ALL_MEDIA_THUMBNAIL_LABEL_GIF" = "Ảnh GIF";
+
+/* Label shown by thumbnails of images in the All Media view */
+"ALL_MEDIA_THUMBNAIL_LABEL_IMAGE" = "Hình ảnh";
+
+/* Label shown by thumbnails of videos in the All Media view */
+"ALL_MEDIA_THUMBNAIL_LABEL_VIDEO" = "Video";
 
 /* Title for the view of all your signal connections */
 "ALL_SIGNAL_CONNECTIONS_TITLE" = "Tất cả Liên hệ";
@@ -130,11 +193,14 @@
 /* Default message for the 'app launch failed' alert. */
 "APP_LAUNCH_FAILURE_ALERT_MESSAGE" = "Không thể chạy Signal. Vui lòng gửi nhật kí lỗi đến support@signal.org để chúng tôi có thể xử lí vấn đề này.";
 
-/* Title for the 'app launch failed' alert. */
-"APP_LAUNCH_FAILURE_ALERT_TITLE" = "Lỗi";
-
 /* Button to try launching the app even though the last launch failed */
 "APP_LAUNCH_FAILURE_CONTINUE" = "Tiếp tục mở Signal";
+
+/* Message for an error indicating that the app couldn't launch because some unexpected error happened with the user's registration status. */
+"APP_LAUNCH_FAILURE_CORRUPT_REGISTRATION_MESSAGE" = "Vui lòng gửi nhật ký gỡ lỗi đến support@signal.org để chúng tôi có thể xử lý vấn đề này.";
+
+/* Title for an error indicating that the app couldn't launch because some unexpected error happened with the user's registration status. */
+"APP_LAUNCH_FAILURE_CORRUPT_REGISTRATION_TITLE" = "Không thể mở Signal";
 
 /* Error indicating that the app could not launch because the database could not be loaded. */
 "APP_LAUNCH_FAILURE_COULD_NOT_LOAD_DATABASE" = "Không thể tải cơ sở dữ liệu";
@@ -311,7 +377,7 @@
 "ATTACHMENT_KEYBOARD_CONTACT" = "Liên hệ";
 
 /* A button to select a file from the Attachment Keyboard */
-"ATTACHMENT_KEYBOARD_FILE" = "Tệp";
+"ATTACHMENT_KEYBOARD_FILE" = "Tập tin";
 
 /* A button to select a GIF from the Attachment Keyboard */
 "ATTACHMENT_KEYBOARD_GIF" = "Ảnh GIF";
@@ -371,7 +437,7 @@
 "AUDIO_ACTIVITY_PLAYBACK_NAME_AUDIO_MESSAGE" = "Tin nhắn âm thanh";
 
 /* Accessibility label for placing an audio call */
-"AUDIO_CALL_LABEL" = "Cuộc gọi Âm thanh";
+"AUDIO_CALL_LABEL" = "Gọi thoại";
 
 /* action sheet button title to enable built in speaker during a call */
 "AUDIO_ROUTE_BUILT_IN_SPEAKER" = "Loa";
@@ -416,7 +482,7 @@
 "BADGE_EXPIRED_BOOST_BODY" = "Huy hiệu Nhà Ủng hộ của bạn đã hết hạn và không còn hiển thị trên hồ sơ.\n\nBạn có thể tiếp tục sử dụng Signal nhưng để hỗ trợ cho nền tảng công nghệ được xây dựng cho bạn, hãy cân nhắc việc ủng hộ hàng tháng cho Signal.";
 
 /* String explaining to the user that their boost badge has expired while they are a current subscription sustainer on the badge expiry sheet. */
-"BADGE_EXPIRED_BOOST_CURRENT_SUSTAINER_BODY" = "Huy hiệu Nhà Ủng hộ của bạn đã hết hạn và không còn hiển thị trên hồ sơ.Bạn có thể tái kích hoạt huy hiệu Nhà Ủng hộ của mình trong 30 ngày chỉ với một lần ủng hộ.";
+"BADGE_EXPIRED_BOOST_CURRENT_SUSTAINER_BODY" = "Huy hiệu Nhà Ủng hộ của bạn đã hết hạn và không còn hiển thị trên hồ sơ.\n\nBạn có thể tái kích hoạt huy hiệu Nhà Ủng hộ của mình trong 30 ngày chỉ với khoản ủng hộ một lần.";
 
 /* Title for boost on the badge expiration sheet. */
 "BADGE_EXPIRED_BOOST_TITLE" = "Huy hiệu hết hạn";
@@ -434,7 +500,7 @@
 "BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_CHARGE_FAILURE_BODY_FORMAT" = "Khoản ủng hộ hàng tháng của bạn đã được hủy. %1$@ huy hiệu nhà ủng hộ không còn hiển thị trên hồ sơ của bạn.\n\nĐể tiếp tục ủng hộ Signal và để kích hoạt lại huy hiệu, hãy cập nhật thông tin thanh toán và tiến hành ủng hộ trở lại.";
 
 /* Body of the sheet shown when your subscription is canceled due to inactivity */
-"BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_INACTIVITY_BODY_FORMAT" = "Khoản ủng hộ hàng tháng của bạn được tự động hủy vì bạn không hoạt động trong thời gian quá dài. Huy hiệu %1$@ của bạn không còn hiển thị trên hồ sơ.\n\nBạn vẫn có thể tiếp tục dùng Signal, nhưng nếu bạn muốn tiếp tục hỗ trợ ứng dụng và nhận lại huy hiệu, bạn cần gia hạn.";
+"BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_INACTIVITY_BODY_FORMAT" = "Khoản ủng hộ hàng tháng của bạn được tự động hủy vì bạn không hoạt động trong thời gian quá dài. Huy hiệu %1$@ của bạn không còn hiển thị trên hồ sơ.\n\nBạn vẫn có thể tiếp tục dùng Signal, nhưng nếu bạn muốn tiếp tục hỗ trợ ứng dụng và nhận lại huy hiệu, bạn cần tiến hành ủng hộ.";
 
 /* When you make a donation to Signal, you will receive a badge. A thank-you sheet appears when this happens. This is the body text on that sheet. */
 "BADGE_THANKS_BODY" = "Bạn nhận được một huy hiệu nhà ủng hộ từ Signal! Hãy hiển thị huy hiệu trên hồ sơ của bạn để thể hiện sự ủng hộ.";
@@ -548,7 +614,7 @@
 "BUTTON_EDIT" = "Sửa";
 
 /* Label for the 'mute' button. */
-"BUTTON_MUTE" = "Tắt tiếng";
+"BUTTON_MUTE" = "Tắt thông báo";
 
 /* Label for the 'next' button. */
 "BUTTON_NEXT" = "Tiếp";
@@ -581,7 +647,7 @@
 "BUTTON_SUBMIT" = "Gửi";
 
 /* Label for the 'unmute' button. */
-"BUTTON_UNMUTE" = "Bỏ tắt tiếng";
+"BUTTON_UNMUTE" = "Bật thông báo";
 
 /* Label for the 'view' button. */
 "BUTTON_VIEW" = "Xem";
@@ -593,19 +659,19 @@
 "CALL_AGAIN_BUTTON_TITLE" = "Gọi Lại";
 
 /* notification body */
-"CALL_AUDIO_INCOMING_NOTIFICATION_BODY" = "📞 Có cuộc gọi âm thanh đến…";
+"CALL_AUDIO_INCOMING_NOTIFICATION_BODY" = "📞 Có cuộc gọi thoại đến…";
 
 /* notification body for a missed call in the last 24 hours. Embeds {{time}}, e.g. '3:30 PM'. */
 "CALL_AUDIO_MISSED_24_HOURS_NOTIFICATION_BODY_FORMAT" = "📞 Cuộc gọi thoại nhỡ vào lúc %1$@";
 
 /* notification body for a call that was just missed */
-"CALL_AUDIO_MISSED_NOTIFICATION_BODY" = "📞 Cuộc gọi âm thanh bị nhỡ";
+"CALL_AUDIO_MISSED_NOTIFICATION_BODY" = "📞 Cuộc gọi thoại nhỡ";
 
 /* notification body for a missed call from more than a week ago. Embeds {{short date}}, e.g. '6/28'. */
 "CALL_AUDIO_MISSED_PAST_NOTIFICATION_BODY_FORMAT" = "📞 Cuộc gọi thoại nhỡ vào ngày %1$@";
 
 /* notification body for a missed call from the last week. Embeds {{weekday}}, e.g. 'Monday'. */
-"CALL_AUDIO_MISSED_WEEK_NOTIFICATION_BODY_FORMAT" = "📞 Cuộc gọi thoại nhỡ vào ngày %1$@";
+"CALL_AUDIO_MISSED_WEEK_NOTIFICATION_BODY_FORMAT" = "📞 Cuộc gọi thoại nhỡ vào %1$@";
 
 /* Alert message when calling and permissions for microphone are missing */
 "CALL_AUDIO_PERMISSION_MESSAGE" = "Hãy bật quyền truy cập micro trong Cài đặt iOS để gọi và ghi tin nhắn thoại với Signal.";
@@ -878,13 +944,13 @@
 "CHAT_LIST_TITLE_INBOX" = "Trò chuyện";
 
 /* Title for the color & wallpaper settings view. */
-"COLOR_AND_WALLPAPER_SETTINGS_TITLE" = "Màu cuộc trò chuyện & Màn hình nền";
+"COLOR_AND_WALLPAPER_SETTINGS_TITLE" = "Màu Cuộc trò chuyện & Hình nền";
 
 /* Activity Sheet label */
 "COMPARE_SAFETY_NUMBER_ACTION" = "So sánh với Bộ nhớ đệm";
 
 /* Accessibility hint describing what you can do with the compose button */
-"COMPOSE_BUTTON_HINT" = "Chọn hoặc tìm người dùng Signal để bắt đầu nhắn tin.";
+"COMPOSE_BUTTON_HINT" = "Chọn hoặc tìm người dùng Signal để bắt đầu trò chuyện.";
 
 /* Accessibility label from compose button. */
 "COMPOSE_BUTTON_LABEL" = "Soạn thảo";
@@ -905,7 +971,7 @@
 "COMPOSE_SCREEN_MISSING_CONTACTS_PERMISSION" = "Bạn có thể cấp quyền truy cập danh bạ trong Cài đặt iOS để thấy những liên hệ nào đang dùng Signal.";
 
 /* Configure reactions title text */
-"CONFIGURE_REACTIONS" = "Điều chỉnh Reaction";
+"CONFIGURE_REACTIONS" = "Điều chỉnh Bày tỏ cảm xúc";
 
 /* No comment provided by engineer. */
 "CONFIRM_DELETE_DATA_TEXT" = "Việc này sẽ thiết lập lại ứng dụng bằng cách xoá tin nhắn của bạn. Ứng dụng sẽ đóng sau khi quá trình này hoàn tất.";
@@ -986,7 +1052,7 @@
 "CONTACT_FIELD_ORGANIZATION" = "Tổ chức";
 
 /* Body for contact permission action sheet */
-"CONTACT_PERMISSION_ACTION_SHEET_BODY" = "Để xem tên và ảnh của các liên hệ trong tin nhắn của bạn:";
+"CONTACT_PERMISSION_ACTION_SHEET_BODY" = "Để xem tên và ảnh của các liên hệ trong các cuộc trò chuyện của bạn:";
 
 /* First step for contact permission action sheet */
 "CONTACT_PERMISSION_ACTION_SHEET_STEP_ONE" = "Nhấn \"Mở Cài đặt\" ở dưới";
@@ -1004,7 +1070,7 @@
 "CONTACT_PERMISSION_REMINDER_MEGAPHONE_ACTION" = "Bật";
 
 /* Body for contact permission reminder megaphone */
-"CONTACT_PERMISSION_REMINDER_MEGAPHONE_BODY" = "Xem tên và ảnh của các liên hệ trong tin nhắn của bạn.";
+"CONTACT_PERMISSION_REMINDER_MEGAPHONE_BODY" = "Xem tên và ảnh của các liên hệ trong các cuộc trò chuyện của bạn.";
 
 /* Title for contact permission reminder megaphone */
 "CONTACT_PERMISSION_REMINDER_MEGAPHONE_TITLE" = "Bật Danh bạ lên?";
@@ -1139,7 +1205,7 @@
 "CONTEXT_MENU_STOP_SPEAKING_MESSAGE" = "Dừng";
 
 /* Message for the 'conversation delete confirmation' alert. */
-"CONVERSATION_DELETE_CONFIRMATION_ALERT_MESSAGE" = "Tin nhắn này sẽ bị xóa khỏi thiết bị này.";
+"CONVERSATION_DELETE_CONFIRMATION_ALERT_MESSAGE" = "Trò chuyện này sẽ bị xóa khỏi thiết bị này.";
 
 /* Title for the 'conversation delete confirmation' alert. */
 "CONVERSATION_DELETE_CONFIRMATION_ALERT_TITLE" = "Xóa Cuộc trò chuyện?";
@@ -1397,13 +1463,13 @@
 "COUNTRYCODE_SELECT_TITLE" = "Chọn Mã quốc gia";
 
 /* Body text for an interactive in-app prompt to set up a Signal username. */
-"CREATE_USERNAME_MEGAPHONE_BODY" = "Usernames let others message you without needing your phone number.";
+"CREATE_USERNAME_MEGAPHONE_BODY" = "Tên người dùng giúp các thành viên khác nhắn tin cho bạn mà không cần có số điện thoại của bạn.";
 
 /* Title for a button in an interactive in-app prompt to set up a Signal username, which will start a create-username flow. */
-"CREATE_USERNAME_MEGAPHONE_SET_UP_BUTTON_TITLE" = "Set Up";
+"CREATE_USERNAME_MEGAPHONE_SET_UP_BUTTON_TITLE" = "Thiết Lập";
 
 /* Title for an interactive in-app prompt to set up a Signal username. */
-"CREATE_USERNAME_MEGAPHONE_TITLE" = "Set up your Signal username";
+"CREATE_USERNAME_MEGAPHONE_TITLE" = "Thiết lập tên người dùng Signal của bạn";
 
 /* Credit/debit card donation error for decline failures where the card has expired. */
 "CREDIT_OR_DEBIT_CARD_DONATION_ERROR_EXPIRED_CARD" = "Thẻ của bạn đã hết hạn. Đảm bảo thông tin thẻ của bạn đúng và thử lại.";
@@ -1610,7 +1676,10 @@
 "DEREGISTRATION_REREGISTER_WITH_SAME_PHONE_NUMBER" = "Đăng ký lại số điện thoại này";
 
 /* Label warning the user that they have been de-registered. */
-"DEREGISTRATION_WARNING" = "Thiết bị không còn được đăng ký. Số điện thoại của bạn có thể được đăng ký với Signal bằng một thiết bị khác. Chạm để đăng ký lại.";
+"DEREGISTRATION_WARNING" = "Thiết bị này không còn được đăng ký. Nguyên nhân có thể là do bạn đăng ký số điện thoại của bạn với Signal trên một thiết bị khác.";
+
+/* If the user has been deregistered, they'll see a warning. This is This is the call to action on that warning. */
+"DEREGISTRATION_WARNING_ACTION_TITLE" = "Đăng ký lại Thiết bị";
 
 /* {{Short Date}} when device last communicated with Signal Server. */
 "DEVICE_LAST_ACTIVE_AT_LABEL" = "Hoạt động lần cuối %1$@";
@@ -1620,6 +1689,12 @@
 
 /* Alert title that can occur when viewing device manager. */
 "DEVICE_LIST_UPDATE_FAILED_TITLE" = "Không thể cập nhật danh sách thiết bị.";
+
+/* A label for this device in the device list. */
+"DEVICE_NAME_THIS_DEVICE" = "Thiết bị này";
+
+/* A label for an unnamed device in the device list. */
+"DEVICE_NAME_UNNAMED_DEVICE" = "Thiết bị Chưa đặt tên";
 
 /* The stop action of the dialog asking the user if they want to cancel a device transfer */
 "DEVICE_TRANSFER_CANCEL_CONFIRMATION_ACTION" = "Ngưng Chuyển";
@@ -1862,7 +1937,7 @@
 "DONATION_ON_BEHALF_OF_A_FRIEND_CONFIRMATION_SCREEN_TITLE" = "Xác nhận khoản ủng hộ";
 
 /* When users make donations on a friend's behalf, a message is sent. This text tells senders that their message will disappear, if the conversation has disappearing messages enabled. Embeds {{duration}}, such as \"1 week\". */
-"DONATION_ON_BEHALF_OF_A_FRIEND_DISAPPEARING_MESSAGES_NOTICE_FORMAT" = "Tin nhắn tự xoá được bật cho cuộc trò chuyện này. Tin nhắn đi kèm khoản ủng hộ của bạn sẽ biến mất trong %1$@.";
+"DONATION_ON_BEHALF_OF_A_FRIEND_DISAPPEARING_MESSAGES_NOTICE_FORMAT" = "Tin nhắn tự xóa được bật cho cuộc trò chuyện này. Tin nhắn đi kèm khoản ủng hộ của bạn sẽ biến mất trong %1$@.";
 
 /* Users can donate on a friend's behalf. If something goes wrong during this donation, such as a network error, this error message is shown. */
 "DONATION_ON_BEHALF_OF_A_FRIEND_GENERIC_SEND_ERROR_BODY" = "Không thể ủng hộ. Kiểm tra kết nối của bạn và thử lại.";
@@ -2053,11 +2128,14 @@
 /* The alert title if user tries to exit update group view without saving changes. */
 "EDIT_GROUP_VIEW_UNSAVED_CHANGES_TITLE" = "Thay đổi Chưa được lưu";
 
+/* Label for Edit History modal */
+"EDIT_HISTORY_LABEL" = "Lịch sử chỉnh sửa";
+
 /* Short name for edit menu item to copy contents of media message. */
 "EDIT_ITEM_COPY_ACTION" = "Sao chép";
 
 /* body of email sent to contacts when inviting to install Signal. Embeds {{link to install Signal}} and {{link to the Signal home page}} */
-"EMAIL_INVITE_BODY" = "Xin chào,\n\nGần đây tôi đang sử dụng Signal để giữ riêng tư các tin nhắn trên iPhone của mình. Tôi cũng muốn bạn cài ứng dụng này luôn, để chúng ta có thể tự tin rằng chỉ có tôi và bạn mới có thể đọc được tin nhắn và nghe được điện thoại của mình.\n\nSignal có trên iPhone và Android. Tải nó ở đây: %1$@\n\nSignal hoạt động giống như ứng dụng nhắn tin hiện tại của bạn. Chúng ta có thể gửi ảnh và video, thực hiện cuộc gọi, và bắt đầu tin nhắn nhóm. Cái hay nhất là, không ai sẽ có thể thấy bất kì thông tin nào, ngay cả người tạo ra Signal cũng không!\n\nBạn có thể đọc thêm về Open Whisper Systems, những người tạo ra Signal, ở đây: %2$@";
+"EMAIL_INVITE_BODY" = "Xin chào,\n\nGần đây mình sử dụng Signal để các tin nhắn trên iPhone của mình được riêng tư. Bạn cũng cài ứng dụng này luôn nhé, để mình tự tin rằng chỉ có hai bên đọc tin nhắn và nghe cuộc gọi.\n\nSignal có trên iPhone và Android. Tải ở đây: %1$@\n\nSignal hoạt động giống như ứng dụng nhắn tin hiện tại của bạn. Hai ta có thể gửi ảnh và video, gọi, và bắt đầu tin nhắn nhóm. Điều thú vị nhất là không ai có thể đọc được bất kỳ thông tin nào, cả người tạo ra Signal cũng không!\n\nBạn có thể đọc thêm về Open Whisper Systems, những người tạo ra Signal, ở đây: %2$@";
 
 /* subject of email sent to contacts when inviting to install Signal */
 "EMAIL_INVITE_SUBJECT" = "Cùng chuyển sang sử dụng Signal";
@@ -2082,6 +2160,9 @@
 
 /* The name for the emoji category 'Objects' */
 "EMOJI_CATEGORY_OBJECTS_NAME" = "Đồ vật";
+
+/* The name for the emoji section for emojis already used on the message */
+"EMOJI_CATEGORY_ON_MESSAGE_NAME" = "Tin nhắn này";
 
 /* The name for the emoji category 'Recents' */
 "EMOJI_CATEGORY_RECENTS_NAME" = "Gần đây";
@@ -2224,11 +2305,23 @@
 /* Format string for 'unregistered user' error. Embeds {{the unregistered user's name or signal id}}. */
 "ERROR_UNREGISTERED_USER_FORMAT" = "Người dùng Chưa đăng ký: %1$@";
 
+/* Button to exit change number, shown in context menu. */
+"EXIT_CHANGE_NUMBER" = "Thoát Đổi Số Điện Thoại";
+
+/* Button to exit re-registration, shown in context menu. */
+"EXIT_REREGISTRATION" = "Thoát Đăng ký";
+
 /* Label notifying the user that the app has expired. */
-"EXPIRATION_ERROR" = "Phiên bản Signal của bạn đã hết hạn! Nhấn để cập nhật lên phiên bản mới nhất.";
+"EXPIRATION_ERROR" = "Phiên bản này của Signal đã hết hạn. Hãy cập nhật để gửi và nhận tin nhắn.";
+
+/* If the user's app is too old, they'll be shown a warning asking them to upgrade. This is the text on the warning, and tapping it will open the App Store page for Signal. */
+"EXPIRATION_WARNING_ACTION_TITLE" = "Cập nhật ngay";
+
+/* Label warning the user that the app will expire soon. Embeds {{date}}. */
+"EXPIRATION_WARNING_SOON" = "Phiên bản này của Signal sẽ hết hạn vào ngày %1$@. Hãy cập nhật để tiếp tục nhắn tin.";
 
 /* Label warning the user that the app will expire today. */
-"EXPIRATION_WARNING_TODAY" = "Phiên bản Signal của bạn sẽ hết hạn vào hôm nay. Nhấn để cập nhật lên phiên bản mới nhất.";
+"EXPIRATION_WARNING_TODAY" = "Phiên bản này của Signal sẽ hết hạn hôm nay. Hãy cập nhật để tiếp tục nhắn tin.";
 
 /* action sheet header when re-sending message which failed because of too many attempts */
 "FAILED_SENDING_BECAUSE_RATE_LIMIT" = "Quá nhiều lỗi khi gửi tin nhắn cho liên hệ này. Vui lòng thử lại sau.";
@@ -2286,6 +2379,9 @@
 
 /* Label indicating media gallery is empty */
 "GALLERY_TILES_EMPTY_GALLERY" = "Bạn không có tập đa phương tiện nào trong cuộc trò chuyện này.";
+
+/* Label indicating media gallery with audio filter is empty */
+"GALLERY_TILES_EMPTY_GALLERY_AUDIO" = "Bạn không có tập tin âm thanh nào trong cuộc trò chuyện này.";
 
 /* Label indicating loading is in progress */
 "GALLERY_TILES_LOADING_MORE_RECENT_LABEL" = "Đang tải Tập tin đa phương tiện Mới…";
@@ -2800,6 +2896,9 @@
 /* Message indicating that the local user was removed from the group by an unknown user. */
 "GROUP_LOCAL_USER_REMOVED_BY_UNKNOWN_USER" = "Bạn đã bị loại bỏ khỏi nhóm.";
 
+/* Message indicating that the local user's request to join the group was approved. */
+"GROUP_LOCAL_USER_REQUEST_APPROVED" = "Yêu cầu tham gia nhóm của bạn đã được chấp nhận.";
+
 /* Message indicating that the local user's request to join the group was approved by another user. Embeds {{ %@ the name of the user who approved the request }}. */
 "GROUP_LOCAL_USER_REQUEST_APPROVED_BY_REMOTE_USER_FORMAT" = "%1$@ đã chấp nhận yêu cầu tham gia nhóm của bạn.";
 
@@ -2884,9 +2983,6 @@
 /* Message indicating that a remote user's invite was revoked by the local user. Embeds {{remote user name}}. */
 "GROUP_REMOTE_USER_INVITE_REVOKED_BY_LOCAL_USER_FORMAT" = "Thư mời tham gia nhóm đã bị thu hồi cho %1$@.";
 
-/* Message indicating that a single remote user was invited to the group. Embeds {{remote user name}}. */
-"GROUP_REMOTE_USER_INVITED_1_FORMAT" = "%1$@ đã được mời vào nhóm.";
-
 /* Message indicating that a remote user was invited to the group by the local user. Embeds {{remote user name}}. */
 "GROUP_REMOTE_USER_INVITED_BY_LOCAL_USER_FORMAT" = "Bạn đã mời %1$@ vào nhóm.";
 
@@ -2917,7 +3013,7 @@
 /* Message indicating that a remote user's request to join the group was rejected by the local user. Embeds {{requesting user name}}. */
 "GROUP_REMOTE_USER_REQUEST_REJECTED_BY_LOCAL_USER_FORMAT" = "Bạn đã từ chối yêu cầu tham gia nhóm từ %1$@.";
 
-/* Message indicating that a remote user's request to join the group was rejected by another user. Embeds {{ %1$@ requesting user name, %2$@ approving user name }}. */
+/* Message indicating that a remote user's request to join the group was rejected by another user. Embeds {{ %1$@ requesting user name, %2$@ rejecting user name }}. */
 "GROUP_REMOTE_USER_REQUEST_REJECTED_BY_REMOTE_USER_FORMAT" = "%2$@ từ chối yêu cầu tham gia nhóm từ %1$@.";
 
 /* Message indicating that a remote user's request to join the group was rejected. Embeds {{requesting user name}}. */
@@ -3025,12 +3121,6 @@
 /* Message indicating that the group was migrated. */
 "GROUP_WAS_MIGRATED" = "Nhóm này đã được nâng cấp Nhóm Mới.";
 
-/* Message indicating that the local user was dropped while migrating the group. */
-"GROUP_WAS_MIGRATED_USERS_DROPPED_LOCAL_USER" = "Bạn không thể được thêm vào Nhóm Mới và đã bị gỡ bỏ khỏi nhóm.";
-
-/* Message indicating that the local user was invited while migrating the group. */
-"GROUP_WAS_MIGRATED_USERS_INVITED_LOCAL_USER" = "Bạn không thể được thêm vào Nhóm Mới và đã được mời tham gia";
-
 /* Message indicating that the local user left the group. */
 "GROUP_YOU_LEFT" = "Bạn đã rời nhóm.";
 
@@ -3076,128 +3166,8 @@
 /* Label for 'invite friends to group' button. */
 "GROUPS_INVITE_FRIENDS_BUTTON" = "Mời bạn bè";
 
-/* Body text for the first section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_1_BODY" = "Nhóm Cũ là nhóm không tương thích với các tính năng mới như quản trị viên hay cập nhật cụ thể thông tin nhóm.";
-
-/* Title for the first section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_1_TITLE" = "Nhóm Cũ là gì?";
-
-/* Body text for the second section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_2_BODY" = "Nhóm Cũ chưa thể nâng cấp được lên Nhóm Mới, nhưng bạn có thể tạo một Nhóm Mới với các thành viên cũ nếu như họ đang sử dụng phiên bản mới nhất của Signal.\n\nSignal sẽ cung cấp cách để cập nhật Nhóm Cũ trong tương lai.";
-
-/* Title for the second section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_2_TITLE" = "Tôi có thể nâng cấp Nhóm Cũ được không?";
-
-/* Body text for the third section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_3_BODY" = "Để tạo Nhóm Mới, tất cả thành viên cần phải cập nhật lên phiên bản Signal mới nhất.";
-
-/* Title for the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_TITLE" = "Nhóm Mới và Nhóm Cũ";
-
-/* Format for indicator that a group cannot be used until it is migrated. Embeds {{ a \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_BLOCKING_MIGRATION_FORMAT" = "Cập nhật nhóm này để kích hoạt các tính năng mới như @nhắc tên và admin. Các thành viên chưa chia sẻ tên hoặc ảnh trong nhóm này sẽ được mời tham gia. %1$@.";
-
-/* Title for the 'can't upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_ALERT_TITLE" = "Không thể Nâng cấp thành Nhóm Mới";
-
-/* Text indicating that a legacy group can't be upgraded because it has too many members. Embeds {{ The maximum number of members allowed in a group. }}. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_ALERT_TOO_MANY_MEMBERS_FORMAT" = "Nhóm này không thể được nâng cấp thành Nhóm Mới vì nhóm có quá nhiều thành viên. Kích cỡ nhóm tối đa mà có thể được nâng cấp là %1$@.";
-
-/* Explanation of group migration for groups that can't yet be migrated in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_YET_1" = "Khi tất cả các thành viên nhóm đang sử dụng một phiên bản của Signal có khả năng tham gia Nhóm Mới, nhóm này sẽ được nâng cấp.";
-
-/* Explanation of group migration for groups that can't yet be migrated in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_YET_2" = "Tất cả lịch sử tin nhắn và đa phương tiện sẽ được giữ lại từ trước khi nâng cấp.";
-
-/* Brief explanation of legacy groups. Embeds {{ a \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_FORMAT" = "Đây là Nhóm Cũ. Các tính năng như admin nhóm chỉ có sẵn cho Nhóm Mới. %1$@";
-
-/* Indicates that a legacy group can't be upgraded because some members can't be migrated. Embeds {{ an \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_MEMBERS_CANT_BE_MIGRATED_FORMAT" = "Nhóm Cũ này chưa sẵn sàng để được nâng cấp thành Nhóm Mới. %1$@.";
-
-/* Indicates that a legacy group can't be upgraded because it has too many members. Embeds {{ an \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_TOO_MANY_MEMBERS_FORMAT" = "Nhóm Cũ này không thể được nâng cấp thành Nhóm Mới vì nhóm quá lớn. %1$@.";
-
-/* Explanation of legacy groups. Embeds {{ an \"upgrade\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_WITH_UPGRADE_OFFER_FORMAT" = "Đây là Nhóm Cũ. Để truy cập các tính năng mới như @nhắc tên và admin, %1$@.";
-
 /* Label indicating a legacy group. */
 "GROUPS_LEGACY_GROUP_INDICATOR" = "Nhóm Cũ";
-
-/* Indicates that the local user needs to accept an invitation to rejoin the group after a group migration. */
-"GROUPS_LEGACY_GROUP_LOCAL_USER_INVITED" = "Bạn sẽ cần phải đồng ý lời mời để tham gia nhóm này một lần nữa, và sẽ không nhận tin nhắn nhóm cho tới khi bạn đồng ý.";
-
-/* Title for the 'migrated group' alert view. */
-"GROUPS_LEGACY_GROUP_MIGRATED_GROUP_ALERT_TITLE" = "Nhóm Mới là gì?";
-
-/* Explanation of group migration for a migrated group in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_MIGRATED_GROUP_DESCRIPTION" = "Tất cả lịch sử tin nhắn và đa phương tiện đã được giữ lại trước khi nâng cấp.";
-
-/* Explanation of new groups in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_NEW_GROUP_DESCRIPTION" = "Nhóm Mới có các tính năng như @nhắc và admin nhóm, và sẽ hỗ trợ nhiều tính năng trong tương lai.";
-
-/* Title for the 'new groups' alert view. */
-"GROUPS_LEGACY_GROUP_NEW_GROUPS_ALERT_TITLE" = "Các Nhóm Mới";
-
-/* Label for the 'add members' button in the 're-add dropped group members' alert view. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_ADD_MEMBERS_BUTTON" = "Thêm Thành viên";
-
-/* Title for the 're-add dropped group members' alert view. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_ALERT_TITLE_1" = "Thêm Thành viên?";
-
-/* Title for the 're-add dropped group members' alert view. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_ALERT_TITLE_N" = "Thêm Thành viên?";
-
-/* Label for the 'add members' button in the 're-add dropped groups members' banner. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_BUTTON" = "Thêm Thành viên";
-
-/* Explanation of 're-adding dropped group member' in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_DESCRIPTION_1" = "Thành viên này không thể được thêm tự động vào Nhóm Mới khi nhóm được nâng cấp:";
-
-/* Explanation of 're-adding dropped group member' in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_DESCRIPTION_N" = "Những thành viên này không thể được thêm tự động vào Nhóm Mới khi nhóm được nâng cấp:";
-
-/* Body text for the second section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_2_BODY" = "Tất cả lịch sử tin nhắn và đa phương tiện đã được giữ lại trước khi nâng cấp.";
-
-/* Body text for the 'dropped member' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_DROPPED_MEMBERS_1" = "Thành viên này đã bị gỡ bỏ khỏi nhóm và sẽ không thể tham gia lại vào nhóm cho đến khi họ nâng cấp:";
-
-/* Body text for the 'dropped members' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_DROPPED_MEMBERS_N" = "Những thành viên này đã bị gỡ bỏ khỏi nhóm và sẽ không thể tham gia lại vào nhóm cho đến khi họ nâng cấp:";
-
-/* Body text for the 'invites member' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_INVITED_MEMBERS_1" = "Thành viên này sẽ cần đồng ý lời mời tham gia nhóm trở lại, và sẽ không nhận được tin nhắn cho tới khi họ đồng ý:";
-
-/* Body text for the 'invites members' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_INVITED_MEMBERS_N" = "Những thành viên này sẽ cần đồng ý lời mời tham gia nhóm trở lại, và sẽ không nhận được tin nhắn cho tới khi họ đồng ý:";
-
-/* Body text for the 'possibly dropped member' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_POSSIBLY_DROPPED_MEMBERS_1" = "Thành viên này không thể tham gia các Nhóm Mới, và sẽ bị gỡ bỏ khỏi nhóm:";
-
-/* Body text for the 'possibly dropped members' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_POSSIBLY_DROPPED_MEMBERS_N" = "Những thành viên này không có khả năng tham gia Nhóm Mới, và sẽ được xóa khỏi nhóm:";
-
-/* Title for the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_TITLE" = "Nâng cấp lên Nhóm Mới";
-
-/* Label for the 'upgrade this group' button in the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_BUTTON" = "Nâng cấp Nhóm này";
-
-/* Message for error alert indicating the group update failed. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_FAILED_ERROR_MESSAGE" = "Nhóm này không thể được nâng cấp thành Nhóm Mới ngay bây giờ.";
-
-/* Message for error alert indicating the group update failed due to network connectivity. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_FAILED_ERROR_MESSAGE_NETWORK" = "Nhóm này không thể được nâng cấp thành Nhóm Mới vì bạn đang không có kết nối Internet. Hãy thử lại sau.";
-
-/* Title for error alert indicating the group update failed. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_FAILED_ERROR_TITLE" = "Không thể Hoàn tất Nâng cấp";
-
-/* Message indicating the group update succeeded. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_SUCCEEDED" = "Đã Nâng cấp thành Nhóm Mới.";
-
-/* An \"upgrade\" link for upgrading legacy groups to new groups. */
-"GROUPS_LEGACY_GROUP_UPGRADE_LINK" = "Nâng cấp nhóm này";
 
 /* Message for the 'replace group admin' alert. */
 "GROUPS_REPLACE_ADMIN_ALERT_MESSAGE" = "Trước khi bạn rời đi, chọn một quản trị viên mới cho nhóm.";
@@ -3227,7 +3197,7 @@
 "HELP_SUPPORT_CENTER" = "Trung tâm Hỗ trợ";
 
 /* Label for 'archived conversations' button. */
-"HOME_VIEW_ARCHIVED_CONVERSATIONS" = "Lưu trữ các Cuộc trò chuyện";
+"HOME_VIEW_ARCHIVED_CONVERSATIONS" = "Các cuộc trò chuyện đã lưu trữ";
 
 /* Table cell subtitle label for a conversation the user has blocked. */
 "HOME_VIEW_BLOCKED_CONVERSATION" = "Đã chặn";
@@ -3263,7 +3233,7 @@
 "HOME_VIEW_TITLE_ARCHIVE" = "Lưu trữ";
 
 /* Title for the 'Select Chats' option in the ChatList. */
-"HOME_VIEW_TITLE_SELECT_CHATS" = "Chọn cuộc trò chuyện";
+"HOME_VIEW_TITLE_SELECT_CHATS" = "Chọn Cuộc trò chuyện";
 
 /* Title 'Read All' button in the toolbar of the ChatList if multi-section is active. */
 "HOME_VIEW_TOOLBAR_READ_ALL" = "Đọc tất cả";
@@ -3311,7 +3281,7 @@
 "IN_CALL_RINGING" = "Đang đổ chuông…";
 
 /* Call setup status label */
-"IN_CALL_RINGING_AUDIO" = "Cuộc gọi Âm thanh…";
+"IN_CALL_RINGING_AUDIO" = "Gọi thoại…";
 
 /* Call setup status label */
 "IN_CALL_RINGING_VIDEO" = "Cuộc gọi Video…";
@@ -3431,7 +3401,7 @@
 "KEY_COMMAND_STICKERS" = "Hiện nhãn dán";
 
 /* A keyboard command to unarchive the current conversation. */
-"KEY_COMMAND_UNARCHIVE" = "Ngưng lưu trữ Cuộc trò chuyện";
+"KEY_COMMAND_UNARCHIVE" = "Bỏ lưu trữ Cuộc trò chuyện";
 
 /* Label for the 'learn more' button. */
 "LEARN_MORE" = "Tìm hiểu thêm";
@@ -3444,6 +3414,21 @@
 
 /* Error indicating that a group could not be left. */
 "LEAVE_GROUP_FAILED" = "Đã xảy ra lỗi khi bạn rời nhóm.";
+
+/* Text in a sheet explaining details about 'Legacy Groups'. */
+"LEGACY_GROUP_UNSUPPORTED_LEARN_MORE_BODY" = "\"Nhóm Cũ\" là các nhóm không hỗ trợ các tính năng như @nhắc tên và quản trị viên. Phần lớn Nhóm Cũ được nâng cấp tự động hoặc thủ công lên \"Nhóm Mới\". Do đã không hoạt động trong một khoảng thời gian dài, nhóm này không thể được nâng cấp nữa.\n\nĐể tiếp tục cuộc trò chuyện này, bạn phải tạo một nhóm mới.";
+
+/* Title for a sheet explaining details about 'Legacy Groups'. */
+"LEGACY_GROUP_UNSUPPORTED_LEARN_MORE_TITLE" = "Nhóm Cũ";
+
+/* Message explaining that this group can no longer be used because it is unsupported. Embeds a {{ learn more link }}. */
+"LEGACY_GROUP_UNSUPPORTED_MESSAGE" = "Đây là Nhóm Cũ, và đã không còn được hỗ trợ. Để tiếp tục cuộc hội thoại này, hãy tạo một nhóm mới. %1$@";
+
+/* Text in a sheet explaining details about 'New Groups'. */
+"LEGACY_GROUP_WHAT_ARE_NEW_GROUPS_BODY" = "Nhóm Mới có các tính năng như @nhắc và admin nhóm, và sẽ hỗ trợ nhiều tính năng trong tương lai.\n\nTất cả lịch sử tin nhắn và đa phương tiện đã được giữ lại trước khi nâng cấp.";
+
+/* Title for a sheet explaining details about 'New Groups'. */
+"LEGACY_GROUP_WHAT_ARE_NEW_GROUPS_TITLE" = "Nhóm Mới là gì?";
 
 /* report an invalid linking code */
 "LINK_DEVICE_INVALID_CODE_BODY" = "Mã QR này không hợp lệ. Hãy đảm bảo bạn đang quét đúng mã QR trên thiết bị bạn đang muốn liên kết.";
@@ -3553,11 +3538,20 @@
 /* Shown in place of message input text in media editor when 'View Once' is on. */
 "MEDIA_EDITOR_TEXT_FIELD_VIEW_ONCE_MEDIA" = "Đa phương tiện Xem Một Lần";
 
+/* Explanatory text displayed when deleting N items in All Media screen. */
+"MEDIA_GALLERY_DELETE_MEDIA_BODY" = "This will permanently delete the selected files. Any message text associated with these items will also be deleted.";
+
 /* Format for the 'more items' indicator for media galleries. Embeds {{the number of additional items}}. */
 "MEDIA_GALLERY_MORE_ITEMS_FORMAT" = "+ %1$@";
 
 /* Section header in media gallery collection view */
 "MEDIA_GALLERY_THIS_MONTH_HEADER" = "Tháng này";
+
+/* Text explaining that the user will forward all media from a message. */
+"MEDIA_PAGE_FORWARD_MEDIA_CONFIRM_MESSAGE" = "Tất cả tệp đa phương tiện sẽ được chuyển tiếp.";
+
+/* Context menu item in media viewer. Refers to deleting currently displayed photo/video. */
+"MEDIA_VIEWER_DELETE_MEDIA_ACTION" = "Xóa";
 
 /* button title to snooze a megaphone */
 "MEGAPHONE_REMIND_LATER" = "Nhắc tôi sau";
@@ -3572,7 +3566,7 @@
 "MESSAGE_ACTION_DELETE_FOR_EVERYONE" = "Xóa đối với Mọi người";
 
 /* A one-time confirmation that you want to delete for everyone */
-"MESSAGE_ACTION_DELETE_FOR_EVERYONE_CONFIRMATION" = "Tin nhắn này sẽ được xóa cho tất cả mọi người trong cuộc trò chuyện nếu như họ sử dụng phiên bản mới của Signal. Họ sẽ có thể thấy được rằng bạn đã xoá tin nhắn.";
+"MESSAGE_ACTION_DELETE_FOR_EVERYONE_CONFIRMATION" = "Tin nhắn này sẽ được xóa cho tất cả mọi người trong cuộc trò chuyện nếu như họ sử dụng phiên bản mới của Signal. Họ sẽ có thể thấy được rằng bạn đã xóa tin nhắn.";
 
 /* The title for the action sheet asking who the user wants to delete the message for. */
 "MESSAGE_ACTION_DELETE_FOR_TITLE" = "Bạn muốn xóa tin nhắn này cho ai?";
@@ -3654,6 +3648,9 @@
 
 /* Toast indicating that the user has copied the sent timestamp. */
 "MESSAGE_DETAIL_VIEW_DID_COPY_SENT_TIMESTAMP" = "Đã sao chép thời gian gửi";
+
+/* Title for the 'edit history' section on the 'message details' view. */
+"MESSAGE_DETAILS_EDIT_HISTORY_TITLE" = "Xem lịch sử chỉnh sửa";
 
 /* Title for the 'sent from' section on the 'message details' view. */
 "MESSAGE_DETAILS_VIEW_SENT_FROM_TITLE" = "Gửi tới";
@@ -3828,6 +3825,9 @@
 
 /* message status while message is downloading. */
 "MESSAGE_STATUS_DOWNLOADING" = "Đang tải xuống";
+
+/* status meesage for edited messages */
+"MESSAGE_STATUS_EDITED" = "đã chỉnh sửa";
 
 /* status message for failed messages */
 "MESSAGE_STATUS_FAILED" = "Không gửi được.";
@@ -4069,6 +4069,9 @@
 /* Label for 1:1 conversation with yourself. */
 "NOTE_TO_SELF" = "Ghi chú";
 
+/* Body for a notification representing a message request. */
+"NOTIFICATION_BODY_INCOMING_MESSAGE_REQUEST" = "Yêu cầu gửi Tin nhắn";
+
 /* Lock screen notification text presented after user powers on their device without unlocking. Embeds {{device model}} (either 'iPad' or 'iPhone') */
 "NOTIFICATION_BODY_PHONE_LOCKED_FORMAT" = "Bạn có thể đã nhận tin nhắn này khi %1$@ đang khởi động nguồn trở lại.";
 
@@ -4140,6 +4143,9 @@
 
 /* Label indicating that the 2fa pin is invalid in the 'onboarding 2fa' view. */
 "ONBOARDING_2FA_INVALID_PIN" = "Mã PIN không chính xác";
+
+/* Label indicating that the 2fa pin is invalid in the 'onboarding 2fa' view, and you only have one more attempt */
+"ONBOARDING_2FA_INVALID_PIN_LAST_ATTEMPT" = "Mã PIN không chính xác. Còn 1 lần thử.";
 
 /* Label for the 'skip and create new pin' button when reglock is disabled during onboarding. */
 "ONBOARDING_2FA_SKIP_AND_CREATE_NEW_PIN" = "Bỏ qua và Tạo PIN mới";
@@ -4222,6 +4228,9 @@
 /* Title of the 'onboarding pin attempts exhausted' view when reglock is disabled. */
 "ONBOARDING_PIN_ATTEMPTS_EXHAUSTED_TITLE" = "Mã PIN không chính xác";
 
+/* Explanation of the 'onboarding pin attempts exhausted' view when it is unknown if reglock is enabled. */
+"ONBOARDING_PIN_ATTEMPTS_EXHAUSTED_WITH_UNKNOWN_REGLOCK_EXPLANATION" = "Bạn đã hết số lần thử mã PIN, nhưng bạn vẫn có thể thử truy cập tài khoản Signal bằng cách xác minh số điện thoại của mình. Để đảm bảo bảo mật và tính riêng tư, tài khoản mới của bạn sẽ được khôi phục nhưng thông tin hồ sơ và cài đặt thì không.";
+
 /* Title of the 'onboarding PIN' view. */
 "ONBOARDING_PIN_EXPLANATION" = "Nhập mã PIN bạn đã tạo cho tài khoản. Mã này khác với mã xác minh SMS của bạn.";
 
@@ -4255,6 +4264,18 @@
 /* Label for a progress spinner currently validating code */
 "ONBOARDING_VERIFICATION_CODE_VALIDATION_PROGRESS_LABEL" = "Đang xác thực Mã…";
 
+/* First bullet point for the explainer sheet for registering via verification code. */
+"ONBOARDING_VERIFICATION_HELP_BULLET_1" = "Đảm bảo là điện thoại của bạn có tín hiệu di động để nhận tin nhắn SMS hoặc cuộc gọi";
+
+/* Second bullet point for the explainer sheet for registering via verification code. */
+"ONBOARDING_VERIFICATION_HELP_BULLET_2" = "Xác nhận bạn nhận được cuộc gọi vào số điện thoại";
+
+/* Third bullet point for the explainer sheet for registering via verification code. */
+"ONBOARDING_VERIFICATION_HELP_BULLET_3" = "Kiểm tra rằng bạn đã nhập đúng số điện thoại";
+
+/* Label for a button to get help entering a verification code when registering. */
+"ONBOARDING_VERIFICATION_HELP_LINK" = "Bạn gặp vấn đề khi đăng ký?";
+
 /* Label indicating that the verification code is incorrect in the 'onboarding verification' view. */
 "ONBOARDING_VERIFICATION_INVALID_CODE" = "Mã này không chính xác";
 
@@ -4272,6 +4293,21 @@
 
 /* Button text which opens the settings app */
 "OPEN_SETTINGS_BUTTON" = "Cài đặt";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're on unsupported version. Some users can upgrade their device to a newer version of iOS to continue using Signal. If that's the case, they'll be shown this text. */
+"OS_EXPIRED_AND_CAN_UPGRADE_OS" = "Signal không còn hoạt động được trên thiết bị này. Để tiếp tục sử dụng Signal, hãy cập nhật thiết bị của bạn lên một phiên bản iOS mới hơn.";
+
+/* Signal doesn't support old devices. If that's the case, they'll be shown this action, and tapping it will open information about Signal's minimum supported operating systems. */
+"OS_EXPIRED_AND_DEVICE_IS_STUCK" = "Signal không còn hoạt động được trên thiết bị này. Để tiếp tục sử dụng Signal, hãy đổi qua một thiết bị mới hơn.";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're on an old version. Some users can upgrade their device to a newer version of iOS to continue using Signal. If that's the case, they'll be shown this action, and tapping it will open device update instructions. */
+"OS_SOON_TO_EXPIRE_ACTION_TITLE" = "Cập nhật ngay";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're an old version that will soon lose support. Some users can upgrade their device to a newer version of iOS to continue using Signal. If that's the case, they'll be shown this text. Embeds {{expiration date}}. */
+"OS_SOON_TO_EXPIRE_AND_CAN_UPGRADE_OS_FORMAT" = "Signal sẽ sớm không còn hỗ trợ phiên bản iOS trên thiết bị của bạn. Để tiếp tục sử dụng Signal, hãy cập nhật thiết bị của bạn lên một phiên bản iOS mới hơn trước ngày %1$@.";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're on an old version that will soon lose support. This is the text on that warning when users can't upgrade iOS without getting a new device. Embeds {{expiration date}}. */
+"OS_SOON_TO_EXPIRE_AND_DEVICE_WILL_BE_STUCK_FORMAT" = "Signal sẽ sớm không còn hỗ trợ phiên bản iOS trên thiết bị của bạn. Để tiếp tục sử dụng Signal, hãy đổi qua một thiết bị mới hơn trước ngày %1$@.";
 
 /* Info Message when another user disabled disappearing messages. Embeds {{name of other user}}. */
 "OTHER_DISABLED_DISAPPEARING_MESSAGES_CONFIGURATION" = "%1$@ đã tắt tính năng tự hủy tin nhắn.";
@@ -4649,22 +4685,16 @@
 "PHONE_NUMBER_DISCOVERABILITY_EVERYBODY" = "Tất cả mọi người";
 
 /* A user friendly description of the 'everybody' phone number discoverability mode. */
-"PHONE_NUMBER_DISCOVERABILITY_EVERYBODY_DESCRIPTION" = "Anyone who has your phone number in their contacts will see you as a contact on Signal. Others will be able to reach you with your phone number when they start a new chat or group.";
+"PHONE_NUMBER_DISCOVERABILITY_EVERYBODY_DESCRIPTION" = "Bất kỳ ai có số điện thoại của bạn trong danh bạ của họ sẽ thấy bạn là một liên hệ trên Signal. Những người khác sẽ có thể liên hệ bạn với số điện thoại của bạn khi họ bắt đầu một cuộc trò chuyện hay nhóm mới.";
 
 /* A user friendly name for the 'nobody' phone number discoverability mode. */
 "PHONE_NUMBER_DISCOVERABILITY_NOBODY" = "Không ai";
 
 /* A user friendly description of the 'nobody' phone number discoverability mode. */
-"PHONE_NUMBER_DISCOVERABILITY_NOBODY_DESCRIPTION" = "Nobody on Signal will be able to reach you with your phone number.";
+"PHONE_NUMBER_DISCOVERABILITY_NOBODY_DESCRIPTION" = "Không có ai trên Signal có thể liên hệ với bạn với số điện thoại của bạn.";
 
 /* A format for a label showing an example phone number. Embeds {{the example phone number}}. */
 "PHONE_NUMBER_EXAMPLE_FORMAT" = "Ví dụ: %1$@";
-
-/* A user friendly name for the 'contacts only' phone number sharing mode. */
-"PHONE_NUMBER_SHARING_CONTACTS_ONLY" = "Liên hệ của Tôi";
-
-/* A user friendly description of the 'contacts only' phone number sharing mode. */
-"PHONE_NUMBER_SHARING_CONTACTS_ONLY_DESCRIPTION" = "Chỉ những liên hệ trong danh bạ mới có thể thấy số điện thoại của bạn trên Signal.";
 
 /* A user friendly name for the 'everybody' phone number sharing mode. */
 "PHONE_NUMBER_SHARING_EVERYBODY" = "Tất cả mọi người";
@@ -4772,7 +4802,13 @@
 "PIN_CREATION_EXPLANATION" = "Mã PIN mã hoá các thông tin được lưu trữ với Signal để chỉ mình bạn có thể truy cập được. Thông tin người dùng, cài đặt, và các liên hệ sẽ được khôi phục khi bạn cài lại Signal. Bạn không cần điền PIN mỗi lần mở ứng dụng.";
 
 /* Learn more action on the pin creation view */
-"PIN_CREATION_LEARN_MORE" = "Tìm hiểu Thêm Về PIN";
+"PIN_CREATION_LEARN_MORE" = "Tìm Hiểu Thêm về Mã PIN";
+
+/* Users can create PINs to restore their account data later. They can learn more about this on a sheet. This is the text on that sheet. */
+"PIN_CREATION_LEARN_MORE_TEXT" = "Mã PIN giúp thông tin trên Signal của bạn được mã hóa để bạn là người duy nhất có thể truy cập. Hồ sơ, các cài đặt và danh bạ sẽ được khôi phục khi bạn cài đặt lại Signal.";
+
+/* Users can create PINs to restore their account data later. They can learn more about this on a sheet. This is the title on that sheet. */
+"PIN_CREATION_LEARN_MORE_TITLE" = "Về Mã PIN của Signal";
 
 /* Label indicating that the attempted PIN does not match the first PIN */
 "PIN_CREATION_MISMATCH_ERROR" = "Mã PIN không khớp. Hãy thử lại.";
@@ -4820,13 +4856,16 @@
 "PIN_CREATION_WEAK_ERROR" = "Chọn mã PIN mạnh hơn";
 
 /* If your attempted PIN is too weak, you'll see an error message. This is the text on the error dialog. */
-"PIN_CREATION_WEAK_ERROR_MESSAGE" = "PINs keep your information stored with Signal encrypted so only you can access it. Choose a stronger PIN to protect your account.";
+"PIN_CREATION_WEAK_ERROR_MESSAGE" = "Mã PIN giúp thông tin trên Signal của bạn được mã hóa để bạn là người duy nhất có thể truy cập. Chọn một mã PIN mạnh hơn để bảo vệ tài khoản của bạn.";
 
 /* Error body indicating that the attempt to disable a PIN failed. */
 "PIN_DISABLE_ERROR_MESSAGE" = "Mã PIN của bạn không thể được vô hiệu hoá. Chúng tôi sẽ hỏi bạn lại sau.";
 
 /* Error title indicating that the attempt to disable a PIN failed. */
 "PIN_DISABLE_ERROR_TITLE" = "Không thể Vô hiệu hoá PIN";
+
+/* If the user is re-registering, they need to enter their PIN to restore all their data. In some cases, they can skip this entry and lose some data. This text is shown on a button that lets them begin to do this. */
+"PIN_ENTER_EXISTING_SKIP" = "Bỏ qua mã PIN";
 
 /* Error title indicating that the attempt to recreate a PIN failed. */
 "PIN_RECREATION_ERROR_TITLE" = "Không thể tạo mã PIN";
@@ -4897,7 +4936,7 @@
 /* Badge indicating that the user is verified. */
 "PRIVACY_IDENTITY_IS_VERIFIED_BADGE" = "Đã xác minh";
 
-/* Label indicating that the user is verified. Embeds {{the user's name or phone number}}. */
+/* Label indicating that the user is verified. Embeds  user's name or phone number}}. */
 "PRIVACY_IDENTITY_IS_VERIFIED_FORMAT" = "%1$@ đã được xác minh.";
 
 /* Button that shows the 'scan with camera' view. */
@@ -5002,8 +5041,14 @@
 /* Placeholder when the user doesn't have a 'name' defined for profile settings screen. */
 "PROFILE_SETTINGS_NAME_PLACEHOLDER" = "Tên";
 
+/* Title for a menu action allowing users to edit their existing username. */
+"PROFILE_SETTINGS_USERNAME_EDIT_USERNAME_ACTION" = "Sửa tên người dùng";
+
 /* A placeholder value shown in the profile settings screen on a tappable item leading to a username selection flow, for when the user doesn't have a username. */
 "PROFILE_SETTINGS_USERNAME_PLACEHOLDER" = "Tên người dùng";
+
+/* Title for a menu action allowing users to view their username link QR code. */
+"PROFILE_SETTINGS_USERNAME_VIEW_QR_CODE_ACTION" = "Xem Mã QR";
 
 /* Error message shown when user tries to update profile with a family name that is too long. */
 "PROFILE_VIEW_ERROR_FAMILY_NAME_TOO_LONG" = "Tên họ của bạn quá dài.";
@@ -5102,40 +5147,40 @@
 "REACTION_DETAIL_ALL_FORMAT" = "Tất cả · %1$@";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_BODY_FORMAT" = "Đã bày tỏ cảm xúc %1$@ về tin nhắn của bạn";
+"REACTION_INCOMING_NOTIFICATION_BODY_FORMAT" = "Đã bày tỏ cảm xúc %1$@ với tin nhắn của bạn";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_ALBUM_BODY_FORMAT" = "Đã phản ứng %1$@ cho album của bạn";
+"REACTION_INCOMING_NOTIFICATION_TO_ALBUM_BODY_FORMAT" = "Đã bày tỏ cảm xúc %1$@ với album của bạn";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_AUDIO_BODY_FORMAT" = "Đã phản ứng %1$@ cho tập âm thanh của bạn";
+"REACTION_INCOMING_NOTIFICATION_TO_AUDIO_BODY_FORMAT" = "Đã bày tỏ cảm xúc %1$@ với tệp âm thanh của bạn";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_CONTACT_SHARE_BODY_FORMAT" = "Đã phản ứng %1$@ cho chia sẻ liên hệ của bạn";
+"REACTION_INCOMING_NOTIFICATION_TO_CONTACT_SHARE_BODY_FORMAT" = "Đã bày tỏ cảm xúc %1$@ với chia sẻ liên hệ của bạn";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_FILE_BODY_FORMAT" = "Đã phản ứng %1$@ cho tập tin của bạn";
+"REACTION_INCOMING_NOTIFICATION_TO_FILE_BODY_FORMAT" = "Đã bày tỏ cảm xúc %1$@ với tệp của bạn";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_GIF_BODY_FORMAT" = "Đã phản ứng %1$@ cho ảnh GIF của bạn";
+"REACTION_INCOMING_NOTIFICATION_TO_GIF_BODY_FORMAT" = "Đã bày tỏ cảm xúc %1$@ với ảnh GIF của bạn";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_PHOTO_BODY_FORMAT" = "Đã phản ứng %1$@ cho ảnh của bạn";
+"REACTION_INCOMING_NOTIFICATION_TO_PHOTO_BODY_FORMAT" = "Đã bày tỏ cảm xúc %1$@ với ảnh của bạn";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_STICKER_MESSAGE_BODY_FORMAT" = "Đã phản ứng %1$@ cho nhãn dán của bạn";
+"REACTION_INCOMING_NOTIFICATION_TO_STICKER_MESSAGE_BODY_FORMAT" = "Đã bày tỏ cảm xúc %1$@ với nhãn dán của bạn";
 
 /* notification body. Embeds {{reaction emoji}} and {{body text}} */
-"REACTION_INCOMING_NOTIFICATION_TO_TEXT_MESSAGE_BODY_FORMAT" = "Đã phản ứng %1$@ cho: \"%2$@\"";
+"REACTION_INCOMING_NOTIFICATION_TO_TEXT_MESSAGE_BODY_FORMAT" = "Đã bày tỏ cảm xúc %1$@ với : \"%2$@\"";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_VIDEO_BODY_FORMAT" = "Đã phản ứng %1$@ cho video của bạn";
+"REACTION_INCOMING_NOTIFICATION_TO_VIDEO_BODY_FORMAT" = "Đã bày tỏ cảm xúc %1$@ với video của bạn";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_VIEW_ONCE_MESSAGE_BODY_FORMAT" = "Đã phản ứng %1$@ cho tập đa phương tiện xem-một-lần của bạn";
+"REACTION_INCOMING_NOTIFICATION_TO_VIEW_ONCE_MESSAGE_BODY_FORMAT" = "Đã bày tỏ cảm xúc %1$@ với tệp đa phương tiện xem một lần của bạn";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_VOICE_MESSAGE_BODY_FORMAT" = "Đã phản ứng %1$@ cho tin nhắn thoại của bạn";
+"REACTION_INCOMING_NOTIFICATION_TO_VOICE_MESSAGE_BODY_FORMAT" = "Đã bày tỏ cảm xúc %1$@ với tin nhắn thoại của bạn";
 
 /* Pressing this button marks a thread as read */
 "READ_ACTION" = "Đọc";
@@ -5164,8 +5209,11 @@
 /* Alert body for a forgotten SVR (V2) PIN */
 "REGISTER_2FA_FORGOT_SVR_PIN_ALERT_MESSAGE" = "Mã PIN là một mã ít nhất 4 kí tự bạn tạo ra và có thể bao gồm số hoặc chữ và số. Nếu bạn không nhớ được mã PIN, bạn sẽ phải chờ 7 ngày để đăng ký lại tài khoản.";
 
-/* Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock */
-"REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_ALERT_MESSAGE" = "Mã PIN là một mã ít nhất 4 kí tự bạn tạo ra và có thể bao gồm số hoặc chữ và số. Nếu bạn không nhớ được mã PIN, bạn có thể tạo mã mới. Bạn có thể đăng ký và dùng tài khoản của bạn nhưng bạn sẽ mất một số cài đặt được lưu lại như thông tin người dùng.";
+/* Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock and they cannot necessarily create a new PIN */
+"REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_ALERT_MESSAGE" = "Mã pin của bạn là một mã có 4+ ký tự bạn đã tạo, có thể là dãy số hoặc có cả số và chữ cái. Nếu bạn không nhớ được mã PIN, bạn có thể đăng ký và dùng tài khoản của bạn nhưng bạn sẽ mất một số cài đặt được lưu lại như thông tin người dùng.";
+
+/* Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock and they can create a new PIN */
+"REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_AND_CAN_CREATE_NEW_PIN_ALERT_MESSAGE" = "Mã PIN là một mã ít nhất 4 kí tự bạn tạo ra và có thể bao gồm số hoặc chữ và số. Nếu bạn không nhớ được mã PIN, bạn có thể tạo mã mới. Bạn có thể đăng ký và dùng tài khoản của bạn nhưng bạn sẽ mất một số cài đặt được lưu lại như thông tin người dùng.";
 
 /* Alert body for a forgotten V1 PIN */
 "REGISTER_2FA_FORGOT_V1_PIN_ALERT_MESSAGE" = "Mã PIN là một mã ít nhất 4 kí tự bạn tạo ra. Nếu bạn không nhớ được mã PIN, bạn sẽ phải chờ 7 ngày để đăng ký lại tài khoản.";
@@ -5179,6 +5227,9 @@
 /* No comment provided by engineer. */
 "REGISTER_CONTACTS_WELCOME" = "Chào mừng!";
 
+/* Body of action sheet shown when rate-limited during registration. */
+"REGISTER_RATE_LIMITING_ALERT" = "Bạn đã thử quá nhiều lần. Vui lòng chờ ít phút trước khi thử lại.";
+
 /* action sheet body */
 "REGISTER_RATE_LIMITING_BODY" = "Bạn đã thử quá nhiều lần. Vui lòng chờ một phút trước khi thử lại.";
 
@@ -5188,17 +5239,26 @@
 /* Title of alert shown when push tokens sync job fails. */
 "REGISTRATION_BODY" = "Không thể đăng ký lại để nhận thông báo đẩy.";
 
+/* During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the action button on that alert. */
+"REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_ACTION" = "Cập nhật";
+
+/* During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the description text on that alert. */
+"REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_DESCRIPTION" = "Để tiếp tục đăng ký, vui lòng cập nhật phiên bản mới nhất của Signal.";
+
+/* During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the title on that alert. */
+"REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_TITLE" = "Yêu cầu Cập nhật";
+
 /* During registration, users may be shown a CAPTCHA to verify that they're human. This text is shown above the CAPTCHA. */
-"REGISTRATION_CAPTCHA_TITLE" = "We need to verify that you’re human";
+"REGISTRATION_CAPTCHA_TITLE" = "Chúng tôi cần xác minh bạn là người";
 
 /* Label for the country code field */
 "REGISTRATION_DEFAULT_COUNTRY_NAME" = "Mã quốc gia";
 
 /* If a user is installing Signal on a new phone, they may be asked whether they want to transfer their account from their old device. This is a description on the screen that asks them this question. */
-"REGISTRATION_DEVICE_TRANSFER_CHOICE_EXPLANATION" = "Continuing will disable Signal on other devices currently registered with the same phone number.";
+"REGISTRATION_DEVICE_TRANSFER_CHOICE_EXPLANATION" = "Thao tác này sẽ vô hiệu hoá Signal trên các thiết bị khác đã được đăng ký với số điện thoại này.";
 
 /* If a user is installing Signal on a new phone, they may be asked whether they want to transfer their account from their old device. This is the title on the screen that asks them this question. */
-"REGISTRATION_DEVICE_TRANSFER_CHOICE_TITLE" = "Transfer Account & Messages";
+"REGISTRATION_DEVICE_TRANSFER_CHOICE_TITLE" = "Chuyển Tài Khoản & Tin Nhắn";
 
 /* Placeholder text for the phone number textfield */
 "REGISTRATION_ENTERNUMBER_DEFAULT_TEXT" = "Nhập Số điện thoại";
@@ -5215,59 +5275,98 @@
 /* Alert title for network failure during registration */
 "REGISTRATION_ERROR_NETWORK_FAILURE_ALERT_TITLE" = "Kiểm tra Kết nối";
 
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This is the description on that screen, explaining what's going on. Embeds {{ duration }}, such as \"7 days\". */
+"REGISTRATION_LOCK_TIMEOUT_DESCRIPTION_FORMAT" = "Tài khoản của bạn đã bị khóa để đảm bảo sự riêng tư và bảo mật. Sau %1$@ ngày không sử dụng tài khoản, bạn có thể đăng ký lại số điện thoại này mà không cần mã PIN. Tuy nhiên, toàn bộ dữ liệu sẽ bị xóa.";
+
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This button appears on that screen. Tapping it will tell the user more information. */
+"REGISTRATION_LOCK_TIMEOUT_LEARN_MORE_BUTTON" = "Tìm hiểu thêm về tài khoản bị khóa";
+
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This button appears on that screen. Tapping it will bump the user back, earlier in registration, so they can register with a different phone number. */
+"REGISTRATION_LOCK_TIMEOUT_RESET_PHONE_NUMBER_BUTTON" = "Sử dụng một số khác";
+
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This is the title of that screen. */
+"REGISTRATION_LOCK_TIMEOUT_TITLE" = "Tài khoản bị Khóa";
+
+/* A network error occurred during registration, and an error is shown to the user. This is the body on that error sheet. */
+"REGISTRATION_NETWORK_ERROR_BODY" = "Để tiếp tục, kiểm tra kết nối Internet của điện thoại của bạn và thử lại.";
+
+/* A network error occurred during registration, and an error is shown to the user. This is the title on that error sheet. */
+"REGISTRATION_NETWORK_ERROR_TITLE" = "Kiểm tra Kết nối";
+
 /* No comment provided by engineer. */
 "REGISTRATION_NON_VALID_NUMBER" = "Định dạng số điện thoại này không được hỗ trợ, vui lòng liên hệ bộ phận hỗ trợ.";
 
 /* During registration, users are asked to enter their phone number. This is the subtitle on that screen, which gives users some instructions. */
-"REGISTRATION_PHONE_NUMBER_SUBTITLE" = "Enter your phone number to get started.";
+"REGISTRATION_PHONE_NUMBER_SUBTITLE" = "Nhập số điện thoại của bạn để bắt đầu.";
 
 /* During registration, users are asked to enter their phone number. This is the title on that screen. */
-"REGISTRATION_PHONE_NUMBER_TITLE" = "Your Phone Number";
+"REGISTRATION_PHONE_NUMBER_TITLE" = "Số Điện Thoại Của Bạn";
+
+/* Message for confirmation alert when requesting a voice code during phone number registration. */
+"REGISTRATION_PHONE_NUMBER_VOICE_CODE_ALERT_MESSAGE" = "Bạn sẽ nhận được một cuộc gọi để xác minh số điện thoại này. Số điện thoại của bạn ở trên đã chính xác chưa?";
 
 /* Label for the phone number textfield */
 "REGISTRATION_PHONENUMBER_BUTTON" = "Số điện thoại";
 
 /* During registration, users are asked to create a PIN code. They'll be taken to a screen to confirm their PIN, much like confirming a password. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_CONFIRM_SUBTITLE" = "Re-enter the PIN you just created.";
+"REGISTRATION_PIN_CONFIRM_SUBTITLE" = "Nhập lại mã PIN bạn vừa tạo.";
 
 /* During registration, users are asked to create a PIN code. They'll be taken to a screen to confirm their PIN, much like confirming a password. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_CONFIRM_TITLE" = "Confirm your PIN";
+"REGISTRATION_PIN_CONFIRM_TITLE" = "Xác nhận mã PIN của bạn";
 
 /* During registration, users are asked to create a PIN code. This is the subtitle on the screen where this happens. A \"learn more\" link will be added to the end of this string. */
-"REGISTRATION_PIN_CREATE_SUBTITLE" = "PINs can help you restore your account and keep your info encrypted with Signal.";
+"REGISTRATION_PIN_CREATE_SUBTITLE" = "Mã PIN có thể giúp bạn khôi phục tài khoản và giúp mã hóa thông tin của bạn với Signal.";
 
 /* During registration, users are asked to create a PIN code. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_CREATE_TITLE" = "Create your PIN";
+"REGISTRATION_PIN_CREATE_TITLE" = "Tạo mã PIN của bạn";
 
 /* During re-registration, users may be asked to re-enter their PIN code. This is the subtitle on the screen where this happens. A \"learn more\" link will be added to the end of this string. */
-"REGISTRATION_PIN_ENTER_EXISTING_SUBTITLE" = "PINs can help you restore your account and keep your info encrypted with Signal.";
+"REGISTRATION_PIN_ENTER_EXISTING_SUBTITLE" = "Mã PIN có thể giúp bạn khôi phục tài khoản và giúp mã hóa thông tin của bạn với Signal.";
 
 /* During re-registration, users may be asked to re-enter their PIN code. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_ENTER_EXISTING_TITLE" = "Enter your PIN";
+"REGISTRATION_PIN_ENTER_EXISTING_TITLE" = "Nhập mã PIN của bạn";
 
 /* During registration, users set up their profile. Users input a family name. This is the placeholder for that field. */
-"REGISTRATION_PROFILE_SETUP_FAMILY_NAME_FIELD_PLACEHOLDER" = "Last Name";
+"REGISTRATION_PROFILE_SETUP_FAMILY_NAME_FIELD_PLACEHOLDER" = "Họ";
+
+/* During registration, users can choose who can see their phone number. */
+"REGISTRATION_PROFILE_SETUP_FIND_MY_NUMBER_TITLE" = "Ai có thể tìm tôi bằng số điện thoại?";
 
 /* During registration, users set up their profile. Users input a given name. This is the placeholder for that field. */
-"REGISTRATION_PROFILE_SETUP_GIVEN_NAME_FIELD_PLACEHOLDER" = "First Name";
+"REGISTRATION_PROFILE_SETUP_GIVEN_NAME_FIELD_PLACEHOLDER" = "Tên";
 
 /* During registration, users set up their profile. They can learn more about the privacy of their profile by clicking a \"learn more\" button. This is the message on a sheet that appears when they do that. */
-"REGISTRATION_PROFILE_SETUP_MORE_INFO_DETAILS" = "Your name, photo and changes to it will be visible to your contacts and when you start or accept new chats.";
+"REGISTRATION_PROFILE_SETUP_MORE_INFO_DETAILS" = "Tên, ảnh cùng các thay đổi tên và hình ảnh sẽ hiển thị với các liên hệ của bạn và khi bạn bắt đầu hay chấp nhận cuộc trò chuyện mới.";
 
 /* During registration, users set up their profile. They can learn more about the privacy of their profile by clicking a \"learn more\" button. This is the title on a sheet that appears when they do that. */
-"REGISTRATION_PROFILE_SETUP_MORE_INFO_TITLE" = "About Profile Privacy";
+"REGISTRATION_PROFILE_SETUP_MORE_INFO_TITLE" = "Về Sự Riêng Tư Của Hồ Sơ";
 
 /* During registration, users set up their profile. This is the subtitle on the screen where this is done. It tells users about the privacy of their profile. A \"learn more\" link will be added to the end of this string. */
-"REGISTRATION_PROFILE_SETUP_SUBTITLE" = "Profiles are visible to people you message, contacts, and groups.";
+"REGISTRATION_PROFILE_SETUP_SUBTITLE" = "Các hồ sơ sẽ hiển thị với những người bạn nhắn tin, với các liên hệ, và các nhóm.";
 
 /* During registration, users set up their profile. This is the title on the screen where this is done. */
-"REGISTRATION_PROFILE_SETUP_TITLE" = "Set up your profile";
+"REGISTRATION_PROFILE_SETUP_TITLE" = "Thiết lập hồ sơ";
+
+/* Error shown if an SMS/call service provider is permanently unable to send a verification code to the provided number. */
+"REGISTRATION_PROVIDER_FAILURE_MESSAGE_PERMANENT" = "Signal không thể gửi mã SMS đến số của bạn do một lỗi từ bên ngoài.";
+
+/* Error shown if an SMS/call service provider is temporarily unable to send a verification code to the provided number. */
+"REGISTRATION_PROVIDER_FAILURE_MESSAGE_TRANSIENT" = "Signal không thể gửi mã SMS ngay bây giờ do một lỗi từ bên ngoài, vui lòng thử lại sau.";
 
 /* No comment provided by engineer. */
 "REGISTRATION_RESTRICTED_MESSAGE" = "Bạn cần đăng ký trước khi có thể gửi tin nhắn.";
 
+/* Alert shown when running out of attempts at submitting a verification code. */
+"REGISTRATION_SUBMIT_CODE_ATTEMPTS_EXHAUSTED_ALERT" = "Bạn đã thử nhập mã quá nhiều lần. Vui lòng gửi lại mã và thử lại.";
+
+/* Alert shown when submitting a verification code too many times. Embeds {{ duration }}, such as \"5:00\" */
+"REGISTRATION_SUBMIT_CODE_RATE_LIMIT_ALERT_FORMAT" = "Bạn đã thử nhập mã quá nhiều lần. Thử lại trong %1$@";
+
 /* Error message indicating that device transfer from another device might be possible. */
 "REGISTRATION_TRANSFER_AVAILABLE_DESCRIPTION" = "Đã có một tài khoản được đăng ký trước đó với số máy này sẵn sàn để chuyển số.";
+
+/* During registration and re-registration, users may have to enter a code to verify ownership of their phone number. If they enter an invalid code, they will see this error message. */
+"REGISTRATION_VERIFICATION_ERROR_INVALID_VERIFICATION_CODE" = "Mã bạn nhập không hợp lệ. Vui lòng gửi lại mã và thử lại.";
 
 /* Alert view title */
 "REGISTRATION_VERIFICATION_FAILED_TITLE" = "Xác thực Không thành công";
@@ -5317,6 +5416,12 @@
 /* No comment provided by engineer. */
 "REREGISTER_FOR_PUSH" = "Đăng ký lại Thông báo Đẩy";
 
+/* If the user is re-registering, they may need to enter their PIN to restore all their data. If they enter the incorrect PIN, they will be shown a warning. In some cases (such as for this string), the user has the option to skip PIN entry and will lose some data. Embeds {{ number of attempts }}, such as \"3 attempts\". */
+"REREGISTER_INVALID_PIN_WARNING_SKIPPABLE_FORMAT" = "Bạn còn %1$@ lượt nhập. Nếu bạn hết lượt nhập, bạn có thể tạo một mã PIN mới. Bạn có thể đăng ký và sử dụng tài khoản của mình nhưng sẽ không còn các cài đặt đã lưu như thông tin hồ sơ.";
+
+/* If the user is re-registering, they may need to enter their PIN to restore all their data. If they enter the incorrect PIN, they will be shown a warning. Embeds {{ number of attempts }}, such as \"3 attempts\". */
+"REREGISTER_INVALID_PIN_WARNING_UNSKIPPABLE_FORMAT" = "Bạn còn %1$@ lượt nhập. Nếu bạn hết lượt nhập, tài khoản của bạn sẽ bị khóa 7 ngày. Sau 7 ngày không hoạt động, bạn có thể đăng ký lại mà không cần mã PIN. Tuy nhiên, toàn bộ dữ liệu sẽ bị xóa.";
+
 /* Configure reactions reset button text */
 "RESET" = "Đặt lại";
 
@@ -5343,6 +5448,9 @@
 
 /* Title for the 'safety number confirmation' view */
 "SAFETY_NUMBER_CONFIRMATION_TITLE" = "Các thay đổi về Mã số an toàn";
+
+/* Text explaining that the given contact has had their safety number verified. */
+"SAFETY_NUMBER_CONFIRMATION_VERIFIED" = "Đã xác minh";
 
 /* View safety number action for the 'safety number confirmation' view */
 "SAFETY_NUMBER_CONFIRMATION_VIEW_ACTION" = "Xem";
@@ -5530,6 +5638,9 @@
 /* Title for the 'account' link in settings. */
 "SETTINGS_ACCOUNT" = "Tài khoản";
 
+/* Label for button in settings to get your account data report */
+"SETTINGS_ACCOUNT_DATA_REPORT_BUTTON" = "Dữ liệu Tài khoản của bạn";
+
 /* Title for the 'add to block list' view. */
 "SETTINGS_ADD_TO_BLOCK_LIST_TITLE" = "Chặn";
 
@@ -5638,7 +5749,7 @@
 /* Title for the 'old phone number' section in the 'change phone number' settings. */
 "SETTINGS_CHANGE_PHONE_NUMBER_OLD_PHONE_NUMBER_SECTION_TITLE" = "Số cũ của bạn";
 
-/* Label for the 'country code' row in the 'change phone number' settings. */
+/* Label for the 'phone number' row in the 'change phone number' settings. */
 "SETTINGS_CHANGE_PHONE_NUMBER_PHONE_NUMBER_FIELD" = "Số điện thoại";
 
 /* Format for the 'change phone number' progress view. Embeds: {{ the user's new phone number }}. */
@@ -5657,7 +5768,7 @@
 "SETTINGS_CHATS" = "Trò chuyện";
 
 /* No comment provided by engineer. */
-"SETTINGS_CLEAR_HISTORY" = "Xoá Lịch sử Trò chuyện";
+"SETTINGS_CLEAR_HISTORY" = "Xóa Lịch sử Trò chuyện";
 
 /* Footer for the 'about' help section */
 "SETTINGS_COPYRIGHT" = "Bản quyền Signal Messenger\nCấp phép theo GPLv3";
@@ -5723,7 +5834,7 @@
 "SETTINGS_DISAPPEARING_MESSAGES" = "Tin nhắn tự hủy";
 
 /* Explanation for the 'disappearing messages' privacy settings. */
-"SETTINGS_DISAPPEARING_MESSAGES_FOOTER" = "Đặt đồng hồ tin nhắn biến mất mặc định cho tất cả các cuộc trò chuyện mới bắt đầu bởi bạn.";
+"SETTINGS_DISAPPEARING_MESSAGES_FOOTER" = "Đặt thời gian mặc định cho tin nhắn biến mất với tất cả các cuộc trò chuyện mới bắt đầu bởi bạn.";
 
 /* Title for the 'donate to signal' link in settings. */
 "SETTINGS_DONATE" = "Ủng hộ Signal";
@@ -5735,7 +5846,7 @@
 "SETTINGS_INVITE_TITLE" = "Mời bạn bè của mình";
 
 /* Label for settings view that allows user to change the chat color and wallpaper. */
-"SETTINGS_ITEM_COLOR_AND_WALLPAPER" = "Màu cuộc trò chuyện & Màn hình nền";
+"SETTINGS_ITEM_COLOR_AND_WALLPAPER" = "Màu Cuộc trò chuyện & Hình nền";
 
 /* Label for settings view that allows user to change the notification sound. */
 "SETTINGS_ITEM_NOTIFICATION_SOUND" = "Âm thanh Tin nhắn";
@@ -5870,10 +5981,10 @@
 "SETTINGS_PAYMENTS_DEACTIVATE_TITLE" = "Ngưng kích hoạt Thanh toán";
 
 /* Explanation of the 'deactivate payments with balance' process in the 'deactivate payments' settings. */
-"SETTINGS_PAYMENTS_DEACTIVATE_WITH_BALANCE_EXPLANATION" = "Nó được khuyến khích là bạn chuyển khoản quỹ của mình vào một địa chỉ ví khác trước khi ngưng kích hoạt thanh toán. Nếu bạn chọn để không chuyển khoản quỹ của mình bây giờ, chúng sẽ nằm trong ví của bạn mà đã được liên kết với Signal nếu bạn kích hoạt lại thanh toán.";
+"SETTINGS_PAYMENTS_DEACTIVATE_WITH_BALANCE_EXPLANATION" = "Bạn được khuyến khích chuyển khoản quỹ của mình vào một địa chỉ ví khác trước khi ngưng kích hoạt thanh toán. Nếu bạn chọn không chuyển khoản quỹ của mình bây giờ, chúng sẽ giữ nguyên trong ví của bạn mà đã được liên kết với Signal nếu bạn kích hoạt lại thanh toán.";
 
 /* Description for the 'deactivate payments confirmation' UI in the payment settings. */
-"SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_DESCRIPTION" = "Số dư của bạn sẽ nằm trong ví của bạn mà đã được liên kết với Signal nếu như bạn chọn để kích hoạt lại thanh toán.";
+"SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_DESCRIPTION" = "Số dư của bạn sẽ giữ nguyên trong ví của bạn mà đã được liên kết với Signal nếu như bạn chọn kích hoạt lại thanh toán.";
 
 /* Title for the 'deactivate payments confirmation' UI in the payment settings. */
 "SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_TITLE" = "Ngưng kích hoạt mà không chuyển khoản?";
@@ -6278,16 +6389,16 @@
 "SETTINGS_PAYMENTS_WALLET_ADDRESS_LABEL" = "Địa chỉ Ví của bạn";
 
 /* The title for the phone number discoverability setting section. */
-"SETTINGS_PHONE_NUMBER_DISCOVERABILITY_TITLE" = "Who Can Find Me By Number";
+"SETTINGS_PHONE_NUMBER_DISCOVERABILITY_TITLE" = "Ai Có Thể Tìm Tôi Bằng Số Điện Thoại";
 
 /* Description label for Phone Number Privacy */
-"SETTINGS_PHONE_NUMBER_PRIVACY_DESCRIPTION_LABEL" = "Choose who can see your phone number and who can contact you on Signal with it.";
+"SETTINGS_PHONE_NUMBER_PRIVACY_DESCRIPTION_LABEL" = "Chọn người có thể thấy số điện thoại của bạn và người có thể liên hệ với bạn trên Signal với số đó.";
 
 /* The title for phone number privacy settings. */
-"SETTINGS_PHONE_NUMBER_PRIVACY_TITLE" = "Phone Number";
+"SETTINGS_PHONE_NUMBER_PRIVACY_TITLE" = "Số Điện Thoại";
 
 /* The title for the phone number sharing setting section. */
-"SETTINGS_PHONE_NUMBER_SHARING_TITLE" = "Who Can See My Number";
+"SETTINGS_PHONE_NUMBER_SHARING_TITLE" = "Ai Có Thể Thấy Số Điện Thoại Của Tôi";
 
 /* The button text for the dialog asking user to confirm their PIN to disable reminders */
 "SETTINGS_PIN_REMINDER_DISABLE_CONFIRMATION_ACTION" = "Tắt Lời nhắc";
@@ -6392,10 +6503,10 @@
 "SETTINGS_SHARING_SUGGESTIONS" = " Chia sẻ thông tin liên lạc với iOS";
 
 /* Footer for setting for enabling & disabling contact sharing with iOS. */
-"SETTINGS_SHARING_SUGGESTIONS_FOOTER" = "Cho phép iOS truy cập vào thông tin liên lạc và hội thoại để kích hoạt các tính năng như chia sẻ các đề suất cho người dùng";
+"SETTINGS_SHARING_SUGGESTIONS_FOOTER" = "Cho phép iOS truy cập vào thông tin liên lạc và hội thoại để kích hoạt các tính năng như chia sẻ các đề xuất cho người dùng.";
 
 /* Footer for setting for enabling & disabling contact and notification sharing with iOS. */
-"SETTINGS_SHARING_SUGGESTIONS_NOTIFICATIONS_FOOTER" = "Cho phép iOS truy cập vào thông tin liên lạc và hội thoại để kích hoạt các tính năng như chia sẻ các đề suất cho người dùng và hiển thị thông báo";
+"SETTINGS_SHARING_SUGGESTIONS_NOTIFICATIONS_FOOTER" = "Cho phép iOS truy cập vào thông tin liên lạc và hội thoại để kích hoạt các tính năng như chia sẻ các đề xuất cho người dùng và hiển thị thông báo.";
 
 /* Label for the 'enable registration lock' switch of the privacy settings. */
 "SETTINGS_TWO_FACTOR_AUTH_SWITCH_LABEL" = "Khóa Đăng ký";
@@ -6569,7 +6680,7 @@
 "STORIES_FORWARD_STORY_ACTION" = "Chuyển tiếp";
 
 /* Context menu action to open the chat associated with the selected story */
-"STORIES_GO_TO_CHAT_ACTION" = "Đến cuộc trò chuyện";
+"STORIES_GO_TO_CHAT_ACTION" = "Đến Cuộc trò chuyện";
 
 /* Text indicating you can't reply to a group story because you're not a member of the group */
 "STORIES_GROUP_REPLY_NOT_A_MEMBER" = "Bạn không thể trả lời story này vì bạn không còn là thành viên của nhóm này.";
@@ -6608,7 +6719,7 @@
 "STORIES_REPLIES_AND_REACTIONS_FOOTER" = "Cho phép những người có thể xem story của bạn bày tỏ cảm xúc và trả lời.";
 
 /* Section header for the 'replies & reactions' section in stories settings */
-"STORIES_REPLIES_AND_REACTIONS_HEADER" = "Câu trả lời & bày tỏ cảm xúc";
+"STORIES_REPLIES_AND_REACTIONS_HEADER" = "Câu trả lời & Bày tỏ cảm xúc";
 
 /* Toggle text for the 'replies & reactions' switch in stories settings */
 "STORIES_REPLIES_AND_REACTIONS_TOGGLE" = "Cho phép Trả lời & Bày tỏ cảm xúc";
@@ -6961,6 +7072,36 @@
 /* Tap to Replace Emoji string for reaction configuration */
 "TAP_REPLACE_EMOJI" = "Nhấn để thay thế emoji";
 
+/* Option in selected text edit menu to make text bold */
+"TEXT_MENU_BOLD" = "Đậm";
+
+/* Option in selected text edit menu to clear all text formatting in the selected text range */
+"TEXT_MENU_CLEAR_FORMATTING" = "Clear Formatting";
+
+/* Option in selected text edit menu to view text formatting options */
+"TEXT_MENU_FORMAT" = "Định dạng";
+
+/* Option in selected text edit menu to make text italic */
+"TEXT_MENU_ITALIC" = "Nghiêng";
+
+/* Option in selected text edit menu to look up word definitions */
+"TEXT_MENU_LOOK_UP" = "Tra cứu";
+
+/* Option in selected text edit menu to make text monospace */
+"TEXT_MENU_MONOSPACE" = "Đơn cách";
+
+/* Option in selected text edit menu to replace text with suggestions */
+"TEXT_MENU_REPLACE" = "Thay thế";
+
+/* Option in selected text edit menu to share selected text */
+"TEXT_MENU_SHARE" = "Chia sẻ";
+
+/* Option in selected text edit menu to make text spoiler */
+"TEXT_MENU_SPOILER" = "Spoiler";
+
+/* Option in selected text edit menu to make text strikethrough */
+"TEXT_MENU_STRIKETHROUGH" = "Có gạch ngang";
+
 /* text indicating the message was remotely deleted */
 "THIS_MESSAGE_WAS_DELETED" = "Tin nhắn này đã bị xóa.";
 
@@ -7082,13 +7223,13 @@
 "UNLINK_CONFIRMATION_ALERT_TITLE" = "Ngừng kết nối \"%1$@\"?";
 
 /* Label warning the user that they have been unlinked from their primary device. */
-"UNLINKED_WARNING" = "Thiết bị không còn được liên kết. Hãy liên kết lại Signal bằng điện thoại để tiếp tục nhắn tin.";
+"UNLINKED_WARNING" = "Thiết bị này không còn được liên kết. Liên kết Signal lại với điện thoại của bạn để tiếp tục nhắn tin.";
+
+/* If this device has become unlinked from their primary device, they'll see a warning. This is the call to action on that warning. */
+"UNLINKED_WARNING_ACTION_TITLE" = "Liên kết lại Thiết bị";
 
 /* Alert title when unlinking device fails */
 "UNLINKING_FAILED_ALERT_TITLE" = "Signal không thể ngừng kết nối thiết bị của bạn.";
-
-/* Label text in device manager for a device with no name */
-"UNNAMED_DEVICE" = "Thiết bị Chưa đặt tên";
 
 /* Pressing this button un-pins a thread */
 "UNPIN_ACTION" = "Bỏ ghim";
@@ -7098,6 +7239,9 @@
 
 /* Pressing this button marks a thread as unread */
 "UNREAD_ACTION" = "Chưa đọc";
+
+/* Label warning the user that the validation of their username has failed. */
+"UNREGISTERED_USERNAME_WARNING" = "Có vấn đề với tên người dùng của bạn và tên này không còn gắn liền với tài khoản của bạn. Bạn có thể thử và đặt lại hoặc chọn một tên mới.";
 
 /* No comment provided by engineer. */
 "UNSUPPORTED_ATTACHMENT" = "Nhận loại tập tin đính kèm không được hỗ trợ.";
@@ -7138,6 +7282,21 @@
 /* Description of username link */
 "USERNAME_LINK_DESCRIPTION" = "Mỗi tên người dùng có một liên kết độc nhất bạn có thể chia sẻ với bạn của mình để bắt đầu trò chuyện";
 
+/* Title for a button to pick the color of your username link QR code. Lowercase styling is intentional. */
+"USERNAME_LINK_QR_CODE_VIEW_COLOR_BUTTON" = "Màu";
+
+/* Text for a label explaining what the username link and QR code give others access to. */
+"USERNAME_LINK_QR_CODE_VIEW_DISCLAIMER_LABEL" = "Chỉ chia sẻ mã QR và đường dẫn của bạn với người bạn tin tưởng. Khi được chia sẻ, mọi người sẽ có thể thấy tên người dùng và bắt đầu cuộc trò chuyện với bạn.";
+
+/* Title for a button that allows users to reset their username link and QR code. */
+"USERNAME_LINK_QR_CODE_VIEW_RESET_BUTTON_TITLE" = "Đặt lại";
+
+/* Title for a button to share your username link QR code. Lowercase styling is intentional. */
+"USERNAME_LINK_QR_CODE_VIEW_SHARE_BUTTON" = "Chia sẻ";
+
+/* A title for a view that allows you to view and interact with a QR code for your username link. */
+"USERNAME_LINK_QR_CODE_VIEW_TITLE_CODE" = "Mã";
+
 /* A message indicating that username lookup failed. */
 "USERNAME_LOOKUP_ERROR_MESSAGE" = "Đã xảy ra lỗi khi tìm tên người dùng. Hãy thử lại sau.";
 
@@ -7153,8 +7312,8 @@
 /* Title for an action sheet indicating that the given username is not associated with a registered Signal account. */
 "USERNAME_LOOKUP_NOT_FOUND_TITLE" = "Không tìm thấy Người dùng";
 
-/* A prefix appended to all usernames when displayed */
-"USERNAME_PREFIX" = "@";
+/* An error message shown when the user has typed a username that starts with a digit, which is invalid. */
+"USERNAME_SELECTION_CANNOT_START_WITH_DIGIT_ERROR_MESSAGE" = "Tên người dùng không thể bắt đầu bằng một số.";
 
 /* The title of an action sheet button that will delete a user's username. */
 "USERNAME_SELECTION_DELETE_USERNAME_ACTION_TITLE" = "Xóa Tên người dùng";
@@ -7274,16 +7433,16 @@
 "WALLPAPER_PREVIEW_TITLE" = "Xem trước";
 
 /* Clear chat color action in wallpaper settings view. */
-"WALLPAPER_SETTINGS_CLEAR_CHAT_COLOR" = "Xoá Màu cuộc trò chuyện";
+"WALLPAPER_SETTINGS_CLEAR_CHAT_COLOR" = "Xóa Màu Cuộc trò chuyện";
 
 /* Confirmation dialog when clearing the chat color for a specific chat. */
-"WALLPAPER_SETTINGS_CLEAR_CHAT_COLOR_CHAT_CONFIRMATION" = "Xoá Màu cuộc trò chuyện cho cuộc trò chuyện này?";
+"WALLPAPER_SETTINGS_CLEAR_CHAT_COLOR_CHAT_CONFIRMATION" = "Xóa màu cho cuộc trò chuyện này?";
 
 /* Clear wallpaper action in wallpaper settings view. */
 "WALLPAPER_SETTINGS_CLEAR_WALLPAPER" = "Xoá ảnh nền";
 
 /* Confirmation dialog when clearing the wallpaper for a specific chat. */
-"WALLPAPER_SETTINGS_CLEAR_WALLPAPER_CHAT_CONFIRMATION" = "Xoá ảnh nền cho cuộc trò chuyện?";
+"WALLPAPER_SETTINGS_CLEAR_WALLPAPER_CHAT_CONFIRMATION" = "Xóa hình nền cho cuộc trò chuyện?";
 
 /* Dim wallpaper action in wallpaper settings view. */
 "WALLPAPER_SETTINGS_DIM_WALLPAPER" = "Chế độ Tối Làm mờ Ảnh nền";
@@ -7304,10 +7463,10 @@
 "WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_MESSAGE" = "Bạn có muốn ghi đè tất cả các màu trò chuyện?";
 
 /* Title of confirmation dialog when resetting the global wallpaper settings. */
-"WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_TITLE" = "Cài lại các Màu Cuộc trò chuyện";
+"WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_TITLE" = "Đặt lại Màu Cuộc trò chuyện";
 
 /* Reset conversation chat color action in wallpaper settings view. */
-"WALLPAPER_SETTINGS_RESET_CONVERSATION_CHAT_COLOR" = "Thiết lập lại Màu cuộc trò chuyện";
+"WALLPAPER_SETTINGS_RESET_CONVERSATION_CHAT_COLOR" = "Đặt lại Màu Cuộc trò chuyện";
 
 /* Reset conversation wallpaper action in wallpaper settings view. */
 "WALLPAPER_SETTINGS_RESET_CONVERSATION_WALLPAPER" = "Cài lại màn hình nền";
@@ -7316,7 +7475,7 @@
 "WALLPAPER_SETTINGS_RESET_DEFAULT_CHAT_COLOR" = "Thiết lập lại Màu Mặc định";
 
 /* Reset global chat colors action in wallpaper settings view. */
-"WALLPAPER_SETTINGS_RESET_DEFAULT_CHAT_COLORS" = "Cài lại các Màu Cuộc trò chuyện";
+"WALLPAPER_SETTINGS_RESET_DEFAULT_CHAT_COLORS" = "Đặt lại Màu Cuộc trò chuyện";
 
 /* Label for 'reset default wallpaper' action in the global wallpaper settings. */
 "WALLPAPER_SETTINGS_RESET_DEFAULT_WALLPAPER" = "Thiết lập lại Màn hình nền Mặc định";

@@ -3,10 +3,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import SignalMessaging
+import SignalUI
 
-@objc
 public class Deprecated_OnboardingProfileCreationViewController: Deprecated_OnboardingBaseViewController {
 
     // MARK: - Properties
@@ -31,10 +30,10 @@ public class Deprecated_OnboardingProfileCreationViewController: Deprecated_Onbo
 
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.ows_dynamicTypeTitle1.ows_semibold
+        label.font = UIFont.dynamicTypeTitle1.semibold()
         label.adjustsFontForContentSizeCategory = true
         label.textAlignment = .center
-        label.text = NSLocalizedString(
+        label.text = OWSLocalizedString(
             "ONBOARDING_PROFILE_CREATION_TITLE",
             comment: "Title label for profile creation step of onboarding")
         label.numberOfLines = 0
@@ -55,7 +54,7 @@ public class Deprecated_OnboardingProfileCreationViewController: Deprecated_Onbo
 
     let cameraImageViewSize = CGSize(square: 32)
     private lazy var cameraImageView: UIImageView = {
-        let cameraImageView = UIImageView.withTemplateImageName("camera-outline-24", tintColor: Theme.secondaryTextAndIconColor)
+        let cameraImageView = UIImageView.withTemplateImageName("camera", tintColor: Theme.secondaryTextAndIconColor)
         cameraImageView.autoSetDimensions(to: cameraImageViewSize)
         cameraImageView.contentMode = .center
         cameraImageView.layer.cornerRadius = cameraImageViewSize.largerAxis / 2
@@ -83,7 +82,7 @@ public class Deprecated_OnboardingProfileCreationViewController: Deprecated_Onbo
 
     private lazy var givenNameTextField: OWSTextField = {
         let label = OWSTextField()
-        label.font = .ows_dynamicTypeSubheadlineClamped
+        label.font = .dynamicTypeSubheadlineClamped
         label.adjustsFontForContentSizeCategory = true
         label.textAlignment = .natural
         label.autocorrectionType = .no
@@ -91,7 +90,7 @@ public class Deprecated_OnboardingProfileCreationViewController: Deprecated_Onbo
         label.textContentType = .givenName
 
         label.accessibilityIdentifier = "given_name_textfield"
-        label.placeholder = NSLocalizedString(
+        label.placeholder = OWSLocalizedString(
             "ONBOARDING_PROFILE_GIVEN_NAME_FIELD",
             comment: "Placeholder text for the given name field of the profile creation view.")
 
@@ -103,7 +102,7 @@ public class Deprecated_OnboardingProfileCreationViewController: Deprecated_Onbo
 
     private lazy var familyNameTextField: OWSTextField = {
         let label = OWSTextField()
-        label.font = .ows_dynamicTypeSubheadlineClamped
+        label.font = .dynamicTypeSubheadlineClamped
         label.adjustsFontForContentSizeCategory = true
         label.textAlignment = .natural
         label.autocorrectionType = .no
@@ -111,7 +110,7 @@ public class Deprecated_OnboardingProfileCreationViewController: Deprecated_Onbo
         label.textContentType = .familyName
 
         label.accessibilityIdentifier = "family_name_textfield"
-        label.placeholder = NSLocalizedString(
+        label.placeholder = OWSLocalizedString(
             "ONBOARDING_PROFILE_FAMILY_NAME_FIELD",
             comment: "Placeholder text for the family name field of the profile creation view.")
 
@@ -122,7 +121,7 @@ public class Deprecated_OnboardingProfileCreationViewController: Deprecated_Onbo
     }()
 
     private lazy var nameFieldStrokes: [UIView] = [givenNameTextField, familyNameTextField].map {
-        $0.addBottomStroke(color: Theme.cellSeparatorColor, strokeWidth: CGHairlineWidth())
+        $0.addBottomStroke(color: Theme.cellSeparatorColor, strokeWidth: .hairlineWidth)
     }
 
     // For CJKV locales, display family name field first
@@ -130,16 +129,16 @@ public class Deprecated_OnboardingProfileCreationViewController: Deprecated_Onbo
     private var secondTextField: UITextField { NSLocale.current.isCJKV ? givenNameTextField : familyNameTextField }
 
     private var footerText: NSAttributedString {
-        let descriptionString = NSLocalizedString("PROFILE_VIEW_PROFILE_DESCRIPTION", comment: "Description of the user profile.")
+        let descriptionString = OWSLocalizedString("PROFILE_VIEW_PROFILE_DESCRIPTION", comment: "Description of the user profile.")
         let spacerString = "  "
         let learnMoreString = CommonStrings.learnMore
 
         return NSAttributedString.composed(of: [
-            descriptionString.styled(with: .font(.ows_dynamicTypeCaption1), .color(Theme.secondaryTextAndIconColor)),
-            spacerString.styled(with: .font(. ows_dynamicTypeCaption1), .color(Theme.secondaryTextAndIconColor)),
+            descriptionString.styled(with: .font(.dynamicTypeCaption1), .color(Theme.secondaryTextAndIconColor)),
+            spacerString.styled(with: .font(.dynamicTypeCaption1), .color(Theme.secondaryTextAndIconColor)),
             learnMoreString.styled(with:
                 .link(URL(string: "https://support.signal.org/hc/articles/360007459591")!),
-                .font(.ows_dynamicTypeCaption1),
+                .font(.dynamicTypeCaption1),
                 .color(Theme.accentBlueColor),
                 .underline([], nil)
             )
@@ -148,7 +147,7 @@ public class Deprecated_OnboardingProfileCreationViewController: Deprecated_Onbo
 
     private lazy var footerTextView: LinkingTextView = {
         let footerTextView = LinkingTextView()
-        footerTextView.font = .ows_dynamicTypeCaption1
+        footerTextView.font = .dynamicTypeCaption1
         footerTextView.adjustsFontForContentSizeCategory = true
         footerTextView.attributedText = footerText
         footerTextView.isUserInteractionEnabled = true
@@ -159,7 +158,7 @@ public class Deprecated_OnboardingProfileCreationViewController: Deprecated_Onbo
     private lazy var saveButtonGradient = GradientView(colors: [])
 
     private lazy var saveButton = self.primaryButton(
-        title: NSLocalizedString("PROFILE_VIEW_SAVE_BUTTON",
+        title: OWSLocalizedString("PROFILE_VIEW_SAVE_BUTTON",
                                  comment: "Button to save the profile view in the profile view."),
         selector: #selector(saveProfile)
     )
@@ -286,27 +285,27 @@ public class Deprecated_OnboardingProfileCreationViewController: Deprecated_Onbo
     // MARK: - Event Handling
 
     @objc
-    func saveProfile() {
+    private func saveProfile() {
         if normalizedGivenName.isEmpty {
-            OWSActionSheets.showErrorAlert(message: NSLocalizedString("PROFILE_VIEW_ERROR_GIVEN_NAME_REQUIRED",
+            OWSActionSheets.showErrorAlert(message: OWSLocalizedString("PROFILE_VIEW_ERROR_GIVEN_NAME_REQUIRED",
                                                                       comment: "Error message shown when user tries to update profile without a given name"))
             return
         }
 
         if profileManagerImpl.isProfileNameTooLong(normalizedGivenName) {
-            OWSActionSheets.showErrorAlert(message: NSLocalizedString("PROFILE_VIEW_ERROR_GIVEN_NAME_TOO_LONG",
+            OWSActionSheets.showErrorAlert(message: OWSLocalizedString("PROFILE_VIEW_ERROR_GIVEN_NAME_TOO_LONG",
                                                                       comment: "Error message shown when user tries to update profile with a given name that is too long."))
             return
         }
 
         if profileManagerImpl.isProfileNameTooLong(normalizedFamilyName) {
-            OWSActionSheets.showErrorAlert(message: NSLocalizedString("PROFILE_VIEW_ERROR_FAMILY_NAME_TOO_LONG",
+            OWSActionSheets.showErrorAlert(message: OWSLocalizedString("PROFILE_VIEW_ERROR_FAMILY_NAME_TOO_LONG",
                                                                       comment: "Error message shown when user tries to update profile with a family name that is too long."))
             return
         }
 
         if !self.reachabilityManager.isReachable {
-            OWSActionSheets.showErrorAlert(message: NSLocalizedString("PROFILE_VIEW_NO_CONNECTION",
+            OWSActionSheets.showErrorAlert(message: OWSLocalizedString("PROFILE_VIEW_NO_CONNECTION",
                                                                       comment: "Error shown when the user tries to update their profile when the app is not connected to the internet."))
             return
         }
@@ -330,7 +329,8 @@ public class Deprecated_OnboardingProfileCreationViewController: Deprecated_Onbo
                 profileBioEmoji: nil,
                 profileAvatarData: avatarData,
                 visibleBadgeIds: [],
-                userProfileWriter: .registration)
+                userProfileWriter: .registration
+            )
         }.done {
             self.profileCompleted()
             UIView.animate(withDuration: 0.15) {
@@ -346,7 +346,7 @@ public class Deprecated_OnboardingProfileCreationViewController: Deprecated_Onbo
 
                 if error.isNetworkConnectivityFailure {
                     OWSActionSheets.showErrorAlert(
-                        message: NSLocalizedString(
+                        message: OWSLocalizedString(
                             "PROFILE_VIEW_NO_CONNECTION",
                             comment: "Error shown when the user tries to update their profile when the app is not connected to the internet.")
                     )
@@ -446,7 +446,7 @@ extension Deprecated_OnboardingProfileCreationViewController: UITextFieldDelegat
     }
 
     @objc
-    func textFieldDidChange(_ textField: UITextField) {
+    private func textFieldDidChange(_ textField: UITextField) {
         saveButton.setEnabled(isValidProfile)
     }
 }

@@ -4,6 +4,8 @@
 //
 
 import XCTest
+
+@testable import SignalServiceKit
 @testable import SignalUI
 
 final class PhoneNumberFinderTests: XCTestCase {
@@ -84,7 +86,7 @@ final class PhoneNumberFinderTests: XCTestCase {
                 localNumber: "+16505550100",
                 contactDiscoveryManager: MockContactDiscoveryManager(lookUpBlock: { phoneNumbers in
                     XCTAssertTrue(testCase.isValid)
-                    return .value(testCase.isFound ? [SignalRecipient(uuidString: UUID().uuidString)] : [])
+                    return .value(testCase.isFound ? [SignalRecipient(serviceId: ServiceId(UUID()), phoneNumber: nil)] : [])
                 })
             )
             let resultPromise = finder.lookUp(phoneNumber: testCase.searchResult)

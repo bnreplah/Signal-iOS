@@ -3,15 +3,14 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import SignalMessaging
+import SignalUI
 
-@objc
 class AdvancedPrivacySettingsViewController: OWSTableViewController2 {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = NSLocalizedString(
+        title = OWSLocalizedString(
             "SETTINGS_PRIVACY_ADVANCED_TITLE",
             comment: "Title for the advanced privacy settings"
         )
@@ -51,7 +50,7 @@ class AdvancedPrivacySettingsViewController: OWSTableViewController2 {
     }
 
     @objc
-    func updateTableContents() {
+    private func updateTableContents() {
         let contents = OWSTableContents()
 
         let censorshipCircumventionSection = OWSTableSection()
@@ -60,50 +59,50 @@ class AdvancedPrivacySettingsViewController: OWSTableViewController2 {
         if signalService.hasCensoredPhoneNumber {
             isCensorshipCircumventionSwitchEnabled = true
             if signalService.isCensorshipCircumventionManuallyDisabled {
-                censorshipCircumventionSection.footerTitle = NSLocalizedString(
+                censorshipCircumventionSection.footerTitle = OWSLocalizedString(
                     "SETTINGS_ADVANCED_CENSORSHIP_CIRCUMVENTION_FOOTER_MANUALLY_DISABLED",
                     comment: "Table footer for the 'censorship circumvention' section shown when censorship circumvention has been manually disabled."
                 )
             } else {
-                censorshipCircumventionSection.footerTitle = NSLocalizedString(
+                censorshipCircumventionSection.footerTitle = OWSLocalizedString(
                     "SETTINGS_ADVANCED_CENSORSHIP_CIRCUMVENTION_FOOTER_AUTO_ENABLED",
                     comment: "Table footer for the 'censorship circumvention' section shown when censorship circumvention has been auto-enabled based on local phone number."
                 )
             }
         } else if !signalService.isCensorshipCircumventionActive, socketManager.isAnySocketOpen {
             isCensorshipCircumventionSwitchEnabled = false
-            censorshipCircumventionSection.footerTitle = NSLocalizedString(
+            censorshipCircumventionSection.footerTitle = OWSLocalizedString(
                 "SETTINGS_ADVANCED_CENSORSHIP_CIRCUMVENTION_FOOTER_WEBSOCKET_CONNECTED",
                 comment: "Table footer for the 'censorship circumvention' section shown when the app is connected to the Signal service."
             )
         } else if !signalService.isCensorshipCircumventionActive, !reachabilityManager.isReachable {
             isCensorshipCircumventionSwitchEnabled = false
-            censorshipCircumventionSection.footerTitle = NSLocalizedString(
+            censorshipCircumventionSection.footerTitle = OWSLocalizedString(
                 "SETTINGS_ADVANCED_CENSORSHIP_CIRCUMVENTION_FOOTER_NO_CONNECTION",
                 comment: "Table footer for the 'censorship circumvention' section shown when the app is not connected to the internet."
             )
         } else {
             isCensorshipCircumventionSwitchEnabled = true
-            censorshipCircumventionSection.footerTitle = NSLocalizedString(
+            censorshipCircumventionSection.footerTitle = OWSLocalizedString(
                 "SETTINGS_ADVANCED_CENSORSHIP_CIRCUMVENTION_FOOTER",
                 comment: "Table footer for the 'censorship circumvention' section when censorship circumvention can be manually enabled."
             )
         }
 
         censorshipCircumventionSection.add(.switch(
-            withText: NSLocalizedString(
+            withText: OWSLocalizedString(
                 "SETTINGS_ADVANCED_CENSORSHIP_CIRCUMVENTION",
                 comment: "Label for the 'manual censorship circumvention' switch."
             ),
             isOn: { self.signalService.isCensorshipCircumventionActive },
-            isEnabledBlock: { isCensorshipCircumventionSwitchEnabled || DebugFlags.exposeCensorshipCircumvention },
+            isEnabled: { isCensorshipCircumventionSwitchEnabled || DebugFlags.exposeCensorshipCircumvention },
             target: self,
             selector: #selector(didToggleEnableCensorshipCircumventionSwitch)
         ))
 
         if self.signalService.isCensorshipCircumventionManuallyActivated {
             censorshipCircumventionSection.add(.disclosureItem(
-                withText: NSLocalizedString(
+                withText: OWSLocalizedString(
                     "SETTINGS_ADVANCED_CENSORSHIP_CIRCUMVENTION_COUNTRY",
                     comment: "Label for the 'manual censorship circumvention' country."
                 ),
@@ -115,19 +114,19 @@ class AdvancedPrivacySettingsViewController: OWSTableViewController2 {
             ))
         }
 
-        contents.addSection(censorshipCircumventionSection)
+        contents.add(censorshipCircumventionSection)
 
         let proxySection = OWSTableSection()
         proxySection.footerAttributedTitle = .composed(of: [
-            NSLocalizedString("USE_PROXY_EXPLANATION", comment: "Explanation of when you should use a signal proxy"),
+            OWSLocalizedString("USE_PROXY_EXPLANATION", comment: "Explanation of when you should use a signal proxy"),
             " ",
             CommonStrings.learnMore.styled(with: .link(URL(string: "https://support.signal.org/hc/en-us/articles/360056052052-Proxy-Support")!))
         ]).styled(
-            with: .font(.ows_dynamicTypeCaption1Clamped),
+            with: .font(.dynamicTypeCaption1Clamped),
             .color(Theme.secondaryTextAndIconColor)
         )
         proxySection.add(.disclosureItem(
-            withText: NSLocalizedString(
+            withText: OWSLocalizedString(
                 "PROXY_SETTINGS_TITLE",
                 comment: "Title for the signal proxy settings"
             ),
@@ -137,31 +136,31 @@ class AdvancedPrivacySettingsViewController: OWSTableViewController2 {
                 self?.navigationController?.pushViewController(vc, animated: true)
             }
         ))
-        contents.addSection(proxySection)
+        contents.add(proxySection)
 
         let relayCallsSection = OWSTableSection()
-        relayCallsSection.footerTitle = NSLocalizedString(
+        relayCallsSection.footerTitle = OWSLocalizedString(
             "SETTINGS_CALLING_HIDES_IP_ADDRESS_PREFERENCE_TITLE_DETAIL",
             comment: "User settings section footer, a detailed explanation"
         )
         relayCallsSection.add(.switch(
-            withText: NSLocalizedString(
+            withText: OWSLocalizedString(
                 "SETTINGS_CALLING_HIDES_IP_ADDRESS_PREFERENCE_TITLE",
                 comment: "Table cell label"
             ),
-            isOn: { Self.preferences.doCallsHideIPAddress() },
+            isOn: { Self.preferences.doCallsHideIPAddress },
             target: self,
             selector: #selector(didToggleCallsHideIPAddressSwitch)
         ))
-        contents.addSection(relayCallsSection)
+        contents.add(relayCallsSection)
 
         let sealedSenderSection = OWSTableSection()
-        sealedSenderSection.headerTitle = NSLocalizedString(
+        sealedSenderSection.headerTitle = OWSLocalizedString(
             "SETTINGS_UNIDENTIFIED_DELIVERY_SECTION_TITLE",
             comment: "table section label"
         )
         sealedSenderSection.footerAttributedTitle = NSAttributedString.composed(of: [
-            NSLocalizedString(
+            OWSLocalizedString(
                 "SETTINGS_UNIDENTIFIED_DELIVERY_UNRESTRICTED_ACCESS_FOOTER",
                 comment: "table section footer"
             ),
@@ -170,7 +169,7 @@ class AdvancedPrivacySettingsViewController: OWSTableViewController2 {
                 with: .link(URL(string: "https://signal.org/blog/sealed-sender/")!)
             )
         ]).styled(
-            with: .font(.ows_dynamicTypeCaption1Clamped),
+            with: .font(.dynamicTypeCaption1Clamped),
             .color(Theme.secondaryTextAndIconColor)
         )
         sealedSenderSection.add(.init(
@@ -186,7 +185,7 @@ class AdvancedPrivacySettingsViewController: OWSTableViewController2 {
                 stackView.autoPinEdgesToSuperviewMargins()
 
                 let nameLabel = UILabel()
-                nameLabel.text = NSLocalizedString("SETTINGS_UNIDENTIFIED_DELIVERY_SHOW_INDICATORS", comment: "switch label")
+                nameLabel.text = OWSLocalizedString("SETTINGS_UNIDENTIFIED_DELIVERY_SHOW_INDICATORS", comment: "switch label")
                 nameLabel.textColor = Theme.primaryTextColor
                 nameLabel.font = OWSTableItem.primaryLabelFont
                 nameLabel.adjustsFontForContentSizeCategory = true
@@ -208,7 +207,7 @@ class AdvancedPrivacySettingsViewController: OWSTableViewController2 {
                 stackView.addArrangedSubview(.spacer(withWidth: 60))
 
                 let cellSwitch = UISwitch()
-                cellSwitch.isOn = Self.preferences.shouldShowUnidentifiedDeliveryIndicators()
+                cellSwitch.isOn = Self.preferences.shouldShowUnidentifiedDeliveryIndicators
                 cellSwitch.addTarget(self, action: #selector(self.didToggleUDShowIndicatorsSwitch), for: .valueChanged)
                 cell.accessoryView = cellSwitch
 
@@ -221,7 +220,7 @@ class AdvancedPrivacySettingsViewController: OWSTableViewController2 {
 
         if tsAccountManager.isRegisteredPrimaryDevice {
             sealedSenderSection.add(.switch(
-                withText: NSLocalizedString(
+                withText: OWSLocalizedString(
                     "SETTINGS_UNIDENTIFIED_DELIVERY_UNRESTRICTED_ACCESS",
                     comment: "switch label"
                 ),
@@ -231,7 +230,7 @@ class AdvancedPrivacySettingsViewController: OWSTableViewController2 {
             ))
         }
 
-        contents.addSection(sealedSenderSection)
+        contents.add(sealedSenderSection)
 
         self.contents = contents
     }
@@ -242,7 +241,7 @@ class AdvancedPrivacySettingsViewController: OWSTableViewController2 {
     }
 
     @objc
-    func didToggleEnableCensorshipCircumventionSwitch(_ sender: UISwitch) {
+    private func didToggleEnableCensorshipCircumventionSwitch(_ sender: UISwitch) {
         self.signalService.isCensorshipCircumventionManuallyDisabled = !sender.isOn
         self.signalService.isCensorshipCircumventionManuallyActivated = sender.isOn
         updateTableContents()
@@ -255,17 +254,17 @@ class AdvancedPrivacySettingsViewController: OWSTableViewController2 {
     }
 
     @objc
-    func didToggleCallsHideIPAddressSwitch(_ sender: UISwitch) {
+    private func didToggleCallsHideIPAddressSwitch(_ sender: UISwitch) {
         preferences.setDoCallsHideIPAddress(sender.isOn)
     }
 
     @objc
-    func didToggleUDShowIndicatorsSwitch(_ sender: UISwitch) {
+    private func didToggleUDShowIndicatorsSwitch(_ sender: UISwitch) {
         preferences.setShouldShowUnidentifiedDeliveryIndicatorsAndSendSyncMessage(sender.isOn)
     }
 
     @objc
-    func didToggleUDUnrestrictedAccessSwitch(_ sender: UISwitch) {
+    private func didToggleUDUnrestrictedAccessSwitch(_ sender: UISwitch) {
         udManager.setShouldAllowUnrestrictedAccessLocal(sender.isOn)
     }
 }

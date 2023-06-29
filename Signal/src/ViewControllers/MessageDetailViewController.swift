@@ -25,6 +25,7 @@ class MessageDetailViewController: OWSTableViewController2 {
     private var thread: TSThread? { renderItem?.itemModel.thread }
 
     private(set) var message: TSMessage
+    public let spoilerReveal: SpoilerRevealState
     private var wasDeleted: Bool = false
     private var isIncoming: Bool { message as? TSIncomingMessage != nil }
     private var expires: Bool { message.expiresInSeconds > 0 }
@@ -62,7 +63,7 @@ class MessageDetailViewController: OWSTableViewController2 {
     private var expiryLabelTimer: Timer?
 
     private var expiryLabelName: String {
-        NSLocalizedString(
+        OWSLocalizedString(
             "MESSAGE_METADATA_VIEW_DISAPPEARS_IN",
             comment: "Label for the 'disappears' field of the 'message metadata' view."
         )
@@ -80,7 +81,7 @@ class MessageDetailViewController: OWSTableViewController2 {
         let expiresAt = message.expiresAt
         guard expiresAt > 0 else {
             owsFailDebug("We should never hit this code, because we should never show the label")
-            return NSLocalizedString(
+            return OWSLocalizedString(
                 "MESSAGE_METADATA_VIEW_NEVER_DISAPPEARS",
                 comment: "On the 'message metadata' view, if a message never disappears, this text is shown as a fallback."
             )
@@ -116,9 +117,11 @@ class MessageDetailViewController: OWSTableViewController2 {
 
     required init(
         message: TSMessage,
+        spoilerReveal: SpoilerRevealState,
         thread: TSThread
     ) {
         self.message = message
+        self.spoilerReveal = spoilerReveal
         super.init()
     }
 
@@ -139,7 +142,7 @@ class MessageDetailViewController: OWSTableViewController2 {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = NSLocalizedString(
+        title = OWSLocalizedString(
             "MESSAGE_METADATA_VIEW_TITLE",
             comment: "Title for the 'message metadata' view."
         )
@@ -187,18 +190,26 @@ class MessageDetailViewController: OWSTableViewController2 {
     private func updateTableContents() {
         let contents = OWSTableContents()
 
-        contents.addSection(buildMessageSection())
+        contents.add(buildMessageSection())
+
+        if let editHistorySection = buildEditHistorySection() {
+            contents.add(editHistorySection)
+        }
 
         if isIncoming {
-            contents.addSection(buildSenderSection())
+            contents.add(buildSenderSection())
         } else {
-            contents.addSections(buildStatusSections())
+            contents.add(sections: buildStatusSections())
         }
 
         self.contents = contents
     }
 
-    private func buildRenderItem(message interaction: TSMessage, transaction: SDSAnyReadTransaction) -> CVRenderItem? {
+    private func buildRenderItem(
+        message interaction: TSMessage,
+        spoilerReveal: SpoilerRevealState,
+        transaction: SDSAnyReadTransaction
+    ) -> CVRenderItem? {
         guard let thread = TSThread.anyFetch(
             uniqueId: interaction.uniqueThreadId,
             transaction: transaction
@@ -224,6 +235,7 @@ class MessageDetailViewController: OWSTableViewController2 {
             thread: thread,
             threadAssociatedData: threadAssociatedData,
             conversationStyle: conversationStyle,
+            spoilerReveal: spoilerReveal,
             transaction: transaction
         )
     }
@@ -259,7 +271,7 @@ class MessageDetailViewController: OWSTableViewController2 {
         // Sent time
 
         let sentTimeLabel = Self.buildValueLabel(
-            name: NSLocalizedString("MESSAGE_METADATA_VIEW_SENT_DATE_TIME",
+            name: OWSLocalizedString("MESSAGE_METADATA_VIEW_SENT_DATE_TIME",
                                     comment: "Label for the 'sent date & time' field of the 'message metadata' view."),
             value: DateUtil.formatPastTimestampRelativeToNow(message.timestamp)
         )
@@ -270,7 +282,7 @@ class MessageDetailViewController: OWSTableViewController2 {
         if isIncoming {
             // Received time
             messageStack.addArrangedSubview(Self.buildValueLabel(
-                name: NSLocalizedString("MESSAGE_METADATA_VIEW_RECEIVED_DATE_TIME",
+                name: OWSLocalizedString("MESSAGE_METADATA_VIEW_RECEIVED_DATE_TIME",
                                         comment: "Label for the 'received date & time' field of the 'message metadata' view."),
                 value: DateUtil.formatPastTimestampRelativeToNow(message.receivedAtTimestamp)
             ))
@@ -283,7 +295,7 @@ class MessageDetailViewController: OWSTableViewController2 {
         if hasMediaAttachment, attachments?.count == 1, let attachment = attachments?.first {
             if let sourceFilename = attachment.sourceFilename {
                 messageStack.addArrangedSubview(Self.buildValueLabel(
-                    name: NSLocalizedString("MESSAGE_METADATA_VIEW_SOURCE_FILENAME",
+                    name: OWSLocalizedString("MESSAGE_METADATA_VIEW_SOURCE_FILENAME",
                                             comment: "Label for the original filename of any attachment in the 'message metadata' view."),
                     value: sourceFilename
                 ))
@@ -291,7 +303,7 @@ class MessageDetailViewController: OWSTableViewController2 {
 
             if let formattedByteCount = byteCountFormatter.string(for: attachment.byteCount) {
                 messageStack.addArrangedSubview(Self.buildValueLabel(
-                    name: NSLocalizedString("MESSAGE_METADATA_VIEW_ATTACHMENT_FILE_SIZE",
+                    name: OWSLocalizedString("MESSAGE_METADATA_VIEW_ATTACHMENT_FILE_SIZE",
                                             comment: "Label for file size of attachments in the 'message metadata' view."),
                     value: formattedByteCount
                 ))
@@ -302,7 +314,7 @@ class MessageDetailViewController: OWSTableViewController2 {
             if DebugFlags.messageDetailsExtraInfo {
                 let contentType = attachment.contentType
                 messageStack.addArrangedSubview(Self.buildValueLabel(
-                    name: NSLocalizedString("MESSAGE_METADATA_VIEW_ATTACHMENT_MIME_TYPE",
+                    name: OWSLocalizedString("MESSAGE_METADATA_VIEW_ATTACHMENT_MIME_TYPE",
                                             comment: "Label for the MIME type of attachments in the 'message metadata' view."),
                     value: contentType
                 ))
@@ -344,7 +356,7 @@ class MessageDetailViewController: OWSTableViewController2 {
         }
 
         let section = OWSTableSection()
-        section.headerTitle = NSLocalizedString(
+        section.headerTitle = OWSLocalizedString(
             "MESSAGE_DETAILS_VIEW_SENT_FROM_TITLE",
             comment: "Title for the 'sent from' section on the 'message details' view."
         )
@@ -352,6 +364,32 @@ class MessageDetailViewController: OWSTableViewController2 {
             for: incomingMessage.authorAddress,
             accessoryText: DateUtil.formatPastTimestampRelativeToNow(incomingMessage.timestamp),
             displayUDIndicator: incomingMessage.wasReceivedByUD
+        ))
+        return section
+    }
+
+    private func buildEditHistorySection() -> OWSTableSection? {
+        if case .none = message.editState {
+            return nil
+        }
+
+        let section = OWSTableSection()
+        section.add(.disclosureItem(
+            icon: .buttonEdit,
+            name: OWSLocalizedString(
+                "MESSAGE_DETAILS_EDIT_HISTORY_TITLE",
+                comment: "Title for the 'edit history' section on the 'message details' view."
+            ),
+            accessibilityIdentifier: "view_edit_history",
+            actionBlock: { [weak self] in
+                guard let self else { return }
+                let sheet = EditHistoryTableSheetViewController(
+                    message: self.message,
+                    spoilerReveal: self.spoilerReveal,
+                    database: self.databaseStorage
+                )
+                self.present(sheet, animated: true)
+            }
         ))
         return section
     }
@@ -396,7 +434,7 @@ class MessageDetailViewController: OWSTableViewController2 {
 
                 let label = UILabel()
                 label.textColor = Theme.isDarkThemeEnabled ? UIColor.ows_gray05 : UIColor.ows_gray90
-                label.font = UIFont.ows_dynamicTypeBodyClamped.ows_semibold
+                label.font = UIFont.dynamicTypeBodyClamped.semibold()
                 label.text = sectionTitle
 
                 headerView.addSubview(label)
@@ -420,7 +458,7 @@ class MessageDetailViewController: OWSTableViewController2 {
                 section.headerTitle = sectionTitle
             }
 
-            section.separatorInsetLeading = NSNumber(value: Float(Self.cellHInnerMargin + CGFloat(AvatarBuilder.smallAvatarSizePoints) + ContactCellView.avatarTextHSpacing))
+            section.separatorInsetLeading = Self.cellHInnerMargin + CGFloat(AvatarBuilder.smallAvatarSizePoints) + ContactCellView.avatarTextHSpacing
 
             for recipient in recipients {
                 section.add(contactItem(
@@ -470,7 +508,7 @@ class MessageDetailViewController: OWSTableViewController2 {
         let label = CVLabel()
         label.textAlignment = .right
         let labelConfig = CVLabelConfig(text: text,
-                                        font: .ows_dynamicTypeFootnoteClamped,
+                                        font: .dynamicTypeFootnoteClamped,
                                         textColor: Theme.ternaryTextColor)
         labelConfig.applyForRendering(label: label)
         let labelSize = CVText.measureLabel(config: labelConfig, maxWidth: .greatestFiniteMagnitude)
@@ -502,7 +540,7 @@ class MessageDetailViewController: OWSTableViewController2 {
 
     private static func valueLabelAttributedText(name: String, value: String) -> NSAttributedString {
         .composed(of: [
-            name.styled(with: .font(UIFont.ows_dynamicTypeFootnoteClamped.ows_semibold)),
+            name.styled(with: .font(UIFont.dynamicTypeFootnoteClamped.semibold())),
             " ",
             value
         ])
@@ -511,7 +549,7 @@ class MessageDetailViewController: OWSTableViewController2 {
     private static func buildValueLabel(name: String, value: String) -> UILabel {
         let label = UILabel()
         label.textColor = Theme.primaryTextColor
-        label.font = .ows_dynamicTypeFootnoteClamped
+        label.font = .dynamicTypeFootnoteClamped
         label.attributedText = valueLabelAttributedText(name: name, value: value)
         return label
     }
@@ -536,31 +574,31 @@ class MessageDetailViewController: OWSTableViewController2 {
     private func sectionTitle(for messageReceiptStatus: MessageReceiptStatus) -> String {
         switch messageReceiptStatus {
         case .uploading:
-            return NSLocalizedString("MESSAGE_METADATA_VIEW_MESSAGE_STATUS_UPLOADING",
+            return OWSLocalizedString("MESSAGE_METADATA_VIEW_MESSAGE_STATUS_UPLOADING",
                               comment: "Status label for messages which are uploading.")
         case .sending:
-            return NSLocalizedString("MESSAGE_METADATA_VIEW_MESSAGE_STATUS_SENDING",
+            return OWSLocalizedString("MESSAGE_METADATA_VIEW_MESSAGE_STATUS_SENDING",
                                      comment: "Status label for messages which are sending.")
         case .pending:
-            return NSLocalizedString("MESSAGE_METADATA_VIEW_MESSAGE_STATUS_PAUSED",
+            return OWSLocalizedString("MESSAGE_METADATA_VIEW_MESSAGE_STATUS_PAUSED",
                                      comment: "Status label for messages which are paused.")
         case .sent:
-            return NSLocalizedString("MESSAGE_METADATA_VIEW_MESSAGE_STATUS_SENT",
+            return OWSLocalizedString("MESSAGE_METADATA_VIEW_MESSAGE_STATUS_SENT",
                               comment: "Status label for messages which are sent.")
         case .delivered:
-            return NSLocalizedString("MESSAGE_METADATA_VIEW_MESSAGE_STATUS_DELIVERED",
+            return OWSLocalizedString("MESSAGE_METADATA_VIEW_MESSAGE_STATUS_DELIVERED",
                               comment: "Status label for messages which are delivered.")
         case .read:
-            return NSLocalizedString("MESSAGE_METADATA_VIEW_MESSAGE_STATUS_READ",
+            return OWSLocalizedString("MESSAGE_METADATA_VIEW_MESSAGE_STATUS_READ",
                               comment: "Status label for messages which are read.")
         case .failed:
-            return NSLocalizedString("MESSAGE_METADATA_VIEW_MESSAGE_STATUS_FAILED",
+            return OWSLocalizedString("MESSAGE_METADATA_VIEW_MESSAGE_STATUS_FAILED",
                                      comment: "Status label for messages which are failed.")
         case .skipped:
-            return NSLocalizedString("MESSAGE_METADATA_VIEW_MESSAGE_STATUS_SKIPPED",
+            return OWSLocalizedString("MESSAGE_METADATA_VIEW_MESSAGE_STATUS_SKIPPED",
                                      comment: "Status label for messages which were skipped.")
         case .viewed:
-            return NSLocalizedString("MESSAGE_METADATA_VIEW_MESSAGE_STATUS_VIEWED",
+            return OWSLocalizedString("MESSAGE_METADATA_VIEW_MESSAGE_STATUS_VIEWED",
                               comment: "Status label for messages which are viewed.")
         }
     }
@@ -568,7 +606,7 @@ class MessageDetailViewController: OWSTableViewController2 {
     private var isPanning = false
 
     @objc
-    func handlePan(_ sender: UIPanGestureRecognizer) {
+    private func handlePan(_ sender: UIPanGestureRecognizer) {
         var xOffset = sender.translation(in: view).x
         var xVelocity = sender.velocity(in: view).x
 
@@ -613,14 +651,14 @@ class MessageDetailViewController: OWSTableViewController2 {
 
 extension MessageDetailViewController {
     @objc
-    func didLongPressSent(sender: UIGestureRecognizer) {
+    private func didLongPressSent(sender: UIGestureRecognizer) {
         guard sender.state == .began else {
             return
         }
         let messageTimestamp = "\(message.timestamp)"
         UIPasteboard.general.string = messageTimestamp
 
-        let toast = ToastController(text: NSLocalizedString(
+        let toast = ToastController(text: OWSLocalizedString(
             "MESSAGE_DETAIL_VIEW_DID_COPY_SENT_TIMESTAMP",
             comment: "Toast indicating that the user has copied the sent timestamp."
         ))
@@ -676,6 +714,10 @@ extension MessageDetailViewController: MediaGalleryDelegate {
             }
         }
     }
+
+    func mediaGalleryShouldDeferUpdate(_ mediaGallery: MediaGallery) -> Bool {
+        return false
+    }
 }
 
 // MARK: -
@@ -712,10 +754,11 @@ extension MessageDetailViewController: MediaPresentationContextProvider {
 
         let presentationFrame = coordinateSpace.convert(mediaView.frame, from: mediaSuperview)
 
-        // TODO better corner rounding.
-        return MediaPresentationContext(mediaView: mediaView,
-                                        presentationFrame: presentationFrame,
-                                        cornerRadius: CVComponentMessage.bubbleSharpCornerRadius * 2)
+        return MediaPresentationContext(
+            mediaView: mediaView,
+            presentationFrame: presentationFrame,
+            mediaViewShape: .rectangle(CVComponentMessage.bubbleWideCornerRadius)
+        )
     }
 
     func snapshotOverlayView(in coordinateSpace: UICoordinateSpace) -> (UIView, CGRect)? {
@@ -831,7 +874,11 @@ extension MessageDetailViewController: DatabaseChangeDelegate {
             }
             self.message = newMessage
             self.attachments = newMessage.mediaAttachments(with: transaction.unwrapGrdbRead)
-            guard let renderItem = buildRenderItem(message: newMessage, transaction: transaction) else {
+            guard let renderItem = buildRenderItem(
+                message: newMessage,
+                spoilerReveal: spoilerReveal,
+                transaction: transaction
+            ) else {
                 return false
             }
             self.renderItem = renderItem
@@ -909,6 +956,10 @@ extension MessageDetailViewController: DatabaseChangeDelegate {
 
 extension MessageDetailViewController: CVComponentDelegate {
 
+    func didTapShowEditHistory(_ itemViewModel: CVItemViewModelImpl) {
+        owsFailDebug("Taps are not supported in message details.")
+    }
+
     func enqueueReload() {
         self.refreshContent()
     }
@@ -977,13 +1028,7 @@ extension MessageDetailViewController: CVComponentDelegate {
     func didTapReactions(reactionState: InteractionReactionState,
                          message: TSMessage) {}
 
-    func didTapTruncatedTextMessage(_ itemViewModel: CVItemViewModelImpl) {
-        AssertIsOnMainThread()
-
-        let viewController = LongTextViewController(itemViewModel: itemViewModel)
-        viewController.delegate = self
-        navigationController?.pushViewController(viewController, animated: true)
-    }
+    func didTapTruncatedTextMessage(_ itemViewModel: CVItemViewModelImpl) {}
 
     // TODO:
     var hasPendingMessageRequest: Bool { false }
@@ -1006,6 +1051,7 @@ extension MessageDetailViewController: CVComponentDelegate {
         let mediaPageVC = MediaPageViewController(
             initialMediaAttachment: attachmentStream,
             thread: thread,
+            spoilerReveal: self.spoilerReveal,
             showingSingleMessage: true
         )
         mediaPageVC.mediaGallery.addDelegate(self)
@@ -1023,7 +1069,7 @@ extension MessageDetailViewController: CVComponentDelegate {
         }
     }
 
-    func didTapQuotedReply(_ quotedReply: OWSQuotedReplyModel) {}
+    func didTapQuotedReply(_ quotedReply: QuotedReplyModel) {}
 
     func didTapLinkPreview(_ linkPreview: OWSLinkPreview) {
         guard let urlString = linkPreview.urlString else {
@@ -1127,9 +1173,7 @@ extension MessageDetailViewController: CVComponentDelegate {
     func didTapFailedOutgoingMessage(_ message: TSOutgoingMessage) {}
 
     // TODO:
-    func didTapShowGroupMigrationLearnMoreActionSheet(infoMessage: TSInfoMessage,
-                                                      oldGroupModel: TSGroupModel,
-                                                      newGroupModel: TSGroupModel) {}
+    func didTapGroupMigrationLearnMore() {}
 
     func didTapGroupInviteLinkPromotion(groupModel: TSGroupModel) {}
 

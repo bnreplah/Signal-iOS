@@ -3,25 +3,53 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
+import SignalMessaging
+import SignalServiceKit
 import SignalUI
-import UIKit
 
-extension SignalApp {
+enum LaunchInterface {
+    case registration(RegistrationCoordinatorLoader, RegistrationMode)
+    case deprecatedOnboarding(Deprecated_OnboardingController)
+    case chatList(Deprecated_OnboardingController)
+}
+
+@objc
+public class SignalApp: NSObject {
+
     @objc
-    func warmCachesAsync() {
+    public static let shared = SignalApp()
+
+    private(set) weak var conversationSplitViewController: ConversationSplitViewController?
+
+    private override init() {
+        super.init()
+
+        AppReadiness.runNowOrWhenUIDidBecomeReadySync {
+            self.warmCachesAsync()
+        }
+    }
+
+    private func warmCachesAsync() {
         DispatchQueue.sharedBackground.async {
             InstrumentsMonitor.measure(category: "appstart", parent: "caches", name: "warmEmojiCache") {
                 Emoji.warmAvailableCache()
             }
         }
-        DispatchQueue.sharedBackground.async {
-            InstrumentsMonitor.measure(category: "appstart", parent: "caches", name: "warmWallpaperCaches") {
-                Wallpaper.warmCaches()
-            }
-        }
+    }
+}
+
+extension SignalApp {
+
+    var hasSelectedThread: Bool {
+        return conversationSplitViewController?.selectedThread != nil
     }
 
-    @objc
+    func showConversationSplitView() {
+        let splitViewController = ConversationSplitViewController()
+        UIApplication.shared.delegate?.window??.rootViewController = splitViewController
+        self.conversationSplitViewController = splitViewController
+    }
+
     func dismissAllModals(animated: Bool, completion: (() -> Void)?) {
         guard let window = CurrentAppContext().mainWindow else {
             owsFailDebug("Missing window.")
@@ -39,32 +67,29 @@ extension SignalApp {
         }
     }
 
-    func ensureRootViewController(
-        appDelegate: UIApplicationDelegate,
-        launchStartedAt: TimeInterval
-    ) {
+    func showLaunchInterface(_ launchInterface: LaunchInterface, launchStartedAt: TimeInterval) {
         AssertIsOnMainThread()
-
-        Logger.info("ensureRootViewController")
-
-        guard AppReadiness.isAppReady, !hasInitialRootViewController else {
-            return
-        }
-        hasInitialRootViewController = true
+        owsAssert(AppReadiness.isAppReady)
 
         let startupDuration = CACurrentMediaTime() - launchStartedAt
         Logger.info("Presenting app \(startupDuration) seconds after launch started.")
 
-        let onboardingController = Deprecated_OnboardingController()
-        if onboardingController.isComplete {
-            onboardingController.markAsOnboarded()
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(spamChallenge),
+            name: SpamChallengeResolver.NeedsCaptchaNotification,
+            object: nil
+        )
+
+        switch launchInterface {
+        case .registration(let registrationLoader, let desiredMode):
+            showRegistration(loader: registrationLoader, desiredMode: desiredMode)
+            AppReadiness.setUIIsReady()
+        case .deprecatedOnboarding(let onboardingController):
+            showDeprecatedOnboardingView(controller: onboardingController)
+            AppReadiness.setUIIsReady()
+        case .chatList:
             showConversationSplitView()
-        } else if FeatureFlags.useNewRegistrationFlow {
-            showRegistrationView(appDelegate: appDelegate)
-            AppReadiness.setUIIsReady()
-        } else {
-            showDeprecatedOnboardingView(onboardingController)
-            AppReadiness.setUIIsReady()
         }
 
         AppUpdateNag.shared.showAppUpgradeNagIfNecessary()
@@ -72,46 +97,190 @@ extension SignalApp {
         UIViewController.attemptRotationToDeviceOrientation()
     }
 
-    private func showRegistrationView(appDelegate: UIApplicationDelegate) {
-        let coordinator = RegistrationCoordinatorImpl(
-            accountManager: RegistrationCoordinatorImpl.Wrappers.AccountManager(Self.accountManager),
-            contactsStore: RegistrationCoordinatorImpl.Wrappers.ContactsStore(),
-            dateProvider: { Date() },
-            db: DependenciesBridge.shared.db,
-            experienceManager: RegistrationCoordinatorImpl.Wrappers.ExperienceManager(),
-            kbs: DependenciesBridge.shared.keyBackupService,
-            kbsAuthCredentialStore: DependenciesBridge.shared.kbsCredentialStorage,
-            keyValueStoreFactory: DependenciesBridge.shared.keyValueStoreFactory,
-            ows2FAManager: RegistrationCoordinatorImpl.Wrappers.OWS2FAManager(Self.ows2FAManager),
-            profileManager: RegistrationCoordinatorImpl.Wrappers.ProfileManager(Self.profileManager),
-            pushRegistrationManager: RegistrationCoordinatorImpl.Wrappers.PushRegistrationManager(Self.pushRegistrationManager),
-            receiptManager: RegistrationCoordinatorImpl.Wrappers.ReceiptManager(Self.receiptManager),
-            remoteConfig: RegistrationCoordinatorImpl.Wrappers.RemoteConfig(),
-            schedulers: DependenciesBridge.shared.schedulers,
-            sessionManager: DependenciesBridge.shared.registrationSessionManager,
-            signalService: Self.signalService,
-            storageServiceManager: Self.storageServiceManager,
-            tsAccountManager: RegistrationCoordinatorImpl.Wrappers.TSAccountManager(Self.tsAccountManager),
-            udManager: RegistrationCoordinatorImpl.Wrappers.UDManager(Self.udManager)
-        )
-        let navController = RegistrationNavigationController(coordinator: coordinator)
-
-        appDelegate.window??.rootViewController = navController
-
-        conversationSplitViewController = nil
-    }
-
-    func showAppSettings(mode: ShowAppSettingsMode) {
-        guard let conversationSplitViewController = self.conversationSplitViewControllerForSwift else {
+    func showAppSettings(mode: ChatListViewController.ShowAppSettingsMode) {
+        guard let conversationSplitViewController else {
             owsFailDebug("Missing conversationSplitViewController.")
             return
         }
         conversationSplitViewController.showAppSettingsWithMode(mode)
     }
+
+    func showRegistration(loader: RegistrationCoordinatorLoader, desiredMode: RegistrationMode) {
+        switch desiredMode {
+        case .registering:
+            Logger.info("Attempting initial registration on app launch")
+        case .reRegistering:
+            Logger.info("Attempting reregistration on app launch")
+        case .changingNumber:
+            Logger.info("Attempting change number registration on app launch")
+        }
+        let coordinator = databaseStorage.write { tx in
+            return loader.coordinator(forDesiredMode: desiredMode, transaction: tx.asV2Write)
+        }
+        let navController = RegistrationNavigationController.withCoordinator(coordinator)
+
+        UIApplication.shared.delegate?.window??.rootViewController = navController
+
+        conversationSplitViewController = nil
+    }
+
+    @objc
+    private func spamChallenge() {
+        SpamCaptchaViewController.presentActionSheet(from: UIApplication.shared.frontmostViewController!)
+    }
+
+    @objc
+    func showNewConversationView() {
+        AssertIsOnMainThread()
+        guard let conversationSplitViewController else {
+            owsFailDebug("No conversationSplitViewController")
+            return
+        }
+        conversationSplitViewController.showNewConversationView()
+    }
+
+    func presentConversationForAddress(
+        _ address: SignalServiceAddress,
+        action: ConversationViewAction = .none,
+        animated: Bool
+    ) {
+        let thread = databaseStorage.write { transaction in
+            return TSContactThread.getOrCreateThread(withContactAddress: address, transaction: transaction)
+        }
+        presentConversationForThread(thread, action: action, animated: animated)
+    }
+
+    func presentConversationForThread(
+        _ thread: TSThread,
+        action: ConversationViewAction = .none,
+        focusMessageId: String? = nil,
+        animated: Bool
+    ) {
+        AssertIsOnMainThread()
+
+        guard let conversationSplitViewController else {
+            owsFailDebug("No conversationSplitViewController")
+            return
+        }
+
+        Logger.info("")
+
+        DispatchMainThreadSafe {
+            if let visibleThread = conversationSplitViewController.visibleThread,
+               visibleThread.uniqueId == thread.uniqueId,
+               let conversationViewController = conversationSplitViewController.selectedConversationViewController {
+                conversationViewController.popKeyBoard()
+                if case .updateDraft = action {
+                    conversationViewController.reloadDraft()
+                }
+                return
+            }
+            conversationSplitViewController.presentThread(thread, action: action, focusMessageId: focusMessageId, animated: animated)
+        }
+    }
+
+    @objc
+    func presentConversationAndScrollToFirstUnreadMessage(forThreadId threadId: String, animated: Bool) {
+        AssertIsOnMainThread()
+        owsAssertDebug(!threadId.isEmpty)
+
+        guard let conversationSplitViewController else {
+            owsFailDebug("No conversationSplitViewController")
+            return
+        }
+
+        Logger.info("")
+
+        guard let thread = databaseStorage.read(block: { transaction in
+            return TSThread.anyFetch(uniqueId: threadId, transaction: transaction)
+        }) else {
+            owsFailDebug("unable to find thread with id: \(threadId)")
+            return
+        }
+
+        DispatchMainThreadSafe {
+            // If there's a presented blocking splash, but the user is trying to open a thread,
+            // dismiss it. We'll try again next time they open the app. We don't want to block
+            // them from accessing their conversations.
+            ExperienceUpgradeManager.dismissSplashWithoutCompletingIfNecessary()
+
+            if let visibleThread = conversationSplitViewController.visibleThread, visibleThread.uniqueId == thread.uniqueId {
+                conversationSplitViewController.selectedConversationViewController?.scrollToInitialPosition(animated: animated)
+                return
+            }
+
+            conversationSplitViewController.presentThread(thread, action: .none, focusMessageId: nil, animated: animated)
+        }
+    }
+
+    func snapshotSplitViewController(afterScreenUpdates: Bool) -> UIView? {
+        return conversationSplitViewController?.view?.snapshotView(afterScreenUpdates: afterScreenUpdates)
+    }
 }
 
 extension SignalApp {
-    @objc(showExportDatabaseUIFromViewController:completion:)
+
+    static func resetAppDataWithUI() {
+        Logger.info("")
+
+        DispatchMainThreadSafe {
+            guard let fromVC = UIApplication.shared.frontmostViewController else { return }
+            ModalActivityIndicatorViewController.present(
+                fromViewController: fromVC,
+                canCancel: true,
+                backgroundBlock: { _ in
+                    SignalApp.resetAppData()
+                }
+            )
+        }
+    }
+
+    static func resetAppData() {
+        // This _should_ be wiped out below.
+        Logger.info("")
+        Logger.flush()
+
+        DispatchSyncMainThreadSafe {
+            databaseStorage.resetAllStorage()
+            OWSUserProfile.resetProfileStorage()
+            preferences.removeAllValues()
+            AppEnvironment.shared.notificationPresenter.clearAllNotifications()
+            OWSFileSystem.deleteContents(ofDirectory: OWSFileSystem.appSharedDataDirectoryPath())
+            OWSFileSystem.deleteContents(ofDirectory: OWSFileSystem.appDocumentDirectoryPath())
+            OWSFileSystem.deleteContents(ofDirectory: OWSFileSystem.cachesDirectoryPath())
+            OWSFileSystem.deleteContents(ofDirectory: OWSTemporaryDirectory())
+            OWSFileSystem.deleteContents(ofDirectory: NSTemporaryDirectory())
+            AppDelegate.updateApplicationShortcutItems(isRegisteredAndReady: false)
+        }
+
+        DebugLogger.shared().wipeLogsAlways(appContext: CurrentAppContext() as! MainAppContext)
+        exit(0)
+    }
+}
+
+extension SignalApp {
+
+    func showDeprecatedOnboardingView(controller: Deprecated_OnboardingController) {
+        let navigationController = Deprecated_OnboardingNavigationController(onboardingController: controller)
+
+        let submitLogsGesture = UITapGestureRecognizer(target: self, action: #selector(submitOnboardingLogs))
+        submitLogsGesture.numberOfTapsRequired = 8
+        submitLogsGesture.delaysTouchesEnded = false
+        navigationController.view.addGestureRecognizer(submitLogsGesture)
+
+        UIApplication.shared.delegate?.window??.rootViewController = navigationController
+
+        conversationSplitViewController = nil
+    }
+
+    @objc
+    private func submitOnboardingLogs() {
+        DebugLogs.submitLogsWithSupportTag("Onboarding")
+    }
+}
+
+extension SignalApp {
+
     public static func showExportDatabaseUI(from parentVC: UIViewController, completion: @escaping () -> Void = {}) {
         guard OWSIsTestableBuild() || DebugFlags.internalSettings else {
             // This should NEVER be exposed outside of internal settings.
@@ -129,7 +298,7 @@ extension SignalApp {
                 + "NO ONE AT SIGNAL CAN MAKE YOU DO THIS! Don't do it if you're not comfortable.",
             preferredStyle: .alert)
         alert.addAction(.init(title: "Export", style: .destructive) { _ in
-            if SSKEnvironment.hasShared() {
+            if SSKEnvironment.hasShared {
                 // Try to sync the database first, since we don't export the WAL.
                 _ = try? SSKEnvironment.shared.grdbStorageAdapter.syncTruncatingCheckpoint()
             }
@@ -158,19 +327,18 @@ extension SignalApp {
         parentVC.present(alert, animated: true)
     }
 
-    @objc(showDatabaseIntegrityCheckUIFromViewController:completion:)
     public static func showDatabaseIntegrityCheckUI(from parentVC: UIViewController,
                                                     completion: @escaping () -> Void = {}) {
         let alert = UIAlertController(
-            title: NSLocalizedString("DATABASE_INTEGRITY_CHECK_TITLE",
+            title: OWSLocalizedString("DATABASE_INTEGRITY_CHECK_TITLE",
                                      comment: "Title for alert before running a database integrity check"),
-            message: NSLocalizedString("DATABASE_INTEGRITY_CHECK_MESSAGE",
+            message: OWSLocalizedString("DATABASE_INTEGRITY_CHECK_MESSAGE",
                                        comment: "Message for alert before running a database integrity check"),
             preferredStyle: .alert)
-        alert.addAction(.init(title: NSLocalizedString("DATABASE_INTEGRITY_CHECK_ACTION_RUN",
+        alert.addAction(.init(title: OWSLocalizedString("DATABASE_INTEGRITY_CHECK_ACTION_RUN",
                                                        comment: "Button to run the database integrity check"),
                               style: .default) { _ in
-            let progressView = UIActivityIndicatorView(style: .whiteLarge)
+            let progressView = UIActivityIndicatorView(style: .large)
             progressView.color = .gray
             parentVC.view.addSubview(progressView)
             progressView.autoCenterInSuperview()
@@ -178,14 +346,19 @@ extension SignalApp {
 
             var backgroundTask: OWSBackgroundTask? = OWSBackgroundTask(label: "showDatabaseIntegrityCheckUI")
 
-            GRDBDatabaseStorageAdapter.logIntegrityChecks().ensure {
+            DispatchQueue.sharedUserInitiated.async {
+                GRDBDatabaseStorageAdapter.checkIntegrity()
+
                 owsAssertDebug(backgroundTask != nil)
                 backgroundTask = nil
-                progressView.removeFromSuperview()
-                completion()
-            }.cauterize()
+
+                DispatchQueue.main.async {
+                    progressView.removeFromSuperview()
+                    completion()
+                }
+            }
         })
-        alert.addAction(.init(title: NSLocalizedString("DATABASE_INTEGRITY_CHECK_SKIP",
+        alert.addAction(.init(title: OWSLocalizedString("DATABASE_INTEGRITY_CHECK_SKIP",
                                                        comment: "Button to skip database integrity check step"),
                               style: .cancel) { _ in
             completion()

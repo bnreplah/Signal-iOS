@@ -12,10 +12,10 @@ public protocol ConversationAvatarViewDelegate: AnyObject {
 
     func presentStoryViewController()
     func presentAvatarViewController()
-
-    func presentActionSheet(_ vc: ActionSheetController, animated: Bool)
 }
-public extension ConversationAvatarViewDelegate {
+
+public extension ConversationAvatarViewDelegate where Self: UIViewController {
+
     func didTapAvatar(_ configuration: ConversationAvatarView.Configuration) {
         if configuration.hasStoriesToDisplay {
             let actionSheet = ActionSheetController()
@@ -364,7 +364,7 @@ public class ConversationAvatarView: UIView, CVView, PrimaryImageView {
     // so the most recently enqueued avatars are most likely to be
     // visible. To put it another way, we don't cancel loads so
     // the oldest loads are most likely to be unnecessary.
-    private static let serialQueue = ReverseDispatchQueue(label: "org.signal.ConversationAvatarView",
+    private static let serialQueue = ReverseDispatchQueue(label: "org.signal.conversation-avatar.loading",
                                                           qos: .userInitiated, autoreleaseFrequency: .workItem)
 
     private func enqueueAsyncModelUpdate() {
@@ -489,10 +489,8 @@ public class ConversationAvatarView: UIView, CVView, PrimaryImageView {
         }
     }
 
-    @objc
     public override var intrinsicContentSize: CGSize { configuration.sizeClass.size }
 
-    @objc
     public override func sizeThatFits(_ size: CGSize) -> CGSize { intrinsicContentSize }
 
     // MARK: - Controls
@@ -511,7 +509,7 @@ public class ConversationAvatarView: UIView, CVView, PrimaryImageView {
         return tapGestureRecognizer
     }()
 
-    public weak var interactionDelegate: ConversationAvatarViewDelegate? {
+    public weak var interactionDelegate: (ConversationAvatarViewDelegate & UIViewController)? {
         didSet {
             if interactionDelegate != nil, oldValue == nil {
                 avatarView.addGestureRecognizer(avatarTapGestureRecognizer)
@@ -549,7 +547,7 @@ public class ConversationAvatarView: UIView, CVView, PrimaryImageView {
         NotificationCenter.default.removeObserver(self)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(themeDidChange),
-                                               name: .ThemeDidChange,
+                                               name: .themeDidChange,
                                                object: nil)
 
         guard let dataSource = configuration.dataSource else { return }

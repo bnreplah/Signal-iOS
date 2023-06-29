@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import SignalCoreKit
 
 private struct IncomingGroupsV2MessageJobInfo {
     let job: IncomingGroupsV2MessageJob
@@ -131,6 +132,12 @@ class IncomingGroupsV2MessageQueue: NSObject, MessageProcessingPipelineStage {
     private let unfairLock = UnfairLock()
     private var groupIdsBeingProcessed: Set<Data> = Set()
 
+    fileprivate var isActivelyProcessing: Bool {
+        return unfairLock.withLock {
+            return groupIdsBeingProcessed.isEmpty.negated
+        }
+    }
+
     // At any given time, we need to ensure that there is exactly
     // one GroupsMessageProcessor for each group that needs to
     // process incoming messages.
@@ -141,9 +148,12 @@ class IncomingGroupsV2MessageQueue: NSObject, MessageProcessingPipelineStage {
             owsFailDebug("App is not ready.")
             return
         }
-        let canProcess = (messagePipelineSupervisor.isMessageProcessingPermitted &&
-                            tsAccountManager.isRegisteredAndReady &&
-                            !DebugFlags.suppressBackgroundActivity)
+
+        let canProcess = (
+            messagePipelineSupervisor.isMessageProcessingPermitted &&
+            tsAccountManager.isRegisteredAndReady
+        )
+
         guard canProcess else {
             // Don't process queues.
             return
@@ -304,9 +314,11 @@ internal class GroupsMessageProcessor: MessageProcessingPipelineStage, Dependenc
     private func processWorkStep(retryDelayAfterFailure: TimeInterval = 1.0) {
         owsAssertDebug(isDrainingQueue.get())
 
-        let canProcess = (messagePipelineSupervisor.isMessageProcessingPermitted &&
-                            tsAccountManager.isRegisteredAndReady &&
-                            !DebugFlags.suppressBackgroundActivity)
+        let canProcess = (
+            messagePipelineSupervisor.isMessageProcessingPermitted &&
+            tsAccountManager.isRegisteredAndReady
+        )
+
         guard canProcess else {
             Logger.warn("Cannot process.")
             future.resolve()
@@ -566,14 +578,14 @@ internal class GroupsMessageProcessor: MessageProcessingPipelineStage, Dependenc
                     continue
                 }
                 let shouldDiscardVisibleMessages = discardMode == .discardVisibleMessages
-                if !self.messageManager.processEnvelope(envelope,
-                                                        plaintextData: job.plaintextData,
-                                                        wasReceivedByUD: job.wasReceivedByUD,
-                                                        serverDeliveryTimestamp: job.serverDeliveryTimestamp,
-                                                        shouldDiscardVisibleMessages: shouldDiscardVisibleMessages,
-                                                        transaction: transaction) {
-                    reportFailure(transaction)
-                }
+                self.messageManager.processEnvelope(
+                    envelope,
+                    plaintextData: job.plaintextData,
+                    wasReceivedByUD: job.wasReceivedByUD,
+                    serverDeliveryTimestamp: job.serverDeliveryTimestamp,
+                    shouldDiscardVisibleMessages: shouldDiscardVisibleMessages,
+                    tx: transaction
+                )
             }
             processedJobs.append(job)
 
@@ -643,18 +655,7 @@ internal class GroupsMessageProcessor: MessageProcessingPipelineStage, Dependenc
     private func updateGroupPromise(jobInfo: IncomingGroupsV2MessageJobInfo) -> Promise<UpdateOutcome> {
         // First, we try to update the group locally using changes embedded in
         // the group context (if any).
-        firstly(on: DispatchQueue.global()) { () -> Promise<Void> in
-            guard let groupContextInfo = jobInfo.groupContextInfo else {
-                owsFailDebug("Missing groupContextInfo.")
-                return Promise.value(())
-            }
-            return firstly(on: DispatchQueue.global()) { () -> Promise<Void> in
-                self.groupsV2Swift.updateAlreadyMigratedGroupIfNecessary(v2GroupId: groupContextInfo.groupId)
-            }.recover(on: DispatchQueue.global()) {error -> Promise<Void> in
-                owsFailDebug("Error: \(error)")
-                throw GroupsV2Error.shouldRetry
-            }
-        }.then(on: DispatchQueue.global()) { () -> Promise<UpdateOutcome> in
+        firstly(on: DispatchQueue.global()) { () -> Promise<UpdateOutcome> in
             self.tryToUpdateUsingEmbeddedGroupUpdate(jobInfo: jobInfo)
         }.recover(on: DispatchQueue.global()) { _ in
             owsFailDebug("tryToUpdateUsingEmbeddedGroupUpdate should never fail.")
@@ -983,6 +984,10 @@ public class GroupsV2MessageProcessor: NSObject {
         } else {
             return nil
         }
+    }
+
+    public func isActivelyProcessing() -> Bool {
+        return processingQueue.isActivelyProcessing
     }
 
     @objc

@@ -3,11 +3,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
+import SignalCoreKit
+import SignalUI
 
 class RegistrationLoadingViewController: OWSViewController {
     enum RegistrationLoadingMode {
-        case initialLoad
+        case generic
         case submittingPhoneNumber(e164: String)
         case submittingVerificationCode
     }
@@ -15,8 +16,7 @@ class RegistrationLoadingViewController: OWSViewController {
     public init(mode: RegistrationLoadingMode) {
         spinnerView = AnimatedProgressView(loadingText: {
             switch mode {
-            case .initialLoad:
-                // TODO[Registration]: should this be blank?
+            case .generic:
                 return ""
             case let .submittingPhoneNumber(e164):
                 let format = OWSLocalizedString(
@@ -51,7 +51,9 @@ class RegistrationLoadingViewController: OWSViewController {
 
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        spinnerView.startAnimating()
+        if spinnerView.isAnimating.negated {
+            spinnerView.startAnimating()
+        }
     }
 
     public override func themeDidChange() {
@@ -60,6 +62,8 @@ class RegistrationLoadingViewController: OWSViewController {
     }
 
     private func initialRender() {
+        navigationItem.setHidesBackButton(true, animated: false)
+
         spinnerView.alpha = 1
 
         view.addSubview(spinnerView)

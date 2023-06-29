@@ -28,7 +28,43 @@
 /* Accessibility label for a voice memo. */
 "ACCESSIBILITY_LABEL_VOICE_MEMO" = "Μήνυμα φωνής";
 
-/* Label for 'audio call' button in contact view. */
+/* Users can request a report of their account data. Before they get their account export, they are warned to only share account data with trustworthy sources. This is the button on that warning, and tapping it lets users continue. */
+"ACCOUNT_DATA_REPORT_CONFIRM_EXPORT_CONFIRM_BUTTON" = "Εξαγωγή αναφοράς";
+
+/* Users can request a report of their account data. Before they get their account export, they are warned to only share account data with trustworthy sources. This is the message on that warning. */
+"ACCOUNT_DATA_REPORT_CONFIRM_EXPORT_MESSAGE" = "Μοιράσου τα δεδομένα του λογαριασμού σου στο Signal μόνο με άτομα ή εφαρμογές που εμπιστεύεσαι.";
+
+/* Users can request a report of their account data. If this request fails (probably because of a network connection problem), they will see an error sheet. This is the message on that error. */
+"ACCOUNT_DATA_REPORT_ERROR_MESSAGE" = "Έλεγξε τη σύνδεσή σου και δοκίμασε πάλι.";
+
+/* Users can request a report of their account data. If this request fails (probably because of a network connection problem), they will see an error sheet. This is the title on that error. */
+"ACCOUNT_DATA_REPORT_ERROR_TITLE" = "Δεν ήταν δυνατή η δημιουργία αναφοράς";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the subtitle on the button that switches to JSON mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_JSON_SUBTITLE" = "Μηχανικά αναγνώσιμο αρχείο";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the title on the button that switches to JSON mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_JSON_TITLE" = "Εξαγωγή ως JSON";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the subtitle on the button that switches to plain text mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_TXT_SUBTITLE" = "Εύκολο στην ανάγνωση αρχείο κειμένου";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the title on the button that switches to plain text mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_TXT_TITLE" = "Εξαγωγή ως TXT";
+
+/* Users can request a report of their account data. Users tap this button to export their data. */
+"ACCOUNT_DATA_REPORT_EXPORT_REPORT_BUTTON" = "Εξαγωγή αναφοράς";
+
+/* Users can request a report of their account data. This text appears at the bottom of this screen, offering more information. */
+"ACCOUNT_DATA_REPORT_FOOTER" = "Η αναφορά σου δημιουργείται μόνο κατά την εξαγωγή και δεν αποθηκεύεται από το Signal στη συσκευή σου.";
+
+/* Users can request a report of their account data. This is the subtitle on the screen where they do this, giving them more information. */
+"ACCOUNT_DATA_REPORT_SUBTITLE" = "Κάνε λήψη και εξαγωγή μιας αναφοράς των δεδομένων του λογαριασμού σου στο Signal. Αυτή η αναφορά δεν περιλαμβάνει μηνύματα ή πολυμέσα.";
+
+/* Users can request a report of their account data. This is the title on the screen where they do this. */
+"ACCOUNT_DATA_REPORT_TITLE" = "Τα δεδομένα του λογαριασμού σου";
+
+/* Label for 'voice call' button in contact view. */
 "ACTION_AUDIO_CALL" = "Κλήση Signal";
 
 /* Label for 'invite' button in contact view. */
@@ -86,13 +122,13 @@
 "ALERT_ACTION_ACKNOWLEDGE" = "Εντάξει";
 
 /* Format string for delivery issue sheet message. Embeds {{ sender name }}. */
-"ALERT_DELIVERY_ISSUE_MESSAGE_FORMAT" = "Κάποιο μήνυμα, αυτοκόλλητο, αντίδραση, αποδεικτικό ανάγνωσης ή πολυμέσο από τον/την %1$@ σε αυτή τη συνομιλία δεν μπόρεσε να σου παραδοθεί.";
+"ALERT_DELIVERY_ISSUE_MESSAGE_FORMAT" = "Δεν ήταν δυνατή η παράδοση μηνύματος, αυτοκόλλητου, αντίδρασης, αποδεικτικού ανάγνωσης ή πολυμέσου από τον χρήστη %1$@ σε αυτή τη συνομιλία.";
 
 /* Title for delivery issue sheet */
 "ALERT_DELIVERY_ISSUE_TITLE" = "Θέμα κατά την παράδοση";
 
 /* Format string for delivery issue sheet message where the original thread is unknown. Embeds {{ sender name }}. */
-"ALERT_DELIVERY_ISSUE_UNKNOWN_THREAD_MESSAGE_FORMAT" = "Κάποιο μήνυμα, αντίδραση, αποδεικτικό ανάγνωσης ή πολυμέσο από τον/την %1$@ δεν μπόρεσε να σου παραδοθεί. Προσπάθησε να στείλει είτε σε σένα απ' ευθείας είτε σε κάποια ομάδα.";
+"ALERT_DELIVERY_ISSUE_UNKNOWN_THREAD_MESSAGE_FORMAT" = "Δεν ήταν δυνατή η παράδοση μηνύματος, αντίδρασης, αποδεικτικού ανάγνωσης ή πολυμέσου από τον χρήστη %1$@. Προσπάθησε να στείλει είτε σε σένα απευθείας είτε σε κάποια ομάδα.";
 
 /* The label for the 'discard' button in alerts and action sheets. */
 "ALERT_DISCARD_BUTTON" = "Απόρριψη";
@@ -115,8 +151,35 @@
 /* Label for button to learn more about message requests. */
 "ALERT_UNKNOWN_THREAD_WARNING_LEARN_MORE" = "Σχετικά με τα αιτήματα μηνυμάτων";
 
+/* Audio file type in All Meda file type picker. */
+"ALL_MEDIA_FILE_TYPE_AUDIO" = "Ήχος";
+
+/* Media (i.e., graphical) file type in All Meda file type picker. */
+"ALL_MEDIA_FILE_TYPE_MEDIA" = "Πολυμέσα";
+
+/* Menu option to limit All Media view to displaying only GIFs */
+"ALL_MEDIA_FILTER_GIFS" = "Εικόνες GIF";
+
+/* Menu option to limit All Media view to displaying only photos */
+"ALL_MEDIA_FILTER_PHOTOS" = "Φωτογραφίες";
+
+/* Menu option to limit All Media view to displaying only videos */
+"ALL_MEDIA_FILTER_VIDEOS" = "Βίντεο";
+
+/* Menu option to show All Media items in a grid of square thumbnails */
+"ALL_MEDIA_GRID_MODE" = "Πλέγμα";
+
+/* Menu option to show All Media items in a single-column list */
+"ALL_MEDIA_LIST_MODE" = "Λίστα";
+
 /* Label shown over thumbnails of GIFs in the All Media view */
 "ALL_MEDIA_THUMBNAIL_LABEL_GIF" = "GIF";
+
+/* Label shown by thumbnails of images in the All Media view */
+"ALL_MEDIA_THUMBNAIL_LABEL_IMAGE" = "Φωτογραφία";
+
+/* Label shown by thumbnails of videos in the All Media view */
+"ALL_MEDIA_THUMBNAIL_LABEL_VIDEO" = "Βίντεο";
 
 /* Title for the view of all your signal connections */
 "ALL_SIGNAL_CONNECTIONS_TITLE" = "Όλες οι επαφές";
@@ -130,11 +193,14 @@
 /* Default message for the 'app launch failed' alert. */
 "APP_LAUNCH_FAILURE_ALERT_MESSAGE" = "Το Signal δεν μπορεί να ανοίξει. Παρακαλώ στείλε ένα αρχείο καταγραφής σφαλμάτων στη διεύθυνση support@signal.org για να μπορέσουμε να λύσουμε το πρόβλημα.";
 
-/* Title for the 'app launch failed' alert. */
-"APP_LAUNCH_FAILURE_ALERT_TITLE" = "Σφάλμα";
-
 /* Button to try launching the app even though the last launch failed */
 "APP_LAUNCH_FAILURE_CONTINUE" = "Άνοιγμα του Signal αντ'αυτού";
+
+/* Message for an error indicating that the app couldn't launch because some unexpected error happened with the user's registration status. */
+"APP_LAUNCH_FAILURE_CORRUPT_REGISTRATION_MESSAGE" = "Στείλε ένα αρχείο καταγραφής σφαλμάτων στη διεύθυνση support@signal.org για να μπορέσουμε να λύσουμε το πρόβλημα.";
+
+/* Title for an error indicating that the app couldn't launch because some unexpected error happened with the user's registration status. */
+"APP_LAUNCH_FAILURE_CORRUPT_REGISTRATION_TITLE" = "Αδυναμία ανοίγματος του Signal";
 
 /* Error indicating that the app could not launch because the database could not be loaded. */
 "APP_LAUNCH_FAILURE_COULD_NOT_LOAD_DATABASE" = "Δεν φορτώθηκε η βάση δεδομένων";
@@ -371,7 +437,7 @@
 "AUDIO_ACTIVITY_PLAYBACK_NAME_AUDIO_MESSAGE" = "Ηχητικό μήνυμα";
 
 /* Accessibility label for placing an audio call */
-"AUDIO_CALL_LABEL" = "Ηχητική Κλήση";
+"AUDIO_CALL_LABEL" = "Βιντεοκλήση";
 
 /* action sheet button title to enable built in speaker during a call */
 "AUDIO_ROUTE_BUILT_IN_SPEAKER" = "Μεγάφωνο";
@@ -431,7 +497,7 @@
 "BADGE_EXPIRED_SUBSCRIPTION_TITLE" = "Η μηνιαία δωρεά ακυρώθηκε";
 
 /* String explaining to the user that their subscription badge has expired on the badge expiry sheet. Embeds {failure-specific sentence(s)}. */
-"BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_CHARGE_FAILURE_BODY_FORMAT" = "Η τρέχουσα μηνιαία δωρεά σου ακυρώθηκε. Το σήμα δωρεάς %1$@ δεν εμφανίζεται πλέον στο προφίλ σου.\n\nΓια να συνεχίσεις να υποστηρίζεις τη Signal και να ενεργοποιήσεις πάλι το σήμα σου, ενημέρωσε τα στοιχεία πληρωμής σου και κάνε μια δωρεά.";
+"BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_CHARGE_FAILURE_BODY_FORMAT" = "Η τρέχουσα μηνιαία δωρεά σου ακυρώθηκε. Το σήμα δωρεάς %1$@ δεν εμφανίζεται πλέον στο προφίλ σου.\n\nΓια να συνεχίσεις να υποστηρίζεις το Signal και να ενεργοποιήσεις πάλι το σήμα σου, ενημέρωσε τα στοιχεία πληρωμής σου και κάνε μια δωρεά.";
 
 /* Body of the sheet shown when your subscription is canceled due to inactivity */
 "BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_INACTIVITY_BODY_FORMAT" = "Η τρέχουσα μηνιαία δωρεά σου ακυρώθηκε αυτόματα γιατί δεν έχεις συνδεθεί για μεγάλο χρονικό διάστημα. Το σήμα %1$@ δεν εμφανίζεται πλέον στο προφίλ σου.\n\nΜπορείς να συνεχίσεις να χρησιμοποιείς το Signal, αλλά για να υποστηρίξεις την εφαρμογή και να ενεργοποιήσεις πάλι το σήμα σου, κάνε τώρα μια δωρεά.";
@@ -494,7 +560,7 @@
 "BLOCK_LIST_UNBLOCK_GROUP_TITLE" = "Κατάργηση αποκλεισμού της ομάδας;";
 
 /* A format for the 'unblock conversation' action sheet title. Embeds the {{conversation title}}. */
-"BLOCK_LIST_UNBLOCK_TITLE_FORMAT" = "Κατάργηση αποκλεισμού του/της %1$@;";
+"BLOCK_LIST_UNBLOCK_TITLE_FORMAT" = "Κατάργηση αποκλεισμού της συνομιλίας %1$@;";
 
 /* A label for the block button in the block list view */
 "BLOCK_LIST_VIEW_BLOCK_BUTTON" = "Αποκλεισμός";
@@ -515,7 +581,7 @@
 "BLOCK_LIST_VIEW_CANT_BLOCK_SELF_ALERT_TITLE" = "Σφάλμα";
 
 /* Alert title after unblocking a group or 1:1 chat. Embeds the {{conversation title}}. */
-"BLOCK_LIST_VIEW_UNBLOCKED_ALERT_TITLE_FORMAT" = "Καταργήθηκε ο αποκλεισμός του/της %1$@.";
+"BLOCK_LIST_VIEW_UNBLOCKED_ALERT_TITLE_FORMAT" = "Καταργήθηκε ο αποκλεισμός της συνομιλίας %1$@.";
 
 /* Alert body after unblocking a group. */
 "BLOCK_LIST_VIEW_UNBLOCKED_GROUP_ALERT_BODY" = "Τα υπάρχοντα μέλη μπορούν να σε ξαναπροσθέσουν στην ομάδα.";
@@ -581,7 +647,7 @@
 "BUTTON_SUBMIT" = "Αποστολή";
 
 /* Label for the 'unmute' button. */
-"BUTTON_UNMUTE" = "Αναίρεση σίγασης";
+"BUTTON_UNMUTE" = "Μη σίγαση";
 
 /* Label for the 'view' button. */
 "BUTTON_VIEW" = "Εμφάνιση";
@@ -593,19 +659,19 @@
 "CALL_AGAIN_BUTTON_TITLE" = "Επανάκληση";
 
 /* notification body */
-"CALL_AUDIO_INCOMING_NOTIFICATION_BODY" = "📞 Εισερχόμενη ηχητική κλήση…";
+"CALL_AUDIO_INCOMING_NOTIFICATION_BODY" = "📞 Εισερχόμενη φωνητική κλήση…";
 
 /* notification body for a missed call in the last 24 hours. Embeds {{time}}, e.g. '3:30 PM'. */
-"CALL_AUDIO_MISSED_24_HOURS_NOTIFICATION_BODY_FORMAT" = "📞 Αναπάντητη κλήση φωνής στις %1$@";
+"CALL_AUDIO_MISSED_24_HOURS_NOTIFICATION_BODY_FORMAT" = "📞 Αναπάντητη φωνητική κλήση στις %1$@";
 
 /* notification body for a call that was just missed */
-"CALL_AUDIO_MISSED_NOTIFICATION_BODY" = "Αναπάντητη ηχητική κλήση";
+"CALL_AUDIO_MISSED_NOTIFICATION_BODY" = "📞 Αναπάντητη φωνητική κλήση";
 
 /* notification body for a missed call from more than a week ago. Embeds {{short date}}, e.g. '6/28'. */
-"CALL_AUDIO_MISSED_PAST_NOTIFICATION_BODY_FORMAT" = "📞 Αναπάντητη κλήση φωνής στις %1$@";
+"CALL_AUDIO_MISSED_PAST_NOTIFICATION_BODY_FORMAT" = "📞 Αναπάντητη φωνητική κλήση στις %1$@";
 
 /* notification body for a missed call from the last week. Embeds {{weekday}}, e.g. 'Monday'. */
-"CALL_AUDIO_MISSED_WEEK_NOTIFICATION_BODY_FORMAT" = "📞 Αναπάντητη κλήση φωνής στις %1$@";
+"CALL_AUDIO_MISSED_WEEK_NOTIFICATION_BODY_FORMAT" = "📞 Αναπάντητη φωνητική κλήση στις %1$@";
 
 /* Alert message when calling and permissions for microphone are missing */
 "CALL_AUDIO_PERMISSION_MESSAGE" = "Μπορείς να ενεργοποιήσεις την πρόσβαση στο μικρόφωνο στην εφαρμογή Ρυθμίσεις του iOS για να κάνεις κλήσεις και να ηχογραφείς μηνύματα φωνής στο Signal.";
@@ -689,7 +755,7 @@
 "CALL_VIEW_SWITCH_CAMERA_DIRECTION" = "Αλλαγή κατεύθυνσης κάμερας";
 
 /* Accessibility label to switch to audio only */
-"CALL_VIEW_SWITCH_TO_AUDIO_LABEL" = "Αλλαγή σε κλήση ήχου";
+"CALL_VIEW_SWITCH_TO_AUDIO_LABEL" = "Αλλαγή σε φωνητική κλήση";
 
 /* Accessibility label to switch to video call */
 "CALL_VIEW_SWITCH_TO_VIDEO_LABEL" = "Αλλαγή σε βιντεοκλήση";
@@ -1397,13 +1463,13 @@
 "COUNTRYCODE_SELECT_TITLE" = "Επιλογή κωδικού χώρας";
 
 /* Body text for an interactive in-app prompt to set up a Signal username. */
-"CREATE_USERNAME_MEGAPHONE_BODY" = "Usernames let others message you without needing your phone number.";
+"CREATE_USERNAME_MEGAPHONE_BODY" = "Τα ονόματα χρήστη επιτρέπουν σε άλλους χρήστες να σου στείλουν μηνύματα χωρίς τον αριθμό τηλεφώνου σου.";
 
 /* Title for a button in an interactive in-app prompt to set up a Signal username, which will start a create-username flow. */
-"CREATE_USERNAME_MEGAPHONE_SET_UP_BUTTON_TITLE" = "Set Up";
+"CREATE_USERNAME_MEGAPHONE_SET_UP_BUTTON_TITLE" = "Ρύθμιση";
 
 /* Title for an interactive in-app prompt to set up a Signal username. */
-"CREATE_USERNAME_MEGAPHONE_TITLE" = "Set up your Signal username";
+"CREATE_USERNAME_MEGAPHONE_TITLE" = "Ρύθμισε το όνομα χρήστη σου στο Signal";
 
 /* Credit/debit card donation error for decline failures where the card has expired. */
 "CREDIT_OR_DEBIT_CARD_DONATION_ERROR_EXPIRED_CARD" = "Η κάρτα σου έχει λήξει. Επαλήθευσε ότι τα στοιχεία της κάρτας σου είναι σωστά και δοκίμασε ξανά.";
@@ -1556,7 +1622,7 @@
 "DEBUG_LOG_INFO_BUTTON" = "Πληροφορίες για αρχείο καταγραφής εντοπισμού σφαλμάτων";
 
 /* info message text in conversation view */
-"DECLINED_AUDIO_CALL" = "Απέρριψες μια βιντεοκλήση";
+"DECLINED_AUDIO_CALL" = "Απέρριψες μια κλήση";
 
 /* info message text in conversation view */
 "DECLINED_VIDEO_CALL" = "Απέρριψες μια βιντεοκλήση";
@@ -1610,7 +1676,10 @@
 "DEREGISTRATION_REREGISTER_WITH_SAME_PHONE_NUMBER" = "Επανεγγραφή αριθμού τηλεφώνου";
 
 /* Label warning the user that they have been de-registered. */
-"DEREGISTRATION_WARNING" = "Η συσκευή δεν είναι πλέον καταχωρημένη. Ο αριθμός τηλεφώνου σου μπορεί να έχει καταχωρηθεί στο Signal από διαφορετική συσκευή. Πάτα για επανεγγραφή.";
+"DEREGISTRATION_WARNING" = "Αυτή η συσκευή δεν είναι πλέον εγγεγραμμένη. Αυτό συνέβη μάλλον επειδή καταχώρησες τον αριθμό τηλεφώνου σου στο Signal σε άλλη συσκευή.";
+
+/* If the user has been deregistered, they'll see a warning. This is This is the call to action on that warning. */
+"DEREGISTRATION_WARNING_ACTION_TITLE" = "Επανεγγραφή συσκευής";
 
 /* {{Short Date}} when device last communicated with Signal Server. */
 "DEVICE_LAST_ACTIVE_AT_LABEL" = "Τελευταία ενεργός/ή %1$@";
@@ -1620,6 +1689,12 @@
 
 /* Alert title that can occur when viewing device manager. */
 "DEVICE_LIST_UPDATE_FAILED_TITLE" = "Η ενημέρωση της λίστας συσκευών απέτυχε.";
+
+/* A label for this device in the device list. */
+"DEVICE_NAME_THIS_DEVICE" = "Αυτή η συσκευή";
+
+/* A label for an unnamed device in the device list. */
+"DEVICE_NAME_UNNAMED_DEVICE" = "Ανώνυμη συσκευή";
 
 /* The stop action of the dialog asking the user if they want to cancel a device transfer */
 "DEVICE_TRANSFER_CANCEL_CONFIRMATION_ACTION" = "Ακύρωση Μεταφοράς";
@@ -1919,7 +1994,7 @@
 "DONATION_ON_BEHALF_OF_A_FRIEND_REPLY" = "Δωρεά";
 
 /* You sent a donation to a friend. This is the title of that message in the chat. Embeds {{short contact name}}. */
-"DONATION_ON_BEHALF_OF_A_FRIEND_SENT_TITLE_FORMAT" = "Δωρεά στον/στην %1$@";
+"DONATION_ON_BEHALF_OF_A_FRIEND_SENT_TITLE_FORMAT" = "Δωρεά εκ μέρους του χρήστη %1$@";
 
 /* When you donate on behalf of a friend, a thank-you sheet will appear. This is the text on that sheet. Embeds {{recipient name}}. */
 "DONATION_ON_BEHALF_OF_A_FRIEND_THANKS_BODY_FORMAT" = "Έκανες δωρεά στη Signal εκ μέρους του/της %1$@. Θα τους δοθεί η επιλογή να δείξουν την υποστήριξή τους στο προφίλ τους.";
@@ -2053,6 +2128,9 @@
 /* The alert title if user tries to exit update group view without saving changes. */
 "EDIT_GROUP_VIEW_UNSAVED_CHANGES_TITLE" = "Μη αποθηκευμένες αλλαγές";
 
+/* Label for Edit History modal */
+"EDIT_HISTORY_LABEL" = "Ιστορικό επεξεργασίας";
+
 /* Short name for edit menu item to copy contents of media message. */
 "EDIT_ITEM_COPY_ACTION" = "Αντιγραφή";
 
@@ -2082,6 +2160,9 @@
 
 /* The name for the emoji category 'Objects' */
 "EMOJI_CATEGORY_OBJECTS_NAME" = "Αντικείμενα";
+
+/* The name for the emoji section for emojis already used on the message */
+"EMOJI_CATEGORY_ON_MESSAGE_NAME" = "Αυτό το μήνυμα";
 
 /* The name for the emoji category 'Recents' */
 "EMOJI_CATEGORY_RECENTS_NAME" = "Πρόσφατα";
@@ -2224,11 +2305,23 @@
 /* Format string for 'unregistered user' error. Embeds {{the unregistered user's name or signal id}}. */
 "ERROR_UNREGISTERED_USER_FORMAT" = "Μη εγγεγραμμένος χρήστης/τρια: %1$@";
 
+/* Button to exit change number, shown in context menu. */
+"EXIT_CHANGE_NUMBER" = "Έξοδος από την αλλαγή αριθμού";
+
+/* Button to exit re-registration, shown in context menu. */
+"EXIT_REREGISTRATION" = "Έξοδος από την εγγραφή";
+
 /* Label notifying the user that the app has expired. */
-"EXPIRATION_ERROR" = "Η έκδοση του Signal σου έχει λήξει! Πάτα για να αναβαθμίσεις στην πιο πρόσφατη έκδοση.";
+"EXPIRATION_ERROR" = "Αυτή η έκδοση Signal έχει λήξει. Αναβάθμισε για να στείλεις και να λάβεις μηνύματα.";
+
+/* If the user's app is too old, they'll be shown a warning asking them to upgrade. This is the text on the warning, and tapping it will open the App Store page for Signal. */
+"EXPIRATION_WARNING_ACTION_TITLE" = "Αναβάθμιση τώρα";
+
+/* Label warning the user that the app will expire soon. Embeds {{date}}. */
+"EXPIRATION_WARNING_SOON" = "Αυτή η έκδοση του Signal θα λήξει στις %1$@. Κάνε αναβάθμιση στην πιο πρόσφατη έκδοση.";
 
 /* Label warning the user that the app will expire today. */
-"EXPIRATION_WARNING_TODAY" = "Η έκδοση του Signal σου θα λήξει σήμερα. Πάτα για αναβάθμιση στην πιο πρόσφατη έκδοση.";
+"EXPIRATION_WARNING_TODAY" = "Αυτή η έκδοση Signal θα λήξει σήμερα. Κάνε αναβάθμιση στην πιο πρόσφατη έκδοση.";
 
 /* action sheet header when re-sending message which failed because of too many attempts */
 "FAILED_SENDING_BECAUSE_RATE_LIMIT" = "Πάρα πολλές αποτυχίες με αυτή την επαφή. Παρακαλώ ξαναδοκίμασε αργότερα.";
@@ -2286,6 +2379,9 @@
 
 /* Label indicating media gallery is empty */
 "GALLERY_TILES_EMPTY_GALLERY" = "Δεν έχεις πολυμέσα σε αυτη τη συνομιλία.";
+
+/* Label indicating media gallery with audio filter is empty */
+"GALLERY_TILES_EMPTY_GALLERY_AUDIO" = "Δεν έχεις ηχητικά σε αυτή τη συνομιλία.";
 
 /* Label indicating loading is in progress */
 "GALLERY_TILES_LOADING_MORE_RECENT_LABEL" = "Φορτώνονται νεότερα πολυμέσα…";
@@ -2800,6 +2896,9 @@
 /* Message indicating that the local user was removed from the group by an unknown user. */
 "GROUP_LOCAL_USER_REMOVED_BY_UNKNOWN_USER" = "Αφαιρέθηκες από την ομάδα.";
 
+/* Message indicating that the local user's request to join the group was approved. */
+"GROUP_LOCAL_USER_REQUEST_APPROVED" = "Το αίτημά σου για συμμετοχή στην ομάδα εγκρίθηκε.";
+
 /* Message indicating that the local user's request to join the group was approved by another user. Embeds {{ %@ the name of the user who approved the request }}. */
 "GROUP_LOCAL_USER_REQUEST_APPROVED_BY_REMOTE_USER_FORMAT" = "Ο/Η %1$@ ενέκρινε το αίτημά σου να μπεις στην ομάδα.";
 
@@ -2884,9 +2983,6 @@
 /* Message indicating that a remote user's invite was revoked by the local user. Embeds {{remote user name}}. */
 "GROUP_REMOTE_USER_INVITE_REVOKED_BY_LOCAL_USER_FORMAT" = "Η πρόσκληση στην ομάδα του/της %1$@ ανακλήθηκε.";
 
-/* Message indicating that a single remote user was invited to the group. Embeds {{remote user name}}. */
-"GROUP_REMOTE_USER_INVITED_1_FORMAT" = "O/H %1$@ προσκλήθηκε στην ομάδα.";
-
 /* Message indicating that a remote user was invited to the group by the local user. Embeds {{remote user name}}. */
 "GROUP_REMOTE_USER_INVITED_BY_LOCAL_USER_FORMAT" = "Προσκάλεσες τον/την %1$@ στην ομάδα.";
 
@@ -2917,7 +3013,7 @@
 /* Message indicating that a remote user's request to join the group was rejected by the local user. Embeds {{requesting user name}}. */
 "GROUP_REMOTE_USER_REQUEST_REJECTED_BY_LOCAL_USER_FORMAT" = "Απέρριψες το αίτημα του/της %1$@ να μπει στην ομάδα.";
 
-/* Message indicating that a remote user's request to join the group was rejected by another user. Embeds {{ %1$@ requesting user name, %2$@ approving user name }}. */
+/* Message indicating that a remote user's request to join the group was rejected by another user. Embeds {{ %1$@ requesting user name, %2$@ rejecting user name }}. */
 "GROUP_REMOTE_USER_REQUEST_REJECTED_BY_REMOTE_USER_FORMAT" = "Ο/Η %2$@ απέρριψε το αίτημα του/της %1$@ να μπει στην ομάδα.";
 
 /* Message indicating that a remote user's request to join the group was rejected. Embeds {{requesting user name}}. */
@@ -3025,12 +3121,6 @@
 /* Message indicating that the group was migrated. */
 "GROUP_WAS_MIGRATED" = "Αυτή η ομάδα αναβαθμίστηκε σε Ομάδα νέου τύπου.";
 
-/* Message indicating that the local user was dropped while migrating the group. */
-"GROUP_WAS_MIGRATED_USERS_DROPPED_LOCAL_USER" = "Δεν ήταν δυνατή η προσθήκη σου στη Νέα Ομάδα και επομένως αφαιρέθηκες από την ομάδα.";
-
-/* Message indicating that the local user was invited while migrating the group. */
-"GROUP_WAS_MIGRATED_USERS_INVITED_LOCAL_USER" = "Δεν μπόρεσες να προστεθείς στην Ομάδα νέου τύπου, και προσκλήθηκες να μπεις.";
-
 /* Message indicating that the local user left the group. */
 "GROUP_YOU_LEFT" = "Έφυγες από την ομάδα.";
 
@@ -3076,128 +3166,8 @@
 /* Label for 'invite friends to group' button. */
 "GROUPS_INVITE_FRIENDS_BUTTON" = "Πρόσκληση φίλων";
 
-/* Body text for the first section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_1_BODY" = "Οι ομάδες παλαιού τύπου είναι ομάδες που δεν είναι συμβατές με δυνατότητες των νέων ομαδών, όπως οι διαχειριστές και οι πιο περιγραφικές ανανεώσεις της ομάδας.";
-
-/* Title for the first section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_1_TITLE" = "Τι είναι οι ομάδες παλαιού τύπου;";
-
-/* Body text for the second section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_2_BODY" = "Οι ομάδες παλαιού τύπου δεν μπορούν ακόμα να αναβαθμιστούν σε νέου τύπου, αλλά μπορείς να δημιουργήσεις μια καινούργια ομάδα νέου τύπου, με τα ίδια μέλη, εφ' όσον έχουν την πιο πρόσφατη έκδοση του Signal.\n\nΤο Signal θα παρέχει έναν τρόπο για αναβάθμιση ομαδών παλαιού τύπου, στο μέλλον.";
-
-/* Title for the second section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_2_TITLE" = "Μπορώ να αναβαθμίσω μια ομάδα παλαιού τύπου;";
-
-/* Body text for the third section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_3_BODY" = "Για τη δημιουργία ομάδας νέου τύπου, όλα τα μέλη θα πρέπει να αναβαθμίσουν στην πιο πρόσφατη έκδοση του Signal.";
-
-/* Title for the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_TITLE" = "Ομάδες παλαιού τύπου και νέες ομάδες";
-
-/* Format for indicator that a group cannot be used until it is migrated. Embeds {{ a \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_BLOCKING_MIGRATION_FORMAT" = "Αναβάθμισε την ομάδα για να ενεργοποιήσεις νέες δυνατότητες όπως οι @αναφορές και οι διαχειριστές. Τα μέλη που δεν έχουν μοιραστεί τη φωτογραφία ή το όνομά τους με την ομάδα θα προσκληθούν να μπουν. %1$@.";
-
-/* Title for the 'can't upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_ALERT_TITLE" = "Αδυναμία αναβάθμισης σε Ομάδα νέου τύπου";
-
-/* Text indicating that a legacy group can't be upgraded because it has too many members. Embeds {{ The maximum number of members allowed in a group. }}. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_ALERT_TOO_MANY_MEMBERS_FORMAT" = "Αυτή η ομάδα δεν μπορεί να αναβαθμιστεί σε Ομάδα νέου τύπου γιατί έχει πάρα πολλά μέλη. Ο μέγιστος αριθμός μελών ομάδας που μπορεί να αναβαθμιστεί είναι %1$@.";
-
-/* Explanation of group migration for groups that can't yet be migrated in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_YET_1" = "Όταν όλα τα τωρινά μέλη της ομάδας χρησιμοποιήσουν μια έκδοση του Signal που υποστηρίζει τις Ομάδες νέου τύπου, τότε η ομάδα θα αναβαθμιστεί.";
-
-/* Explanation of group migration for groups that can't yet be migrated in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_YET_2" = "Όλο το ιστορικό των μηνυμάτων και τα πολυμέσα θα διατηρηθούν ως έχουν πριν από την αναβάθμιση.";
-
-/* Brief explanation of legacy groups. Embeds {{ a \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_FORMAT" = "Αυτή είναι ομάδα παλαιού τύπου. Δυνατότητες όπως οι διαχειριστές ομάδας είναι διαθέσιμα μόνο στις ομάδες νέου τύπου. %1$@";
-
-/* Indicates that a legacy group can't be upgraded because some members can't be migrated. Embeds {{ an \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_MEMBERS_CANT_BE_MIGRATED_FORMAT" = "Αυτή η ομάδα παλαιού τύπου δεν μπορεί ακόμα να αναβαθμιστεί σε Ομάδα νέου τύπου. %1$@.";
-
-/* Indicates that a legacy group can't be upgraded because it has too many members. Embeds {{ an \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_TOO_MANY_MEMBERS_FORMAT" = "Αυτή η ομάδα παλαιού τύπου δεν μπορεί να αναβαθμιστεί σε Ομάδα νέου τύπου επειδή είναι πολύ μεγάλη. %1$@.";
-
-/* Explanation of legacy groups. Embeds {{ an \"upgrade\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_WITH_UPGRADE_OFFER_FORMAT" = "Αυτή είναι μια ομάδα παλαιού τύπου. Για πρόσβαση σε δυνατότητες όπως οι @αναφορές και οι διαχειριστές ομάδας, %1$@.";
-
 /* Label indicating a legacy group. */
 "GROUPS_LEGACY_GROUP_INDICATOR" = "Ομάδα παλαιού τύπου";
-
-/* Indicates that the local user needs to accept an invitation to rejoin the group after a group migration. */
-"GROUPS_LEGACY_GROUP_LOCAL_USER_INVITED" = "Θα χρειαστεί να αποδεχτείς πάλι μια πρόσκληση για να μπεις στην ομάδα, και δεν θα λαμβάνεις μηνύματα της ομάδας μέχρι να αποδεχτείς.";
-
-/* Title for the 'migrated group' alert view. */
-"GROUPS_LEGACY_GROUP_MIGRATED_GROUP_ALERT_TITLE" = "Τι είναι οι Ομάδες νέου τύπου;";
-
-/* Explanation of group migration for a migrated group in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_MIGRATED_GROUP_DESCRIPTION" = "Όλο το ιστορικό της συζήτησης και τα πολυμέσα διατηρήθηκαν ως είχαν πριν από την αναβάθμιση.";
-
-/* Explanation of new groups in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_NEW_GROUP_DESCRIPTION" = "Οι ομάδες νέου τύπου έχουν δυνατότητες όπως οι @αναφορές και οι διαχειριστές ομάδας, και θα αποκτήσουν παραπάνω δυνατότητες στο μέλλον.";
-
-/* Title for the 'new groups' alert view. */
-"GROUPS_LEGACY_GROUP_NEW_GROUPS_ALERT_TITLE" = "Ομάδες νέου τύπου";
-
-/* Label for the 'add members' button in the 're-add dropped group members' alert view. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_ADD_MEMBERS_BUTTON" = "Προσθήκη μελών";
-
-/* Title for the 're-add dropped group members' alert view. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_ALERT_TITLE_1" = "Προσθήκη μέλους;";
-
-/* Title for the 're-add dropped group members' alert view. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_ALERT_TITLE_N" = "Προσθήκη μελών;";
-
-/* Label for the 'add members' button in the 're-add dropped groups members' banner. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_BUTTON" = "Προσθήκη μελών";
-
-/* Explanation of 're-adding dropped group member' in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_DESCRIPTION_1" = "Αυτό το μέλος δεν μπορεσε να προστεθεί αυτόματα στην Ομάδα νέου τύπου αυτόματα κατά την αναβάθμιση:";
-
-/* Explanation of 're-adding dropped group member' in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_DESCRIPTION_N" = "Αυτά τα μέλη δεν μπόρεσαν να προστεθούν αυτόματα στην Ομάδα νέου τύπου αυτόματα κατά την αναβάθμιση:";
-
-/* Body text for the second section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_2_BODY" = "Όλο το ιστορικό της συζήτησης και τα πολυμέσα διατηρήθηκαν ως είχαν πριν από την αναβάθμιση.";
-
-/* Body text for the 'dropped member' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_DROPPED_MEMBERS_1" = "Αυτό το μέλος αφαιρέθηκε από την ομάδα και δεν θα μπορέσει να ξαναμπεί στην ομάδα μέχρι να αναβαθμίσει:";
-
-/* Body text for the 'dropped members' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_DROPPED_MEMBERS_N" = "Αυτά τα μέλη αφαιρέθηκαν από την ομάδα και δεν θα μπορέσουν να ξαναμπούν στην ομάδα μέχρι να αναβαθμίσουν:";
-
-/* Body text for the 'invites member' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_INVITED_MEMBERS_1" = "Αυτό το μέλος θα πρέπει να αποδεχτεί την πρόσκληση να ξαναμπεί στην ομάδα, και δεν θα λαμβάνει τα μηνύματα της ομάδας μέχρι να αποδεχτεί:";
-
-/* Body text for the 'invites members' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_INVITED_MEMBERS_N" = "Αυτά τα μέλη θα πρέπει να αποδεχτούν την πρόσκληση να ξαναμπούν στην ομάδα, και δεν θα λαμβάνουν τα μηνύματα της ομάδας μέχρι να αποδεχτούν:";
-
-/* Body text for the 'possibly dropped member' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_POSSIBLY_DROPPED_MEMBERS_1" = "Αυτό το μέλος δεν μπορεί να μπει σε Νέες Ομάδες και θα αφαιρεθεί από την ομάδα:";
-
-/* Body text for the 'possibly dropped members' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_POSSIBLY_DROPPED_MEMBERS_N" = "Αυτά τα μέλη δεν μπορούν να μπουν σε Νέες Ομάδες και θα αφαιρεθούν από την ομάδα:";
-
-/* Title for the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_TITLE" = "Αναβάθμιση σε Ομάδα νέου τύπου";
-
-/* Label for the 'upgrade this group' button in the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_BUTTON" = "Αναβάθμιση της ομάδας";
-
-/* Message for error alert indicating the group update failed. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_FAILED_ERROR_MESSAGE" = "Αυτή η ομάδα δεν μπορεί να αναβαθμιστεί σε Ομάδα νέου τύπου αυτή τη στιγμή.";
-
-/* Message for error alert indicating the group update failed due to network connectivity. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_FAILED_ERROR_MESSAGE_NETWORK" = "Αυτή η ομάδα δεν μπόρεσε να αναβαθμιστεί σε Ομάδα νέου τύπου επειδή δεν είσαι συνδεμένος/η στο διαδίκτυο. Δοκίμασε ξανά αργότερα.";
-
-/* Title for error alert indicating the group update failed. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_FAILED_ERROR_TITLE" = "Αποτυχία ολοκλήρωσης της αναβάθμισης.";
-
-/* Message indicating the group update succeeded. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_SUCCEEDED" = "Αναβαθμίστηκε σε Ομάδα νέου τύπου.";
-
-/* An \"upgrade\" link for upgrading legacy groups to new groups. */
-"GROUPS_LEGACY_GROUP_UPGRADE_LINK" = "αναβάθμιση της ομάδας";
 
 /* Message for the 'replace group admin' alert. */
 "GROUPS_REPLACE_ADMIN_ALERT_MESSAGE" = "Πριν φύγεις, διάλεξε έναν νέο διαχειριστή ή διαχειρίστρια για την ομάδα.";
@@ -3311,7 +3281,7 @@
 "IN_CALL_RINGING" = "Χτυπάει…";
 
 /* Call setup status label */
-"IN_CALL_RINGING_AUDIO" = "Ηχητική Κλήση…";
+"IN_CALL_RINGING_AUDIO" = "Φωνητική κλήση…";
 
 /* Call setup status label */
 "IN_CALL_RINGING_VIDEO" = "Βιντεοκλήση…";
@@ -3332,7 +3302,7 @@
 "INBOX_VIEW_EMPTY_INBOX" = "Δεν υπάρχουν ακόμα συνομιλίες.\nΣτείλε σε έναν φίλο σου, για να ξεκινήσεις.";
 
 /* info message text in conversation view */
-"INCOMING_AUDIO_CALL" = "Εισερχόμενη βιντεοκλήση";
+"INCOMING_AUDIO_CALL" = "Εισερχόμενη κλήση";
 
 /* info message text in conversation view */
 "INCOMING_VIDEO_CALL" = "Εισερχόμενη βιντεοκλήση";
@@ -3445,6 +3415,21 @@
 /* Error indicating that a group could not be left. */
 "LEAVE_GROUP_FAILED" = "Σφάλμα κατά την αποχώρηση από την ομάδα.";
 
+/* Text in a sheet explaining details about 'Legacy Groups'. */
+"LEGACY_GROUP_UNSUPPORTED_LEARN_MORE_BODY" = "Οι ομάδες παλαιού τύπου είναι ομάδες που δεν υποστηρίζουν ορισμένες λειτουργίες, όπως ονομαστικές αναφορές και διαχειριστές. Οι περισσότερες ομάδες αναβαθμίστηκαν είτε αυτόματα είτε από τους διαχειριστές σε νέες ομάδες. Λόγω μεγάλης περιόδου αδράνειας, δεν είναι δυνατή η αναβάθμιση αυτής της ομάδας.\n\nΓια να συνεχίσεις τη συνομιλία, πρέπει να δημιουργήσεις νέα ομάδα.";
+
+/* Title for a sheet explaining details about 'Legacy Groups'. */
+"LEGACY_GROUP_UNSUPPORTED_LEARN_MORE_TITLE" = "Ομάδες παλαιού τύπου";
+
+/* Message explaining that this group can no longer be used because it is unsupported. Embeds a {{ learn more link }}. */
+"LEGACY_GROUP_UNSUPPORTED_MESSAGE" = "Αυτή η ομάδα είναι παλαιού τύπου και δεν υποστηρίζεται πλέον. Για να συνεχίσεις τη συνομιλία, δημιούργησε μια νέα ομάδα. %1$@";
+
+/* Text in a sheet explaining details about 'New Groups'. */
+"LEGACY_GROUP_WHAT_ARE_NEW_GROUPS_BODY" = "Οι ομάδες νέου τύπου έχουν δυνατότητες όπως οι @αναφορές και οι διαχειριστές ομάδας, και θα αποκτήσουν παραπάνω δυνατότητες στο μέλλον.\n\nΌλο το ιστορικό της συζήτησης και τα πολυμέσα διατηρήθηκαν ως είχαν πριν από την αναβάθμιση.";
+
+/* Title for a sheet explaining details about 'New Groups'. */
+"LEGACY_GROUP_WHAT_ARE_NEW_GROUPS_TITLE" = "Τι είναι οι Ομάδες νέου τύπου;";
+
 /* report an invalid linking code */
 "LINK_DEVICE_INVALID_CODE_BODY" = "Αυτός ο κωδικός QR δεν είναι έγκυρος. Βεβαιώσου ότι σκανάρεις τον κωδικό QR που εμφανίζεται στη συσκευή που θέλεις να συνδέσεις.";
 
@@ -3553,11 +3538,20 @@
 /* Shown in place of message input text in media editor when 'View Once' is on. */
 "MEDIA_EDITOR_TEXT_FIELD_VIEW_ONCE_MEDIA" = "Μέσα Μεμονωμένης Προβολής";
 
+/* Explanatory text displayed when deleting N items in All Media screen. */
+"MEDIA_GALLERY_DELETE_MEDIA_BODY" = "This will permanently delete the selected files. Any message text associated with these items will also be deleted.";
+
 /* Format for the 'more items' indicator for media galleries. Embeds {{the number of additional items}}. */
 "MEDIA_GALLERY_MORE_ITEMS_FORMAT" = "+ %1$@";
 
 /* Section header in media gallery collection view */
 "MEDIA_GALLERY_THIS_MONTH_HEADER" = "Αυτόν το μήνα";
+
+/* Text explaining that the user will forward all media from a message. */
+"MEDIA_PAGE_FORWARD_MEDIA_CONFIRM_MESSAGE" = "Θα γίνει προώθηση όλων των μέσων σε αυτό το μήνυμα.";
+
+/* Context menu item in media viewer. Refers to deleting currently displayed photo/video. */
+"MEDIA_VIEWER_DELETE_MEDIA_ACTION" = "Διαγραφή";
 
 /* button title to snooze a megaphone */
 "MEGAPHONE_REMIND_LATER" = "Υπενθύμιση αργότερα";
@@ -3655,6 +3649,9 @@
 /* Toast indicating that the user has copied the sent timestamp. */
 "MESSAGE_DETAIL_VIEW_DID_COPY_SENT_TIMESTAMP" = "Ο χρόνος αποστολής αντιγράφτηκε";
 
+/* Title for the 'edit history' section on the 'message details' view. */
+"MESSAGE_DETAILS_EDIT_HISTORY_TITLE" = "Προβολή ιστορικού επεξεργασίας";
+
 /* Title for the 'sent from' section on the 'message details' view. */
 "MESSAGE_DETAILS_VIEW_SENT_FROM_TITLE" = "Στάλθηκε από";
 
@@ -3731,7 +3728,7 @@
 "MESSAGE_REQUEST_BLOCK_GROUP_MESSAGE" = "Θα φύγεις απ' την ομάδα και δεν θα λαμβάνεις πια μηνύματα ή ενημερώσεις.";
 
 /* Action sheet title to confirm blocking a group via a message request. Embeds {{group name}} */
-"MESSAGE_REQUEST_BLOCK_GROUP_TITLE_FORMAT" = "Αποκλεισμός και αποχώρηση από %1$@;";
+"MESSAGE_REQUEST_BLOCK_GROUP_TITLE_FORMAT" = "Αποκλεισμός και αποχώρηση από την ομάδα %1$@;";
 
 /* Action sheet action to confirm deleting a conversation via a message request. */
 "MESSAGE_REQUEST_DELETE_CONVERSATION_ACTION" = "Διαγραφή";
@@ -3782,10 +3779,10 @@
 "MESSAGE_REQUEST_VIEW_BLOCK_BUTTON" = "Αποκλεισμός";
 
 /* A prompt notifying that the user must unblock this conversation to continue. Embeds {{contact name}}. */
-"MESSAGE_REQUEST_VIEW_BLOCKED_CONTACT_PROMPT_FORMAT" = "Να επιτραπεί στον/στην %1$@ να σου στείλει μηνύματα, και να μοιραστεί το όνομα και η φωτογραφία σου μαζί του/της; Δεν θα λάβεις κανένα μήνυμα μέχρι να καταργήσεις τον αποκλεισμό του/της.";
+"MESSAGE_REQUEST_VIEW_BLOCKED_CONTACT_PROMPT_FORMAT" = "Να επιτραπεί στον/στην %1$@ να σου στείλει μηνύματα, και να μοιραστείς το όνομα και τη φωτογραφία σου μαζί του/της; Δεν θα λάβεις κανένα μήνυμα μέχρι να καταργήσεις τον αποκλεισμό του/της.";
 
 /* A prompt notifying that the user must unblock this group to continue. */
-"MESSAGE_REQUEST_VIEW_BLOCKED_GROUP_PROMPT" = "Θέλεις να καταργηθεί ο αποκλεισμός αυτής της ομάδας και να μοιραστεί το όνομα και η φωτογραφία σου με τα μέλη της; Δεν θα λάβεις κανένα μήνυμα μέχρι να καταργήσεις τον αποκλεισμό της.";
+"MESSAGE_REQUEST_VIEW_BLOCKED_GROUP_PROMPT" = "Θέλεις να καταργηθεί ο αποκλεισμός αυτής της ομάδας και να μοιραστείς το όνομα και τη φωτογραφία σου με τα μέλη της; Δεν θα λάβεις κανένα μήνυμα μέχρι να καταργήσεις τον αποκλεισμό της.";
 
 /* A prompt notifying that the user must unblock this group to continue. */
 "MESSAGE_REQUEST_VIEW_BLOCKED_GROUP_PROMPT_V2" = "Κατάργηση του αποκλεισμού αυτής της ομάδας; Δεν θα γνωρίζουν ότι έχεις δει τα μηνύματά τους μέχρι να καταργήσεις τον αποκλεισμό.";
@@ -3828,6 +3825,9 @@
 
 /* message status while message is downloading. */
 "MESSAGE_STATUS_DOWNLOADING" = "Κατεβαίνει";
+
+/* status meesage for edited messages */
+"MESSAGE_STATUS_EDITED" = "έγινε επεξεργασία";
 
 /* status message for failed messages */
 "MESSAGE_STATUS_FAILED" = "Η αποστολή απέτυχε.";
@@ -3878,7 +3878,7 @@
 "MESSAGES_VIEW_UNREAD_INDICATOR" = "Νέα μηνύματα";
 
 /* info message text in conversation view */
-"MISSED_AUDIO_CALL" = "Αναπάντητη βιντεοκλήση";
+"MISSED_AUDIO_CALL" = "Αναπάντητη κλήση";
 
 /* info message text in conversation view (use Apple's name for 'Do Not Disturb' on iOS 14 and older) */
 "MISSED_CALL_DO_NOT_DISTURB" = "Αναπάντητη κλήση ενώ βρισκόσασταν στην κατάσταση \"Μην ενοχλείτε\"";
@@ -4069,6 +4069,9 @@
 /* Label for 1:1 conversation with yourself. */
 "NOTE_TO_SELF" = "Μήνυμα σε μένα";
 
+/* Body for a notification representing a message request. */
+"NOTIFICATION_BODY_INCOMING_MESSAGE_REQUEST" = "Αίτημα μηνύματος";
+
 /* Lock screen notification text presented after user powers on their device without unlocking. Embeds {{device model}} (either 'iPad' or 'iPhone') */
 "NOTIFICATION_BODY_PHONE_LOCKED_FORMAT" = "Ίσως να έχεις λάβει μηνύματα κατά την επανεκκίνηση του %1$@ σου.";
 
@@ -4140,6 +4143,9 @@
 
 /* Label indicating that the 2fa pin is invalid in the 'onboarding 2fa' view. */
 "ONBOARDING_2FA_INVALID_PIN" = "Λάθος ΡΙΝ";
+
+/* Label indicating that the 2fa pin is invalid in the 'onboarding 2fa' view, and you only have one more attempt */
+"ONBOARDING_2FA_INVALID_PIN_LAST_ATTEMPT" = "Λάθος ΡΙΝ. Απομένει 1 προσπάθεια.";
 
 /* Label for the 'skip and create new pin' button when reglock is disabled during onboarding. */
 "ONBOARDING_2FA_SKIP_AND_CREATE_NEW_PIN" = "Παράλειψη και δημιουργία νέου PIN";
@@ -4222,6 +4228,9 @@
 /* Title of the 'onboarding pin attempts exhausted' view when reglock is disabled. */
 "ONBOARDING_PIN_ATTEMPTS_EXHAUSTED_TITLE" = "Λάθος ΡΙΝ";
 
+/* Explanation of the 'onboarding pin attempts exhausted' view when it is unknown if reglock is enabled. */
+"ONBOARDING_PIN_ATTEMPTS_EXHAUSTED_WITH_UNKNOWN_REGLOCK_EXPLANATION" = "Σου τέλειωσαν οι απόπειρες για το PIN, αλλά μπορείς να αποκτήσεις πρόσβαση στον λογαριασμό Signal σου επαληθεύοντας τον αριθμό σου. Για το απόρρητο και την ασφάλειά σου ο λογαριασμός δεν θα έχει προϋπάρχουσες πληροφορίες προφίλ και ρυθμίσεις.";
+
 /* Title of the 'onboarding PIN' view. */
 "ONBOARDING_PIN_EXPLANATION" = "Γράψε το PIN που δημιούργησες για τον λογαριαμό σου. Αυτό είναι διαφορετικό από τον κωδικό επαλήθευσης που έλαβες μέσω SMS.";
 
@@ -4255,6 +4264,18 @@
 /* Label for a progress spinner currently validating code */
 "ONBOARDING_VERIFICATION_CODE_VALIDATION_PROGRESS_LABEL" = "Ο κωδικός επαληθεύεται…";
 
+/* First bullet point for the explainer sheet for registering via verification code. */
+"ONBOARDING_VERIFICATION_HELP_BULLET_1" = "Επιβεβαίωσε πως το τηλέφωνό σου έχει σήμα κινητής για να λάβεις το SMS ή την κλήση";
+
+/* Second bullet point for the explainer sheet for registering via verification code. */
+"ONBOARDING_VERIFICATION_HELP_BULLET_2" = "Επιβεβαίωσε πως μπορείς να δεχτείς εισερχόμενες κλήσεις σε αυτόν τον αριθμό";
+
+/* Third bullet point for the explainer sheet for registering via verification code. */
+"ONBOARDING_VERIFICATION_HELP_BULLET_3" = "Έλεγξε πως έχεις γράψει τον αριθμό τηλεφώνου σου σωστά";
+
+/* Label for a button to get help entering a verification code when registering. */
+"ONBOARDING_VERIFICATION_HELP_LINK" = "Αντιμετωπίζεις προβλήματα με την εγγραφή;";
+
 /* Label indicating that the verification code is incorrect in the 'onboarding verification' view. */
 "ONBOARDING_VERIFICATION_INVALID_CODE" = "Ο κωδικός είναι λάθος";
 
@@ -4273,6 +4294,21 @@
 /* Button text which opens the settings app */
 "OPEN_SETTINGS_BUTTON" = "Ρυθμίσεις";
 
+/* Signal doesn't support old versions of iOS and shows a warning if you're on unsupported version. Some users can upgrade their device to a newer version of iOS to continue using Signal. If that's the case, they'll be shown this text. */
+"OS_EXPIRED_AND_CAN_UPGRADE_OS" = "Το Signal δεν λειτουργεί πλέον σε αυτή τη συσκευή. Για να χρησιμοποιήσεις πάλι το Signal, ενημέρωσε τη συσκευή σου με μια νεότερη έκδοση iOS.";
+
+/* Signal doesn't support old devices. If that's the case, they'll be shown this action, and tapping it will open information about Signal's minimum supported operating systems. */
+"OS_EXPIRED_AND_DEVICE_IS_STUCK" = "Το Signal δεν λειτουργεί πλέον σε αυτή τη συσκευή. Για να χρησιμοποιήσεις πάλι τη Signal, συνδέσου σε μια νεότερη συσκευή.";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're on an old version. Some users can upgrade their device to a newer version of iOS to continue using Signal. If that's the case, they'll be shown this action, and tapping it will open device update instructions. */
+"OS_SOON_TO_EXPIRE_ACTION_TITLE" = "Αναβάθμιση τώρα";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're an old version that will soon lose support. Some users can upgrade their device to a newer version of iOS to continue using Signal. If that's the case, they'll be shown this text. Embeds {{expiration date}}. */
+"OS_SOON_TO_EXPIRE_AND_CAN_UPGRADE_OS_FORMAT" = "Το Signal δεν θα υποστηρίζει πλέον την έκδοση iOS της συσκευής σου. Για να συνεχίσεις να χρησιμοποιείς το Signal, ενημέρωσε τη συσκευή σου σε μια νεότερη έκδοση iOS έως %1$@.";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're on an old version that will soon lose support. This is the text on that warning when users can't upgrade iOS without getting a new device. Embeds {{expiration date}}. */
+"OS_SOON_TO_EXPIRE_AND_DEVICE_WILL_BE_STUCK_FORMAT" = "Το Signal δεν θα υποστηρίζει πλέον την έκδοση iOS της συσκευής σου. Για να συνεχίσεις να χρησιμοποιείς το Signal, συνδέσου σε μια νεότερη έκδοση έως %1$@.";
+
 /* Info Message when another user disabled disappearing messages. Embeds {{name of other user}}. */
 "OTHER_DISABLED_DISAPPEARING_MESSAGES_CONFIGURATION" = "Ο/Η %1$@ απενεργοποίησε τα μηνύματα που εξαφανίζονται.";
 
@@ -4289,10 +4325,10 @@
 "OUTDATED_PAYMENT_CLIENT_REMINDER_TEXT" = "Ενημερώστε το Signal για να συνεχίσεις να χρησιμοποιείς πληρωμές. Το υπόλοιπό σου ενδέχεται να μην είναι ενημερωμένο.";
 
 /* info message text in conversation view */
-"OUTGOING_AUDIO_CALL" = "Εξερχόμενη βιντεοκλήση";
+"OUTGOING_AUDIO_CALL" = "Εξερχόμενη κλήση";
 
 /* info message text in conversation view */
-"OUTGOING_MISSED_AUDIO_CALL" = "Αναπάντητη βιντεοκλήση";
+"OUTGOING_MISSED_AUDIO_CALL" = "Αναπάντητη κλήση";
 
 /* info message text in conversation view */
 "OUTGOING_MISSED_VIDEO_CALL" = "Αναπάντητη βιντεοκλήση";
@@ -4649,22 +4685,16 @@
 "PHONE_NUMBER_DISCOVERABILITY_EVERYBODY" = "Όλοι";
 
 /* A user friendly description of the 'everybody' phone number discoverability mode. */
-"PHONE_NUMBER_DISCOVERABILITY_EVERYBODY_DESCRIPTION" = "Anyone who has your phone number in their contacts will see you as a contact on Signal. Others will be able to reach you with your phone number when they start a new chat or group.";
+"PHONE_NUMBER_DISCOVERABILITY_EVERYBODY_DESCRIPTION" = "Όποιος έχει τον αριθμό τηλεφώνου σου στις επαφές του θα σε βλέπει ως επαφή στο Signal. Οι άλλοι θα μπορούν να επικοινωνήσουν μαζί σου με τον αριθμό τηλεφώνου σου όταν ξεκινήσουν μια νέα συνομιλία ή ομάδα.";
 
 /* A user friendly name for the 'nobody' phone number discoverability mode. */
 "PHONE_NUMBER_DISCOVERABILITY_NOBODY" = "Κανένας";
 
 /* A user friendly description of the 'nobody' phone number discoverability mode. */
-"PHONE_NUMBER_DISCOVERABILITY_NOBODY_DESCRIPTION" = "Nobody on Signal will be able to reach you with your phone number.";
+"PHONE_NUMBER_DISCOVERABILITY_NOBODY_DESCRIPTION" = "Κανένας στο Signal δεν θα μπορεί να σε βρει με τον αριθμό τηλεφώνου σου.";
 
 /* A format for a label showing an example phone number. Embeds {{the example phone number}}. */
 "PHONE_NUMBER_EXAMPLE_FORMAT" = "Παράδειγμα: %1$@";
-
-/* A user friendly name for the 'contacts only' phone number sharing mode. */
-"PHONE_NUMBER_SHARING_CONTACTS_ONLY" = "Οι επαφές μου";
-
-/* A user friendly description of the 'contacts only' phone number sharing mode. */
-"PHONE_NUMBER_SHARING_CONTACTS_ONLY_DESCRIPTION" = "Μόνο οι επαφές σου θα βλέπουν τον αριθμό τηλεφώνου σου στο Signal.";
 
 /* A user friendly name for the 'everybody' phone number sharing mode. */
 "PHONE_NUMBER_SHARING_EVERYBODY" = "Όλοι";
@@ -4772,7 +4802,13 @@
 "PIN_CREATION_EXPLANATION" = "Τα PIN κρατούν τις πληροφορίες που αποθηκεύονται στο Signal κρυπτογραφημένες, οπότε μόνο εσύ έχεις πρόσβαση σε αυτές. Το προφίλ σου, οι ρυθμίσεις και οι επαφές να επαναφερθούν όταν επανεγκαταστήσεις το Signal. Δεν θα χρειάζεται να γράψεις το PIN για να ανοίξεις την εφαρμογή.";
 
 /* Learn more action on the pin creation view */
-"PIN_CREATION_LEARN_MORE" = "Μάθε Περισσότερα για τα PIN";
+"PIN_CREATION_LEARN_MORE" = "Περισσότερα για τα PIN";
+
+/* Users can create PINs to restore their account data later. They can learn more about this on a sheet. This is the text on that sheet. */
+"PIN_CREATION_LEARN_MORE_TEXT" = "Τα PIN διατηρούν κρυπτογραφημένες τις πληροφορίες σου που είναι αποθηκευμένες στο Signal, ώστε μόνο εσύ να έχεις πρόσβαση σε αυτές. Το προφίλ σου, οι ρυθμίσεις και οι επαφές να επαναφερθούν όταν κάνεις επανεγκατάσταση.";
+
+/* Users can create PINs to restore their account data later. They can learn more about this on a sheet. This is the title on that sheet. */
+"PIN_CREATION_LEARN_MORE_TITLE" = "Σχετικά με τα PIN Signal";
 
 /* Label indicating that the attempted PIN does not match the first PIN */
 "PIN_CREATION_MISMATCH_ERROR" = "Τα PIN δεν ταιριάζουν. Ξαναδοκίμασε.";
@@ -4820,13 +4856,16 @@
 "PIN_CREATION_WEAK_ERROR" = "Διάλεξε ενα δυνατότερο PIN";
 
 /* If your attempted PIN is too weak, you'll see an error message. This is the text on the error dialog. */
-"PIN_CREATION_WEAK_ERROR_MESSAGE" = "PINs keep your information stored with Signal encrypted so only you can access it. Choose a stronger PIN to protect your account.";
+"PIN_CREATION_WEAK_ERROR_MESSAGE" = "Τα PIN διατηρούν κρυπτογραφημένες τις πληροφορίες σου που είναι αποθηκευμένες στο Signal, ώστε μόνο εσύ να έχεις πρόσβαση σε αυτές. Επίλεξε ένα ισχυρότερο PIN για την προστασία του λογαριασμού σου.";
 
 /* Error body indicating that the attempt to disable a PIN failed. */
 "PIN_DISABLE_ERROR_MESSAGE" = "Δεν ήταν δυνατή η απενεργοποίηση του PIN σου. Θα σου το ζητήσουμε ξανά αργότερα.";
 
 /* Error title indicating that the attempt to disable a PIN failed. */
 "PIN_DISABLE_ERROR_TITLE" = "Αποτυχία απενεργοποίησης PIN";
+
+/* If the user is re-registering, they need to enter their PIN to restore all their data. In some cases, they can skip this entry and lose some data. This text is shown on a button that lets them begin to do this. */
+"PIN_ENTER_EXISTING_SKIP" = "Παράλειψη PIN";
 
 /* Error title indicating that the attempt to recreate a PIN failed. */
 "PIN_RECREATION_ERROR_TITLE" = "Αποτυχία δημιουργίας PIN";
@@ -4897,7 +4936,7 @@
 /* Badge indicating that the user is verified. */
 "PRIVACY_IDENTITY_IS_VERIFIED_BADGE" = "Επιβεβαιωμένος/η";
 
-/* Label indicating that the user is verified. Embeds {{the user's name or phone number}}. */
+/* Label indicating that the user is verified. Embeds  user's name or phone number}}. */
 "PRIVACY_IDENTITY_IS_VERIFIED_FORMAT" = "Ο/Η %1$@ είναι επιβεβαιωμένος/η.";
 
 /* Button that shows the 'scan with camera' view. */
@@ -5002,8 +5041,14 @@
 /* Placeholder when the user doesn't have a 'name' defined for profile settings screen. */
 "PROFILE_SETTINGS_NAME_PLACEHOLDER" = "Όνομα";
 
+/* Title for a menu action allowing users to edit their existing username. */
+"PROFILE_SETTINGS_USERNAME_EDIT_USERNAME_ACTION" = "Επεξεργασία ονόματος χρήστη";
+
 /* A placeholder value shown in the profile settings screen on a tappable item leading to a username selection flow, for when the user doesn't have a username. */
 "PROFILE_SETTINGS_USERNAME_PLACEHOLDER" = "Όνομα χρήστη";
+
+/* Title for a menu action allowing users to view their username link QR code. */
+"PROFILE_SETTINGS_USERNAME_VIEW_QR_CODE_ACTION" = "Προβολή κωδικού QR";
 
 /* Error message shown when user tries to update profile with a family name that is too long. */
 "PROFILE_VIEW_ERROR_FAMILY_NAME_TOO_LONG" = "Το επίθετό σου είναι πολύ μακρύ.";
@@ -5075,7 +5120,7 @@
 "QUOTED_REPLY_REACTION_TO_OWN_STORY" = "Αντέδρασε στην ιστορία σου";
 
 /* Header label that appears above quoted messages when the quoted content was includes a reaction to a story. Embeds {{ story author name }} */
-"QUOTED_REPLY_REACTION_TO_STORY_FORMAT" = "Αντέδρασε στην ιστορία του/της %1$@";
+"QUOTED_REPLY_REACTION_TO_STORY_FORMAT" = "Αντέδρασε στην ιστορία του χρήστη %1$@";
 
 /* Message header when you are quoting a story. Embeds {{ story author name }} */
 "QUOTED_REPLY_STORY_AUTHOR_INDICATOR_FORMAT" = "%1$@ · Ιστορία";
@@ -5126,13 +5171,13 @@
 "REACTION_INCOMING_NOTIFICATION_TO_STICKER_MESSAGE_BODY_FORMAT" = "Αντέδρασε με %1$@ στο αυτοκόλλητό σου";
 
 /* notification body. Embeds {{reaction emoji}} and {{body text}} */
-"REACTION_INCOMING_NOTIFICATION_TO_TEXT_MESSAGE_BODY_FORMAT" = "Αντέδρασε με %1$@ στο \"%2$@\".";
+"REACTION_INCOMING_NOTIFICATION_TO_TEXT_MESSAGE_BODY_FORMAT" = "Αντέδρασε με %1$@ στη δημοσίευση \"%2$@\"";
 
 /* notification body. Embeds {{reaction emoji}} */
 "REACTION_INCOMING_NOTIFICATION_TO_VIDEO_BODY_FORMAT" = "Αντέδρασε με %1$@ στο βίντεό σου";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_VIEW_ONCE_MESSAGE_BODY_FORMAT" = "Αντέδρασε με %1$@ στο πολυμέσο μιας μόνο προβολής";
+"REACTION_INCOMING_NOTIFICATION_TO_VIEW_ONCE_MESSAGE_BODY_FORMAT" = "Αντέδρασε με %1$@ στο πολυμέσο μεμονωμένης προβολής";
 
 /* notification body. Embeds {{reaction emoji}} */
 "REACTION_INCOMING_NOTIFICATION_TO_VOICE_MESSAGE_BODY_FORMAT" = "Αντέδρασε με %1$@ στο μήνυμα φωνής σου";
@@ -5164,8 +5209,11 @@
 /* Alert body for a forgotten SVR (V2) PIN */
 "REGISTER_2FA_FORGOT_SVR_PIN_ALERT_MESSAGE" = "Το PIN σου είναι ένας κωδικός με 4+ ψηφία, που μπορεί να αποτελείται από αριθμούς ή αλφαριθμητικά. Αν δεν μπορείς να θυμηθείς το PIN σου, θα πρέπει να περιμένεις 7 ημέρες για να επανεγγράψεις το λογαριασμό σου.";
 
-/* Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock */
-"REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_ALERT_MESSAGE" = "Το PIN σου είναι ένας κωδικός με 4+ ψηφία, που μπορεί να αποτελείται από αριθμούς ή αλφαριθμητικά. Αν δεν μπορείς να θυμηθείς το PIN σου, μπορείς να δημιουργήσεις ένα νέο. Θα έχεις τη δυνατότητα να εγγράψεις και να χρησιμοποιήσεις τον λογαριασμό σου, αλλά θα χάσεις κάποιες αποθηκευμένες ρυθμίσεις όπως οι πληροφορίες προφίλ σου.";
+/* Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock and they cannot necessarily create a new PIN */
+"REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_ALERT_MESSAGE" = "Το PIN σου είναι ένας κωδικός με 4+ ψηφία που δημιούργησες και μπορεί να αποτελείται από αριθμούς ή αλφαριθμητικά. Αν δεν μπορείς να θυμηθείς το PIN σου, μπορείς να εγγράψεις και να χρησιμοποιήσεις τον λογαριασμό σου, αλλά θα χάσεις κάποιες αποθηκευμένες ρυθμίσεις όπως οι πληροφορίες προφίλ σου.";
+
+/* Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock and they can create a new PIN */
+"REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_AND_CAN_CREATE_NEW_PIN_ALERT_MESSAGE" = "Το PIN σου είναι ένας κωδικός με 4+ ψηφία, που μπορεί να αποτελείται από αριθμούς ή αλφαριθμητικά. Αν δεν μπορείς να θυμηθείς το PIN σου, μπορείς να δημιουργήσεις ένα νέο. Θα έχεις τη δυνατότητα να εγγράψεις και να χρησιμοποιήσεις τον λογαριασμό σου, αλλά θα χάσεις κάποιες αποθηκευμένες ρυθμίσεις όπως οι πληροφορίες προφίλ σου.";
 
 /* Alert body for a forgotten V1 PIN */
 "REGISTER_2FA_FORGOT_V1_PIN_ALERT_MESSAGE" = "Το PIN σου είναι είναι ένας αριθμητικός κωδικός με 4+ ψηφία. Αν δεν θυμάσαι το PIN σου, θα πρέπει να περιμένεις 7 ημέρες για να εγγράψεις πάλι το λογαριασμό σου.";
@@ -5179,6 +5227,9 @@
 /* No comment provided by engineer. */
 "REGISTER_CONTACTS_WELCOME" = "Καλωσόρισες!";
 
+/* Body of action sheet shown when rate-limited during registration. */
+"REGISTER_RATE_LIMITING_ALERT" = "Έχεις δοκιμάσει πάρα πολλές φορές. Περίμενε μερικά λεπτά πριν ξαναδοκιμάσεις.";
+
 /* action sheet body */
 "REGISTER_RATE_LIMITING_BODY" = "Έχεις δοκιμάσει πάρα πολλές φορές. Παρακαλώ περίμενε ένα λεπτό πριν ξαναδοκιμάσεις.";
 
@@ -5188,17 +5239,26 @@
 /* Title of alert shown when push tokens sync job fails. */
 "REGISTRATION_BODY" = "Αποτυχία επανεγγραφής για λήψη ειδοποιήσεων.";
 
+/* During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the action button on that alert. */
+"REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_ACTION" = "Ενημέρωση";
+
+/* During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the description text on that alert. */
+"REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_DESCRIPTION" = "Για να συνεχίσεις με την εγγραφή, κάνε ενημέρωση στην τελευταία έκδοση του Signal.";
+
+/* During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the title on that alert. */
+"REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_TITLE" = "Απαιτείται αναβάθμιση";
+
 /* During registration, users may be shown a CAPTCHA to verify that they're human. This text is shown above the CAPTCHA. */
-"REGISTRATION_CAPTCHA_TITLE" = "We need to verify that you’re human";
+"REGISTRATION_CAPTCHA_TITLE" = "Πρέπει να επιβεβαιώσουμε ότι είσαι άνθρωπος";
 
 /* Label for the country code field */
 "REGISTRATION_DEFAULT_COUNTRY_NAME" = "Κωδικός χώρας";
 
 /* If a user is installing Signal on a new phone, they may be asked whether they want to transfer their account from their old device. This is a description on the screen that asks them this question. */
-"REGISTRATION_DEVICE_TRANSFER_CHOICE_EXPLANATION" = "Continuing will disable Signal on other devices currently registered with the same phone number.";
+"REGISTRATION_DEVICE_TRANSFER_CHOICE_EXPLANATION" = "Συνεχίζοντας θα απενεργοποιηθεί το Signal σε άλλες συσκευές εγγεγραμμένες με τον ίδιο αριθμό τηλεφώνου.";
 
 /* If a user is installing Signal on a new phone, they may be asked whether they want to transfer their account from their old device. This is the title on the screen that asks them this question. */
-"REGISTRATION_DEVICE_TRANSFER_CHOICE_TITLE" = "Transfer Account & Messages";
+"REGISTRATION_DEVICE_TRANSFER_CHOICE_TITLE" = "Μεταφορά λογαριασμού & μηνυμάτων";
 
 /* Placeholder text for the phone number textfield */
 "REGISTRATION_ENTERNUMBER_DEFAULT_TEXT" = "Εισαγωγή αριθμού";
@@ -5215,59 +5275,98 @@
 /* Alert title for network failure during registration */
 "REGISTRATION_ERROR_NETWORK_FAILURE_ALERT_TITLE" = "Έλεγχος σύνδεσης";
 
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This is the description on that screen, explaining what's going on. Embeds {{ duration }}, such as \"7 days\". */
+"REGISTRATION_LOCK_TIMEOUT_DESCRIPTION_FORMAT" = "Ο λογαριασμός σου έχει κλειδωθεί για να προστατεύσουμε το απόρρητο και την ασφάλειά σου. Μετά από %1$@ ημέρες αδράνειας του λογαριασμού σου, θα μπορείς να επανεγγράψεις αυτό τον αριθμό τηλεφώνου χωρίς να χρειάζεται το PIN σου. Όλα τα περιεχόμενα θα διαγραφούν.";
+
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This button appears on that screen. Tapping it will tell the user more information. */
+"REGISTRATION_LOCK_TIMEOUT_LEARN_MORE_BUTTON" = "Μάθε περισσότερα για τους κλειδωμένους λογαριασμούς";
+
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This button appears on that screen. Tapping it will bump the user back, earlier in registration, so they can register with a different phone number. */
+"REGISTRATION_LOCK_TIMEOUT_RESET_PHONE_NUMBER_BUTTON" = "Χρήση διαφορετικού αριθμού";
+
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This is the title of that screen. */
+"REGISTRATION_LOCK_TIMEOUT_TITLE" = "Ο λογαριασμός κλειδώθηκε";
+
+/* A network error occurred during registration, and an error is shown to the user. This is the body on that error sheet. */
+"REGISTRATION_NETWORK_ERROR_BODY" = "Για να συνεχίσεις, έλεγξε τη σύνδεσή σου στο διαδίκτυο και προσπάθησε ξανά.";
+
+/* A network error occurred during registration, and an error is shown to the user. This is the title on that error sheet. */
+"REGISTRATION_NETWORK_ERROR_TITLE" = "Έλεγχος σύνδεσης";
+
 /* No comment provided by engineer. */
 "REGISTRATION_NON_VALID_NUMBER" = "Αυτή η μορφή αριθμού δεν υποστηρίζεται, παρακαλώ επικοινώνησε με την υποστήριξη.";
 
 /* During registration, users are asked to enter their phone number. This is the subtitle on that screen, which gives users some instructions. */
-"REGISTRATION_PHONE_NUMBER_SUBTITLE" = "Enter your phone number to get started.";
+"REGISTRATION_PHONE_NUMBER_SUBTITLE" = "Γράψε τον αριθμό σου για να ξεκινήσεις.";
 
 /* During registration, users are asked to enter their phone number. This is the title on that screen. */
-"REGISTRATION_PHONE_NUMBER_TITLE" = "Your Phone Number";
+"REGISTRATION_PHONE_NUMBER_TITLE" = "Ο αριθμός τηλεφώνου σου";
+
+/* Message for confirmation alert when requesting a voice code during phone number registration. */
+"REGISTRATION_PHONE_NUMBER_VOICE_CODE_ALERT_MESSAGE" = "Θα λάβεις μια κλήση για την επαλήθευση αυτού του αριθμού. Είναι ο παραπάνω αριθμός τηλεφώνου σωστός;";
 
 /* Label for the phone number textfield */
 "REGISTRATION_PHONENUMBER_BUTTON" = "Αριθμός τηλεφώνου";
 
 /* During registration, users are asked to create a PIN code. They'll be taken to a screen to confirm their PIN, much like confirming a password. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_CONFIRM_SUBTITLE" = "Re-enter the PIN you just created.";
+"REGISTRATION_PIN_CONFIRM_SUBTITLE" = "Γράψε ξανά το PIN που μόλις δημιούργησες.";
 
 /* During registration, users are asked to create a PIN code. They'll be taken to a screen to confirm their PIN, much like confirming a password. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_CONFIRM_TITLE" = "Confirm your PIN";
+"REGISTRATION_PIN_CONFIRM_TITLE" = "Επαλήθευσε το PIN σου";
 
 /* During registration, users are asked to create a PIN code. This is the subtitle on the screen where this happens. A \"learn more\" link will be added to the end of this string. */
-"REGISTRATION_PIN_CREATE_SUBTITLE" = "PINs can help you restore your account and keep your info encrypted with Signal.";
+"REGISTRATION_PIN_CREATE_SUBTITLE" = "Τα PIN μπορούν να σε βοηθήσουν να επαναφέρεις τον λογαριασμό σου και να διατηρήσεις τις πληροφορίες σου κρυπτογραφημένες με το Signal.";
 
 /* During registration, users are asked to create a PIN code. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_CREATE_TITLE" = "Create your PIN";
+"REGISTRATION_PIN_CREATE_TITLE" = "Δημιουργία του PIN σου";
 
 /* During re-registration, users may be asked to re-enter their PIN code. This is the subtitle on the screen where this happens. A \"learn more\" link will be added to the end of this string. */
-"REGISTRATION_PIN_ENTER_EXISTING_SUBTITLE" = "PINs can help you restore your account and keep your info encrypted with Signal.";
+"REGISTRATION_PIN_ENTER_EXISTING_SUBTITLE" = "Τα PIN μπορούν να σε βοηθήσουν να επαναφέρεις τον λογαριασμό σου και να διατηρήσεις τις πληροφορίες σου κρυπτογραφημένες με το Signal.";
 
 /* During re-registration, users may be asked to re-enter their PIN code. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_ENTER_EXISTING_TITLE" = "Enter your PIN";
+"REGISTRATION_PIN_ENTER_EXISTING_TITLE" = "Γράψε το PIN σου";
 
 /* During registration, users set up their profile. Users input a family name. This is the placeholder for that field. */
-"REGISTRATION_PROFILE_SETUP_FAMILY_NAME_FIELD_PLACEHOLDER" = "Last Name";
+"REGISTRATION_PROFILE_SETUP_FAMILY_NAME_FIELD_PLACEHOLDER" = "Επίθετο";
+
+/* During registration, users can choose who can see their phone number. */
+"REGISTRATION_PROFILE_SETUP_FIND_MY_NUMBER_TITLE" = "Ποιοι χρήστες μπορούν να με βρουν με τον αριθμό μου;";
 
 /* During registration, users set up their profile. Users input a given name. This is the placeholder for that field. */
-"REGISTRATION_PROFILE_SETUP_GIVEN_NAME_FIELD_PLACEHOLDER" = "First Name";
+"REGISTRATION_PROFILE_SETUP_GIVEN_NAME_FIELD_PLACEHOLDER" = "Όνομα";
 
 /* During registration, users set up their profile. They can learn more about the privacy of their profile by clicking a \"learn more\" button. This is the message on a sheet that appears when they do that. */
-"REGISTRATION_PROFILE_SETUP_MORE_INFO_DETAILS" = "Your name, photo and changes to it will be visible to your contacts and when you start or accept new chats.";
+"REGISTRATION_PROFILE_SETUP_MORE_INFO_DETAILS" = "Το όνομα, η φωτογραφία και οι αλλαγές στο προφίλ σου θα είναι ορατά στις επαφές σου και όταν ξεκινάς ή αποδέχεσαι νέες συνομιλίες.";
 
 /* During registration, users set up their profile. They can learn more about the privacy of their profile by clicking a \"learn more\" button. This is the title on a sheet that appears when they do that. */
-"REGISTRATION_PROFILE_SETUP_MORE_INFO_TITLE" = "About Profile Privacy";
+"REGISTRATION_PROFILE_SETUP_MORE_INFO_TITLE" = "Σχετικά με το Απόρρητο του Προφίλ";
 
 /* During registration, users set up their profile. This is the subtitle on the screen where this is done. It tells users about the privacy of their profile. A \"learn more\" link will be added to the end of this string. */
-"REGISTRATION_PROFILE_SETUP_SUBTITLE" = "Profiles are visible to people you message, contacts, and groups.";
+"REGISTRATION_PROFILE_SETUP_SUBTITLE" = "Τα προφίλ είναι ορατά σε άτομα στα οποία στέλνεις μηνύματα, στις επαφές και στις ομάδες σου.";
 
 /* During registration, users set up their profile. This is the title on the screen where this is done. */
-"REGISTRATION_PROFILE_SETUP_TITLE" = "Set up your profile";
+"REGISTRATION_PROFILE_SETUP_TITLE" = "Δημιούργησε το προφίλ σου";
+
+/* Error shown if an SMS/call service provider is permanently unable to send a verification code to the provided number. */
+"REGISTRATION_PROVIDER_FAILURE_MESSAGE_PERMANENT" = "Το Signal δεν μπορεί να στείλει κωδικό SMS λόγω εξωτερικής αποτυχίας.";
+
+/* Error shown if an SMS/call service provider is temporarily unable to send a verification code to the provided number. */
+"REGISTRATION_PROVIDER_FAILURE_MESSAGE_TRANSIENT" = "Το Signal δεν μπόρεσε να στείλει κωδικό SMS λόγω εξωτερικής αποτυχίας. Δοκίμασε ξανά αργότερα.";
 
 /* No comment provided by engineer. */
 "REGISTRATION_RESTRICTED_MESSAGE" = "Θα πρέπει να εγγραφείς πριν μπορέσεις να στείλεις ένα μήνυμα.";
 
+/* Alert shown when running out of attempts at submitting a verification code. */
+"REGISTRATION_SUBMIT_CODE_ATTEMPTS_EXHAUSTED_ALERT" = "Έχεις προσπαθήσει πάρα πολλές φορές να εισάγεις τον κωδικό. Στείλε ξανά τον κωδικό και δοκίμασε ξανά.";
+
+/* Alert shown when submitting a verification code too many times. Embeds {{ duration }}, such as \"5:00\" */
+"REGISTRATION_SUBMIT_CODE_RATE_LIMIT_ALERT_FORMAT" = "Έχεις προσπαθήσει πάρα πολλές φορές να εισάγεις τον κωδικό. Δοκίμασε ξανά σε %1$@";
+
 /* Error message indicating that device transfer from another device might be possible. */
 "REGISTRATION_TRANSFER_AVAILABLE_DESCRIPTION" = "Υπάρχει ένας λογαριασμός που έχει εγγραφτεί ήδη με αυτό τον αριθμό, ο οποίος είναι διαθέσιμος για μεταφορά.";
+
+/* During registration and re-registration, users may have to enter a code to verify ownership of their phone number. If they enter an invalid code, they will see this error message. */
+"REGISTRATION_VERIFICATION_ERROR_INVALID_VERIFICATION_CODE" = "Ο κωδικός που έγραψες δεν είναι έγκυρος. Στείλε ξανά τον κωδικό και δοκίμασε ξανά.";
 
 /* Alert view title */
 "REGISTRATION_VERIFICATION_FAILED_TITLE" = "Η επαλήθευση απέτυχε";
@@ -5317,6 +5416,12 @@
 /* No comment provided by engineer. */
 "REREGISTER_FOR_PUSH" = "Επανεγγραφή στις Ειδοποιήσεις Push";
 
+/* If the user is re-registering, they may need to enter their PIN to restore all their data. If they enter the incorrect PIN, they will be shown a warning. In some cases (such as for this string), the user has the option to skip PIN entry and will lose some data. Embeds {{ number of attempts }}, such as \"3 attempts\". */
+"REREGISTER_INVALID_PIN_WARNING_SKIPPABLE_FORMAT" = "Σου απομένουν %1$@ προσπάθειες. Αν εξαντλήσεις τις προσπάθειες, μπορείς να δημιουργήσεις νέο PIN. Μπορείς να δημιουργήσεις και να χρησιμοποιήσεις τον λογαριασμό σου, αλλά θα χάσεις κάποιες αποθηκευμένες ρυθμίσεις όπως τις πληροφορίες προφίλ.";
+
+/* If the user is re-registering, they may need to enter their PIN to restore all their data. If they enter the incorrect PIN, they will be shown a warning. Embeds {{ number of attempts }}, such as \"3 attempts\". */
+"REREGISTER_INVALID_PIN_WARNING_UNSKIPPABLE_FORMAT" = "Σου απομένουν %1$@ προσπάθειες. Αν τις εξαντλήσεις, ο λογαριασμός σου θα κλειδωθεί για 7 μέρες. Μετά από 7 ημέρες αδράνειας, μπορείς να εγγραφείς ξανά χωρίς το PIN σου. Όλα τα περιεχόμενα θα διαγραφούν.";
+
 /* Configure reactions reset button text */
 "RESET" = "Επαναφορά";
 
@@ -5343,6 +5448,9 @@
 
 /* Title for the 'safety number confirmation' view */
 "SAFETY_NUMBER_CONFIRMATION_TITLE" = "Αλλαγές αριθμού ασφαλείας";
+
+/* Text explaining that the given contact has had their safety number verified. */
+"SAFETY_NUMBER_CONFIRMATION_VERIFIED" = "Με επαλήθευση";
 
 /* View safety number action for the 'safety number confirmation' view */
 "SAFETY_NUMBER_CONFIRMATION_VIEW_ACTION" = "Εμφάνιση";
@@ -5530,6 +5638,9 @@
 /* Title for the 'account' link in settings. */
 "SETTINGS_ACCOUNT" = "Λογαριασμός";
 
+/* Label for button in settings to get your account data report */
+"SETTINGS_ACCOUNT_DATA_REPORT_BUTTON" = "Τα δεδομένα του λογαριασμού σου";
+
 /* Title for the 'add to block list' view. */
 "SETTINGS_ADD_TO_BLOCK_LIST_TITLE" = "Αποκλεισμός";
 
@@ -5638,7 +5749,7 @@
 /* Title for the 'old phone number' section in the 'change phone number' settings. */
 "SETTINGS_CHANGE_PHONE_NUMBER_OLD_PHONE_NUMBER_SECTION_TITLE" = "Ο παλιός σου αριθμός";
 
-/* Label for the 'country code' row in the 'change phone number' settings. */
+/* Label for the 'phone number' row in the 'change phone number' settings. */
 "SETTINGS_CHANGE_PHONE_NUMBER_PHONE_NUMBER_FIELD" = "Αριθμός τηλεφώνου";
 
 /* Format for the 'change phone number' progress view. Embeds: {{ the user's new phone number }}. */
@@ -5870,10 +5981,10 @@
 "SETTINGS_PAYMENTS_DEACTIVATE_TITLE" = "Απενεργοποίηση πληρωμών";
 
 /* Explanation of the 'deactivate payments with balance' process in the 'deactivate payments' settings. */
-"SETTINGS_PAYMENTS_DEACTIVATE_WITH_BALANCE_EXPLANATION" = "Συνιστάται να μεταφέρετε τα χρήματά σας σε άλλη διεύθυνση πορτοφολιού πριν απενεργοποιήσετε τις πληρωμές. Εάν επιλέξετε να μην μεταφέρετε τα χρήματά σας τώρα, θα παραμείνουν στο πορτοφόλι σας που είναι συνδεδεμένο με το Signal εάν ενεργοποιήσετε εκ νέου τις πληρωμές.";
+"SETTINGS_PAYMENTS_DEACTIVATE_WITH_BALANCE_EXPLANATION" = "Συνιστάται να μεταφέρεις τα χρήματά σου σε άλλη διεύθυνση πορτοφολιού πριν απενεργοποιήσεις τις πληρωμές. Εάν επιλέξεις να μη μεταφέρεις τα χρήματά σου τώρα, θα παραμείνουν στο πορτοφόλι σου που είναι συνδεδεμένο με το Signal εάν ενεργοποιήσεις εκ νέου τις πληρωμές.";
 
 /* Description for the 'deactivate payments confirmation' UI in the payment settings. */
-"SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_DESCRIPTION" = "Το υπόλοιπό σας θα παραμείνει στο πορτοφόλι σας που είναι συνδεδεμένο με το Signal, σε περίπτωση που επιλέξετε να ενεργοποιήσετε ξανά τις πληρωμές.";
+"SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_DESCRIPTION" = "Το υπόλοιπό σου θα παραμείνει στο πορτοφόλι σου που είναι συνδεδεμένο με το Signal, σε περίπτωση που επιλέξεις να ενεργοποιήσεις ξανά τις πληρωμές.";
 
 /* Title for the 'deactivate payments confirmation' UI in the payment settings. */
 "SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_TITLE" = "Απενεργοποίηση χωρίς μεταφορά;";
@@ -6278,16 +6389,16 @@
 "SETTINGS_PAYMENTS_WALLET_ADDRESS_LABEL" = "Η διεύθυνση πορτοφολιού σας";
 
 /* The title for the phone number discoverability setting section. */
-"SETTINGS_PHONE_NUMBER_DISCOVERABILITY_TITLE" = "Who Can Find Me By Number";
+"SETTINGS_PHONE_NUMBER_DISCOVERABILITY_TITLE" = "Ποιος μπορεί να με βρει με τον αριθμό μου";
 
 /* Description label for Phone Number Privacy */
-"SETTINGS_PHONE_NUMBER_PRIVACY_DESCRIPTION_LABEL" = "Choose who can see your phone number and who can contact you on Signal with it.";
+"SETTINGS_PHONE_NUMBER_PRIVACY_DESCRIPTION_LABEL" = "Επίλεξε ποιος μπορεί να δει τον αριθμό τηλεφώνου σου και ποιος μπορεί να τον χρησιμοποιήσει για να επικοινωνήσει μαζί σου στο Signal.";
 
 /* The title for phone number privacy settings. */
-"SETTINGS_PHONE_NUMBER_PRIVACY_TITLE" = "Phone Number";
+"SETTINGS_PHONE_NUMBER_PRIVACY_TITLE" = "Αριθμός τηλεφώνου";
 
 /* The title for the phone number sharing setting section. */
-"SETTINGS_PHONE_NUMBER_SHARING_TITLE" = "Who Can See My Number";
+"SETTINGS_PHONE_NUMBER_SHARING_TITLE" = "Ποιος μπορεί να δει τον αριθμό μου";
 
 /* The button text for the dialog asking user to confirm their PIN to disable reminders */
 "SETTINGS_PIN_REMINDER_DISABLE_CONFIRMATION_ACTION" = "Απενεργοποίηση υπενθυμίσεων";
@@ -6611,7 +6722,7 @@
 "STORIES_REPLIES_AND_REACTIONS_HEADER" = "Απαντήσεις και αντιδράσεις";
 
 /* Toggle text for the 'replies & reactions' switch in stories settings */
-"STORIES_REPLIES_AND_REACTIONS_TOGGLE" = "Επίτρεψε τις απαντήσεις και τις αντιδράσεις";
+"STORIES_REPLIES_AND_REACTIONS_TOGGLE" = "Να επιτρέπονται οι απαντήσεις και οι αντιδράσεις";
 
 /* Title text for the 'replies' tab on the stories views & replies sheet */
 "STORIES_REPLIES_TAB" = "Απαντήσεις";
@@ -6725,7 +6836,7 @@
 "STORY_REACTION_QUOTE_FORMAT" = "Αντέδρασε με %1$@ σε μια ιστορία";
 
 /* inbox and notification text for a reaction to a story authored by another user. Embeds {{ %1$@ reaction emoji, %2$@ story author name }} */
-"STORY_REACTION_REMOTE_AUTHOR_PREVIEW_FORMAT" = "Αντέδρασε με %1$@ στην ιστορία του/της %2$@";
+"STORY_REACTION_REMOTE_AUTHOR_PREVIEW_FORMAT" = "Αντέδρασε με %1$@ στην ιστορία του χρήστη %2$@";
 
 /* Button for replying to a story with no existing replies. */
 "STORY_REPLY_BUTTON" = "Απάντηση";
@@ -6961,6 +7072,36 @@
 /* Tap to Replace Emoji string for reaction configuration */
 "TAP_REPLACE_EMOJI" = "Πάτα για αντικατάσταση ενός emoji";
 
+/* Option in selected text edit menu to make text bold */
+"TEXT_MENU_BOLD" = "Bold";
+
+/* Option in selected text edit menu to clear all text formatting in the selected text range */
+"TEXT_MENU_CLEAR_FORMATTING" = "Clear Formatting";
+
+/* Option in selected text edit menu to view text formatting options */
+"TEXT_MENU_FORMAT" = "Μορφοποίηση";
+
+/* Option in selected text edit menu to make text italic */
+"TEXT_MENU_ITALIC" = "Italic";
+
+/* Option in selected text edit menu to look up word definitions */
+"TEXT_MENU_LOOK_UP" = "Αναζήτηση";
+
+/* Option in selected text edit menu to make text monospace */
+"TEXT_MENU_MONOSPACE" = "Monospace";
+
+/* Option in selected text edit menu to replace text with suggestions */
+"TEXT_MENU_REPLACE" = "Αντικατάσταση";
+
+/* Option in selected text edit menu to share selected text */
+"TEXT_MENU_SHARE" = "Μοιράσου";
+
+/* Option in selected text edit menu to make text spoiler */
+"TEXT_MENU_SPOILER" = "Θόλωμα";
+
+/* Option in selected text edit menu to make text strikethrough */
+"TEXT_MENU_STRIKETHROUGH" = "Strikethrough";
+
 /* text indicating the message was remotely deleted */
 "THIS_MESSAGE_WAS_DELETED" = "Αυτό το μήνυμα διαγράφτηκε.";
 
@@ -7082,13 +7223,13 @@
 "UNLINK_CONFIRMATION_ALERT_TITLE" = "Αποσύνδεση της \"%1$@\";";
 
 /* Label warning the user that they have been unlinked from their primary device. */
-"UNLINKED_WARNING" = "Η συσκευή δεν είναι πια συνδεμένη. Ξανασύνδεσε το Signal με το τηλέφωνό σου για να συνεχίσει η λειτουργία του.";
+"UNLINKED_WARNING" = "Η συσκευή δεν είναι πια συνδεδεμένη. Σύνδεσε ξανά το Signal στο τηλέφωνό σου για να συνεχίσεις να στέλνεις μηνύματα.";
+
+/* If this device has become unlinked from their primary device, they'll see a warning. This is the call to action on that warning. */
+"UNLINKED_WARNING_ACTION_TITLE" = "Σύνδεση συσκευής ξανά";
 
 /* Alert title when unlinking device fails */
 "UNLINKING_FAILED_ALERT_TITLE" = "Το Signal δεν μπόρεσε να αποσυνδέσει τη συσκευή σου.";
-
-/* Label text in device manager for a device with no name */
-"UNNAMED_DEVICE" = "Ανώνυμη συσκευή";
 
 /* Pressing this button un-pins a thread */
 "UNPIN_ACTION" = "Ξεκαρφίτσωμα";
@@ -7098,6 +7239,9 @@
 
 /* Pressing this button marks a thread as unread */
 "UNREAD_ACTION" = "Μη αναγνωσμένο";
+
+/* Label warning the user that the validation of their username has failed. */
+"UNREGISTERED_USERNAME_WARNING" = "Κάτι πήγε στραβά με το όνομα χρήστη σου και δεν αντιστοιχεί πλέον στον λογαριασμό σου. Μπορείς να δοκιμάσεις να το ρυθμίσεις ξανά ή να επιλέξεις ένα νέο.";
 
 /* No comment provided by engineer. */
 "UNSUPPORTED_ATTACHMENT" = "Λήψη συνημμένου του οποίου ο τύπος δεν υποστηρίζεται.";
@@ -7138,6 +7282,21 @@
 /* Description of username link */
 "USERNAME_LINK_DESCRIPTION" = "Κάθε όνομα χρήστη έχει έναν μοναδικό σύνδεσμο που μπορείς να μοιραστείς με τους φίλους σου για να ξεκινήσουν μια συνομιλία μαζί σου";
 
+/* Title for a button to pick the color of your username link QR code. Lowercase styling is intentional. */
+"USERNAME_LINK_QR_CODE_VIEW_COLOR_BUTTON" = "Χρώμα";
+
+/* Text for a label explaining what the username link and QR code give others access to. */
+"USERNAME_LINK_QR_CODE_VIEW_DISCLAIMER_LABEL" = "Μοιράσου τον κωδικό QR σου μόνο με άτομα που εμπιστεύεσαι. Όταν κοινοποιηθεί, οι άλλοι θα μπορούν να δουν το όνομα χρήστη σου και να ξεκινήσουν μια συνομιλία μαζί σου.";
+
+/* Title for a button that allows users to reset their username link and QR code. */
+"USERNAME_LINK_QR_CODE_VIEW_RESET_BUTTON_TITLE" = "Επαναφορά";
+
+/* Title for a button to share your username link QR code. Lowercase styling is intentional. */
+"USERNAME_LINK_QR_CODE_VIEW_SHARE_BUTTON" = "Μοιράσου";
+
+/* A title for a view that allows you to view and interact with a QR code for your username link. */
+"USERNAME_LINK_QR_CODE_VIEW_TITLE_CODE" = "Κωδικός";
+
 /* A message indicating that username lookup failed. */
 "USERNAME_LOOKUP_ERROR_MESSAGE" = "Σφάλμα με την αναζήτηση του ονόματος χρήστη. Δοκίμασε πάλι αργότερα.";
 
@@ -7153,8 +7312,8 @@
 /* Title for an action sheet indicating that the given username is not associated with a registered Signal account. */
 "USERNAME_LOOKUP_NOT_FOUND_TITLE" = "Δεν βρέθηκε χρήστης";
 
-/* A prefix appended to all usernames when displayed */
-"USERNAME_PREFIX" = "@";
+/* An error message shown when the user has typed a username that starts with a digit, which is invalid. */
+"USERNAME_SELECTION_CANNOT_START_WITH_DIGIT_ERROR_MESSAGE" = "Τα όνομα χρήστη δεν μπορεί να αρχίζει με αριθμό.";
 
 /* The title of an action sheet button that will delete a user's username. */
 "USERNAME_SELECTION_DELETE_USERNAME_ACTION_TITLE" = "Διαγραφή ονόματος χρήστη";

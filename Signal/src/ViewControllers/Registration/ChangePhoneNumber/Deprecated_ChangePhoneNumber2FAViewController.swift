@@ -6,9 +6,8 @@
 import Logging
 import SignalCoreKit
 import SignalMessaging
-import UIKit
+import SignalUI
 
-@objc
 public class Deprecated_ChangePhoneNumber2FAViewController: Deprecated_RegistrationBaseViewController {
 
     // When the users attempts remaining falls below this number,
@@ -45,14 +44,14 @@ public class Deprecated_ChangePhoneNumber2FAViewController: Deprecated_Registrat
         }
     }
 
-    private var pinType: KBS.PinType = .numeric {
+    private var pinType: SVR.PinType = .numeric {
         didSet {
             updatePinType()
         }
     }
 
     private var hasPendingRestoration: Bool {
-        context.db.read { context.keyBackupService.hasPendingRestoration(transaction: $0) }
+        context.db.read { LegacyKbsStateManager.shared.hasPendingRestoration(transaction: $0) }
     }
 
     private let context: ViewControllerContext
@@ -86,12 +85,12 @@ public class Deprecated_ChangePhoneNumber2FAViewController: Deprecated_Registrat
 
         view.backgroundColor = Theme.backgroundColor
 
-        let titleText = NSLocalizedString("ONBOARDING_PIN_TITLE", comment: "Title of the 'onboarding PIN' view.")
-        let explanationText = NSLocalizedString("CHANGE_PHONE_NUMBER_PIN_EXPLANATION", comment: "Title of the 'change phone number PIN' view.")
+        let titleText = OWSLocalizedString("ONBOARDING_PIN_TITLE", comment: "Title of the 'onboarding PIN' view.")
+        let explanationText = OWSLocalizedString("CHANGE_PHONE_NUMBER_PIN_EXPLANATION", comment: "Title of the 'change phone number PIN' view.")
 
         let titleLabel = self.createTitleLabel(text: titleText)
         let explanationLabel = self.createExplanationLabel(explanationText: explanationText)
-        explanationLabel.font = UIFont.ows_dynamicTypeSubheadlineClamped
+        explanationLabel.font = UIFont.dynamicTypeSubheadlineClamped
         explanationLabel.accessibilityIdentifier = "onboarding.2fa." + "explanationLabel"
 
         pinTextField.delegate = self
@@ -99,7 +98,7 @@ public class Deprecated_ChangePhoneNumber2FAViewController: Deprecated_Registrat
         pinTextField.isSecureTextEntry = true
         pinTextField.textColor = Theme.primaryTextColor
         pinTextField.textAlignment = .center
-        pinTextField.font = .ows_dynamicTypeBodyClamped
+        pinTextField.font = .dynamicTypeBodyClamped
         pinTextField.isSecureTextEntry = true
         pinTextField.defaultTextAttributes.updateValue(5, forKey: .kern)
         pinTextField.keyboardAppearance = Theme.keyboardAppearance
@@ -110,12 +109,12 @@ public class Deprecated_ChangePhoneNumber2FAViewController: Deprecated_Registrat
 
         validationWarningLabel.textColor = .ows_accentRed
         validationWarningLabel.textAlignment = .center
-        validationWarningLabel.font = UIFont.ows_dynamicTypeCaption1Clamped
+        validationWarningLabel.font = UIFont.dynamicTypeCaption1Clamped
         validationWarningLabel.accessibilityIdentifier = "onboarding.2fa.validationWarningLabel"
         validationWarningLabel.numberOfLines = 0
         validationWarningLabel.setCompressionResistanceHigh()
 
-        self.needHelpLink = self.linkButton(title: NSLocalizedString("ONBOARDING_2FA_FORGOT_PIN_LINK",
+        self.needHelpLink = self.linkButton(title: OWSLocalizedString("ONBOARDING_2FA_FORGOT_PIN_LINK",
                                                                      comment: "Label for the 'forgot 2FA PIN' link in the 'onboarding 2FA' view."),
                                             selector: #selector(needHelpLinkWasTapped))
         needHelpLink.accessibilityIdentifier = "onboarding.2fa." + "forgotPinLink"
@@ -132,7 +131,7 @@ public class Deprecated_ChangePhoneNumber2FAViewController: Deprecated_Registrat
         pinStack.autoSetDimension(.width, toSize: 227)
         pinStack.setContentHuggingVerticalHigh()
 
-        let pinTypeTitle = NSLocalizedString(
+        let pinTypeTitle = OWSLocalizedString(
             "ONBOARDING_2FA_FORGOT_PIN_LINK",
             comment: "Label for the 'forgot 2FA PIN' link in the 'onboarding 2FA' view.")
         pinTypeToggle = self.linkButton(title: pinTypeTitle, selector: #selector(togglePinType))
@@ -183,13 +182,13 @@ public class Deprecated_ChangePhoneNumber2FAViewController: Deprecated_Registrat
     // MARK: - Events
 
     @objc
-    func needHelpLinkWasTapped() {
+    private func needHelpLinkWasTapped() {
         Logger.info("")
 
-        let title = NSLocalizedString("REGISTER_2FA_FORGOT_PIN_ALERT_TITLE",
+        let title = OWSLocalizedString("REGISTER_2FA_FORGOT_PIN_ALERT_TITLE",
                                       comment: "Alert title explaining what happens if you forget your 'two-factor auth pin'.")
 
-        let message = NSLocalizedString("REGISTER_2FA_FORGOT_SVR_PIN_ALERT_MESSAGE",
+        let message = OWSLocalizedString("REGISTER_2FA_FORGOT_SVR_PIN_ALERT_MESSAGE",
                                         comment: "Alert body for a forgotten SVR (V2) PIN")
         let emailSupportFilter = "Signal PIN - iOS (V2 PIN)"
 
@@ -200,7 +199,7 @@ public class Deprecated_ChangePhoneNumber2FAViewController: Deprecated_Registrat
     }
 
     @objc
-    func nextPressed() {
+    private func nextPressed() {
         Logger.info("")
 
         tryToVerify()
@@ -228,7 +227,7 @@ public class Deprecated_ChangePhoneNumber2FAViewController: Deprecated_Registrat
         pinTextField.resignFirstResponder()
 
         let progressView = AnimatedProgressView(
-            loadingText: NSLocalizedString("REGISTER_2FA_PIN_PROGRESS",
+            loadingText: OWSLocalizedString("REGISTER_2FA_PIN_PROGRESS",
                                            comment: "Indicates the work we are doing while verifying the user's pin")
         )
         view.addSubview(progressView)
@@ -337,7 +336,7 @@ public class Deprecated_ChangePhoneNumber2FAViewController: Deprecated_Registrat
             }
             return promise
         }.recover { error -> Promise<VerificationOutcome> in
-            guard let error = error as? KBS.KBSError else {
+            guard let error = error as? SVR.SVRError else {
                 owsFailDebug("unexpected response from KBS")
                 return Promise.value(.invalid2FAPin)
             }
@@ -365,7 +364,14 @@ public class Deprecated_ChangePhoneNumber2FAViewController: Deprecated_Registrat
         }
 
         return firstly {
-            self.context.keyBackupService.acquireRegistrationLockForNewNumber(with: pin, and: kbsAuth)
+            // The only way to get here is to have had an in progress change number from before
+            // registration updates launched. That was well before the launch of svr2. Therefore,
+            // when we eventually shut down KBS, we can consider this code path really old and
+            // unrecoverable; someone stuck in a change number for that long is doomed because
+            // the kbs they will try and access is dead anyway.
+            // In other words: when we kill .kbsOnly, don't bother to keep this around. Treat it
+            // as if the whole thing failed with no backups.
+            self.context.svr.acquireRegistrationLockForNewNumber(with: pin, and: .kbsOnly(kbsAuth))
         }.map(on: DispatchQueue.global()) { registrationLockToken -> String in
             self.changePhoneNumberController.registrationLockToken = registrationLockToken
             return registrationLockToken
@@ -391,11 +397,11 @@ public class Deprecated_ChangePhoneNumber2FAViewController: Deprecated_Registrat
 
         switch attemptState {
         case .exhausted:
-            validationWarningLabel.text = NSLocalizedString("ONBOARDING_2FA_ATTEMPTS_EXHAUSTED",
+            validationWarningLabel.text = OWSLocalizedString("ONBOARDING_2FA_ATTEMPTS_EXHAUSTED",
                                                             comment: "Label indicating that the 2fa pin is exhausted in the 'onboarding 2fa' view.")
         case .invalid(let remainingAttempts):
             guard let remaining = remainingAttempts, remaining <= 5 else {
-                validationWarningLabel.text = NSLocalizedString("ONBOARDING_2FA_INVALID_PIN",
+                validationWarningLabel.text = OWSLocalizedString("ONBOARDING_2FA_INVALID_PIN",
                                                                 comment: "Label indicating that the 2fa pin is invalid in the 'onboarding 2fa' view.")
                 break
             }
@@ -403,19 +409,19 @@ public class Deprecated_ChangePhoneNumber2FAViewController: Deprecated_Registrat
             // If there are less than the threshold attempts remaining, also show an alert with more detail.
             if remaining < attemptsAlertThreshold {
                 let formatMessage = hasPendingRestoration
-                        ? NSLocalizedString("REGISTER_2FA_INVALID_PIN_ALERT_MESSAGE_%d", tableName: "PluralAware",
+                        ? OWSLocalizedString("REGISTER_2FA_INVALID_PIN_ALERT_MESSAGE_%d", tableName: "PluralAware",
                                             comment: "Alert message explaining what happens if you get your pin wrong and have one or more attempts remaining 'two-factor auth pin' with reglock disabled.")
-                        : NSLocalizedString("REGISTER_2FA_INVALID_PIN_ALERT_MESSAGE_REGLOCK_%d", tableName: "PluralAware",
+                        : OWSLocalizedString("REGISTER_2FA_INVALID_PIN_ALERT_MESSAGE_REGLOCK_%d", tableName: "PluralAware",
                                             comment: "Alert message explaining what happens if you get your pin wrong and have one or more attempts remaining 'two-factor auth pin' with reglock enabled.")
 
                 OWSActionSheets.showActionSheet(
-                    title: NSLocalizedString("REGISTER_2FA_INVALID_PIN_ALERT_TITLE",
+                    title: OWSLocalizedString("REGISTER_2FA_INVALID_PIN_ALERT_TITLE",
                                              comment: "Alert title explaining what happens if you forget your 'two-factor auth pin'."),
                     message: String.localizedStringWithFormat(formatMessage, remaining)
                 )
             }
 
-            let formatMessage = NSLocalizedString("ONBOARDING_2FA_INVALID_PIN_%d", tableName: "PluralAware",
+            let formatMessage = OWSLocalizedString("ONBOARDING_2FA_INVALID_PIN_%d", tableName: "PluralAware",
                                                   comment: "Label indicating that the 2fa pin is invalid with a retry count in the 'onboarding 2fa' view.")
             validationWarningLabel.text = String.localizedStringWithFormat(formatMessage, remaining)
 
@@ -434,11 +440,11 @@ public class Deprecated_ChangePhoneNumber2FAViewController: Deprecated_Registrat
 
         switch pinType {
         case .numeric:
-            pinTypeToggle.setTitle(title: NSLocalizedString("ONBOARDING_2FA_ENTER_ALPHANUMERIC",
+            pinTypeToggle.setTitle(title: OWSLocalizedString("ONBOARDING_2FA_ENTER_ALPHANUMERIC",
                                                             comment: "Button asking if the user would like to enter an alphanumeric PIN"))
             pinTextField.keyboardType = .asciiCapableNumberPad
         case .alphanumeric:
-            pinTypeToggle.setTitle(title: NSLocalizedString("ONBOARDING_2FA_ENTER_NUMERIC",
+            pinTypeToggle.setTitle(title: OWSLocalizedString("ONBOARDING_2FA_ENTER_NUMERIC",
                                                             comment: "Button asking if the user would like to enter an numeric PIN"))
             pinTextField.keyboardType = .default
         }
@@ -447,7 +453,7 @@ public class Deprecated_ChangePhoneNumber2FAViewController: Deprecated_Registrat
     }
 
     @objc
-    func togglePinType() {
+    private func togglePinType() {
         switch pinType {
         case .numeric:
             pinType = .alphanumeric
@@ -463,7 +469,7 @@ extension Deprecated_ChangePhoneNumber2FAViewController: UITextFieldDelegate {
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let hasPendingChanges: Bool
         if pinType == .numeric {
-            ViewControllerUtils.ows2FAPINTextField(textField, shouldChangeCharactersIn: range, replacementString: string)
+            TextFieldFormatting.ows2FAPINTextField(textField, changeCharactersIn: range, replacementString: string)
             hasPendingChanges = false
         } else {
             hasPendingChanges = true

@@ -4,7 +4,7 @@
 //
 
 import Foundation
-import SignalCoreKit
+import SignalServiceKit
 
 public struct ChatColor: Equatable, Codable {
     public let id: String
@@ -42,18 +42,15 @@ public struct ChatColor: Equatable, Codable {
 
 // MARK: -
 
-@objc
-public class ChatColors: NSObject, Dependencies {
-    @objc
-    public override init() {
-        super.init()
+public class ChatColors: Dependencies {
 
+    public init() {
         SwiftSingletons.register(self)
 
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(warmCaches),
-            name: .WarmCaches,
+            name: SSKEnvironment.warmCachesNotification,
             object: nil
         )
     }
@@ -149,40 +146,6 @@ public class ChatColors: NSObject, Dependencies {
             self.fireCustomChatColorsDidChange()
         }
     }
-
-    #if DEBUG
-    @objc
-    public static func createFakeChatColors(transaction: SDSAnyWriteTransaction) {
-
-        func randomOWSColorComponent() -> CGFloat {
-            CGFloat.random(in: 0..<1, choices: 256)
-        }
-
-        func randomOWSColor() -> OWSColor {
-            OWSColor(red: randomOWSColorComponent(),
-                     green: randomOWSColorComponent(),
-                     blue: randomOWSColorComponent())
-        }
-
-        func randomAngleRadians() -> CGFloat {
-            CGFloat.random(in: 0..<(CGFloat.pi * 2), choices: 256)
-        }
-
-        let count = 256
-        for _ in 0..<count {
-            let setting: ColorOrGradientSetting
-            if Bool.random() {
-                setting = .solidColor(color: randomOWSColor())
-            } else {
-                setting = .gradient(gradientColor1: randomOWSColor(),
-                                    gradientColor2: randomOWSColor(),
-                                    angleRadians: randomAngleRadians())
-            }
-            let value = ChatColor(id: ChatColor.randomId, setting: setting)
-            Self.chatColors.upsertCustomValue(value, transaction: transaction)
-        }
-    }
-    #endif
 
     private func fireCustomChatColorsDidChange() {
         NotificationCenter.default.postNotificationNameAsync(
@@ -317,14 +280,6 @@ public class ChatColors: NSObject, Dependencies {
         } else {
             return autoChatColorForRendering(forThread: thread, transaction: transaction)
         }
-    }
-
-    public static func chatColorForRendering(address: SignalServiceAddress,
-                                             transaction: SDSAnyReadTransaction) -> ChatColor {
-        guard let thread = TSContactThread.getWithContactAddress(address, transaction: transaction) else {
-            return Self.defaultChatColor
-        }
-        return chatColorForRendering(thread: thread, transaction: transaction)
     }
 
     public static func setChatColorSetting(_ value: ChatColor?,

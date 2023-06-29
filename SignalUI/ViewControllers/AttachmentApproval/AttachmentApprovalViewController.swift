@@ -37,7 +37,9 @@ public protocol AttachmentApprovalViewControllerDataSource: AnyObject {
 
     var attachmentApprovalRecipientNames: [String] { get }
 
-    var attachmentApprovalMentionableAddresses: [SignalServiceAddress] { get }
+    func attachmentApprovalMentionableAddresses(tx: DBReadTransaction) -> [SignalServiceAddress]
+
+    func attachmentApprovalMentionCacheInvalidationKey() -> String
 }
 
 // MARK: -
@@ -60,7 +62,6 @@ public struct AttachmentApprovalViewControllerOptions: OptionSet {
 
 // MARK: -
 
-@objc
 public class AttachmentApprovalViewController: UIPageViewController, UIPageViewControllerDataSource, UIPageViewControllerDelegate, OWSNavigationChildController {
 
     // MARK: - Properties
@@ -136,9 +137,7 @@ public class AttachmentApprovalViewController: UIPageViewController, UIPageViewC
         self.delegate = self
 
         // This fixes an issue with keyboard flashing white while being dismissed.
-        if #available(iOS 13, *) {
-            overrideUserInterfaceStyle = .dark
-        }
+        overrideUserInterfaceStyle = .dark
 
         observerToken = NotificationCenter.default.addObserver(forName: .OWSApplicationDidBecomeActive, object: nil, queue: .main) { [weak self] _ in
             guard let self = self else { return }
@@ -152,15 +151,16 @@ public class AttachmentApprovalViewController: UIPageViewController, UIPageViewC
         }
     }
 
-    public class func wrappedInNavController(attachments: [SignalAttachment],
-                                             initialMessageBody: MessageBody?,
-                                             approvalDelegate: AttachmentApprovalViewControllerDelegate,
-                                             approvalDataSource: AttachmentApprovalViewControllerDataSource)
-        -> OWSNavigationController {
+    public class func wrappedInNavController(
+        attachments: [SignalAttachment],
+        initialMessageBody: MessageBody?,
+        approvalDelegate: AttachmentApprovalViewControllerDelegate,
+        approvalDataSource: AttachmentApprovalViewControllerDataSource
+    ) -> OWSNavigationController {
 
         let attachmentApprovalItems = attachments.map { AttachmentApprovalItem(attachment: $0, canSave: false) }
         let vc = AttachmentApprovalViewController(options: [.hasCancel], attachmentApprovalItems: attachmentApprovalItems)
-        vc.messageBody = initialMessageBody
+        vc.setMessageBody(initialMessageBody, txProvider: DependenciesBridge.shared.db.readTxProvider)
         vc.approvalDelegate = approvalDelegate
         vc.approvalDataSource = approvalDataSource
         let navController = OWSNavigationController(rootViewController: vc)
@@ -396,13 +396,12 @@ public class AttachmentApprovalViewController: UIPageViewController, UIPageViewC
         )
     }
 
-    public var messageBody: MessageBody? {
-        get {
-            return attachmentTextToolbar.messageBody
-        }
-        set {
-            attachmentTextToolbar.messageBody = newValue
-        }
+    public var messageBodyForSending: MessageBody? {
+        return attachmentTextToolbar.messageBodyForSending
+    }
+
+    public func setMessageBody(_ messageBody: MessageBody?, txProvider: EditableMessageBodyTextStorage.ReadTxProvider) {
+        attachmentTextToolbar.setMessageBody(messageBody, txProvider: txProvider)
     }
 
     // MARK: - Control Visibility
@@ -420,39 +419,20 @@ public class AttachmentApprovalViewController: UIPageViewController, UIPageViewC
             } else if let prevItem = attachmentApprovalItemCollection.itemBefore(item: attachmentApprovalItem) {
                 setCurrentItem(prevItem, direction: .reverse, animated: true)
             } else {
-                owsFailDebug("removing last item shouldn't be possible because rail should not be visible")
+                owsFailBeta("removing last item shouldn't be possible because rail should not be visible")
                 return
             }
-        }
-
-        guard let cell = galleryRailView.cellViews.first(where: { cellView in
-            guard let item = cellView.item else { return false }
-            return item.isEqualToGalleryRailItem(attachmentApprovalItem)
-        }) else {
-            owsFailDebug("cell was unexpectedly nil")
-            return
+        } else {
+            owsFailBeta("Deleting item that is not current")
         }
 
         attachmentApprovalItemCollection.remove(item: attachmentApprovalItem)
         approvalDelegate?.attachmentApproval(self, didRemoveAttachment: attachmentApprovalItem.attachment)
 
-        // Special logic if there is just one item after deletion.
-        // Fade out the entire rail view because it won't be visible after animations complete.
-        guard attachmentApprovalItems.count > 1 else {
-            updateContents(animated: true)
-            return
+        // If media rail needs to be hidden, do it immediately.
+        if attachmentApprovalItems.count < 2 {
+            updateMediaRail(animated: true)
         }
-
-        // If rail view is still be visible after deletion it looks better
-        // if cell for deleted item is faded out.
-        UIView.animate(withDuration: 0.15,
-                       animations: {
-            cell.isHidden = true
-            cell.alpha = 0
-        },
-                       completion: { _ in
-            self.updateContents(animated: true)
-        })
     }
 
     lazy var pagerScrollView: UIScrollView? = {
@@ -620,7 +600,7 @@ public class AttachmentApprovalViewController: UIPageViewController, UIPageViewC
     func updateMediaRail(animated: Bool = false) {
         guard isViewLoaded else { return }
 
-        guard let currentItem = self.currentItem else {
+        guard let currentItem else {
             owsFailDebug("currentItem was unexpectedly nil")
             return
         }
@@ -889,7 +869,7 @@ extension AttachmentApprovalViewController {
                             assert(attachments.count <= 1)
                         }
 
-                        self.approvalDelegate?.attachmentApproval(self, didApproveAttachments: attachments, messageBody: self.attachmentTextToolbar.messageBody)
+                        self.approvalDelegate?.attachmentApproval(self, didApproveAttachments: attachments, messageBody: self.attachmentTextToolbar.messageBodyForSending)
                     }
                 }.catch { error in
                     AssertIsOnMainThread()
@@ -965,7 +945,7 @@ extension AttachmentApprovalViewController: AttachmentTextToolbarDelegate {
     }
 
     func attachmentTextToolbarDidChange(_ attachmentTextToolbar: AttachmentTextToolbar) {
-        approvalDelegate?.attachmentApproval(self, didChangeMessageBody: attachmentTextToolbar.messageBody)
+        approvalDelegate?.attachmentApproval(self, didChangeMessageBody: attachmentTextToolbar.messageBodyForSending)
     }
 
     func attachmentTextToolBarDidChangeHeight(_ attachmentTextToolbar: AttachmentTextToolbar) { }
@@ -1034,12 +1014,14 @@ extension AttachmentApprovalViewController: AttachmentTextToolbarDelegate {
             let rawAnimationCurve = userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] as? Int,
             let animationCurve = UIView.AnimationCurve(rawValue: rawAnimationCurve)
         {
-            UIView.beginAnimations("AttachmentResize", context: nil)
-            UIView.setAnimationBeginsFromCurrentState(true)
-            UIView.setAnimationCurve(animationCurve)
-            UIView.setAnimationDuration(animationDuration)
-            currentPageViewController.keyboardHeight = keyboardHeight
-            UIView.commitAnimations()
+            UIView.animate(
+                withDuration: animationDuration,
+                delay: 0,
+                options: animationCurve.asAnimationOptions,
+                animations: {
+                    currentPageViewController.keyboardHeight = keyboardHeight
+                }
+            )
         } else {
             currentPageViewController.keyboardHeight = keyboardHeight
         }
@@ -1079,7 +1061,7 @@ extension AttachmentApprovalViewController {
         }
 
         let titleLabel = UILabel()
-        titleLabel.font = .ows_dynamicTypeSubheadlineClamped
+        titleLabel.font = .dynamicTypeSubheadlineClamped
         titleLabel.textColor = Theme.darkThemePrimaryColor
         titleLabel.textAlignment = .center
         titleLabel.text = AttachmentApprovalViewController.mediaQualityLocalizedString
@@ -1165,14 +1147,14 @@ extension AttachmentApprovalViewController {
             let topLabel: UILabel = {
                 let label = UILabel()
                 label.textColor = Theme.darkThemePrimaryColor
-                label.font = .ows_dynamicTypeFootnoteClamped.ows_medium
+                label.font = .dynamicTypeFootnoteClamped.medium()
                 return label
             }()
 
             let bottomLabel: UILabel = {
                 let label = UILabel()
                 label.textColor = Theme.darkThemePrimaryColor
-                label.font = .ows_dynamicTypeCaption1Clamped
+                label.font = .dynamicTypeCaption1Clamped
                 label.lineBreakMode = .byWordWrapping
                 label.numberOfLines = 0
                 return label
@@ -1270,28 +1252,38 @@ extension AttachmentApprovalViewController {
     }
 }
 
-extension AttachmentApprovalViewController: MentionTextViewDelegate {
+extension AttachmentApprovalViewController: BodyRangesTextViewDelegate {
 
-    public func textViewDidBeginTypingMention(_ textView: MentionTextView) { }
+    public func textViewDidBeginTypingMention(_ textView: BodyRangesTextView) { }
 
-    public func textViewDidEndTypingMention(_ textView: MentionTextView) { }
+    public func textViewDidEndTypingMention(_ textView: BodyRangesTextView) { }
 
-    public func textViewMentionPickerParentView(_ textView: MentionTextView) -> UIView? {
+    public func textViewMentionPickerParentView(_ textView: BodyRangesTextView) -> UIView? {
         return view
     }
 
-    public func textViewMentionPickerReferenceView(_ textView: MentionTextView) -> UIView? {
+    public func textViewMentionPickerReferenceView(_ textView: BodyRangesTextView) -> UIView? {
         return bottomToolView.attachmentTextToolbar
     }
 
-    public func textViewMentionPickerPossibleAddresses(_ textView: MentionTextView) -> [SignalServiceAddress] {
-        return approvalDataSource?.attachmentApprovalMentionableAddresses ?? []
+    public func textViewMentionPickerPossibleAddresses(_ textView: BodyRangesTextView, tx: DBReadTransaction) -> [SignalServiceAddress] {
+        return approvalDataSource?.attachmentApprovalMentionableAddresses(tx: tx) ?? []
     }
 
-    public func textView(_ textView: MentionTextView, didDeleteMention mention: Mention) {}
+    public func textViewDisplayConfiguration(_ textView: BodyRangesTextView) -> HydratedMessageBody.DisplayConfiguration {
+        return .init(
+            mention: .composingAttachment,
+            style: .composingAttachment,
+            searchRanges: nil
+        )
+    }
 
-    public func textViewMentionStyle(_ textView: MentionTextView) -> Mention.Style {
+    public func mentionPickerStyle(_ textView: BodyRangesTextView) -> MentionPickerStyle {
         return .composingAttachment
+    }
+
+    public func textViewMentionCacheInvalidationKey(_ textView: BodyRangesTextView) -> String {
+        return approvalDataSource?.attachmentApprovalMentionCacheInvalidationKey() ?? UUID().uuidString
     }
 }
 
@@ -1320,7 +1312,10 @@ extension AttachmentApprovalItem: GalleryRailItem {
 extension AddMoreRailItem: GalleryRailItem {
 
     func buildRailItemView() -> UIView {
-        let button = RoundMediaButton(image: #imageLiteral(resourceName: "media-editor-add-photos"), backgroundStyle: .blur)
+        let button = RoundMediaButton(
+            image: UIImage(imageLiteralResourceName: "plus-square-28"),
+            backgroundStyle: .blur
+        )
         button.isUserInteractionEnabled = false
         button.layoutMargins = .zero
         button.contentEdgeInsets = .zero
@@ -1410,12 +1405,14 @@ extension AttachmentApprovalViewController: InputAccessoryViewPlaceholderDelegat
     func handleKeyboardStateChange(animationDuration: TimeInterval, animationCurve: UIView.AnimationCurve) {
         guard animationDuration > 0 else { return updateBottomToolViewPosition() }
 
-        UIView.beginAnimations("keyboardStateChange", context: nil)
-        UIView.setAnimationBeginsFromCurrentState(true)
-        UIView.setAnimationCurve(animationCurve)
-        UIView.setAnimationDuration(animationDuration)
-        updateBottomToolViewPosition()
-        UIView.commitAnimations()
+        UIView.animate(
+            withDuration: animationDuration,
+            delay: 0,
+            options: animationCurve.asAnimationOptions,
+            animations: { [self] in
+                self.updateBottomToolViewPosition()
+            }
+        )
     }
 
     func updateBottomToolViewPosition() {

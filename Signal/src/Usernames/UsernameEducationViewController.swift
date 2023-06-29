@@ -79,7 +79,7 @@ class UsernameEducationViewController: OWSTableViewController2 {
         let footerView = UIView()
         let continueButton = OWSFlatButton.insetButton(
             title: CommonStrings.continueButton,
-            font: UIFont.ows_dynamicTypeBodyClamped.ows_semibold,
+            font: UIFont.dynamicTypeBodyClamped.semibold(),
             titleColor: .white,
             backgroundColor: .ows_accentBlue,
             target: self,
@@ -87,7 +87,7 @@ class UsernameEducationViewController: OWSTableViewController2 {
         footerView.addSubview(continueButton)
 
         continueButton.contentEdgeInsets = Constants.continueButtonEdgeInsets
-        continueButton.autoPinEdgesToSuperviewEdges(withInsets: Constants.continueButtonInsets)
+        continueButton.autoPinEdgesToSuperviewEdges(with: Constants.continueButtonInsets)
 
         return footerView
     }()
@@ -127,7 +127,7 @@ class UsernameEducationViewController: OWSTableViewController2 {
 
         section.add(createLearnMore())
 
-        contents.addSections([
+        contents.add(sections: [
             headerSection,
             section
         ])
@@ -153,7 +153,7 @@ class UsernameEducationViewController: OWSTableViewController2 {
 
             let button = OWSFlatButton.button(
                 title: CommonStrings.learnMore,
-                font: UIFont.ows_dynamicTypeSubheadlineClamped,
+                font: UIFont.dynamicTypeSubheadlineClamped,
                 titleColor: Theme.accentBlueColor,
                 backgroundColor: .clear,
                 target: self,
@@ -190,7 +190,7 @@ class UsernameEducationViewController: OWSTableViewController2 {
 
             let titleLabel = UILabel()
             titleLabel.text = description
-            titleLabel.font = UIFont.ows_dynamicTypeSubheadlineClamped
+            titleLabel.font = UIFont.dynamicTypeSubheadlineClamped
             titleLabel.numberOfLines = 0
             titleLabel.textAlignment = .left
             titleLabel.lineBreakMode = .byWordWrapping
@@ -204,14 +204,14 @@ class UsernameEducationViewController: OWSTableViewController2 {
     // MARK: Actions
 
     @objc
-    func didTapContinue() {
+    private func didTapContinue() {
         dismiss(animated: true) {
             self.continueCompletion?()
         }
     }
 
     @objc
-    func didTapLearnMore() {
+    private func didTapLearnMore() {
         let vc = SFSafariViewController(url: URL(string: Constants.learnMoreURL)!)
         present(vc, animated: true, completion: nil)
     }
@@ -247,13 +247,9 @@ extension UsernameEducationViewController {
             fatalError("init(coder:) has not been implemented")
         }
 
-        private let iconImage: UIImage = Theme.iconImage(.settingsMention)
-
         // MARK: Views
 
-        private lazy var iconImageView: UIImageView = {
-            UIImageView(image: iconImage)
-        }()
+        private lazy var iconImageView = UIImageView(image: UIImage(imageLiteralResourceName: "at-display"))
 
         /// Displays an icon over a circular, square-aspect-ratio, colored
         /// background.
@@ -302,12 +298,11 @@ extension UsernameEducationViewController {
         // MARK: - Style views
 
         func updateFontsForCurrentPreferredContentSize() {
-            usernameTitleLabel.font = .ows_dynamicTypeTitle1Clamped.ows_semibold
+            usernameTitleLabel.font = .dynamicTypeTitle1Clamped.semibold()
         }
 
         func setColorsForCurrentTheme() {
-            iconImageView.image = iconImage
-                .tintedImage(color: Theme.isDarkThemeEnabled ? .ows_gray02 : .ows_gray90)
+            iconImageView.tintColor = Theme.isDarkThemeEnabled ? .ows_gray02 : .ows_gray90
 
             iconView.backgroundColor = Theme.isDarkThemeEnabled ? .ows_gray80 : .ows_white
 

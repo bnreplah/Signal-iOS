@@ -7,6 +7,17 @@ import Foundation
 
 public extension TSAccountManager {
 
+    // MARK: - Initialization
+
+    @objc
+    internal func warmCaches() {
+        owsAssertDebug(GRDBSchemaMigrator.areMigrationsComplete)
+
+        loadAccountStateWithSneakyTransaction().log()
+    }
+
+    // MARK: -
+
     @objc
     private class func getLocalThread(transaction: SDSAnyReadTransaction) -> TSThread? {
         guard let localAddress = self.localAddress(with: transaction) else {
@@ -46,18 +57,70 @@ public extension TSAccountManager {
     }
 
     @objc
+    var registrationState: OWSRegistrationState {
+        registrationState(for: getOrLoadAccountStateWithSneakyTransaction())
+    }
+
+    @objc
+    func registrationState(transaction: SDSAnyReadTransaction) -> OWSRegistrationState {
+        registrationState(for: getOrLoadAccountState(with: transaction))
+    }
+
+    private func registrationState(for state: TSAccountState) -> OWSRegistrationState {
+        if state.isRegistered {
+            if isDeregistered(state: state) {
+                if state.isReregistering {
+                    return .reregistering
+                }
+                return .deregistered
+            }
+            return .registered
+        }
+        return .unregistered
+    }
+
+    func localIdentifiers(transaction: SDSAnyReadTransaction) -> LocalIdentifiers? {
+        getOrLoadAccountState(with: transaction).localIdentifiers
+    }
+
+    /// May use a sneaky transaction to load state. Use with caution.
+    var localIdentifiers: LocalIdentifiers? {
+        getOrLoadAccountStateWithSneakyTransaction().localIdentifiers
+    }
+
+    @objc
+    var isRegistered: Bool {
+        getOrLoadAccountStateWithSneakyTransaction().isRegistered
+    }
+
+    @objc
+    func isRegistered(transaction: SDSAnyReadTransaction) -> Bool {
+        getOrLoadAccountState(with: transaction).isRegistered
+    }
+
+    @objc
+    var isRegisteredAndReady: Bool {
+        registrationState == .registered
+    }
+
+    @objc
+    func isRegisteredAndReady(transaction: SDSAnyReadTransaction) -> Bool {
+        registrationState(transaction: transaction) == .registered
+    }
+
+    @objc
     var isRegisteredPrimaryDevice: Bool {
         isRegistered && isPrimaryDevice
     }
 
     @objc
     var isPrimaryDevice: Bool {
-        storedDeviceId() == OWSDevicePrimaryDeviceId
+        storedDeviceId == OWSDevice.primaryDeviceId
     }
 
     @objc
     func isPrimaryDevice(transaction: SDSAnyReadTransaction) -> Bool {
-        storedDeviceId(with: transaction) == OWSDevicePrimaryDeviceId
+        storedDeviceId(transaction: transaction) == OWSDevice.primaryDeviceId
     }
 
     @objc
@@ -66,13 +129,205 @@ public extension TSAccountManager {
             return nil
         }
 
-        return isRegisteredPrimaryDevice ? serviceId : "\(serviceId).\(storedDeviceId())"
+        return isRegisteredPrimaryDevice ? serviceId : "\(serviceId).\(storedDeviceId)"
     }
 
     @objc
     func localAccountId(transaction: SDSAnyReadTransaction) -> AccountId? {
         guard let localAddress = localAddress else { return nil }
         return OWSAccountIdFinder.accountId(forAddress: localAddress, transaction: transaction)
+    }
+
+    @objc
+    func registrationDate(transaction: SDSAnyReadTransaction) -> Date? {
+        getOrLoadAccountState(with: transaction).registrationDate
+    }
+
+    @objc
+    var isOnboarded: Bool {
+        getOrLoadAccountStateWithSneakyTransaction().isOnboarded
+    }
+
+    @objc
+    func isOnboarded(transaction: SDSAnyReadTransaction) -> Bool {
+        getOrLoadAccountState(with: transaction).isOnboarded
+    }
+
+    @objc
+    var storedServerAuthToken: String? {
+        getOrLoadAccountStateWithSneakyTransaction().serverAuthToken
+    }
+
+    @objc
+    func storedServerAuthToken(transaction: SDSAnyReadTransaction) -> String? {
+        getOrLoadAccountState(with: transaction).serverAuthToken
+    }
+
+    @objc
+    var storedDeviceId: UInt32 {
+        getOrLoadAccountStateWithSneakyTransaction().deviceId
+    }
+
+    @objc
+    func storedDeviceId(transaction: SDSAnyReadTransaction) -> UInt32 {
+        getOrLoadAccountState(with: transaction).deviceId
+    }
+
+    @objc
+    var reregistrationPhoneNumber: String? {
+        getOrLoadAccountStateWithSneakyTransaction().reregistrationPhoneNumber
+    }
+
+    @objc
+    var reregistrationUUID: UUID? {
+        getOrLoadAccountStateWithSneakyTransaction().reregistrationUUID
+    }
+
+    @objc
+    var isReregistering: Bool {
+        getOrLoadAccountStateWithSneakyTransaction().isReregistering
+    }
+
+    @objc
+    var isTransferInProgress: Bool {
+        get { getOrLoadAccountStateWithSneakyTransaction().isTransferInProgress }
+        set {
+            if newValue == isTransferInProgress {
+                return
+            }
+            databaseStorage.write { transaction in
+                objc_sync_enter(self)
+                defer { objc_sync_exit(self) }
+
+                keyValueStore.setBool(newValue, key: TSAccountManager_IsTransferInProgressKey, transaction: transaction)
+                loadAccountState(with: transaction)
+            }
+            postRegistrationStateDidChangeNotification()
+        }
+    }
+
+    @objc
+    var wasTransferred: Bool {
+        get { getOrLoadAccountStateWithSneakyTransaction().wasTransferred }
+        set {
+            databaseStorage.write { transaction in
+                objc_sync_enter(self)
+                defer { objc_sync_exit(self) }
+
+                keyValueStore.setBool(newValue, key: TSAccountManager_WasTransferredKey, transaction: transaction)
+                loadAccountState(with: transaction)
+            }
+            postRegistrationStateDidChangeNotification()
+        }
+    }
+
+    @objc
+    func storeLocalNumber(
+        _ newLocalNumber: E164ObjC,
+        aci newAci: ServiceIdObjC,
+        pni newPni: ServiceIdObjC?,
+        transaction: SDSAnyWriteTransaction
+    ) {
+        func setIdentifier(_ newValue: String, for key: String) {
+            let oldValue = keyValueStore.getString(key, transaction: transaction)
+            if oldValue != newValue {
+                Logger.info("\(key): \(oldValue ?? "nil") -> \(newValue)")
+            }
+            keyValueStore.setString(newValue, key: key, transaction: transaction)
+        }
+
+        do {
+            objc_sync_enter(self)
+            defer { objc_sync_exit(self) }
+
+            setIdentifier(newLocalNumber.stringValue, for: TSAccountManager_RegisteredNumberKey)
+            setIdentifier(newAci.uuidValue.uuidString, for: TSAccountManager_RegisteredUUIDKey)
+            if let newPni {
+                setIdentifier(newPni.uuidValue.uuidString, for: TSAccountManager_RegisteredPNIKey)
+            }
+
+            keyValueStore.setDate(Date(), key: TSAccountManager_RegistrationDateKey, transaction: transaction)
+            keyValueStore.removeValue(forKey: TSAccountManager_IsDeregisteredKey, transaction: transaction)
+            keyValueStore.removeValue(forKey: TSAccountManager_ReregisteringPhoneNumberKey, transaction: transaction)
+            keyValueStore.removeValue(forKey: TSAccountManager_ReregisteringUUIDKey, transaction: transaction)
+
+            // Discard sender certificates whenever local phone number changes.
+            udManager.removeSenderCertificates(transaction: transaction)
+            identityManager.clearShouldSharePhoneNumberForEveryone(transaction: transaction)
+            versionedProfiles.clearProfileKeyCredentials(transaction: transaction)
+            groupsV2.clearTemporalCredentials(transaction: transaction)
+
+            loadAccountState(with: transaction)
+
+            phoneNumberAwaitingVerification = nil
+            uuidAwaitingVerification = nil
+            pniAwaitingVerification = nil
+        }
+
+        didStoreLocalNumber?(LocalIdentifiersObjC(LocalIdentifiers(
+            aci: newAci.wrappedValue,
+            pni: newPni?.wrappedValue,
+            phoneNumber: newLocalNumber.stringValue
+        )))
+
+        let localRecipient = DependenciesBridge.shared.recipientMerger.applyMergeForLocalAccount(
+            aci: newAci.wrappedValue,
+            pni: newPni?.wrappedValue,
+            phoneNumber: newLocalNumber.wrappedValue,
+            tx: transaction.asV2Write
+        )
+        localRecipient.markAsRegisteredAndSave(tx: transaction)
+    }
+
+    // MARK: - Deregistration
+
+    @objc
+    var isDeregistered: Bool {
+        get { isDeregistered(state: getOrLoadAccountStateWithSneakyTransaction()) }
+        set {
+            if newValue && !isRegisteredAndReady {
+                Logger.warn("Ignoring; not registered and ready.")
+                return
+            }
+            if getOrLoadAccountStateWithSneakyTransaction().isDeregistered == newValue {
+                return
+            }
+            Logger.warn("Updating isDeregistered \(newValue)")
+            databaseStorage.write { transaction in
+                objc_sync_enter(self)
+                defer { objc_sync_exit(self) }
+
+                if getOrLoadAccountState(with: transaction).isDeregistered == newValue {
+                    return
+                }
+
+                keyValueStore.setBool(newValue, key: TSAccountManager_IsDeregisteredKey, transaction: transaction)
+                loadAccountState(with: transaction)
+
+                if newValue {
+                    notificationPresenter?.notifyUserOfDeregistration(transaction: transaction)
+                }
+            }
+            postRegistrationStateDidChangeNotification()
+        }
+    }
+
+    /// Checks if the account is "deregistered".
+    ///
+    /// An account is deregistered if a device transfer is in progress, a device
+    /// transfer was just completed to another device, or we received an HTTP
+    /// 401/403 error that indicates we're no longer registered.
+    ///
+    /// If an account is deregistered due to an HTTP 401/403 error, the user
+    /// should complete re-registration to re-mark the account as "registered".
+    @objc
+    func isDeregistered(transaction: SDSAnyReadTransaction) -> Bool {
+        return isDeregistered(state: getOrLoadAccountState(with: transaction))
+    }
+
+    private func isDeregistered(state: TSAccountState) -> Bool {
+        // An in progress transfer is treated as being deregistered.
+        return state.isTransferInProgress || state.wasTransferred || state.isDeregistered
     }
 
     // MARK: - Account Attributes & Capabilities
@@ -95,6 +350,20 @@ public extension TSAccountManager {
         getOrGenerateRegistrationId(
             forStorageKey: Self.pniRegistrationIdKey,
             nounForLogging: "PNI registration ID",
+            transaction: transaction
+        )
+    }
+
+    /// Set the PNI registration ID.
+    ///
+    /// Values passed here should have already been provided to the service.
+    func setPniRegistrationId(
+        newRegistrationId: UInt32,
+        transaction: SDSAnyWriteTransaction
+    ) {
+        keyValueStore.setUInt32(
+            newRegistrationId,
+            key: Self.pniRegistrationIdKey,
             transaction: transaction
         )
     }
@@ -128,17 +397,17 @@ public extension TSAccountManager {
     }
 
     @discardableResult
-    func updateAccountAttributes() -> Promise<Void> {
+    func updateAccountAttributes(authedAccount: AuthedAccount = .implicit()) -> Promise<Void> {
         Self.databaseStorage.write { transaction in
             self.keyValueStore.setDate(Date(),
                                        key: Self.needsAccountAttributesUpdateKey,
                                        transaction: transaction)
         }
-        return updateAccountAttributesIfNecessaryAttempt()
+        return updateAccountAttributesIfNecessaryAttempt(authedAccount: authedAccount)
     }
 
-    // Sets the flag to force an account attributes update,
-    // then initiates an attempt.
+    // Sets the flag to force an account attributes update synchronously,
+    // then initiates an attempt after the transaction ends.
     @objc
     func updateAccountAttributes(transaction: SDSAnyWriteTransaction) {
         self.keyValueStore.setDate(Date(),
@@ -149,10 +418,21 @@ public extension TSAccountManager {
         }
     }
 
+    // Sets the flag to force an account attributes update synchronously,
+    // then initiates an attempt after the transaction ends..
+    func scheduleAccountAttributesUpdate(authedAccount: AuthedAccount, transaction: SDSAnyWriteTransaction) {
+        self.keyValueStore.setDate(Date(),
+                                   key: Self.needsAccountAttributesUpdateKey,
+                                   transaction: transaction)
+        transaction.addAsyncCompletionOffMain {
+            self.updateAccountAttributesIfNecessaryAttempt(authedAccount: authedAccount).cauterize()
+        }
+    }
+
     @objc
     func updateAccountAttributesIfNecessary() {
         firstly {
-            updateAccountAttributesIfNecessaryAttempt()
+            updateAccountAttributesIfNecessaryAttempt(authedAccount: .implicit())
         }.done(on: DispatchQueue.global()) { _ in
             Logger.info("Success.")
         }.catch(on: DispatchQueue.global()) { error in
@@ -175,7 +455,7 @@ public extension TSAccountManager {
     //
     // * On launch.
     // * When reachability changes.
-    private func updateAccountAttributesIfNecessaryAttempt() -> Promise<Void> {
+    private func updateAccountAttributesIfNecessaryAttempt(authedAccount: AuthedAccount) -> Promise<Void> {
         guard isRegisteredAndReady else {
             Logger.info("Aborting; not registered and ready.")
             return Promise.value(())
@@ -188,8 +468,14 @@ public extension TSAccountManager {
         let deviceCapabilitiesKey = "deviceCapabilities"
         let appVersionKey = "appVersion"
 
-        let currentDeviceCapabilities: [String: NSNumber] = OWSRequestFactory.deviceCapabilitiesForLocalDevice()
-        let currentAppVersion4 = appVersion.currentAppVersion4
+        let hasBackedUpMasterKey = self.databaseStorage.read { tx in
+            DependenciesBridge.shared.svr.hasBackedUpMasterKey(transaction: tx.asV2Read)
+        }
+
+        let currentDeviceCapabilities: [String: NSNumber] = OWSRequestFactory.deviceCapabilitiesForLocalDevice(
+            withHasBackedUpMasterKey: hasBackedUpMasterKey
+        )
+        let currentAppVersion4 = AppVersion.shared.currentAppVersion4
 
         var lastAttributeRequest: Date?
         let shouldUpdateAttributes = Self.databaseStorage.read { (transaction: SDSAnyReadTransaction) -> Bool in
@@ -221,9 +507,9 @@ public extension TSAccountManager {
             let client = SignalServiceRestClient()
             return (self.isPrimaryDevice
                         ? client.updatePrimaryDeviceAccountAttributes()
-                        : client.updateSecondaryDeviceCapabilities())
+                    : client.updateSecondaryDeviceCapabilities(hasBackedUpMasterKey: hasBackedUpMasterKey))
         }.then(on: DispatchQueue.global()) {
-            self.profileManager.fetchLocalUsersProfilePromise()
+            self.profileManager.fetchLocalUsersProfilePromise(authedAccount: authedAccount)
         }.map(on: DispatchQueue.global()) { _ -> Void in
             Self.databaseStorage.write { transaction in
                 self.keyValueStore.setObject(currentDeviceCapabilities,
@@ -350,7 +636,7 @@ extension TSAccountManager {
         }
     }
 
-    private static func processRegistrationError(_ error: Error) -> Error {
+    public static func processRegistrationError(_ error: Error) -> Error {
         Logger.warn("Error: \(error)")
 
         let statusCode = error.httpStatusCode ?? 0
@@ -479,14 +765,6 @@ public class RegistrationMissing2FAPinError: NSObject, Error, IsRetryableProvide
     public var isRetryableProvider: Bool { false }
 }
 
-public extension TSAccountManager {
-
-    @objc(clearKBSKeysWithTransaction:)
-    func clearKBSKeys(with transaction: SDSAnyWriteTransaction) {
-        DependenciesBridge.shared.keyBackupService.clearKeys(transaction: transaction.asV2Write)
-    }
-}
-
 // MARK: - Phone number discoverability
 
 public extension TSAccountManager {
@@ -516,6 +794,7 @@ public extension TSAccountManager {
     func setIsDiscoverableByPhoneNumber(
         _ isDiscoverableByPhoneNumber: Bool,
         updateStorageService: Bool,
+        authedAccount: AuthedAccount,
         transaction: SDSAnyWriteTransaction
     ) {
         guard FeatureFlags.phoneNumberDiscoverability else {
@@ -539,7 +818,7 @@ public extension TSAccountManager {
         }
 
         transaction.addAsyncCompletionOffMain {
-            self.updateAccountAttributes()
+            self.updateAccountAttributes(authedAccount: authedAccount)
 
             if updateStorageService {
                 self.storageServiceManager.recordPendingLocalAccountUpdates()

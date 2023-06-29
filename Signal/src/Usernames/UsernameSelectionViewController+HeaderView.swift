@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
+import SignalUI
 
 extension UsernameSelectionViewController {
     class HeaderView: UIView {
@@ -17,8 +17,19 @@ extension UsernameSelectionViewController {
 
             super.init(frame: .zero)
 
-            addSubview(stackView)
-            stackView.autoPinEdgesToSuperviewEdges()
+            layoutMargins = UIEdgeInsets(top: 34, leading: 32, bottom: 24, trailing: 32)
+
+            addSubview(iconView)
+            addSubview(usernameDisplayLabel)
+
+            iconView.autoPinTopToSuperviewMargin()
+            iconView.autoHCenterInSuperview()
+
+            iconView.autoPinEdge(.bottom, to: .top, of: usernameDisplayLabel, withOffset: -16)
+
+            usernameDisplayLabel.autoPinLeadingToSuperviewMargin()
+            usernameDisplayLabel.autoPinTrailingToSuperviewMargin()
+            usernameDisplayLabel.autoPinBottomToSuperviewMargin()
 
             updateFontsForCurrentPreferredContentSize()
             setColorsForCurrentTheme()
@@ -29,13 +40,9 @@ extension UsernameSelectionViewController {
             fatalError("Use other initializer!")
         }
 
-        private let iconImage: UIImage = Theme.iconImage(.settingsMention)
-
         // MARK: Views
 
-        private lazy var iconImageView: UIImageView = {
-            UIImageView(image: iconImage)
-        }()
+        private lazy var iconImageView = UIImageView(image: UIImage(imageLiteralResourceName: "at-display"))
 
         /// Displays an icon over a circular, square-aspect-ratio, colored
         /// background.
@@ -58,36 +65,19 @@ extension UsernameSelectionViewController {
             let label = UILabel()
 
             label.numberOfLines = 0
+            label.textAlignment = .center
 
             return label
-        }()
-
-        private lazy var stackView: OWSStackView = {
-            let stack = OWSStackView(
-                name: "Username Selection Header Stack",
-                arrangedSubviews: [
-                    iconView,
-                    usernameDisplayLabel
-                ]
-            )
-
-            stack.axis = .vertical
-            stack.alignment = .center
-            stack.distribution = .equalSpacing
-            stack.spacing = 16
-
-            return stack
         }()
 
         // MARK: - Configure views
 
         func updateFontsForCurrentPreferredContentSize() {
-            usernameDisplayLabel.font = .ows_dynamicTypeSubheadlineClamped
+            usernameDisplayLabel.font = .dynamicTypeSubheadlineClamped
         }
 
         func setColorsForCurrentTheme() {
-            iconImageView.image = iconImage
-                .tintedImage(color: Theme.isDarkThemeEnabled ? .ows_gray02 : .ows_gray90)
+            iconImageView.tintColor = Theme.isDarkThemeEnabled ? .ows_gray02 : .ows_gray90
 
             iconView.backgroundColor = Theme.isDarkThemeEnabled ? .ows_gray80 : .ows_white
 

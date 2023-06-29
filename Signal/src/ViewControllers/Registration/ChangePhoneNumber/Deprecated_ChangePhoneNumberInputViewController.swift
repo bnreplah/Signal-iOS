@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import SignalServiceKit
+import SignalUI
 
 class Deprecated_ChangePhoneNumberInputViewController: OWSTableViewController2 {
 
@@ -29,7 +29,7 @@ class Deprecated_ChangePhoneNumberInputViewController: OWSTableViewController2 {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = NSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_VIEW_TITLE",
+        title = OWSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_VIEW_TITLE",
                                   comment: "Title for the 'change phone number' views in settings.")
 
         navigationItem.leftBarButtonItem = UIBarButtonItem(
@@ -65,8 +65,8 @@ class Deprecated_ChangePhoneNumberInputViewController: OWSTableViewController2 {
     func updateTableContents() {
         let contents = OWSTableContents()
 
-        contents.addSection(buildTableSection(valueViews: oldValueViews))
-        contents.addSection(buildTableSection(valueViews: newValueViews))
+        contents.add(buildTableSection(valueViews: oldValueViews))
+        contents.add(buildTableSection(valueViews: newValueViews))
 
         self.contents = contents
 
@@ -77,10 +77,10 @@ class Deprecated_ChangePhoneNumberInputViewController: OWSTableViewController2 {
         let section = OWSTableSection()
         section.headerTitle = valueViews.sectionHeaderTitle
 
-        let countryCodeFormat = NSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_COUNTRY_CODE_FORMAT",
+        let countryCodeFormat = OWSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_COUNTRY_CODE_FORMAT",
                                                   comment: "Format for the 'country code' in the 'change phone number' settings. Embeds: {{ %1$@ the numeric country code prefix, %2$@ the country code abbreviation }}.")
         let countryCodeFormatted = String(format: countryCodeFormat, valueViews.callingCode, valueViews.countryCode)
-        section.add(.item(name: NSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_COUNTRY_CODE_FIELD",
+        section.add(.item(name: OWSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_COUNTRY_CODE_FIELD",
                                                   comment: "Label for the 'country code' row in the 'change phone number' settings."),
                           textColor: Theme.primaryTextColor,
                           accessoryText: countryCodeFormatted,
@@ -88,8 +88,8 @@ class Deprecated_ChangePhoneNumberInputViewController: OWSTableViewController2 {
                           accessibilityIdentifier: valueViews.accessibilityIdentifier_PhoneNumber) { [weak self] in
             self?.showCountryCodePicker(valueViews: valueViews)
         })
-        section.add(.item(name: NSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_PHONE_NUMBER_FIELD",
-                                                  comment: "Label for the 'country code' row in the 'change phone number' settings."),
+        section.add(.item(name: OWSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_PHONE_NUMBER_FIELD",
+                                                  comment: "Label for the 'phone number' row in the 'change phone number' settings."),
                           textColor: Theme.primaryTextColor,
                           accessoryView: valueViews.phoneNumberTextField,
                           accessibilityIdentifier: valueViews.accessibilityIdentifier_CountryCode))
@@ -115,7 +115,7 @@ class Deprecated_ChangePhoneNumberInputViewController: OWSTableViewController2 {
         }
         if let examplePhoneNumber = phoneNumberUtil.examplePhoneNumber(forCountryCode: valueViews.countryCode),
            let formattedPhoneNumber = tryToFormatPhoneNumber(examplePhoneNumber) {
-            let exampleFormat = NSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_EXAMPLE_PHONE_NUMBER_FORMAT",
+            let exampleFormat = OWSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_EXAMPLE_PHONE_NUMBER_FORMAT",
                                                       comment: "Format for 'example phone numbers' in the 'change phone number' settings. Embeds: {{ the example phone number }}")
             section.footerTitle = String(format: exampleFormat, formattedPhoneNumber)
         }
@@ -194,24 +194,24 @@ class Deprecated_ChangePhoneNumberInputViewController: OWSTableViewController2 {
 
     private func showInvalidPhoneNumberAlert(isOldValue: Bool) {
         let message = (isOldValue
-                       ? NSLocalizedString(
+                       ? OWSLocalizedString(
                         "CHANGE_PHONE_NUMBER_INVALID_PHONE_NUMBER_ALERT_MESSAGE_OLD",
                         comment: "Error indicating that the user's old phone number is not valid.")
-                       : NSLocalizedString(
+                       : OWSLocalizedString(
                         "CHANGE_PHONE_NUMBER_INVALID_PHONE_NUMBER_ALERT_MESSAGE_NEW",
                         comment: "Error indicating that the user's new phone number is not valid."))
         OWSActionSheets.showActionSheet(title: nil, message: message)
     }
 
     private func showIncorrectOldPhoneNumberAlert() {
-        let message = NSLocalizedString(
+        let message = OWSLocalizedString(
                         "CHANGE_PHONE_NUMBER_INCORRECT_OLD_PHONE_NUMBER_ALERT_MESSAGE",
                         comment: "Error indicating that the user's old phone number was not entered correctly.")
         OWSActionSheets.showActionSheet(title: nil, message: message)
     }
 
     private func showIdenticalPhoneNumbersAlert() {
-        let message = NSLocalizedString(
+        let message = OWSLocalizedString(
                         "CHANGE_PHONE_NUMBER_IDENTICAL_PHONE_NUMBERS_ALERT_MESSAGE",
                         comment: "Error indicating that the user's old and new phone numbers are identical.")
         OWSActionSheets.showActionSheet(title: nil, message: message)
@@ -347,7 +347,7 @@ private class ChangePhoneNumberValueViews: NSObject {
 
     let phoneNumberTextField: UITextField = {
         let field = UITextField()
-        field.font = UIFont.ows_dynamicTypeBodyClamped
+        field.font = UIFont.dynamicTypeBodyClamped
         field.textColor = Theme.primaryTextColor
         field.textAlignment = (CurrentAppContext().isRTL
                                ? .left
@@ -359,15 +359,9 @@ private class ChangePhoneNumberValueViews: NSObject {
         // autofill at the expense of a less appropriate keyboard, here's where it'd
         // be done. See Wisors comment here:
         // https://developer.apple.com/forums/thread/120703
-        if #available(iOS 14, *) {
-            field.keyboardType = .numberPad
-        } else if #available(iOS 13, *) {
-            field.keyboardType = .numberPad // .numbersAndPunctuation
-        } else {
-            field.keyboardType = .numberPad
-        }
+        field.keyboardType = .numberPad
 
-        field.placeholder = NSLocalizedString(
+        field.placeholder = OWSLocalizedString(
             "ONBOARDING_PHONE_NUMBER_PLACEHOLDER",
             comment: "Placeholder string for phone number field during registration")
 
@@ -376,16 +370,16 @@ private class ChangePhoneNumberValueViews: NSObject {
 
     private func applyPhoneNumberFormatting() {
         AssertIsOnMainThread()
-        ViewControllerUtils.reformatPhoneNumber(phoneNumberTextField, callingCode: callingCode)
+        TextFieldFormatting.reformatPhoneNumberTextField(phoneNumberTextField, callingCode: callingCode)
     }
 
     var sectionHeaderTitle: String {
         switch value {
         case .oldValue:
-            return NSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_OLD_PHONE_NUMBER_SECTION_TITLE",
+            return OWSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_OLD_PHONE_NUMBER_SECTION_TITLE",
                                      comment: "Title for the 'old phone number' section in the 'change phone number' settings.")
         case .newValue:
-            return NSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_NEW_PHONE_NUMBER_SECTION_TITLE",
+            return OWSLocalizedString("SETTINGS_CHANGE_PHONE_NUMBER_NEW_PHONE_NUMBER_SECTION_TITLE",
                                      comment: "Title for the 'new phone number' section in the 'change phone number' settings.")
         }
     }
@@ -453,7 +447,7 @@ extension ChangePhoneNumberValueViews: UITextFieldDelegate {
 
             // If ViewControllerUtils applied the edit on our behalf, inform UIKit
             // so the edit isn't applied twice.
-            let result = ViewControllerUtils.phoneNumber(
+            let result = TextFieldFormatting.phoneNumberTextField(
                 textField,
                 shouldChangeCharactersIn: range,
                 replacementString: string,

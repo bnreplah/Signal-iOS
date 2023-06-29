@@ -8,10 +8,15 @@ import Foundation
 @objc(SSKCreatePreKeysOperation)
 public class CreatePreKeysOperation: OWSOperation {
     private let identity: OWSIdentity
+    private let auth: ChatServiceAuth
 
-    @objc(initForIdentity:)
-    public init(for identity: OWSIdentity) {
+    @objc(initForIdentity:auth:)
+    public init(
+        for identity: OWSIdentity,
+        auth: ChatServiceAuth
+    ) {
         self.identity = identity
+        self.auth = auth
     }
 
     public override func run() {
@@ -23,7 +28,16 @@ public class CreatePreKeysOperation: OWSOperation {
             identityKeyPair = existingIdentityKeyPair
             isNewIdentityKey = false
         } else if tsAccountManager.isPrimaryDevice {
-            identityKeyPair = identityManager.generateNewIdentityKey(for: identity)
+            identityKeyPair = identityManager.generateNewIdentityKeyPair()
+
+            databaseStorage.write { transaction in
+                identityManager.storeIdentityKeyPair(
+                    identityKeyPair,
+                    for: identity,
+                    transaction: transaction
+                )
+            }
+
             isNewIdentityKey = true
         } else {
             Logger.warn("cannot create \(identity) pre-keys; missing identity key")
@@ -50,18 +64,20 @@ public class CreatePreKeysOperation: OWSOperation {
             }
             return self.messageProcessor.fetchingAndProcessingCompletePromise()
         }.then(on: DispatchQueue.global()) { () -> Promise<Void> in
-            self.accountServiceClient.setPreKeys(for: self.identity,
-                                                 identityKey: identityKey,
-                                                 signedPreKeyRecord: signedPreKeyRecord,
-                                                 preKeyRecords: preKeyRecords)
+            self.accountServiceClient.setPreKeys(
+                for: self.identity,
+                identityKey: identityKey,
+                signedPreKeyRecord: signedPreKeyRecord,
+                preKeyRecords: preKeyRecords,
+                auth: self.auth
+            )
         }.done {
-            signedPreKeyRecord.markAsAcceptedByService()
             self.databaseStorage.write { transaction in
-                signalProtocolStore.signedPreKeyStore.storeSignedPreKey(signedPreKeyRecord.id,
-                                                                        signedPreKeyRecord: signedPreKeyRecord,
-                                                                        transaction: transaction)
-                signalProtocolStore.signedPreKeyStore.setCurrentSignedPrekeyId(signedPreKeyRecord.id,
-                                                                               transaction: transaction)
+                signalProtocolStore.signedPreKeyStore.storeSignedPreKeyAsAcceptedAndCurrent(
+                    signedPreKeyId: signedPreKeyRecord.id,
+                    signedPreKeyRecord: signedPreKeyRecord,
+                    transaction: transaction
+                )
             }
 
             Logger.debug("done")

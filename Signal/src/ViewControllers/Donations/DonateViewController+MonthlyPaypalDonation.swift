@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import SignalMessaging
+import SignalUI
 
 extension DonateViewController {
     /// Start a monthly subscription using PayPal.
@@ -23,6 +23,8 @@ extension DonateViewController {
 
         Logger.info("[Donations] Starting monthly PayPal donation")
 
+        let badgesSnapshot = BadgeThanksSheet.currentProfileBadgesSnapshot()
+
         firstly(on: DispatchQueue.main) { () -> Promise<(Data, Paypal.SubscriptionAuthorizationParams)> in
             self.preparePaypalSubscriptionBehindActivityIndicator(
                 monthlyState: monthly,
@@ -32,16 +34,10 @@ extension DonateViewController {
             Logger.info("[Donations] Authorizing payment for new monthly subscription with PayPal")
 
             return firstly { () -> Promise<Paypal.MonthlyPaymentWebAuthApprovalParams> in
-                if #available(iOS 13, *) {
-                    return Paypal.presentExpectingApprovalParams(
-                        approvalUrl: authorizationParams.approvalUrl,
-                        withPresentationContext: self
-                    )
-                } else {
-                    return Paypal.presentExpectingApprovalParams(
-                        approvalUrl: authorizationParams.approvalUrl
-                    )
-                }
+                return Paypal.presentExpectingApprovalParams(
+                    approvalUrl: authorizationParams.approvalUrl,
+                    withPresentationContext: self
+                )
             }.map(on: DispatchQueue.sharedUserInitiated) { _ in
                 (subscriberId, authorizationParams.paymentMethodId)
             }
@@ -57,7 +53,8 @@ extension DonateViewController {
 
             self.didCompleteDonation(
                 badge: selectedSubscriptionLevel.badge,
-                thanksSheetType: .subscription
+                thanksSheetType: .subscription,
+                oldBadgesSnapshot: badgesSnapshot
             )
         }.catch(on: DispatchQueue.main) { [weak self] error in
             guard let self else { return }
@@ -99,7 +96,7 @@ extension DonateViewController {
                 if let existingSubscriberId = monthly.subscriberID, monthly.currentSubscription != nil {
                     Logger.info("[Donations] Cancelling existing subscription")
 
-                    return SubscriptionManager.cancelSubscription(for: existingSubscriberId)
+                    return SubscriptionManagerImpl.cancelSubscription(for: existingSubscriberId)
                 } else {
                     Logger.info("[Donations] No existing subscription to cancel")
 
@@ -108,7 +105,7 @@ extension DonateViewController {
             }.then(on: DispatchQueue.sharedUserInitiated) { () -> Promise<Data> in
                 Logger.info("[Donations] Preparing new monthly subscription with PayPal")
 
-                return SubscriptionManager.prepareNewSubscription(
+                return SubscriptionManagerImpl.prepareNewSubscription(
                     currencyCode: monthly.selectedCurrencyCode
                 )
             }.then(on: DispatchQueue.sharedUserInitiated) { subscriberId -> Promise<(Data, Paypal.SubscriptionAuthorizationParams)> in
@@ -139,7 +136,7 @@ extension DonateViewController {
         let finalizePromise: Promise<Void> = firstly { () -> Promise<Subscription> in
             Logger.info("[Donations] Finalizing new subscription for PayPal donation")
 
-            return SubscriptionManager.finalizeNewSubscription(
+            return SubscriptionManagerImpl.finalizeNewSubscription(
                 forSubscriberId: subscriberId,
                 withPaymentId: paymentId,
                 usingPaymentMethod: .paypal,

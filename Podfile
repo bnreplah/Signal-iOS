@@ -1,4 +1,4 @@
-platform :ios, '12.2'
+platform :ios, '13.0'
 
 use_frameworks!
 
@@ -13,8 +13,8 @@ pod 'SwiftProtobuf', ">= 1.14.0"
 pod 'SignalCoreKit', git: 'https://github.com/signalapp/SignalCoreKit', testspecs: ["Tests"]
 # pod 'SignalCoreKit', path: '../SignalCoreKit', testspecs: ["Tests"]
 
-ENV['LIBSIGNAL_FFI_PREBUILD_CHECKSUM'] = 'c798c480f626bf98c5c775dfb1250b80ee6ef767c0f70ff27902beedba4cd8ed'
-pod 'LibSignalClient', git: 'https://github.com/signalapp/libsignal-client.git', tag: 'v0.22.2', testspecs: ["Tests"]
+ENV['LIBSIGNAL_FFI_PREBUILD_CHECKSUM'] = '0a0b3df71b8064039eed32b15757280d29cc3ad2eece0b27dc66be24ae207a8c'
+pod 'LibSignalClient', git: 'https://github.com/signalapp/libsignal-client.git', tag: 'v0.27.0', testspecs: ["Tests"]
 # pod 'LibSignalClient', path: '../libsignal-client', testspecs: ["Tests"]
 
 pod 'Curve25519Kit', git: 'https://github.com/signalapp/Curve25519Kit', testspecs: ["Tests"], branch: 'feature/SignalClient-adoption'
@@ -23,17 +23,14 @@ pod 'Curve25519Kit', git: 'https://github.com/signalapp/Curve25519Kit', testspec
 pod 'blurhash', git: 'https://github.com/signalapp/blurhash', branch: 'signal-master'
 # pod 'blurhash', path: '../blurhash'
 
-ENV['RINGRTC_PREBUILD_CHECKSUM'] = '513e68f96fef4ba48f63f0d857ba6619087bda1e308fe83233d07928bb4bdb79'
-pod 'SignalRingRTC', git: 'https://github.com/signalapp/ringrtc', tag: 'v2.24.0', inhibit_warnings: true
+ENV['RINGRTC_PREBUILD_CHECKSUM'] = '32ba712dbec46ff2166ab1c1d54ced56b5ac8bf0dc6d172f82603f90cbeec001'
+pod 'SignalRingRTC', git: 'https://github.com/signalapp/ringrtc', tag: 'v2.28.1', inhibit_warnings: true
 # pod 'SignalRingRTC', path: '../ringrtc', testspecs: ["Tests"]
-
-pod 'SignalArgon2', git: 'https://github.com/signalapp/Argon2.git', submodules: true, testspecs: ["Tests"]
-# pod 'SignalArgon2', path: '../Argon2', testspecs: ["Tests"]
 
 pod 'GRDB.swift/SQLCipher'
 # pod 'GRDB.swift/SQLCipher', path: '../GRDB.swift'
 
-pod 'SQLCipher', ">= 4.0.1"
+pod 'SQLCipher', git: 'https://github.com/signalapp/sqlcipher.git', commit: '8ea0af7934e0107e4de8e96c8a7d5a95e2611eef'
 
 ###
 # forked third party pods
@@ -64,11 +61,8 @@ def ui_pods
   pod 'PureLayout', :inhibit_warnings => true
   pod 'lottie-ios', :inhibit_warnings => true
 
-  pod 'Starscream', git: 'https://github.com/signalapp/Starscream.git', branch: 'signal-release'
-  # pod 'Starscream', path: '../Starscream'
-
-  pod 'LibMobileCoin/CoreHTTP', git: 'https://github.com/signalapp/libmobilecoin-ios-artifacts.git', :commit => '586a60aa38eb7667ddb74b666c6bb6f7107288fc'
-  pod 'MobileCoin/CoreHTTP', git: 'https://github.com/mobilecoinofficial/MobileCoin-Swift.git', :tag => 'v4.0.0'
+  pod 'LibMobileCoin/CoreHTTP', git: 'https://github.com/signalapp/libmobilecoin-ios-artifacts', :commit => '5cd4f39a24d06708d1c19aced8384740689d7f61'
+  pod 'MobileCoin/CoreHTTP', git: 'https://github.com/mobilecoinofficial/MobileCoin-Swift', tag: 'v5.0.0'
 end
 
 target 'Signal' do
@@ -279,7 +273,10 @@ end
 
 # Workaround for RingRTC's weird cached artifacts, hopefully temporary
 def fix_ringrtc_project_symlink(installer)
-  installer.pods_project.reference_for_path(installer.sandbox.pod_dir('SignalRingRTC') + 'out/release/libringrtc/ringrtc.h').path = 'out/release/libringrtc/ringrtc.h'
+  ringrtc_header_ref = installer.pods_project.reference_for_path(installer.sandbox.pod_dir('SignalRingRTC') + 'out/release/libringrtc/ringrtc.h')
+  if ringrtc_header_ref.path.start_with?('../') || ringrtc_header_ref.path.start_with?('/') then
+    ringrtc_header_ref.path = 'out/release/libringrtc/ringrtc.h'
+  end
 end
 
 def copy_acknowledgements

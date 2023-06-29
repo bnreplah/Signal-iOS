@@ -54,7 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
         [SSKProtoSyncMessageMessageRequestResponse builder];
     messageRequestResponseBuilder.type = self.protoResponseType;
 
-    TSThread *_Nullable thread = [self threadWithTransaction:transaction];
+    TSThread *_Nullable thread = [self threadWithTx:transaction];
     if (!thread) {
         OWSFailDebug(@"Missing thread for message request response");
         return nil;
@@ -68,19 +68,10 @@ NS_ASSUME_NONNULL_BEGIN
         OWSAssertDebug([thread isKindOfClass:[TSContactThread class]]);
         TSContactThread *contactThread = (TSContactThread *)thread;
         messageRequestResponseBuilder.threadUuid = contactThread.contactAddress.uuidString;
-        messageRequestResponseBuilder.threadE164 = contactThread.contactAddress.phoneNumber;
-    }
-
-    NSError *error;
-    SSKProtoSyncMessageMessageRequestResponse *_Nullable messageRequestResponse =
-        [messageRequestResponseBuilder buildAndReturnError:&error];
-    if (error || !messageRequestResponse) {
-        OWSFailDebug(@"could not build protobuf: %@", error);
-        return nil;
     }
 
     SSKProtoSyncMessageBuilder *builder = [SSKProtoSyncMessage builder];
-    builder.messageRequestResponse = messageRequestResponse;
+    builder.messageRequestResponse = [messageRequestResponseBuilder buildInfallibly];
     return builder;
 }
 

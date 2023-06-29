@@ -34,10 +34,15 @@ class ShareMyUsernameSheetViewController: OWSTableSheetViewController {
 
     // MARK: - Init
 
-    private let shareableUsername: Usernames.ShareableUsername
+    private let username: String
+    private let usernameLink: Usernames.UsernameLink
 
-    init(shareableUsername: Usernames.ShareableUsername) {
-        self.shareableUsername = shareableUsername
+    init(
+        username: String,
+        usernameLink: Usernames.UsernameLink
+    ) {
+        self.username = username
+        self.usernameLink = usernameLink
     }
 
     required init() {
@@ -54,11 +59,11 @@ class ShareMyUsernameSheetViewController: OWSTableSheetViewController {
             let section = OWSTableSection()
 
             section.add(self.buildCopyAndDismissTableItem(
-                forCopyableValue: .string(value: shareableUsername.asString)
+                forCopyableValue: .string(value: username)
             ))
 
             section.add(self.buildCopyAndDismissTableItem(
-                forCopyableValue: .url(value: shareableUsername.asUrl)
+                forCopyableValue: .url(value: usernameLink.asUrl)
             ))
 
             return section
@@ -69,7 +74,7 @@ class ShareMyUsernameSheetViewController: OWSTableSheetViewController {
             let headerLabel: UILabel = {
                 let label = UILabel()
 
-                label.font = .ows_dynamicTypeSubheadlineClamped
+                label.font = .dynamicTypeSubheadlineClamped
                 label.textAlignment = .center
                 label.textColor = Theme.secondaryTextAndIconColor
                 label.numberOfLines = 0
@@ -106,14 +111,14 @@ class ShareMyUsernameSheetViewController: OWSTableSheetViewController {
             let section = OWSTableSection()
 
             section.add(.item(
-                icon: .settingsShareUsername,
+                icon: .buttonShare,
                 name: CommonStrings.shareButton,
                 accessibilityIdentifier: UIView.accessibilityIdentifier(in: self, name: "share_button"),
                 actionBlock: { [weak self] in
                     guard let self else { return }
 
                     AttachmentSharing.showShareUI(
-                        for: self.shareableUsername.asUrl,
+                        for: self.usernameLink.asUrl,
                         sender: self.view,
                         completion: { [weak self] in
                             guard let self else { return }
@@ -127,7 +132,7 @@ class ShareMyUsernameSheetViewController: OWSTableSheetViewController {
             return section
         }()
 
-        contents.addSections([
+        contents.add(sections: [
             copySection,
             shareSection
         ])
@@ -142,7 +147,7 @@ class ShareMyUsernameSheetViewController: OWSTableSheetViewController {
         forCopyableValue copyable: CopyableValue
     ) -> OWSTableItem {
         .item(
-            icon: .copy24,
+            icon: .buttonCopy,
             name: copyable.displayValue,
             maxNameLines: 2,
             accessibilityIdentifier: copyable.accessibilityIdentifier,

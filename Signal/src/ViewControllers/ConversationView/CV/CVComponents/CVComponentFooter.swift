@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import SignalMessaging
+import SignalUI
 
 public class CVComponentFooter: CVComponentBase, CVComponent {
 
@@ -21,6 +21,7 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
         let statusIndicator: StatusIndicator?
         let accessibilityLabel: String?
         let hasTapForMore: Bool
+        let wasEdited: Bool
 
         struct Expiration: Equatable {
             let expirationTimestamp: UInt64
@@ -39,6 +40,9 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
     }
     public var hasTapForMore: Bool {
         footerState.hasTapForMore
+    }
+    public var wasEdited: Bool {
+        footerState.wasEdited
     }
     private var expiration: State.Expiration? {
         footerState.expiration
@@ -124,6 +128,13 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
         } else {
             textColor = conversationStyle.bubbleSecondaryTextColor(isIncoming: isIncoming)
         }
+
+        let label = componentView.editedLabel
+        if wasEdited {
+            editedLabelConfig(textColor: textColor).applyForRendering(label: label)
+        }
+        innerViews.append(label)
+
         timestampLabelConfig(textColor: textColor).applyForRendering(label: timestampLabel)
         innerViews.append(timestampLabel)
 
@@ -190,14 +201,14 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
         }()
 
         if isPendingOutgoingMessage {
-            return NSLocalizedString("MESSAGE_STATUS_PENDING",
+            return OWSLocalizedString("MESSAGE_STATUS_PENDING",
                                      comment: "Label indicating that a message send was paused.")
         } else if isFailedOutgoingMessage {
             if wasSentToAnyRecipient {
-                return NSLocalizedString("MESSAGE_STATUS_PARTIALLY_SENT",
+                return OWSLocalizedString("MESSAGE_STATUS_PARTIALLY_SENT",
                                          comment: "Label indicating that a message was only sent to some recipients.")
             } else {
-                return NSLocalizedString("MESSAGE_STATUS_SEND_FAILED",
+                return OWSLocalizedString("MESSAGE_STATUS_SEND_FAILED",
                                          comment: "Label indicating that a message failed to send.")
             }
         } else {
@@ -249,22 +260,51 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
         }
 
         var expiration: State.Expiration?
-        if let message = interaction as? TSMessage,
-           message.hasPerConversationExpiration {
-            expiration = State.Expiration(expirationTimestamp: message.expiresAt,
-                                          expiresInSeconds: message.expiresInSeconds)
+        var wasEdited: Bool = false
+        if let message = interaction as? TSMessage {
+            if message.hasPerConversationExpiration {
+                expiration = State.Expiration(
+                    expirationTimestamp: message.expiresAt,
+                    expiresInSeconds: message.expiresInSeconds
+                )
+            }
+
+            if !message.wasRemotelyDeleted {
+                switch message.editState {
+                case .latestRevision, .pastRevision:
+                    wasEdited = true
+                case .none:
+                    wasEdited = false
+                }
+            }
         }
 
-        return State(timestampText: timestampText,
-                     statusIndicator: statusIndicator,
-                     accessibilityLabel: accessibilityLabel,
-                     hasTapForMore: hasTapForMore,
-                     expiration: expiration)
+        return State(
+            timestampText: timestampText,
+            statusIndicator: statusIndicator,
+            accessibilityLabel: accessibilityLabel,
+            hasTapForMore: hasTapForMore,
+            wasEdited: wasEdited,
+            expiration: expiration
+        )
+    }
+
+    private func editedLabelConfig(textColor: UIColor) -> CVLabelConfig {
+        let text = OWSLocalizedString(
+            "MESSAGE_STATUS_EDITED",
+            comment: "status meesage for edited messages"
+        )
+
+        return CVLabelConfig(
+            text: text,
+            font: .dynamicTypeCaption1,
+            textColor: textColor
+        )
     }
 
     private func timestampLabelConfig(textColor: UIColor) -> CVLabelConfig {
         return CVLabelConfig(text: timestampText,
-                             font: .ows_dynamicTypeCaption1,
+                             font: .dynamicTypeCaption1,
                              textColor: textColor)
     }
 
@@ -276,12 +316,12 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
             owsFailDebug("Invalid interaction.")
             return nil
         }
-        let text = NSLocalizedString("CONVERSATION_VIEW_OVERSIZE_TEXT_TAP_FOR_MORE",
+        let text = OWSLocalizedString("CONVERSATION_VIEW_OVERSIZE_TEXT_TAP_FOR_MORE",
                                      comment: "Indicator on truncated text messages that they can be tapped to see the entire text message.")
         return CVLabelConfig(text: text,
-                             font: UIFont.ows_dynamicTypeSubheadlineClamped.ows_semibold,
+                             font: UIFont.dynamicTypeSubheadlineClamped.semibold(),
                              textColor: conversationStyle.bubbleReadMoreTextColor(message: message),
-                             textAlignment: UIView.textAlignmentUnnatural())
+                             textAlignment: .trailing)
     }
 
     private let tapForMoreHeightFactor: CGFloat = 1.25
@@ -325,6 +365,15 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
         // We always use a stretching spacer.
         outerSubviewInfos.append(ManualStackSubviewInfo.empty)
 
+        let editedLabelConfig = self.editedLabelConfig(textColor: .black)
+        let editedLabelSize = wasEdited
+            ? CVText.measureLabel(
+                config: editedLabelConfig,
+                maxWidth: maxWidth
+            )
+            : .zero
+        innerSubviewInfos.append(editedLabelSize.asManualSubviewInfo(hasFixedWidth: true))
+
         // The color doesn't matter for measurement.
         let timestampLabelConfig = self.timestampLabelConfig(textColor: UIColor.black)
         let timestampLabelSize = CVText.measureLabel(config: timestampLabelConfig,
@@ -363,12 +412,31 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
                                    componentDelegate: CVComponentDelegate,
                                    componentView: CVComponentView,
                                    renderItem: CVRenderItem) -> Bool {
-        guard hasTapForMore else {
+
+        guard let componentView = componentView as? CVComponentViewFooter else {
+            owsFailDebug("Unexpected componentView.")
             return false
         }
-        let itemViewModel = CVItemViewModelImpl(renderItem: renderItem)
-        componentDelegate.didTapTruncatedTextMessage(itemViewModel)
-        return true
+
+        if hasTapForMore {
+            let readMoreLabel = componentView.tapForMoreLabel
+            let location = sender.location(in: readMoreLabel)
+            if readMoreLabel.bounds.contains(location) {
+                let itemViewModel = CVItemViewModelImpl(renderItem: renderItem)
+                componentDelegate.didTapTruncatedTextMessage(itemViewModel)
+                return true
+            }
+        }
+        if wasEdited {
+            let editedLabel = componentView.editedLabel
+            let location = sender.location(in: editedLabel)
+            if editedLabel.bounds.contains(location) {
+                let itemViewModel = CVItemViewModelImpl(renderItem: renderItem)
+                componentDelegate.didTapShowEditHistory(itemViewModel)
+                return true
+            }
+        }
+        return false
     }
 
     // MARK: -
@@ -380,6 +448,7 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
         fileprivate let outerStack = ManualStackView(name: "footer.outerStack")
         fileprivate let innerStack = ManualStackViewWithLayer(name: "footer.innerStack")
         fileprivate let tapForMoreLabel = CVLabel()
+        fileprivate let editedLabel = CVLabel()
         fileprivate let timestampLabel = CVLabel()
         fileprivate let statusIndicatorImageView = CVImageView()
         fileprivate let messageTimerView = MessageTimerView()
@@ -392,7 +461,7 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
         }
 
         override required init() {
-            timestampLabel.textAlignment = UIView.textAlignmentUnnatural()
+            timestampLabel.textAlignment = .trailing
         }
 
         public func setIsCellVisible(_ isCellVisible: Bool) {}
@@ -403,6 +472,7 @@ public class CVComponentFooter: CVComponentBase, CVComponent {
             innerStack.backgroundColor = nil
 
             tapForMoreLabel.text = nil
+            editedLabel.text = nil
             timestampLabel.text = nil
             statusIndicatorImageView.image = nil
 

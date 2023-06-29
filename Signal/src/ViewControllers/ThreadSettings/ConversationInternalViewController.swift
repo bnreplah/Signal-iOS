@@ -3,10 +3,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import SignalServiceKit
+import SignalUI
 
-@objc
 public class ConversationInternalViewController: OWSTableViewController2 {
 
     private let thread: TSThread
@@ -85,7 +84,7 @@ public class ConversationInternalViewController: OWSTableViewController2 {
                                       value: thread.uniqueId,
                                       accessibilityIdentifier: "thread.uniqueId"))
         }
-        contents.addSection(infoSection)
+        contents.add(infoSection)
 
         if let contactThread = thread as? TSContactThread {
             let address = contactThread.contactAddress
@@ -96,7 +95,7 @@ public class ConversationInternalViewController: OWSTableViewController2 {
                 ProfileFetcherJob.fetchProfile(address: address, ignoreThrottling: true)
             })
 
-            contents.addSection(actionSection)
+            contents.add(actionSection)
         }
 
         self.contents = contents

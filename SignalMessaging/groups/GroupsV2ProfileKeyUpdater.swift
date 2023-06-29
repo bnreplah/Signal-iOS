@@ -31,7 +31,7 @@ class GroupsV2ProfileKeyUpdater: Dependencies {
     // MARK: -
 
     @objc
-    func didBecomeActive() {
+    private func didBecomeActive() {
         AssertIsOnMainThread()
 
         AppReadiness.runNowOrWhenAppDidBecomeReadyAsync {
@@ -40,7 +40,7 @@ class GroupsV2ProfileKeyUpdater: Dependencies {
     }
 
     @objc
-    func reachabilityChanged() {
+    private func reachabilityChanged() {
         AssertIsOnMainThread()
 
         AppReadiness.runNowOrWhenAppDidBecomeReadyAsync {
@@ -57,7 +57,6 @@ class GroupsV2ProfileKeyUpdater: Dependencies {
         return groupId.hexadecimalString
     }
 
-    @objc
     public func updateLocalProfileKeyInGroup(groupId: Data, transaction: SDSAnyWriteTransaction) {
         guard let groupThread = TSGroupThread.fetch(groupId: groupId, transaction: transaction) else {
             owsFailDebug("Missing groupThread.")
@@ -110,12 +109,11 @@ class GroupsV2ProfileKeyUpdater: Dependencies {
         self.keyValueStore.setData(groupId, key: key, transaction: transaction)
     }
 
-    @objc
     public func processProfileKeyUpdates() {
         tryToUpdateNext()
     }
 
-    private let serialQueue = DispatchQueue(label: "GroupsV2ProfileKeyUpdater", qos: .background)
+    private let serialQueue = DispatchQueue(label: "org.signal.groups.profile-key-updater", qos: .background)
 
     // This property should only be accessed on serialQueue.
     private var isUpdating = false

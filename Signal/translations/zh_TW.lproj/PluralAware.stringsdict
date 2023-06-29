@@ -249,20 +249,6 @@
 			<string>已達到 %1$d 個成員的最大群組數量。</string>
 		</dict>
 	</dict>
-	<key>EXPIRATION_WARNING_%d</key>
-	<dict>
-		<key>NSStringLocalizedFormatKey</key>
-		<string>%#@text@</string>
-		<key>text</key>
-		<dict>
-			<key>NSStringFormatSpecTypeKey</key>
-			<string>NSStringPluralRuleType</string>
-			<key>NSStringFormatValueTypeKey</key>
-			<string>d</string>
-			<key>other</key>
-			<string>你的 Signal 版本將在 %1$d 天後過期。點擊以更新到最新版本。</string>
-		</dict>
-	</dict>
 	<key>FORWARD_MESSAGE_FIRST_FORWARD_PROCEED_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -275,20 +261,6 @@
 			<string>d</string>
 			<key>other</key>
 			<string>傳送 %1$d 則訊息</string>
-		</dict>
-	</dict>
-	<key>GROUPS_LEGACY_GROUP_DROPPED_MEMBERS_BANNER_%d</key>
-	<dict>
-		<key>NSStringLocalizedFormatKey</key>
-		<string>%#@text@</string>
-		<key>text</key>
-		<dict>
-			<key>NSStringFormatSpecTypeKey</key>
-			<string>NSStringPluralRuleType</string>
-			<key>NSStringFormatValueTypeKey</key>
-			<string>d</string>
-			<key>other</key>
-			<string>無法將 %1$d 位成員重新新增到新群組。 你想現在新增他們嗎？</string>
 		</dict>
 	</dict>
 	<key>GROUPS_TOO_MANY_MEMBERS_ALERT_MESSAGE_%d</key>
@@ -501,20 +473,6 @@
 			<string>%1$d 位成員</string>
 		</dict>
 	</dict>
-	<key>GROUP_REMOTE_USER_INVITED_%d</key>
-	<dict>
-		<key>NSStringLocalizedFormatKey</key>
-		<string>%#@text@</string>
-		<key>text</key>
-		<dict>
-			<key>NSStringFormatSpecTypeKey</key>
-			<string>NSStringPluralRuleType</string>
-			<key>NSStringFormatValueTypeKey</key>
-			<string>d</string>
-			<key>other</key>
-			<string>%1$d 個人已被邀請到此群組。</string>
-		</dict>
-	</dict>
 	<key>GROUP_REMOTE_USER_INVITED_BY_REMOTE_USER_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -585,34 +543,6 @@
 			<string>群組限動 · %1$d 位瀏覽者</string>
 		</dict>
 	</dict>
-	<key>GROUP_WAS_MIGRATED_USERS_DROPPED_%d</key>
-	<dict>
-		<key>NSStringLocalizedFormatKey</key>
-		<string>%#@text@</string>
-		<key>text</key>
-		<dict>
-			<key>NSStringFormatSpecTypeKey</key>
-			<string>NSStringPluralRuleType</string>
-			<key>NSStringFormatValueTypeKey</key>
-			<string>d</string>
-			<key>other</key>
-			<string>%1$d 個成員無法被加入此新群組，及已經被從此群組中移出。</string>
-		</dict>
-	</dict>
-	<key>GROUP_WAS_MIGRATED_USERS_INVITED_%d</key>
-	<dict>
-		<key>NSStringLocalizedFormatKey</key>
-		<string>%#@text@</string>
-		<key>text</key>
-		<dict>
-			<key>NSStringFormatSpecTypeKey</key>
-			<string>NSStringPluralRuleType</string>
-			<key>NSStringFormatValueTypeKey</key>
-			<string>d</string>
-			<key>other</key>
-			<string>%1$d 個成員無法被加入此新群組及已經被邀請加入。</string>
-		</dict>
-	</dict>
 	<key>IMAGE_PICKER_CAN_SELECT_NO_MORE_TOAST_%d</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -641,7 +571,7 @@
 			<string>%1$d 個相同群組</string>
 		</dict>
 	</dict>
-	<key>MEDIA_GALLERY_DELETE_MESSAGES_%d</key>
+	<key>MEDIA_GALLERY_DELETE_MEDIA_TITLE</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
 		<string>%#@text@</string>
@@ -652,7 +582,21 @@
 			<key>NSStringFormatValueTypeKey</key>
 			<string>d</string>
 			<key>other</key>
-			<string>刪除 %1$d 則訊息</string>
+			<string>Delete %1$d Items?</string>
+		</dict>
+	</dict>
+	<key>MEDIA_GALLERY_DELETE_MEDIA_TOAST</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>other</key>
+			<string>%1$d items deleted</string>
 		</dict>
 	</dict>
 	<key>MEDIA_GALLERY_ITEM_IMAGE_COUNT_%d</key>
@@ -681,6 +625,20 @@
 			<string>d</string>
 			<key>other</key>
 			<string>%1$d 個項目</string>
+		</dict>
+	</dict>
+	<key>MEDIA_PAGE_FORWARD_MEDIA_CONFIRM_TITLE_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>other</key>
+			<string>轉寄%1$d</string>
 		</dict>
 	</dict>
 	<key>MESSAGES_VIEW_GROUP_N_MEMBERS_BLOCKED_%d</key>
@@ -947,6 +905,20 @@
 			<string>d</string>
 			<key>other</key>
 			<string>你還有 %1$d 次嘗試。 如果嘗試次數用完，你的帳號將被鎖定。 在 7 天不能使用，你可以在沒有 PIN 碼的情況下重新註冊。 你的帳號將被抹除並刪除所有內容。</string>
+		</dict>
+	</dict>
+	<key>REREGISTER_INVALID_PIN_ATTEMPT_COUNT_%d</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@text@</string>
+		<key>text</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>other</key>
+			<string>%1$d 次嘗試</string>
 		</dict>
 	</dict>
 	<key>STORIES_SHARESHEET_PARTIAL_SEND_SUBTITLE_%d</key>

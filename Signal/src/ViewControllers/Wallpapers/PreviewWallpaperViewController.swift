@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import SignalMessaging
+import SignalUI
 
 protocol PreviewWallpaperDelegate: AnyObject {
     func previewWallpaperDidCancel(_ vc: PreviewWallpaperViewController)
@@ -113,7 +113,7 @@ class PreviewWallpaperViewController: UIViewController {
         super.viewDidLoad()
 
         navigationItem.hidesBackButton = true
-        title = NSLocalizedString("WALLPAPER_PREVIEW_TITLE", comment: "Title for the wallpaper preview view.")
+        title = OWSLocalizedString("WALLPAPER_PREVIEW_TITLE", comment: "Title for the wallpaper preview view.")
     }
 
     func setCurrentWallpaperAndDismiss() {
@@ -186,13 +186,13 @@ class PreviewWallpaperViewController: UIViewController {
     func buildMockConversationModel() -> MockConversationView.MockModel {
         let outgoingText: String = {
             guard let thread = thread else {
-                return NSLocalizedString(
+                return OWSLocalizedString(
                     "WALLPAPER_PREVIEW_OUTGOING_MESSAGE_ALL_CHATS",
                     comment: "The outgoing bubble text when setting a wallpaper for all chats."
                 )
             }
 
-            let formatString = NSLocalizedString(
+            let formatString = OWSLocalizedString(
                 "WALLPAPER_PREVIEW_OUTGOING_MESSAGE_FORMAT",
                 comment: "The outgoing bubble text when setting a wallpaper for specific chat. Embeds {{chat name}}"
             )
@@ -203,12 +203,12 @@ class PreviewWallpaperViewController: UIViewController {
         let incomingText: String
         switch mode {
         case .photo:
-            incomingText = NSLocalizedString(
+            incomingText = OWSLocalizedString(
                 "WALLPAPER_PREVIEW_INCOMING_MESSAGE_PHOTO",
                 comment: "The incoming bubble text when setting a photo"
             )
         case .preset:
-            incomingText = NSLocalizedString(
+            incomingText = OWSLocalizedString(
                 "WALLPAPER_PREVIEW_INCOMING_MESSAGE_PRESET",
                 comment: "The incoming bubble text when setting a preset"
             )
@@ -512,9 +512,9 @@ class BlurButton: UIButton {
         checkImageView.contentMode = .scaleAspectFit
         checkImageView.isUserInteractionEnabled = false
 
-        label.font = .ows_semiboldFont(withSize: 14)
+        label.font = .semiboldFont(ofSize: 14)
         label.textColor = .white
-        label.text = NSLocalizedString("WALLPAPER_PREVIEW_BLUR_BUTTON",
+        label.text = OWSLocalizedString("WALLPAPER_PREVIEW_BLUR_BUTTON",
                                        comment: "Blur button on wallpaper preview.")
         addSubview(label)
         label.autoPinHeightToSuperviewMargins()
@@ -537,13 +537,15 @@ class BlurButton: UIButton {
     override var isSelected: Bool {
         didSet {
             UIView.transition(with: checkImageView, duration: 0.15, options: .transitionCrossDissolve) {
-                self.checkImageView.image = self.isSelected ? #imageLiteral(resourceName: "check-circle-filled-16") : #imageLiteral(resourceName: "circle-outline-16")
+                self.checkImageView.image = self.isSelected
+                    ? UIImage(imageLiteralResourceName: "check-circle-fill-compact")
+                    : UIImage(imageLiteralResourceName: "circle-compact")
             } completion: { _ in }
         }
     }
 
     @objc
-    func didTap() {
+    private func didTap() {
         isSelected = !isSelected
         action(isSelected)
     }

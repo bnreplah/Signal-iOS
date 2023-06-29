@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import UIKit
+import SignalServiceKit
+import SignalUI
 
-@objc
 public class Deprecated_OnboardingTransferChoiceViewController: Deprecated_OnboardingBaseViewController {
 
     public override var primaryLayoutMargins: UIEdgeInsets {
@@ -35,7 +35,7 @@ public class Deprecated_OnboardingTransferChoiceViewController: Deprecated_Onboa
         view.backgroundColor = Theme.backgroundColor
 
         let titleLabel = self.createTitleLabel(
-            text: NSLocalizedString("DEVICE_TRANSFER_CHOICE_TITLE",
+            text: OWSLocalizedString("DEVICE_TRANSFER_CHOICE_TITLE",
                                     comment: "The title for the device transfer 'choice' view")
         )
         titleLabel.accessibilityIdentifier = "onboarding.transferChoice." + "titleLabel"
@@ -47,30 +47,30 @@ public class Deprecated_OnboardingTransferChoiceViewController: Deprecated_Onboa
         let registerBody: String
         switch onboardingController.onboardingMode {
         case .provisioning:
-            explanationText = NSLocalizedString("DEVICE_TRANSFER_CHOICE_LINKED_EXPLANATION",
+            explanationText = OWSLocalizedString("DEVICE_TRANSFER_CHOICE_LINKED_EXPLANATION",
                                                 comment: "The explanation for the device transfer 'choice' view when linking a device")
 
-            transferTitle = NSLocalizedString("DEVICE_TRANSFER_CHOICE_TRANSFER_LINKED_TITLE",
+            transferTitle = OWSLocalizedString("DEVICE_TRANSFER_CHOICE_TRANSFER_LINKED_TITLE",
                                               comment: "The title for the device transfer 'choice' view 'transfer' option when linking a device")
-            transferBody = NSLocalizedString("DEVICE_TRANSFER_CHOICE_TRANSFER_LINKED_BODY",
+            transferBody = OWSLocalizedString("DEVICE_TRANSFER_CHOICE_TRANSFER_LINKED_BODY",
                                              comment: "The body for the device transfer 'choice' view 'transfer' option when linking a device")
 
-            registerTitle = NSLocalizedString("DEVICE_TRANSFER_CHOICE_REGISTER_LINKED_TITLE",
+            registerTitle = OWSLocalizedString("DEVICE_TRANSFER_CHOICE_REGISTER_LINKED_TITLE",
                                               comment: "The title for the device transfer 'choice' view 'register' option when linking a device")
-            registerBody = NSLocalizedString("DEVICE_TRANSFER_CHOICE_REGISTER_LINKED_BODY",
+            registerBody = OWSLocalizedString("DEVICE_TRANSFER_CHOICE_REGISTER_LINKED_BODY",
                                              comment: "The body for the device transfer 'choice' view 'register' option when linking a device")
         case .registering:
-            explanationText = NSLocalizedString("DEVICE_TRANSFER_CHOICE_EXPLANATION",
+            explanationText = OWSLocalizedString("DEVICE_TRANSFER_CHOICE_EXPLANATION",
                                                 comment: "The explanation for the device transfer 'choice' view")
 
-            transferTitle = NSLocalizedString("DEVICE_TRANSFER_CHOICE_TRANSFER_TITLE",
+            transferTitle = OWSLocalizedString("DEVICE_TRANSFER_CHOICE_TRANSFER_TITLE",
                                               comment: "The title for the device transfer 'choice' view 'transfer' option")
-            transferBody = NSLocalizedString("DEVICE_TRANSFER_CHOICE_TRANSFER_BODY",
+            transferBody = OWSLocalizedString("DEVICE_TRANSFER_CHOICE_TRANSFER_BODY",
                                              comment: "The body for the device transfer 'choice' view 'transfer' option")
 
-            registerTitle = NSLocalizedString("DEVICE_TRANSFER_CHOICE_REGISTER_TITLE",
+            registerTitle = OWSLocalizedString("DEVICE_TRANSFER_CHOICE_REGISTER_TITLE",
                                               comment: "The title for the device transfer 'choice' view 'register' option")
-            registerBody = NSLocalizedString("DEVICE_TRANSFER_CHOICE_REGISTER_BODY",
+            registerBody = OWSLocalizedString("DEVICE_TRANSFER_CHOICE_REGISTER_BODY",
                                              comment: "The body for the device transfer 'choice' view 'register' option")
         }
 
@@ -78,7 +78,7 @@ public class Deprecated_OnboardingTransferChoiceViewController: Deprecated_Onboa
         explanationLabel.accessibilityIdentifier = "onboarding.transferChoice." + "explanationLabel"
 
         let warningLabel = self.createExplanationLabel(
-            explanationText: NSLocalizedString("DEVICE_TRANSFER_CHOICE_WARNING",
+            explanationText: OWSLocalizedString("DEVICE_TRANSFER_CHOICE_WARNING",
                                                comment: "A warning for the device transfer 'choice' view indicating you can only have one device registered with your number")
         )
         warningLabel.accessibilityIdentifier = "onboarding.transferChoice." + "warningLabel"
@@ -159,14 +159,14 @@ public class Deprecated_OnboardingTransferChoiceViewController: Deprecated_Onboa
         titleLabel.text = title
         titleLabel.numberOfLines = 0
         titleLabel.lineBreakMode = .byWordWrapping
-        titleLabel.font = UIFont.ows_dynamicTypeBody.ows_semibold
+        titleLabel.font = UIFont.dynamicTypeBody.semibold()
         titleLabel.textColor = Theme.primaryTextColor
 
         let bodyLabel = UILabel()
         bodyLabel.text = body
         bodyLabel.numberOfLines = 0
         bodyLabel.lineBreakMode = .byWordWrapping
-        bodyLabel.font = .ows_dynamicTypeBody2
+        bodyLabel.font = .dynamicTypeBody2
         bodyLabel.textColor = Theme.secondaryTextAndIconColor
 
         let topSpacer = UIView.vStretchingSpacer()
@@ -185,11 +185,9 @@ public class Deprecated_OnboardingTransferChoiceViewController: Deprecated_Onboa
 
         // Disclosure Indicator
 
-        let disclosureIconName = CurrentAppContext().isRTL ? "chevron-left-20" : "chevron-right-20"
-
         let disclosureContainer = UIView()
         let disclosureView = UIImageView()
-        disclosureView.setTemplateImageName(disclosureIconName, tintColor: Theme.secondaryTextAndIconColor)
+        disclosureView.setTemplateImage(UIImage(imageLiteralResourceName: "chevron-right-20"), tintColor: Theme.secondaryTextAndIconColor)
         disclosureView.contentMode = .scaleAspectFit
         disclosureContainer.addSubview(disclosureView)
         disclosureView.autoPinEdgesToSuperviewEdges()
@@ -217,7 +215,7 @@ public class Deprecated_OnboardingTransferChoiceViewController: Deprecated_Onboa
     // MARK: - Events
 
     @objc
-    func didSelectTransfer() {
+    private func didSelectTransfer() {
         Logger.info("")
 
         switch onboardingController.onboardingMode {
@@ -230,7 +228,7 @@ public class Deprecated_OnboardingTransferChoiceViewController: Deprecated_Onboa
     }
 
     @objc
-    func didSelectRegister() {
+    private func didSelectRegister() {
         Logger.info("")
 
         switch onboardingController.onboardingMode {

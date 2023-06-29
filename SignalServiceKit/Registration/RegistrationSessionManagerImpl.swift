@@ -4,12 +4,13 @@
 //
 
 import Foundation
+import CoreTelephony
 
 public class RegistrationSessionManagerImpl: RegistrationSessionManager {
 
     private let dateProvider: DateProvider
     private let db: DB
-    private let kvStore: KeyValueStoreProtocol
+    private let kvStore: KeyValueStore
     private let schedulers: Schedulers
     private let signalService: OWSSignalServiceProtocol
 
@@ -34,7 +35,7 @@ public class RegistrationSessionManagerImpl: RegistrationSessionManager {
         return restoreSession(forE164: nil)
     }
 
-    public func beginOrRestoreSession(e164: String, apnsToken: String?) -> Guarantee<Registration.BeginSessionResponse> {
+    public func beginOrRestoreSession(e164: E164, apnsToken: String?) -> Guarantee<Registration.BeginSessionResponse> {
         // Verify the session is still valid.
         return restoreSession(forE164: e164)
             .then(on: schedulers.sync) { [weak self, db, schedulers] restoredSession in
@@ -44,7 +45,15 @@ public class RegistrationSessionManagerImpl: RegistrationSessionManager {
                 guard let restoredSession, restoredSession.e164 == e164 else {
                     // We only keep one session at a time, wipe any if we change the e164.
                     db.write { self.clearPersistedSession($0) }
-                    return self.makeBeginSessionRequest(e164: e164, apnsToken: apnsToken)
+
+                    let (mcc, mnc) = Self.getMccMnc()
+
+                    return self.makeBeginSessionRequest(
+                        e164: e164,
+                        apnsToken: apnsToken,
+                        mcc: mcc,
+                        mnc: mnc
+                    )
                         .map(on: schedulers.sync) { [weak self] in
                             self?.persistSessionFromResponse($0) ?? $0
                         }
@@ -71,8 +80,8 @@ public class RegistrationSessionManagerImpl: RegistrationSessionManager {
             .map(on: schedulers.sync) { [weak self] in self?.persistSessionFromResponse($0) ?? $0 }
     }
 
-    public func completeSession() {
-        db.write { self.clearPersistedSession($0) }
+    public func clearPersistedSession(_ transaction: DBWriteTransaction) {
+        kvStore.removeValue(forKey: KvStore.sessionKey, transaction: transaction)
     }
 
     // MARK: - Session persistence
@@ -88,10 +97,6 @@ public class RegistrationSessionManagerImpl: RegistrationSessionManager {
         } catch {
             owsFailDebug("Unable to encode session; will not be recoverable after app relaunch.")
         }
-    }
-
-    private func clearPersistedSession(_ transaction: DBWriteTransaction) {
-        kvStore.removeValue(forKey: KvStore.sessionKey, transaction: transaction)
     }
 
     private func getPersistedSession(_ transaction: DBReadTransaction) -> RegistrationSession? {
@@ -142,11 +147,27 @@ public class RegistrationSessionManagerImpl: RegistrationSessionManager {
         return response
     }
 
+    // MARK: - MCC/MNC
+
+    private static func getMccMnc() -> (mcc: String?, mnc: String?) {
+        guard
+            let providers = CTTelephonyNetworkInfo().serviceSubscriberCellularProviders,
+            let provider = providers.values.first
+        else {
+            Logger.info("Unable to get telephony info for mcc/mnc.")
+            return (nil, nil)
+        }
+        if providers.values.count > 1 {
+            Logger.info("Multiple telephony providers found; using the first for mcc/mnc.")
+        }
+        return (provider.mobileCountryCode, provider.mobileNetworkCode)
+    }
+
     // MARK: - Requests
 
     // TODO: make this and other methods resilient to transient network failures by adding
     // basic retrying logic.
-    private func restoreSession(forE164 e164: String?) -> Guarantee<RegistrationSession?> {
+    private func restoreSession(forE164 e164: E164?) -> Guarantee<RegistrationSession?> {
         guard let existingSession = db.read(block: { self.getPersistedSession($0) }) else {
             return .value(nil)
         }
@@ -173,8 +194,18 @@ public class RegistrationSessionManagerImpl: RegistrationSessionManager {
 
     // MARK: Begin Session
 
-    private func makeBeginSessionRequest(e164: String, apnsToken: String?) -> Guarantee<Registration.BeginSessionResponse> {
-        let request = RegistrationRequestFactory.beginSessionRequest(e164: e164, pushToken: apnsToken)
+    private func makeBeginSessionRequest(
+        e164: E164,
+        apnsToken: String?,
+        mcc: String?,
+        mnc: String?
+    ) -> Guarantee<Registration.BeginSessionResponse> {
+        let request = RegistrationRequestFactory.beginSessionRequest(
+            e164: e164,
+            pushToken: apnsToken,
+            mcc: mcc,
+            mnc: mnc
+        )
         return makeRequest(
             request,
             e164: e164,
@@ -185,7 +216,7 @@ public class RegistrationSessionManagerImpl: RegistrationSessionManager {
     }
 
     private func handleBeginSessionResponse(
-        forE164 e164: String,
+        forE164 e164: E164,
         statusCode: Int,
         retryAfterHeader: String?,
         bodyData: Data?
@@ -424,7 +455,7 @@ public class RegistrationSessionManagerImpl: RegistrationSessionManager {
         /// This session is known to be invalid or timed out.
         /// It should be thrown away and another session started.
         case sessionInvalid
-        /// Some other error occured; an error might be shown to the user
+        /// Some other error occurred; an error might be shown to the user
         /// but the session shouldn't be discarded.
         case genericError
     }
@@ -484,7 +515,7 @@ public class RegistrationSessionManagerImpl: RegistrationSessionManager {
 
     private func registrationSession(
         fromResponseBody bodyData: Data?,
-        e164: String
+        e164: E164
     ) -> RegistrationSession? {
         guard let bodyData else {
             Logger.warn("Got empty registration session response")
@@ -509,6 +540,19 @@ public class RegistrationSessionManagerImpl: RegistrationSessionManager {
             Logger.warn("Unable to parse registration session from response")
             return nil
         }
+        let reasonString: String = {
+            switch failure.reason {
+            case .none, .unknown:
+                return "unknown"
+            case .providerRejected:
+                return "provider rejected"
+            case .providerUnavailable:
+                return "provider unavailable"
+            case .illegalArgument:
+                return "illegal argument (rejected number)"
+            }
+        }()
+        Logger.error("Sending verification code failure from service provider. Permanent:\(failure.permanentFailure) Reason:\(reasonString)")
         let localReason: Registration.ServerFailureResponse.Reason?
         switch failure.reason {
         case .unknown, .none:
@@ -529,8 +573,8 @@ public class RegistrationSessionManagerImpl: RegistrationSessionManager {
 
     private func makeRequest<ResponseType>(
         _ request: TSRequest,
-        e164: String,
-        handler: @escaping (_ e164: String, _ statusCode: Int, _ retryAfterHeader: String?, _ bodyData: Data?) -> ResponseType,
+        e164: E164,
+        handler: @escaping (_ e164: E164, _ statusCode: Int, _ retryAfterHeader: String?, _ bodyData: Data?) -> ResponseType,
         fallbackError: ResponseType,
         networkFailureError: ResponseType
     ) -> Guarantee<ResponseType> {
@@ -580,7 +624,7 @@ public class RegistrationSessionManagerImpl: RegistrationSessionManager {
 fileprivate extension RegistrationServiceResponses.RegistrationSession {
 
     func toLocalSession(
-        forE164 e164: String,
+        forE164 e164: E164,
         receivedAt: Date
     ) -> RegistrationSession {
         let mappedChallenges = requestedInformation.compactMap(\.asLocalChallenge)

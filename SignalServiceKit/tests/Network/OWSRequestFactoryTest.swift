@@ -6,7 +6,7 @@
 import XCTest
 import SignalServiceKit
 
-class OWSRequestFactoryTest: SSKBaseTestSwift {
+class OWSRequestFactoryTest: XCTestCase {
     private func getUdAccessKey() throws -> SMKUDAccessKey {
         let profileKey = Data(count: Int(kAES256_KeyByteLength))
         let result = try? SMKUDAccessKey(profileKey: profileKey)
@@ -170,7 +170,6 @@ class OWSRequestFactoryTest: SSKBaseTestSwift {
         XCTAssertEqual(request.url?.path, "v1/subscription/_4A")
         XCTAssertEqual(request.httpMethod, "PUT")
         XCTAssertFalse(request.shouldHaveAuthorizationHeaders)
-        XCTAssertTrue(request.shouldRedactUrlInLogs)
     }
 
     func testDeleteSubscriberID() {
@@ -179,7 +178,18 @@ class OWSRequestFactoryTest: SSKBaseTestSwift {
         XCTAssertEqual(request.url?.path, "v1/subscription/_4A")
         XCTAssertEqual(request.httpMethod, "DELETE")
         XCTAssertFalse(request.shouldHaveAuthorizationHeaders)
-        XCTAssertTrue(request.shouldRedactUrlInLogs)
+    }
+
+    func testSubscriptionSetDefaultPaymentMethod() {
+        let request = OWSRequestFactory.subscriptionSetDefaultPaymentMethod(
+            subscriberID: Data([255, 128]),
+            processor: "STRIPE",
+            paymentID: "xyz"
+        )
+
+        XCTAssertEqual(request.url?.path, "v1/subscription/_4A/default_payment_method/STRIPE/xyz")
+        XCTAssertEqual(request.httpMethod, "POST")
+        XCTAssertFalse(request.shouldHaveAuthorizationHeaders)
     }
 
     // MARK: - Spam

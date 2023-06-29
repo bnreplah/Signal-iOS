@@ -28,7 +28,43 @@
 /* Accessibility label for a voice memo. */
 "ACCESSIBILITY_LABEL_VOICE_MEMO" = "Teachtaireacht bhéil";
 
-/* Label for 'audio call' button in contact view. */
+/* Users can request a report of their account data. Before they get their account export, they are warned to only share account data with trustworthy sources. This is the button on that warning, and tapping it lets users continue. */
+"ACCOUNT_DATA_REPORT_CONFIRM_EXPORT_CONFIRM_BUTTON" = "Easpórtáil an Tuairisc";
+
+/* Users can request a report of their account data. Before they get their account export, they are warned to only share account data with trustworthy sources. This is the message on that warning. */
+"ACCOUNT_DATA_REPORT_CONFIRM_EXPORT_MESSAGE" = "Ná comhroinn sonraí do chuntas Signal ach le daoine nó aipeanna a bhfuil muinín agat iontu.";
+
+/* Users can request a report of their account data. If this request fails (probably because of a network connection problem), they will see an error sheet. This is the message on that error. */
+"ACCOUNT_DATA_REPORT_ERROR_MESSAGE" = "Seiceáil do nasc agus triail arís.";
+
+/* Users can request a report of their account data. If this request fails (probably because of a network connection problem), they will see an error sheet. This is the title on that error. */
+"ACCOUNT_DATA_REPORT_ERROR_TITLE" = "Níorbh Fhéidir Tuairisc a Ghiniúint";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the subtitle on the button that switches to JSON mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_JSON_SUBTITLE" = "Comhad atá inléite ag meaisín";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the title on the button that switches to JSON mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_JSON_TITLE" = "Easpórtáil mar JSON";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the subtitle on the button that switches to plain text mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_TXT_SUBTITLE" = "Comhad téacs soléite";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the title on the button that switches to plain text mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_TXT_TITLE" = "Easpórtáil mar TXT";
+
+/* Users can request a report of their account data. Users tap this button to export their data. */
+"ACCOUNT_DATA_REPORT_EXPORT_REPORT_BUTTON" = "Easpórtáil an Tuairisc";
+
+/* Users can request a report of their account data. This text appears at the bottom of this screen, offering more information. */
+"ACCOUNT_DATA_REPORT_FOOTER" = "Ní ghintear do thuairisc ach ag am na heaspórtála agus ní dhéanann Signal í a stóráil ar do ghléas.";
+
+/* Users can request a report of their account data. This is the subtitle on the screen where they do this, giving them more information. */
+"ACCOUNT_DATA_REPORT_SUBTITLE" = "Íoslódáil agus easpórtáil tuairisc ar shonraí do chuntas Signal. Níl aon teachtaireachtaí ná meáin sa tuairisc seo.";
+
+/* Users can request a report of their account data. This is the title on the screen where they do this. */
+"ACCOUNT_DATA_REPORT_TITLE" = "Sonraí do Chuntais";
+
+/* Label for 'voice call' button in contact view. */
 "ACTION_AUDIO_CALL" = "Glao Signal";
 
 /* Label for 'invite' button in contact view. */
@@ -86,13 +122,13 @@
 "ALERT_ACTION_ACKNOWLEDGE" = "Tuigim";
 
 /* Format string for delivery issue sheet message. Embeds {{ sender name }}. */
-"ALERT_DELIVERY_ISSUE_MESSAGE_FORMAT" = "A message, sticker, reaction, read receipt or  media couldn’t be delivered to you from %1$@ in this chat.";
+"ALERT_DELIVERY_ISSUE_MESSAGE_FORMAT" = "Níorbh fhéidir teachtaireacht, greamán, freagairt, admháil léite nó meán a sheachadadh chugat ó %1$@ sa chomhrá seo.";
 
 /* Title for delivery issue sheet */
 "ALERT_DELIVERY_ISSUE_TITLE" = "Delivery Issue";
 
 /* Format string for delivery issue sheet message where the original thread is unknown. Embeds {{ sender name }}. */
-"ALERT_DELIVERY_ISSUE_UNKNOWN_THREAD_MESSAGE_FORMAT" = "A message, sticker, reaction, read receipt or media couldn’t be delivered to you from %1$@. They may have tried sending it to you directly, or in a group.";
+"ALERT_DELIVERY_ISSUE_UNKNOWN_THREAD_MESSAGE_FORMAT" = "Níorbh fhéidir teachtaireacht, greamán, freagairt, admháil léite nó meán a sheachadadh chugat ó %1$@. Seans go ndearna an duine iarracht í/é a sheoladh chugat go díreach, nó i ngrúpa.";
 
 /* The label for the 'discard' button in alerts and action sheets. */
 "ALERT_DISCARD_BUTTON" = "Cuileáil";
@@ -115,8 +151,35 @@
 /* Label for button to learn more about message requests. */
 "ALERT_UNKNOWN_THREAD_WARNING_LEARN_MORE" = "About Message Requests";
 
+/* Audio file type in All Meda file type picker. */
+"ALL_MEDIA_FILE_TYPE_AUDIO" = "Fuaim";
+
+/* Media (i.e., graphical) file type in All Meda file type picker. */
+"ALL_MEDIA_FILE_TYPE_MEDIA" = "Meáin";
+
+/* Menu option to limit All Media view to displaying only GIFs */
+"ALL_MEDIA_FILTER_GIFS" = "GIFanna";
+
+/* Menu option to limit All Media view to displaying only photos */
+"ALL_MEDIA_FILTER_PHOTOS" = "Grianghraif";
+
+/* Menu option to limit All Media view to displaying only videos */
+"ALL_MEDIA_FILTER_VIDEOS" = "Físeáin";
+
+/* Menu option to show All Media items in a grid of square thumbnails */
+"ALL_MEDIA_GRID_MODE" = "Greille";
+
+/* Menu option to show All Media items in a single-column list */
+"ALL_MEDIA_LIST_MODE" = "Liosta";
+
 /* Label shown over thumbnails of GIFs in the All Media view */
 "ALL_MEDIA_THUMBNAIL_LABEL_GIF" = "GIF";
+
+/* Label shown by thumbnails of images in the All Media view */
+"ALL_MEDIA_THUMBNAIL_LABEL_IMAGE" = "Íomhá";
+
+/* Label shown by thumbnails of videos in the All Media view */
+"ALL_MEDIA_THUMBNAIL_LABEL_VIDEO" = "Físeán";
 
 /* Title for the view of all your signal connections */
 "ALL_SIGNAL_CONNECTIONS_TITLE" = "Na Teagmhálaithe Uile";
@@ -130,11 +193,14 @@
 /* Default message for the 'app launch failed' alert. */
 "APP_LAUNCH_FAILURE_ALERT_MESSAGE" = "Theip ar thosú Signal. Seol an logchomhad dífhabhtaithe chuig support@signal.org sa chaoi go mbeimis in ann an fhadhb seo a réiteach.";
 
-/* Title for the 'app launch failed' alert. */
-"APP_LAUNCH_FAILURE_ALERT_TITLE" = "Earráid";
-
 /* Button to try launching the app even though the last launch failed */
 "APP_LAUNCH_FAILURE_CONTINUE" = "Open Signal Instead";
+
+/* Message for an error indicating that the app couldn't launch because some unexpected error happened with the user's registration status. */
+"APP_LAUNCH_FAILURE_CORRUPT_REGISTRATION_MESSAGE" = "Seol loga dífhabhtaithe chuig support@signal.org le gur féidir linn an fhadhb a fhabhtcheartú.";
+
+/* Title for an error indicating that the app couldn't launch because some unexpected error happened with the user's registration status. */
+"APP_LAUNCH_FAILURE_CORRUPT_REGISTRATION_TITLE" = "Níorbh fhéidir Signal a oscailt";
 
 /* Error indicating that the app could not launch because the database could not be loaded. */
 "APP_LAUNCH_FAILURE_COULD_NOT_LOAD_DATABASE" = "Níorbh fhéidir an bunachar sonraí a lódáil";
@@ -317,13 +383,13 @@
 "ATTACHMENT_KEYBOARD_GIF" = "GIF";
 
 /* A message on a button prompting the user to go settings to grant Signal photos access. */
-"ATTACHMENT_KEYBOARD_GIVE_PHOTOS_ACCESS" = "Ceadaigh Rochtain";
+"ATTACHMENT_KEYBOARD_GIVE_PHOTOS_ACCESS" = "Ceadaigh rochtain";
 
 /* A button to select a location from the Attachment Keyboard */
 "ATTACHMENT_KEYBOARD_LOCATION" = "Suíomh";
 
 /* A string indicating to the user that they'll be able to send photos from this view once they enable photo access. */
-"ATTACHMENT_KEYBOARD_NO_PHOTO_ACCESS" = "Teastaíonn cead ó Signal chun do ghrianghraif agus fiseáin a thaispeáint.";
+"ATTACHMENT_KEYBOARD_NO_PHOTO_ACCESS" = "Teastaíonn cead ó Signal chun do ghrianghraif agus físeáin a thaispeáint.";
 
 /* A string indicating to the user that once they take photos, they'll be able to send them from this view. */
 "ATTACHMENT_KEYBOARD_NO_PHOTOS" = "Tar éis duit pictiúir a ghlacadh, beidh tú in ann na cinn is déanaí a sheoladh anseo.";
@@ -371,7 +437,7 @@
 "AUDIO_ACTIVITY_PLAYBACK_NAME_AUDIO_MESSAGE" = "Teachtaireacht Fuaime";
 
 /* Accessibility label for placing an audio call */
-"AUDIO_CALL_LABEL" = "Glao Fuaime";
+"AUDIO_CALL_LABEL" = "Guthghlao";
 
 /* action sheet button title to enable built in speaker during a call */
 "AUDIO_ROUTE_BUILT_IN_SPEAKER" = "Callaire";
@@ -434,7 +500,7 @@
 "BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_CHARGE_FAILURE_BODY_FORMAT" = "Cuireadh do thabhartas míosúil athfhillteach ar ceal. Níl an suaitheantas deonaithe %1$@ infheicthe ar do phróifíl a thuilleadh.\n\nChun leanúint le tacú le Signal agus do shuaitheantas a athghníomhachtú, nuashonraigh do shonraí íocaíochta agus tabhair airgead arís.";
 
 /* Body of the sheet shown when your subscription is canceled due to inactivity */
-"BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_INACTIVITY_BODY_FORMAT" = "Cuireadh do thabhartas míosúil athfhillteach ar ceal go huathoibríoch toisc go raibh tú neamhghníomhach tamall ró-fhada. Níl do shuaitheantas %1$@ infheicthe ar do phróifíl a thuilleadh.\n\nIs féidir leanúint le húsáid Signal ach chun tacú leis an aip agus do shuaitheantas a athghníomhachtú, tabhair airgead anois.";
+"BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_INACTIVITY_BODY_FORMAT" = "Cuireadh do thabhartas míosúil athfhillteach ar ceal go huathoibríoch toisc go raibh tú neamhghníomhach tamall ró-fhada. Níl do shuaitheantas %1$@ infheicthe ar do phróifíl a thuilleadh.\n\nIs féidir leat leanúint le húsáid Signal ach chun tacú leis an aip agus do shuaitheantas a athghníomhachtú, tabhair airgead anois.";
 
 /* When you make a donation to Signal, you will receive a badge. A thank-you sheet appears when this happens. This is the body text on that sheet. */
 "BADGE_THANKS_BODY" = "Thuill tú suaitheantas bronntóra ó Signal! Taispeáin ar do phróifíl é le do thacaíocht a léiriú.";
@@ -461,7 +527,7 @@
 "BLOCK_LIST_BLOCK_BUTTON" = "Cuir bac";
 
 /* A format for the 'block group' action sheet title. Embeds the {{group name}}. */
-"BLOCK_LIST_BLOCK_GROUP_TITLE_FORMAT" = "Cuir bac ar an ngrúpa “%1$@” agus imigh as?";
+"BLOCK_LIST_BLOCK_GROUP_TITLE_FORMAT" = "Cuir bac ar an ngrúpa \"%1$@\" agus imigh as?";
 
 /* A format for the 'block user' action sheet title. Embeds {{the blocked user's name or phone number}}. */
 "BLOCK_LIST_BLOCK_USER_TITLE_FORMAT" = "Cuir bac ar %1$@?";
@@ -593,19 +659,19 @@
 "CALL_AGAIN_BUTTON_TITLE" = "Glaoigh Arís";
 
 /* notification body */
-"CALL_AUDIO_INCOMING_NOTIFICATION_BODY" = "📞 Glao fuaime isteach…";
+"CALL_AUDIO_INCOMING_NOTIFICATION_BODY" = "📞 Guthghlao isteach…";
 
 /* notification body for a missed call in the last 24 hours. Embeds {{time}}, e.g. '3:30 PM'. */
-"CALL_AUDIO_MISSED_24_HOURS_NOTIFICATION_BODY_FORMAT" = "📞 Missed audio call at %1$@";
+"CALL_AUDIO_MISSED_24_HOURS_NOTIFICATION_BODY_FORMAT" = "📞 Guthghlao caillte ag %1$@";
 
 /* notification body for a call that was just missed */
-"CALL_AUDIO_MISSED_NOTIFICATION_BODY" = "📞 Glao fuaime caillte";
+"CALL_AUDIO_MISSED_NOTIFICATION_BODY" = "📞 Guthghlao caillte";
 
 /* notification body for a missed call from more than a week ago. Embeds {{short date}}, e.g. '6/28'. */
-"CALL_AUDIO_MISSED_PAST_NOTIFICATION_BODY_FORMAT" = "📞 Missed audio call on %1$@";
+"CALL_AUDIO_MISSED_PAST_NOTIFICATION_BODY_FORMAT" = "📞 Guthghlao caillte ar %1$@";
 
 /* notification body for a missed call from the last week. Embeds {{weekday}}, e.g. 'Monday'. */
-"CALL_AUDIO_MISSED_WEEK_NOTIFICATION_BODY_FORMAT" = "📞 Missed audio call on %1$@";
+"CALL_AUDIO_MISSED_WEEK_NOTIFICATION_BODY_FORMAT" = "📞 Guthghlao caillte ar %1$@";
 
 /* Alert message when calling and permissions for microphone are missing */
 "CALL_AUDIO_PERMISSION_MESSAGE" = "Is féidir leat cead a thabhairt don aip an micreafón a úsáid sna Socruithe iOS, sa chaoi go mbeidh tú in ann glaonna a chur agus teachtaireachtaí a thaifeadadh in Signal.";
@@ -689,7 +755,7 @@
 "CALL_VIEW_SWITCH_CAMERA_DIRECTION" = "Athraigh Treo an Cheamara";
 
 /* Accessibility label to switch to audio only */
-"CALL_VIEW_SWITCH_TO_AUDIO_LABEL" = "Athraigh go glao fuaime";
+"CALL_VIEW_SWITCH_TO_AUDIO_LABEL" = "Aistrigh chuig guthghlao";
 
 /* Accessibility label to switch to video call */
 "CALL_VIEW_SWITCH_TO_VIDEO_LABEL" = "Athraigh go glao físe";
@@ -842,10 +908,10 @@
 "CHANGE_PHONE_NUMBER_PIN_EXPLANATION" = "Enter the PIN for the new phone number. This is different from your SMS verification code.";
 
 /* The incoming bubble text when setting a chat color. */
-"CHAT_COLOR_INCOMING_MESSAGE" = "Here’s a preview of the chat color.";
+"CHAT_COLOR_INCOMING_MESSAGE" = "Seo réamhamharc ar dhath an chomhrá.";
 
 /* The first incoming bubble text when setting a chat color. */
-"CHAT_COLOR_INCOMING_MESSAGE_1" = "Here’s a preview of the chat color.";
+"CHAT_COLOR_INCOMING_MESSAGE_1" = "Seo réamhamharc ar dhath an chomhrá.";
 
 /* The second incoming bubble text when setting a chat color. */
 "CHAT_COLOR_INCOMING_MESSAGE_2" = "Another bubble";
@@ -866,7 +932,7 @@
 "CHAT_COLOR_SETTINGS_DELETE_ALERT_TITLE" = "Scrios Dath";
 
 /* Title for the chat color settings view. */
-"CHAT_COLOR_SETTINGS_TITLE" = "Dath an chomhrá";
+"CHAT_COLOR_SETTINGS_TITLE" = "Dath an Chomhrá";
 
 /* Title for the 'edit chat color confirm alert' in the chat color settings view. */
 "CHAT_COLOR_SETTINGS_UPDATE_ALERT_ALERT_TITLE" = "Edit Color";
@@ -878,13 +944,13 @@
 "CHAT_LIST_TITLE_INBOX" = "Comhráite";
 
 /* Title for the color & wallpaper settings view. */
-"COLOR_AND_WALLPAPER_SETTINGS_TITLE" = "Chat Color & Wallpaper";
+"COLOR_AND_WALLPAPER_SETTINGS_TITLE" = "Dath an Chomhrá & Cúlbhrat";
 
 /* Activity Sheet label */
 "COMPARE_SAFETY_NUMBER_ACTION" = "Cuir i gComparáid leis an nGearrthaisce";
 
 /* Accessibility hint describing what you can do with the compose button */
-"COMPOSE_BUTTON_HINT" = "Select or search for a Signal user to start a chat with.";
+"COMPOSE_BUTTON_HINT" = "Roghnaigh nó cuardaigh úsáideoir Signal le tosú ar chomhrá.";
 
 /* Accessibility label from compose button. */
 "COMPOSE_BUTTON_LABEL" = "Cum";
@@ -905,7 +971,7 @@
 "COMPOSE_SCREEN_MISSING_CONTACTS_PERMISSION" = "Is féidir leat rochtain ar do chuid teagmhálaithe a thabhairt do Signal sna Socruithe iOS le fáil amach cé acu atá ag úsáid Signal.";
 
 /* Configure reactions title text */
-"CONFIGURE_REACTIONS" = "Configure Reactions";
+"CONFIGURE_REACTIONS" = "Cumraigh Freagairtí";
 
 /* No comment provided by engineer. */
 "CONFIRM_DELETE_DATA_TEXT" = "This will reset the application by deleting your messages. The app will close after this process is complete.";
@@ -986,7 +1052,7 @@
 "CONTACT_FIELD_ORGANIZATION" = "Eagraíocht";
 
 /* Body for contact permission action sheet */
-"CONTACT_PERMISSION_ACTION_SHEET_BODY" = "To see contact names and photos in your chats:";
+"CONTACT_PERMISSION_ACTION_SHEET_BODY" = "Chun féachaint ar ainmneacha na dteagmhálaithe agus pictiúir i do chomhráite:";
 
 /* First step for contact permission action sheet */
 "CONTACT_PERMISSION_ACTION_SHEET_STEP_ONE" = "Tapáil “Socruithe” thíos";
@@ -1004,7 +1070,7 @@
 "CONTACT_PERMISSION_REMINDER_MEGAPHONE_ACTION" = "Cuir ar siúl";
 
 /* Body for contact permission reminder megaphone */
-"CONTACT_PERMISSION_REMINDER_MEGAPHONE_BODY" = "See contact names and photos in your chats.";
+"CONTACT_PERMISSION_REMINDER_MEGAPHONE_BODY" = "Féach ar ainmneacha na dteagmhálaithe agus pictiúir i do chomhráite.";
 
 /* Title for contact permission reminder megaphone */
 "CONTACT_PERMISSION_REMINDER_MEGAPHONE_TITLE" = "Teagmhálaithe a chur ar siúl?";
@@ -1139,7 +1205,7 @@
 "CONTEXT_MENU_STOP_SPEAKING_MESSAGE" = "Stop";
 
 /* Message for the 'conversation delete confirmation' alert. */
-"CONVERSATION_DELETE_CONFIRMATION_ALERT_MESSAGE" = "Scriosfar an comhrá seo den ghléas seo.";
+"CONVERSATION_DELETE_CONFIRMATION_ALERT_MESSAGE" = "Scriosfar an comhrá seo ón ngléas seo.";
 
 /* Title for the 'conversation delete confirmation' alert. */
 "CONVERSATION_DELETE_CONFIRMATION_ALERT_TITLE" = "Scrios Comhrá?";
@@ -1184,7 +1250,7 @@
 "CONVERSATION_SEARCH_NO_RESULTS" = "Gan torthaí";
 
 /* title for conversation settings screen */
-"CONVERSATION_SETTINGS" = "Chat Settings";
+"CONVERSATION_SETTINGS" = "Socruithe Comhráite";
 
 /* Label for 'add members' button in conversation settings view. */
 "CONVERSATION_SETTINGS_ADD_MEMBERS" = "Cuir Baill Leis";
@@ -1223,10 +1289,10 @@
 "CONVERSATION_SETTINGS_BLOCK_AND_LEAVE_SECTION_FOOTER" = "Ní bhfaighidh tú teachtaireachtaí ón ngrúpa seo a thuilleadh.";
 
 /* Label for 'block group' action in conversation settings view. */
-"CONVERSATION_SETTINGS_BLOCK_GROUP" = "Cuir Bac ar an nGrúpa";
+"CONVERSATION_SETTINGS_BLOCK_GROUP" = "Cuir bac ar an ngrúpa";
 
 /* Label for 'block user' action in conversation settings view. */
-"CONVERSATION_SETTINGS_BLOCK_USER" = "Cuir Bac ar an Úsáideoir";
+"CONVERSATION_SETTINGS_BLOCK_USER" = "Cuir bac ar an úsáideoir";
 
 /* Label for the 'edit' button in conversation settings view. */
 "CONVERSATION_SETTINGS_EDIT" = "Eagar";
@@ -1262,7 +1328,7 @@
 "CONVERSATION_SETTINGS_MENTION_MODE_AlWAYS" = "Cuir scéal chugam i gcónaí";
 
 /* label for 'never' option for mention notifications in conversation settings */
-"CONVERSATION_SETTINGS_MENTION_MODE_NEVER" = "Ná Cuir in Iúl i gCás Balbhaithe";
+"CONVERSATION_SETTINGS_MENTION_MODE_NEVER" = "Ná cuir in iúl i gcás balbhaithe";
 
 /* Title of the 'mention notification mode' action sheet. */
 "CONVERSATION_SETTINGS_MENTION_NOTIFICATION_MODE_ACTION_SHEET_TITLE" = "Faigh fógraí nuair a luaitear i gcomhráite balbhaithe thú?";
@@ -1355,10 +1421,10 @@
 "CONVERSATION_SETTINGS_SEND_MESSAGES_SECTION_ONLY_ADMINS" = "Riarthóirí Amháin";
 
 /* Label for 'unblock group' action in conversation settings view. */
-"CONVERSATION_SETTINGS_UNBLOCK_GROUP" = "Bain an bac den Ghrúpa";
+"CONVERSATION_SETTINGS_UNBLOCK_GROUP" = "Bain an bac den ghrúpa";
 
 /* Label for 'unblock user' action in conversation settings view. */
-"CONVERSATION_SETTINGS_UNBLOCK_USER" = "Bain an bac den Úsáideoir";
+"CONVERSATION_SETTINGS_UNBLOCK_USER" = "Bain an bac den úsáideoir";
 
 /* Label for button to unmute a thread. */
 "CONVERSATION_SETTINGS_UNMUTE_ACTION" = "Díbhalbhaigh";
@@ -1397,13 +1463,13 @@
 "COUNTRYCODE_SELECT_TITLE" = "Roghnaigh Cód Tíre";
 
 /* Body text for an interactive in-app prompt to set up a Signal username. */
-"CREATE_USERNAME_MEGAPHONE_BODY" = "Usernames let others message you without needing your phone number.";
+"CREATE_USERNAME_MEGAPHONE_BODY" = "Beidh daoine eile in ann teachtaireachtaí a sheoladh chuig d'ainm úsáideora gan d'uimhir ghutháin a úsáid.";
 
 /* Title for a button in an interactive in-app prompt to set up a Signal username, which will start a create-username flow. */
-"CREATE_USERNAME_MEGAPHONE_SET_UP_BUTTON_TITLE" = "Set Up";
+"CREATE_USERNAME_MEGAPHONE_SET_UP_BUTTON_TITLE" = "Socraigh";
 
 /* Title for an interactive in-app prompt to set up a Signal username. */
-"CREATE_USERNAME_MEGAPHONE_TITLE" = "Set up your Signal username";
+"CREATE_USERNAME_MEGAPHONE_TITLE" = "Socraigh d'ainm úsáideora Signal";
 
 /* Credit/debit card donation error for decline failures where the card has expired. */
 "CREDIT_OR_DEBIT_CARD_DONATION_ERROR_EXPIRED_CARD" = "Tá do chárta as feidhm. Fíoraigh go bhfuil sonraí do chárta ceart agus triail arís.";
@@ -1610,7 +1676,10 @@
 "DEREGISTRATION_REREGISTER_WITH_SAME_PHONE_NUMBER" = "Cláraigh an uimhir ghutháin seo arís";
 
 /* Label warning the user that they have been de-registered. */
-"DEREGISTRATION_WARNING" = "Níl an gléas seo cláraithe a thuilleadh. Seans go bhfuil d'uimhir ghutháin cláraithe le Signal ar ghléas eile. Tapáil chun clárú arís.";
+"DEREGISTRATION_WARNING" = "Níl an gléas seo cláraithe a thuilleadh. Is dócha gur chláraigh tú d’uimhir ghutháin le Signal ar ghléas eile is cúis leis.";
+
+/* If the user has been deregistered, they'll see a warning. This is This is the call to action on that warning. */
+"DEREGISTRATION_WARNING_ACTION_TITLE" = "Athchláraigh an Gléas";
 
 /* {{Short Date}} when device last communicated with Signal Server. */
 "DEVICE_LAST_ACTIVE_AT_LABEL" = "Last active %1$@";
@@ -1620,6 +1689,12 @@
 
 /* Alert title that can occur when viewing device manager. */
 "DEVICE_LIST_UPDATE_FAILED_TITLE" = "Níorbh fhéidir liosta na ngléasanna a nuashonrú.";
+
+/* A label for this device in the device list. */
+"DEVICE_NAME_THIS_DEVICE" = "An Gléas Seo";
+
+/* A label for an unnamed device in the device list. */
+"DEVICE_NAME_UNNAMED_DEVICE" = "Gléas Gan Ainm";
 
 /* The stop action of the dialog asking the user if they want to cancel a device transfer */
 "DEVICE_TRANSFER_CANCEL_CONFIRMATION_ACTION" = "Stop an tAistriú";
@@ -1727,7 +1802,7 @@
 "DISAPPEARING_MESSAGES" = "Teachtaireachtaí Gearrshaolacha";
 
 /* Info Message when added to a group which has enabled disappearing messages. Embeds {{time amount}} before messages disappear. See the *_TIME_AMOUNT strings for context. */
-"DISAPPEARING_MESSAGES_CONFIGURATION_GROUP_EXISTING_FORMAT" = "Messages in this chat will disappear after %1$@.";
+"DISAPPEARING_MESSAGES_CONFIGURATION_GROUP_EXISTING_FORMAT" = "Imeoidh teachtaireachtaí sa chomhrá seo as radharc tar éis %1$@.";
 
 /* Disappearing message option to define a custom time */
 "DISAPPEARING_MESSAGES_CUSTOM_TIME" = "Custom Time";
@@ -1736,7 +1811,7 @@
 "DISAPPEARING_MESSAGES_DAYS" = "lá";
 
 /* subheading in conversation settings */
-"DISAPPEARING_MESSAGES_DESCRIPTION" = "When enabled, new messages sent and received in this chat will disappear after they have been seen.";
+"DISAPPEARING_MESSAGES_DESCRIPTION" = "Agus iad cumasaithe, imeoidh teachtaireachtaí nua a sheoltar agus a fhaightear sa chomhrá seo as radharc tar éis féachaint orthu.";
 
 /* Accessibility hint that contains current timeout information */
 "DISAPPEARING_MESSAGES_HINT" = "Faoi láthair, imíonn teachtaireachtaí as radharc tar éis %1$@";
@@ -1919,7 +1994,7 @@
 "DONATION_ON_BEHALF_OF_A_FRIEND_REPLY" = "Tabhartas";
 
 /* You sent a donation to a friend. This is the title of that message in the chat. Embeds {{short contact name}}. */
-"DONATION_ON_BEHALF_OF_A_FRIEND_SENT_TITLE_FORMAT" = "Tabhartas do %1$@";
+"DONATION_ON_BEHALF_OF_A_FRIEND_SENT_TITLE_FORMAT" = "Tabhartas ar son %1$@";
 
 /* When you donate on behalf of a friend, a thank-you sheet will appear. This is the text on that sheet. Embeds {{recipient name}}. */
 "DONATION_ON_BEHALF_OF_A_FRIEND_THANKS_BODY_FORMAT" = "Thug tú tabhartas do Signal ar son %1$@. Gheobhaidh an duine sin rogha chun tacaíocht a léiriú ar an bpróifíl.";
@@ -2053,11 +2128,14 @@
 /* The alert title if user tries to exit update group view without saving changes. */
 "EDIT_GROUP_VIEW_UNSAVED_CHANGES_TITLE" = "Athruithe Gan Sábháil";
 
+/* Label for Edit History modal */
+"EDIT_HISTORY_LABEL" = "Stair eagarthóireachta";
+
 /* Short name for edit menu item to copy contents of media message. */
 "EDIT_ITEM_COPY_ACTION" = "Cóipeáil";
 
 /* body of email sent to contacts when inviting to install Signal. Embeds {{link to install Signal}} and {{link to the Signal home page}} */
-"EMAIL_INVITE_BODY" = "Hey,\n\nLately I've been using Signal to keep the chats on my iPhone private. I'd like you to install it too, so we can be confident that only you and I can read our messages or hear our calls.\n\nSignal is available for iPhones and Android. Get it here: %1$@\n\nSignal works like your existing messaging app. We can send pictures and video, make calls, and start group chats. The best part is, no one else can see any of it, not even the people who make Signal!\n\nYou can read more about Open Whisper Systems, the people who make Signal, here: %2$@";
+"EMAIL_INVITE_BODY" = "Haigh,\n\nThosaigh mé ag úsáid Signal le déanaí le comhráite ar m'iPhone a choinneáil príobháideach. Ba mhaith liom go ndéanfá é a shuiteáil freisin, ionas go mbeidh muinín againn maidir le léamh ár dteachtaireachtaí nó éisteacht lenár nglaonna.\n\nTá Signal ar fáil le haghaidh iPhone agus Android. Gheobhaidh tú anseo é: %1$@\n\nOibríonn Signal mar a oibríonn an aip curtha teachtaireachtaí atá agat cheana. Is féidir linn pictiúir agus físeáin a sheoladh, glaonna a chur agus tosú ar ghrúpchomhráite. An chuid is fearr, ní féidir le héinne aon cheann de na rudaí sin a fheiceáil, fiú na daoine a dhéanann Signal!\n\nTá tuilleadh faisnéise faoi Open Whisper Systems, déantóirí Signal, le fáil anseo: %2$@";
 
 /* subject of email sent to contacts when inviting to install Signal */
 "EMAIL_INVITE_SUBJECT" = "Bainimis úsáid as Signal";
@@ -2082,6 +2160,9 @@
 
 /* The name for the emoji category 'Objects' */
 "EMOJI_CATEGORY_OBJECTS_NAME" = "Rudaí";
+
+/* The name for the emoji section for emojis already used on the message */
+"EMOJI_CATEGORY_ON_MESSAGE_NAME" = "An Teachtaireacht Seo";
 
 /* The name for the emoji category 'Recents' */
 "EMOJI_CATEGORY_RECENTS_NAME" = "Úsáidte le Déanaí";
@@ -2195,7 +2276,7 @@
 "ERROR_MESSAGE_NON_BLOCKING_IDENTITY_CHANGE_FORMAT" = "Athraíodh an uimhir shábháilteachta le %1$@.";
 
 /* Text notifying the user that their secure session has been reset */
-"ERROR_MESSAGE_SESSION_REFRESH" = "Chat session refreshed";
+"ERROR_MESSAGE_SESSION_REFRESH" = "Seisiún an chomhrá athnuaite";
 
 /* No comment provided by engineer. */
 "ERROR_MESSAGE_UNKNOWN_ERROR" = "Tharla earráid anaithnid.";
@@ -2224,11 +2305,23 @@
 /* Format string for 'unregistered user' error. Embeds {{the unregistered user's name or signal id}}. */
 "ERROR_UNREGISTERED_USER_FORMAT" = "Úsáideoir Gan Chlárú: %1$@";
 
+/* Button to exit change number, shown in context menu. */
+"EXIT_CHANGE_NUMBER" = "Scoir Athrú Uimhreach";
+
+/* Button to exit re-registration, shown in context menu. */
+"EXIT_REREGISTRATION" = "Scoir Clárú";
+
 /* Label notifying the user that the app has expired. */
-"EXPIRATION_ERROR" = "Your version of Signal has expired! Tap to update to the most recent version.";
+"EXPIRATION_ERROR" = "Tá an leagan seo de Signal imithe as feidhm. Nuashonraigh chun teachtaireachtaí a sheoladh agus a fháil.";
+
+/* If the user's app is too old, they'll be shown a warning asking them to upgrade. This is the text on the warning, and tapping it will open the App Store page for Signal. */
+"EXPIRATION_WARNING_ACTION_TITLE" = "Nuashonraigh Anois";
+
+/* Label warning the user that the app will expire soon. Embeds {{date}}. */
+"EXPIRATION_WARNING_SOON" = "Rachaidh an leagan seo de Signal as feidhm ar an %1$@. Nuashonraigh chun seoladh teachtaireachtaí a choinneáil.";
 
 /* Label warning the user that the app will expire today. */
-"EXPIRATION_WARNING_TODAY" = "Rachaidh an leagan seo de Signal i léig inniu. Tapáil chun an leagan is déanaí a shuiteáil.";
+"EXPIRATION_WARNING_TODAY" = "Rachaidh an leagan seo de Signal as feidhm inniu. Nuashonraigh chun seoladh teachtaireachtaí a choinneáil.";
 
 /* action sheet header when re-sending message which failed because of too many attempts */
 "FAILED_SENDING_BECAUSE_RATE_LIMIT" = "An iomarca teachtaireachtaí teipthe leis an teagmhálaí seo. Bain triail eile as ar ball.";
@@ -2285,7 +2378,10 @@
 "FORWARD_MESSAGE_TITLE" = "Forward To";
 
 /* Label indicating media gallery is empty */
-"GALLERY_TILES_EMPTY_GALLERY" = "You don't have any media in this chat.";
+"GALLERY_TILES_EMPTY_GALLERY" = "Níl aon mheán sa chomhrá seo.";
+
+/* Label indicating media gallery with audio filter is empty */
+"GALLERY_TILES_EMPTY_GALLERY_AUDIO" = "Níl aon fhuaim agat sa chomhrá seo.";
 
 /* Label indicating loading is in progress */
 "GALLERY_TILES_LOADING_MORE_RECENT_LABEL" = "Meáin Níos Nuaí á Lódáil…";
@@ -2426,7 +2522,7 @@
 "GROUP_CALL_MISSING_MEDIA_KEYS_FORMAT" = "Can't receive audio & video from %1$@";
 
 /* Message body for alert explaining that a group call participant cannot be displayed because of missing keys */
-"GROUP_CALL_NO_KEYS_ALERT_MESSAGE" = "Seans nár fhíoraigh an duine sin athrú ar d'uimhir sábháilteachta, go bhfuil fadhb leis an ngléas aige/aici, nó gur chuir sé/sí bac ort is cúis leis.";
+"GROUP_CALL_NO_KEYS_ALERT_MESSAGE" = "Seans nár fhíoraigh an duine sin athrú ar d'uimhir sábháilteachta, go bhfuil fadhb leis an ngléas aige/aici, nó gur chuir sé/sí bac ort.";
 
 /* Title for alert explaining that a group call participant cannot be displayed because of missing keys. Embeds {{ user's name }} */
 "GROUP_CALL_NO_KEYS_ALERT_TITLE_FORMAT" = "Can't receive audio and video from %1$@";
@@ -2800,6 +2896,9 @@
 /* Message indicating that the local user was removed from the group by an unknown user. */
 "GROUP_LOCAL_USER_REMOVED_BY_UNKNOWN_USER" = "Baineadh den ghrúpa thú.";
 
+/* Message indicating that the local user's request to join the group was approved. */
+"GROUP_LOCAL_USER_REQUEST_APPROVED" = "Faomhadh d'iarratas ar dhul isteach sa ghrúpa.";
+
 /* Message indicating that the local user's request to join the group was approved by another user. Embeds {{ %@ the name of the user who approved the request }}. */
 "GROUP_LOCAL_USER_REQUEST_APPROVED_BY_REMOTE_USER_FORMAT" = "%1$@ approved your request to join the group.";
 
@@ -2884,9 +2983,6 @@
 /* Message indicating that a remote user's invite was revoked by the local user. Embeds {{remote user name}}. */
 "GROUP_REMOTE_USER_INVITE_REVOKED_BY_LOCAL_USER_FORMAT" = "Cealaíodh an cuireadh chun páirt a ghlacadh sa ghrúpa a tugadh do %1$@.";
 
-/* Message indicating that a single remote user was invited to the group. Embeds {{remote user name}}. */
-"GROUP_REMOTE_USER_INVITED_1_FORMAT" = "Tugadh cuireadh do %1$@ chun páirt a ghlacadh sa ghrúpa.";
-
 /* Message indicating that a remote user was invited to the group by the local user. Embeds {{remote user name}}. */
 "GROUP_REMOTE_USER_INVITED_BY_LOCAL_USER_FORMAT" = "Thug tú cuireadh do %1$@ chun páirt a ghlacadh sa ghrúpa.";
 
@@ -2917,7 +3013,7 @@
 /* Message indicating that a remote user's request to join the group was rejected by the local user. Embeds {{requesting user name}}. */
 "GROUP_REMOTE_USER_REQUEST_REJECTED_BY_LOCAL_USER_FORMAT" = "You denied a request to join the group from %1$@.";
 
-/* Message indicating that a remote user's request to join the group was rejected by another user. Embeds {{ %1$@ requesting user name, %2$@ approving user name }}. */
+/* Message indicating that a remote user's request to join the group was rejected by another user. Embeds {{ %1$@ requesting user name, %2$@ rejecting user name }}. */
 "GROUP_REMOTE_USER_REQUEST_REJECTED_BY_REMOTE_USER_FORMAT" = "%2$@ denied a request to join the group from %1$@.";
 
 /* Message indicating that a remote user's request to join the group was rejected. Embeds {{requesting user name}}. */
@@ -3025,12 +3121,6 @@
 /* Message indicating that the group was migrated. */
 "GROUP_WAS_MIGRATED" = "This group was upgraded to a New Group.";
 
-/* Message indicating that the local user was dropped while migrating the group. */
-"GROUP_WAS_MIGRATED_USERS_DROPPED_LOCAL_USER" = "Níorbh fhéidir thú a chur leis an nGrúpa Nua agus baineadh den ghrúpa thú.";
-
-/* Message indicating that the local user was invited while migrating the group. */
-"GROUP_WAS_MIGRATED_USERS_INVITED_LOCAL_USER" = "You couldn’t be added to the New Group and has been invited to join";
-
 /* Message indicating that the local user left the group. */
 "GROUP_YOU_LEFT" = "D'fhág tú an grúpa.";
 
@@ -3044,10 +3134,10 @@
 "GROUPS_ANNOUNCEMENT_ONLY_CONTACT_ADMIN" = "Message an Admin";
 
 /* Label for button that lets the user block a request to join the group. */
-"GROUPS_BLOCK_REQUEST_BUTTON" = "Cuir Bac ar an Iarratas";
+"GROUPS_BLOCK_REQUEST_BUTTON" = "Cuir bac ar an iarratas";
 
 /* Label for button that will block a request to join a group. */
-"GROUPS_BLOCK_REQUEST_SHEET_BLOCK_BUTTON" = "Cuir Bac ar an Iarratas";
+"GROUPS_BLOCK_REQUEST_SHEET_BLOCK_BUTTON" = "Cuir bac ar an iarratas";
 
 /* Message for sheet offering to let the user block a request to join the group. Embeds {{ the requester's name }}. */
 "GROUPS_BLOCK_REQUEST_SHEET_MESSAGE" = "Ní bheidh %1$@ in ann dul isteach sa ghrúpa seo ná dul isteach a iarraidh tríd an nasc grúpa. Beidh riarthóir in ann an duine sin a chur leis fós.";
@@ -3065,10 +3155,10 @@
 "GROUPS_INVITE_ACCEPT_INVITE_FAILED" = "Níorbh fhéidir glacadh leis an gcuireadh.";
 
 /* Label for 'block group' button in group invite view. */
-"GROUPS_INVITE_BLOCK_GROUP" = "Cuir Bac ar an nGrúpa";
+"GROUPS_INVITE_BLOCK_GROUP" = "Cuir bac ar an ngrúpa";
 
 /* Label for 'block group and inviter' button in group invite view. Embeds {{name of user who invited you}}. */
-"GROUPS_INVITE_BLOCK_GROUP_AND_INVITER_FORMAT" = "Cuir Bac ar an nGrúpa agus ar %1$@";
+"GROUPS_INVITE_BLOCK_GROUP_AND_INVITER_FORMAT" = "Cuir bac ar an ngrúpa agus ar %1$@";
 
 /* Label for 'block inviter' button in group invite view. Embeds {{name of user who invited you}}. */
 "GROUPS_INVITE_BLOCK_INVITER_FORMAT" = "Cuir bac ar %1$@";
@@ -3076,128 +3166,8 @@
 /* Label for 'invite friends to group' button. */
 "GROUPS_INVITE_FRIENDS_BUTTON" = "Tabhair cuirí do chairde";
 
-/* Body text for the first section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_1_BODY" = "Is éard atá i nGrúpa Oidhreachta ná grúpa nach dtacaíonn le gnéithe nua ar nós riarthóirí grúpa agus mioneolas faoi nuashonruithe.";
-
-/* Title for the first section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_1_TITLE" = "Cad is Grúpa Oidhreachta ann?";
-
-/* Body text for the second section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_2_BODY" = "Legacy Groups can't yet be upgraded to New Groups, but you can create a New Group with the same members if they're on the latest version of Signal.\n\nSignal will offer a way to upgrade Legacy Groups in the future.";
-
-/* Title for the second section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_2_TITLE" = "Can I upgrade a Legacy Group?";
-
-/* Body text for the third section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_3_BODY" = "Chun grúpa den chineál nua a chruthú, ba chóir do na baill go léir an leagan is déanaí de Signal a shuiteáil.";
-
-/* Title for the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_TITLE" = "Grúpaí Oidhreachta vs. Grúpaí Nua";
-
-/* Format for indicator that a group cannot be used until it is migrated. Embeds {{ a \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_BLOCKING_MIGRATION_FORMAT" = "Upgrade this group to activate new features like @mentions and admins. Members who have not shared their name or photo in this group will be invited to join. %1$@.";
-
-/* Title for the 'can't upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_ALERT_TITLE" = "Can’t Upgrade to New Group";
-
-/* Text indicating that a legacy group can't be upgraded because it has too many members. Embeds {{ The maximum number of members allowed in a group. }}. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_ALERT_TOO_MANY_MEMBERS_FORMAT" = "This group can’t be upgraded to a New Group because it has too many members. The maximum group size that can be upgraded is %1$@.";
-
-/* Explanation of group migration for groups that can't yet be migrated in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_YET_1" = "When all current group members are using a version of Signal capable of joining a New Group, this group will be upgraded.";
-
-/* Explanation of group migration for groups that can't yet be migrated in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_YET_2" = "Coinneofar stair na dteachtaireachtaí agus na meáin go léir a bhí ann roimh an uasghrádú.";
-
-/* Brief explanation of legacy groups. Embeds {{ a \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_FORMAT" = "This is a Legacy Group. Features like group admins are only available for New Groups. %1$@";
-
-/* Indicates that a legacy group can't be upgraded because some members can't be migrated. Embeds {{ an \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_MEMBERS_CANT_BE_MIGRATED_FORMAT" = "This Legacy Group is not yet ready to be upgraded to a New Group. %1$@.";
-
-/* Indicates that a legacy group can't be upgraded because it has too many members. Embeds {{ an \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_TOO_MANY_MEMBERS_FORMAT" = "This Legacy Group can’t be upgraded to a New Group because it is too large. %1$@.";
-
-/* Explanation of legacy groups. Embeds {{ an \"upgrade\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_WITH_UPGRADE_OFFER_FORMAT" = "This is a Legacy Group. To access new features like @mentions and admins, %1$@.";
-
 /* Label indicating a legacy group. */
 "GROUPS_LEGACY_GROUP_INDICATOR" = "Grúpa Oidhreachta";
-
-/* Indicates that the local user needs to accept an invitation to rejoin the group after a group migration. */
-"GROUPS_LEGACY_GROUP_LOCAL_USER_INVITED" = "You will need to accept an invite to join this group again, and will not receive group messages until you accept.";
-
-/* Title for the 'migrated group' alert view. */
-"GROUPS_LEGACY_GROUP_MIGRATED_GROUP_ALERT_TITLE" = "Céard iad Baiclí Nua?";
-
-/* Explanation of group migration for a migrated group in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_MIGRATED_GROUP_DESCRIPTION" = "Coinníodh stair na dteachtaireachtaí agus na meáin go léir a bhí ann roimh an uasghrádú.";
-
-/* Explanation of new groups in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_NEW_GROUP_DESCRIPTION" = "New Groups have features like @mentions and group admins, and will support more features in the future.";
-
-/* Title for the 'new groups' alert view. */
-"GROUPS_LEGACY_GROUP_NEW_GROUPS_ALERT_TITLE" = "New Groups";
-
-/* Label for the 'add members' button in the 're-add dropped group members' alert view. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_ADD_MEMBERS_BUTTON" = "Cuir Baill Leis";
-
-/* Title for the 're-add dropped group members' alert view. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_ALERT_TITLE_1" = "Add Member?";
-
-/* Title for the 're-add dropped group members' alert view. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_ALERT_TITLE_N" = "Add Members?";
-
-/* Label for the 'add members' button in the 're-add dropped groups members' banner. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_BUTTON" = "Cuir Baill Leis";
-
-/* Explanation of 're-adding dropped group member' in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_DESCRIPTION_1" = "This member couldn’t be added to the New Group automatically when it was upgraded:";
-
-/* Explanation of 're-adding dropped group member' in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_DESCRIPTION_N" = "These members couldn’t be added to the New Group automatically when it was upgraded:";
-
-/* Body text for the second section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_2_BODY" = "Coinníodh stair na dteachtaireachtaí agus na meáin go léir a bhí ann roimh an uasghrádú.";
-
-/* Body text for the 'dropped member' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_DROPPED_MEMBERS_1" = "Baineadh an ball seo den ghrúpa agus ní bheidh sé/sí in ann dul isteach arís sa ghrúpa go dtí go n-uasghrádóidh sé/sí:";
-
-/* Body text for the 'dropped members' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_DROPPED_MEMBERS_N" = "Baineadh na baill seo den ghrúpa agus ní bheidh siad in ann dul isteach arís sa ghrúpa go dtí go n-uasghrádóidh siad:";
-
-/* Body text for the 'invites member' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_INVITED_MEMBERS_1" = "This member will need to accept an invite to join this group again, and will not receive group messages until they accept:";
-
-/* Body text for the 'invites members' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_INVITED_MEMBERS_N" = "These members will need to accept an invite to join this group again, and will not receive group messages until they accept:";
-
-/* Body text for the 'possibly dropped member' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_POSSIBLY_DROPPED_MEMBERS_1" = "Níl an ball seo in ann páirt a ghlacadh i nGrúpaí Nua, agus bainfear den ghrúpa é/í:";
-
-/* Body text for the 'possibly dropped members' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_POSSIBLY_DROPPED_MEMBERS_N" = "Níl na baill seo in ann dul isteach i nGrúpaí Nua, agus bainfear den ghrúpa iad:";
-
-/* Title for the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_TITLE" = "Uasghrádú go Grúpa Nua";
-
-/* Label for the 'upgrade this group' button in the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_BUTTON" = "Upgrade this Group";
-
-/* Message for error alert indicating the group update failed. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_FAILED_ERROR_MESSAGE" = "This group couldn’t be upgraded to a New Group right now.";
-
-/* Message for error alert indicating the group update failed due to network connectivity. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_FAILED_ERROR_MESSAGE_NETWORK" = "This group couldn’t be upgraded to a New Group because you’re not connected to the Internet. Try again later.";
-
-/* Title for error alert indicating the group update failed. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_FAILED_ERROR_TITLE" = "Couldn’t Complete Upgrade";
-
-/* Message indicating the group update succeeded. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_SUCCEEDED" = "Upgraded to New Group.";
-
-/* An \"upgrade\" link for upgrading legacy groups to new groups. */
-"GROUPS_LEGACY_GROUP_UPGRADE_LINK" = "upgrade this group";
 
 /* Message for the 'replace group admin' alert. */
 "GROUPS_REPLACE_ADMIN_ALERT_MESSAGE" = "Sula bhfágfaidh tú an grúpa, ba chóir duit riarthóir nua a roghnú.";
@@ -3227,7 +3197,7 @@
 "HELP_SUPPORT_CENTER" = "Lárionad Tacaíochta";
 
 /* Label for 'archived conversations' button. */
-"HOME_VIEW_ARCHIVED_CONVERSATIONS" = "Archived Chats";
+"HOME_VIEW_ARCHIVED_CONVERSATIONS" = "Comhráite sa Chartlann";
 
 /* Table cell subtitle label for a conversation the user has blocked. */
 "HOME_VIEW_BLOCKED_CONVERSATION" = "Bac curtha";
@@ -3248,7 +3218,7 @@
 "HOME_VIEW_FIRST_CONVERSATION_OFFER_3_CONTACTS_FORMAT" = "Tá teagmhálaithe de do chuid ar Signal cheana, %1$@, %2$@, agus %3$@ ina measc";
 
 /* A label offering to start a new conversation with your contacts, if you have no Signal contacts. */
-"HOME_VIEW_FIRST_CONVERSATION_OFFER_NO_CONTACTS" = "Start your first chat here.";
+"HOME_VIEW_FIRST_CONVERSATION_OFFER_NO_CONTACTS" = "Tosaigh ar do chéad chomhrá anseo.";
 
 /* Table cell subtitle label for a group the user has been added to. {Embeds inviter name} */
 "HOME_VIEW_MESSAGE_REQUEST_ADDED_TO_GROUP_FORMAT" = "Chuir %1$@ leis an ngrúpa thú";
@@ -3263,7 +3233,7 @@
 "HOME_VIEW_TITLE_ARCHIVE" = "Cartlann";
 
 /* Title for the 'Select Chats' option in the ChatList. */
-"HOME_VIEW_TITLE_SELECT_CHATS" = "Select Chats";
+"HOME_VIEW_TITLE_SELECT_CHATS" = "Roghnaigh Comhráite";
 
 /* Title 'Read All' button in the toolbar of the ChatList if multi-section is active. */
 "HOME_VIEW_TOOLBAR_READ_ALL" = "Read All";
@@ -3311,7 +3281,7 @@
 "IN_CALL_RINGING" = "Bualadh…";
 
 /* Call setup status label */
-"IN_CALL_RINGING_AUDIO" = "Glao Fuaime…";
+"IN_CALL_RINGING_AUDIO" = "Guthghlao…";
 
 /* Call setup status label */
 "IN_CALL_RINGING_VIDEO" = "Físghlao…";
@@ -3326,10 +3296,10 @@
 "INBOX_VIEW_ARCHIVE_MODE_MUTED_CHATS_REMINDER" = "Fanfaidh comhráite balbhaithe sa chartlann fós nuair a thagann teachtaireacht nua isteach.";
 
 /* Label reminding the user that they are in archive mode, and that chats are unarchived when they receive a new message. */
-"INBOX_VIEW_ARCHIVE_MODE_REMINDER" = "Archived chats will move to the Inbox when a new message arrives.";
+"INBOX_VIEW_ARCHIVE_MODE_REMINDER" = "Bogfar comhráite sa chartlann chuig an mBosca Isteach nuair a thagann teachtaireacht nua isteach.";
 
 /* Message shown in the conversation list when the inbox is empty. */
-"INBOX_VIEW_EMPTY_INBOX" = "No chats yet.\nGet started by messaging a friend.";
+"INBOX_VIEW_EMPTY_INBOX" = "Níl aon chomhráite ann fós.\nTosaigh air trí theachtaireacht a chur chuig cara.";
 
 /* info message text in conversation view */
 "INCOMING_AUDIO_CALL" = "Guthghlao isteach";
@@ -3395,13 +3365,13 @@
 "KEY_COMMAND_ALL_MEDIA" = "Oscail na Meáin go léir";
 
 /* A keyboard command to archive the current conversation. */
-"KEY_COMMAND_ARCHIVE" = "Archive Chat";
+"KEY_COMMAND_ARCHIVE" = "Cuir Comhrá sa Chartlann";
 
 /* A keyboard command to open the current conversation's attachment picker. */
 "KEY_COMMAND_ATTACHMENTS" = "Taispeáin Ceangaltáin";
 
 /* A keyboard command to open the current conversation's settings. */
-"KEY_COMMAND_CONVERSATION_INFO" = "Go to Chat Info";
+"KEY_COMMAND_CONVERSATION_INFO" = "Téigh chuig Faisnéis faoin gComhrá";
 
 /* A keyboard command to focus the current conversation's input field. */
 "KEY_COMMAND_FOCUS_COMPOSER" = "Cuir an Fócas sa Bharra Ionchurtha";
@@ -3416,10 +3386,10 @@
 "KEY_COMMAND_NEW_MESSAGE" = "Teachtaireacht Nua";
 
 /* A keyboard command to jump to the next conversation in the list. */
-"KEY_COMMAND_NEXT_CONVERSATION" = "Go to Next Chat";
+"KEY_COMMAND_NEXT_CONVERSATION" = "Téigh chuig an gCéad Chomhrá Eile";
 
 /* A keyboard command to jump to the previous conversation in the list. */
-"KEY_COMMAND_PREVIOUS_CONVERSATION" = "Go to Previous Chat";
+"KEY_COMMAND_PREVIOUS_CONVERSATION" = "Téigh chuig an gComhrá Roimhe";
 
 /* A keyboard command to begin a search on the conversation list. */
 "KEY_COMMAND_SEARCH" = "Cuardach";
@@ -3431,7 +3401,7 @@
 "KEY_COMMAND_STICKERS" = "Taispeáin Greamáin";
 
 /* A keyboard command to unarchive the current conversation. */
-"KEY_COMMAND_UNARCHIVE" = "Unarchive Chat";
+"KEY_COMMAND_UNARCHIVE" = "Bain Comhrá den Chartlann";
 
 /* Label for the 'learn more' button. */
 "LEARN_MORE" = "Tuilleadh Eolais";
@@ -3445,6 +3415,21 @@
 /* Error indicating that a group could not be left. */
 "LEAVE_GROUP_FAILED" = "Tharla earráid agus an grúpa á fhágáil.";
 
+/* Text in a sheet explaining details about 'Legacy Groups'. */
+"LEGACY_GROUP_UNSUPPORTED_LEARN_MORE_BODY" = "Grúpaí nach bhfuil tacú iontu do ghnéithe amhail @tráchtanna agus riarthóirí is ea iad \"Grúpaí Oidhreachta\". Rinneadh an chuid is mó de na Grúpaí Oidhreachta a uasghrádú go huathoibríoch nó de láimh chuig \"Grúpaí Nua\". De dheasca tréimhse fhada neamhghníomhaíochta, ní féidir an grúpa seo a uasghrádú a thuilleadh.\n\nNí mór duit grúpa nua a chruthú le leanúint leis an gcomhrá seo.";
+
+/* Title for a sheet explaining details about 'Legacy Groups'. */
+"LEGACY_GROUP_UNSUPPORTED_LEARN_MORE_TITLE" = "Grúpaí Oidhreachta";
+
+/* Message explaining that this group can no longer be used because it is unsupported. Embeds a {{ learn more link }}. */
+"LEGACY_GROUP_UNSUPPORTED_MESSAGE" = "Is Grúpa Oidhreachta é seo, níl tacú ann dó a thuilleadh. Cruthaigh grúpa nua le leanúint leis an gcomhrá seo. %1$@";
+
+/* Text in a sheet explaining details about 'New Groups'. */
+"LEGACY_GROUP_WHAT_ARE_NEW_GROUPS_BODY" = "New Groups have features like @mentions and group admins, and will support more features in the future.\n\nCoinníodh stair na dteachtaireachtaí agus na meáin go léir a bhí ann roimh an uasghrádú.";
+
+/* Title for a sheet explaining details about 'New Groups'. */
+"LEGACY_GROUP_WHAT_ARE_NEW_GROUPS_TITLE" = "Céard iad Baiclí Nua?";
+
 /* report an invalid linking code */
 "LINK_DEVICE_INVALID_CODE_BODY" = "Níl an cód QR seo bailí. Deimhnigh gur scan tú an cód QR ar an ngléas a bhfuil tú ag iarraidh nascadh leis.";
 
@@ -3452,7 +3437,7 @@
 "LINK_DEVICE_INVALID_CODE_TITLE" = "Theip ar Nascadh";
 
 /* confirm the users intent to link a new device */
-"LINK_DEVICE_PERMISSION_ALERT_BODY" = "This device will be able to see your groups and contacts, access your chats, and send messages in your name.";
+"LINK_DEVICE_PERMISSION_ALERT_BODY" = "Beidh an gléas seo in ann do ghrúpaí agus teagmhálaithe a fheiceáil, do chomhráite a rochtain, agus teachtaireachtaí a sheoladh faoi d'ainm féin.";
 
 /* confirm the users intent to link a new device */
 "LINK_DEVICE_PERMISSION_ALERT_TITLE" = "Nasc an gléas seo?";
@@ -3553,11 +3538,20 @@
 /* Shown in place of message input text in media editor when 'View Once' is on. */
 "MEDIA_EDITOR_TEXT_FIELD_VIEW_ONCE_MEDIA" = "Meáin Amhairc Aonuaire";
 
+/* Explanatory text displayed when deleting N items in All Media screen. */
+"MEDIA_GALLERY_DELETE_MEDIA_BODY" = "This will permanently delete the selected files. Any message text associated with these items will also be deleted.";
+
 /* Format for the 'more items' indicator for media galleries. Embeds {{the number of additional items}}. */
 "MEDIA_GALLERY_MORE_ITEMS_FORMAT" = "+%1$@";
 
 /* Section header in media gallery collection view */
 "MEDIA_GALLERY_THIS_MONTH_HEADER" = "An Mhí Seo";
+
+/* Text explaining that the user will forward all media from a message. */
+"MEDIA_PAGE_FORWARD_MEDIA_CONFIRM_MESSAGE" = "Cuirfear ar aghaidh gach meán atá sa teachtaireacht seo.";
+
+/* Context menu item in media viewer. Refers to deleting currently displayed photo/video. */
+"MEDIA_VIEWER_DELETE_MEDIA_ACTION" = "Scrios";
 
 /* button title to snooze a megaphone */
 "MEGAPHONE_REMIND_LATER" = "Meabhraigh Dom Níos Déanaí";
@@ -3655,6 +3649,9 @@
 /* Toast indicating that the user has copied the sent timestamp. */
 "MESSAGE_DETAIL_VIEW_DID_COPY_SENT_TIMESTAMP" = "Sent time copied";
 
+/* Title for the 'edit history' section on the 'message details' view. */
+"MESSAGE_DETAILS_EDIT_HISTORY_TITLE" = "Féach ar an stair eagarthóireachta";
+
 /* Title for the 'sent from' section on the 'message details' view. */
 "MESSAGE_DETAILS_VIEW_SENT_FROM_TITLE" = "Seolta ó";
 
@@ -3716,10 +3713,10 @@
 "MESSAGE_REQUEST_BLOCK_ACTION" = "Cuir bac";
 
 /* Action sheet action to confirm blocking and deleting a thread via a message request. */
-"MESSAGE_REQUEST_BLOCK_AND_DELETE_ACTION" = "Cuir bac Air agus Scrios";
+"MESSAGE_REQUEST_BLOCK_AND_DELETE_ACTION" = "Cuir bac air agus scrios";
 
 /* Action sheet action to confirm blocking and report spam for a thread via a message request. */
-"MESSAGE_REQUEST_BLOCK_AND_REPORT_SPAM_ACTION" = "Tuairiscigh Turscar agus Cuir Bac Air";
+"MESSAGE_REQUEST_BLOCK_AND_REPORT_SPAM_ACTION" = "Tuairiscigh turscar agus cuir bac air";
 
 /* Action sheet message to confirm blocking a conversation via a message request. */
 "MESSAGE_REQUEST_BLOCK_CONVERSATION_MESSAGE" = "Ní bheidh daoine bactha in ann glaonna a chur ort ná teachtaireachtaí a sheoladh chugat.";
@@ -3731,7 +3728,7 @@
 "MESSAGE_REQUEST_BLOCK_GROUP_MESSAGE" = "Fágfaidh tú an grúpa seo agus ní bhfaighidh tú teachtaireachtaí uaidh a thuilleadh.";
 
 /* Action sheet title to confirm blocking a group via a message request. Embeds {{group name}} */
-"MESSAGE_REQUEST_BLOCK_GROUP_TITLE_FORMAT" = "Cuir Bac ar %1$@ agus Imigh As?";
+"MESSAGE_REQUEST_BLOCK_GROUP_TITLE_FORMAT" = "Cuir bac ar %1$@ agus imigh as?";
 
 /* Action sheet action to confirm deleting a conversation via a message request. */
 "MESSAGE_REQUEST_DELETE_CONVERSATION_ACTION" = "Scrios";
@@ -3782,10 +3779,10 @@
 "MESSAGE_REQUEST_VIEW_BLOCK_BUTTON" = "Cuir bac";
 
 /* A prompt notifying that the user must unblock this conversation to continue. Embeds {{contact name}}. */
-"MESSAGE_REQUEST_VIEW_BLOCKED_CONTACT_PROMPT_FORMAT" = "Lig do %1$@, teachtaireachtaí a sheoladh chugat agus comhroinn d'ainm agus grianghraf leis/léi? Ní bhfaighidh tú aon teachtaireachtaí go dtí go mbainfidh tú an bac de/di.";
+"MESSAGE_REQUEST_VIEW_BLOCKED_CONTACT_PROMPT_FORMAT" = "Lig do %1$@ teachtaireachtaí a sheoladh chugat agus comhroinn d'ainm agus grianghraf leis/léi? Ní bhfaighidh tú aon teachtaireachtaí go dtí go mbainfidh tú an bac de/di.";
 
 /* A prompt notifying that the user must unblock this group to continue. */
-"MESSAGE_REQUEST_VIEW_BLOCKED_GROUP_PROMPT" = "Bain an bac den ghrúpa seo agus comhroinn d'ainm agus grianghraf lena bhaill ? Ní bhfaighidh tú aon teachtaireachtaí go dtí go mbainfidh tú an bac de.";
+"MESSAGE_REQUEST_VIEW_BLOCKED_GROUP_PROMPT" = "Bain an bac den ghrúpa seo agus comhroinn d'ainm agus grianghraf lena bhaill? Ní bhfaighidh tú aon teachtaireachtaí go dtí go mbainfidh tú an bac de.";
 
 /* A prompt notifying that the user must unblock this group to continue. */
 "MESSAGE_REQUEST_VIEW_BLOCKED_GROUP_PROMPT_V2" = "Bain an bac den ghrúpa seo? Ní bheidh a fhios ag na baill go bhfaca tú a gcuid teachtaireachtaí go dtí go mbainfidh tú an bac.";
@@ -3797,10 +3794,10 @@
 "MESSAGE_REQUEST_VIEW_DELETE_BUTTON" = "Scrios";
 
 /* A prompt notifying that the user must share their profile with this conversation. Embeds {{contact name}}. */
-"MESSAGE_REQUEST_VIEW_EXISTING_CONTACT_PROMPT_FORMAT" = "Continue this chat with %1$@ and share your name and photo with them?";
+"MESSAGE_REQUEST_VIEW_EXISTING_CONTACT_PROMPT_FORMAT" = "Lean leis an gcomhrá seo le %1$@ agus comhroinn d'ainm agus grianghraf leis an duine sin?";
 
 /* A prompt notifying that the user must share their profile with this group. */
-"MESSAGE_REQUEST_VIEW_EXISTING_GROUP_PROMPT" = "Continue your chat with this group and share your name and photo with its members?";
+"MESSAGE_REQUEST_VIEW_EXISTING_GROUP_PROMPT" = "Lean le do chomhrá leis an ngrúpa seo agus comhroinn d'ainm agus grianghraf lena bhaill?";
 
 /* A prompt asking if the user wants to accept a conversation invite. Embeds {{contact name}}. */
 "MESSAGE_REQUEST_VIEW_NEW_CONTACT_PROMPT_FORMAT" = "An bhfuil fonn ort d'ainm agus do phictiúr a roinnt le %1$@, agus cead a thabhairt dó/di teachtaireachtaí a sheoladh chugat? Ní bheidh a fhios acu go bhfaca tú an teachtaireacht go dtí go nglacfaidh tú léi.";
@@ -3828,6 +3825,9 @@
 
 /* message status while message is downloading. */
 "MESSAGE_STATUS_DOWNLOADING" = "Á híoslódáil";
+
+/* status meesage for edited messages */
+"MESSAGE_STATUS_EDITED" = "arna cur in eagar";
 
 /* status message for failed messages */
 "MESSAGE_STATUS_FAILED" = "Theip ar sheoladh.";
@@ -4067,7 +4067,10 @@
 "NO_OTHER_GROUPS_IN_COMMON" = "No other groups in common.";
 
 /* Label for 1:1 conversation with yourself. */
-"NOTE_TO_SELF" = "Nóta Pearsanta";
+"NOTE_TO_SELF" = "Nóta Chugam Féin";
+
+/* Body for a notification representing a message request. */
+"NOTIFICATION_BODY_INCOMING_MESSAGE_REQUEST" = "Iarratas Teachtaireachta";
 
 /* Lock screen notification text presented after user powers on their device without unlocking. Embeds {{device model}} (either 'iPad' or 'iPhone') */
 "NOTIFICATION_BODY_PHONE_LOCKED_FORMAT" = "D'fhéadfadh sé go bhfuair tú teachtaireachtaí nuair a bhí an %1$@ á atosú.";
@@ -4140,6 +4143,9 @@
 
 /* Label indicating that the 2fa pin is invalid in the 'onboarding 2fa' view. */
 "ONBOARDING_2FA_INVALID_PIN" = "UAP mhícheart";
+
+/* Label indicating that the 2fa pin is invalid in the 'onboarding 2fa' view, and you only have one more attempt */
+"ONBOARDING_2FA_INVALID_PIN_LAST_ATTEMPT" = "UAP mhícheart. 1 iarracht amháin fágtha.";
 
 /* Label for the 'skip and create new pin' button when reglock is disabled during onboarding. */
 "ONBOARDING_2FA_SKIP_AND_CREATE_NEW_PIN" = "Scipeáil agus Cruthaigh UAP nua";
@@ -4222,6 +4228,9 @@
 /* Title of the 'onboarding pin attempts exhausted' view when reglock is disabled. */
 "ONBOARDING_PIN_ATTEMPTS_EXHAUSTED_TITLE" = "UAP mhícheart";
 
+/* Explanation of the 'onboarding pin attempts exhausted' view when it is unknown if reglock is enabled. */
+"ONBOARDING_PIN_ATTEMPTS_EXHAUSTED_WITH_UNKNOWN_REGLOCK_EXPLANATION" = "Níl aon tomhas UAP fágtha agat, ach is féidir leat fós rochtain ar do chuntas Signal a thriail trí d'uimhir ghutháin a fhíorú. Ar mhaithe le príobháideachais agus slándáil, aischuirfear do chuntas gan aon fhaisnéis phróifíle ná socruithe atá sábháilte ann.";
+
 /* Title of the 'onboarding PIN' view. */
 "ONBOARDING_PIN_EXPLANATION" = "Cuir isteach an UAP a chruthaigh tú don chuntas seo. Ní ionann é seo agus an cód deimhniúcháin SMS.";
 
@@ -4255,6 +4264,18 @@
 /* Label for a progress spinner currently validating code */
 "ONBOARDING_VERIFICATION_CODE_VALIDATION_PROGRESS_LABEL" = "Cód á Bhailíochtú…";
 
+/* First bullet point for the explainer sheet for registering via verification code. */
+"ONBOARDING_VERIFICATION_HELP_BULLET_1" = "Cinntigh go bhfuil comhartha móibíleach ar fáil ar do ghuthán chun glacadh leis an SMS nó glao";
+
+/* Second bullet point for the explainer sheet for registering via verification code. */
+"ONBOARDING_VERIFICATION_HELP_BULLET_2" = "Deimhnigh gur féidir leat glacadh le glao gutháin ag an uimhir";
+
+/* Third bullet point for the explainer sheet for registering via verification code. */
+"ONBOARDING_VERIFICATION_HELP_BULLET_3" = "Seiceáil go bhfuil d'uimhir ghutháin curtha isteach i gceart agat";
+
+/* Label for a button to get help entering a verification code when registering. */
+"ONBOARDING_VERIFICATION_HELP_LINK" = "Deacracht Agat le Clárú?";
+
 /* Label indicating that the verification code is incorrect in the 'onboarding verification' view. */
 "ONBOARDING_VERIFICATION_INVALID_CODE" = "Tá an cód seo mícheart";
 
@@ -4272,6 +4293,21 @@
 
 /* Button text which opens the settings app */
 "OPEN_SETTINGS_BUTTON" = "Socruithe";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're on unsupported version. Some users can upgrade their device to a newer version of iOS to continue using Signal. If that's the case, they'll be shown this text. */
+"OS_EXPIRED_AND_CAN_UPGRADE_OS" = "Níl Signal ag feidhmiú ar an ngléas seo a thuilleadh. Le Signal a úsáid arís, nuashonraigh do ghléas chuig leagan níos nuaí de iOS.";
+
+/* Signal doesn't support old devices. If that's the case, they'll be shown this action, and tapping it will open information about Signal's minimum supported operating systems. */
+"OS_EXPIRED_AND_DEVICE_IS_STUCK" = "Níl Signal ag feidhmiú ar an ngléas seo a thuilleadh. Le Signal a úsáid arís, aistrigh chuig gléas níos nuaí.";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're on an old version. Some users can upgrade their device to a newer version of iOS to continue using Signal. If that's the case, they'll be shown this action, and tapping it will open device update instructions. */
+"OS_SOON_TO_EXPIRE_ACTION_TITLE" = "Nuashonraigh Anois";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're an old version that will soon lose support. Some users can upgrade their device to a newer version of iOS to continue using Signal. If that's the case, they'll be shown this text. Embeds {{expiration date}}. */
+"OS_SOON_TO_EXPIRE_AND_CAN_UPGRADE_OS_FORMAT" = "Ní bheidh tacú ag Signal go luath leis an leagan de iOS atá ar do ghléas. Le leanúint le Signal a úsáid, nuashonraigh do ghléas chuig leagan níos nuaí de iOS faoi %1$@.";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're on an old version that will soon lose support. This is the text on that warning when users can't upgrade iOS without getting a new device. Embeds {{expiration date}}. */
+"OS_SOON_TO_EXPIRE_AND_DEVICE_WILL_BE_STUCK_FORMAT" = "Ní bheidh tacú ag Signal go luath leis an leagan de iOS atá ar do ghléas. Le leanúint le Signal a úsáid, nuashonraigh do ghléas nó aistrigh chuig gléas níos nuaí faoin %1$@.";
 
 /* Info Message when another user disabled disappearing messages. Embeds {{name of other user}}. */
 "OTHER_DISABLED_DISAPPEARING_MESSAGES_CONFIGURATION" = "Dhíchumasaigh %1$@ teachtaireachtaí gearrshaolacha.";
@@ -4649,22 +4685,16 @@
 "PHONE_NUMBER_DISCOVERABILITY_EVERYBODY" = "Everybody";
 
 /* A user friendly description of the 'everybody' phone number discoverability mode. */
-"PHONE_NUMBER_DISCOVERABILITY_EVERYBODY_DESCRIPTION" = "Anyone who has your phone number in their contacts will see you as a contact on Signal. Others will be able to reach you with your phone number when they start a new chat or group.";
+"PHONE_NUMBER_DISCOVERABILITY_EVERYBODY_DESCRIPTION" = "Daoine a bhfuil d'uimhir ghutháin ina gcuid teagmhálaithe acu, feicfidh siad mar theagmhálaí ar Signal thú. Beidh daoine eile in ann teagmháil a dhéanamh leat le d'uimhir ghutháin nuair a thosaíonn siad ar chomhrá nó ar ghrúpa nua.";
 
 /* A user friendly name for the 'nobody' phone number discoverability mode. */
 "PHONE_NUMBER_DISCOVERABILITY_NOBODY" = "Duine ar bith";
 
 /* A user friendly description of the 'nobody' phone number discoverability mode. */
-"PHONE_NUMBER_DISCOVERABILITY_NOBODY_DESCRIPTION" = "Nobody on Signal will be able to reach you with your phone number.";
+"PHONE_NUMBER_DISCOVERABILITY_NOBODY_DESCRIPTION" = "Ní bheidh aon duine ar Signal in ann thú a aimsiú le d'uimhir ghutháin.";
 
 /* A format for a label showing an example phone number. Embeds {{the example phone number}}. */
 "PHONE_NUMBER_EXAMPLE_FORMAT" = "Sampla: %1$@";
-
-/* A user friendly name for the 'contacts only' phone number sharing mode. */
-"PHONE_NUMBER_SHARING_CONTACTS_ONLY" = "My Contacts";
-
-/* A user friendly description of the 'contacts only' phone number sharing mode. */
-"PHONE_NUMBER_SHARING_CONTACTS_ONLY_DESCRIPTION" = "Only your contacts will see your phone number on Signal.";
 
 /* A user friendly name for the 'everybody' phone number sharing mode. */
 "PHONE_NUMBER_SHARING_EVERYBODY" = "Everybody";
@@ -4772,7 +4802,13 @@
 "PIN_CREATION_EXPLANATION" = "Úsáidtear UAPanna chun an fhaisnéis a stórálann tú le Signal a chriptiú, ionas nach mbeidh aon duine eile in ann í a fheiceáil.  Déanfar athchóiriú ar do phróifíl agus do chuid socruithe agus teagmhálaithe nuair a shuiteálfaidh tú Signal arís. Ní bheidh an UAP ag teastáil chun an aip a oscailt.";
 
 /* Learn more action on the pin creation view */
-"PIN_CREATION_LEARN_MORE" = "Tuilleadh eolais faoi UAPanna";
+"PIN_CREATION_LEARN_MORE" = "Tuilleadh faisnéise faoi UAPanna";
+
+/* Users can create PINs to restore their account data later. They can learn more about this on a sheet. This is the text on that sheet. */
+"PIN_CREATION_LEARN_MORE_TEXT" = "Coinníonn UAPanna d'fhaisnéis a stóráiltear le Signal criptithe ionas nach mbeidh ach tusa in ann í a rochtain. Aischuirfear do phróifíl, socruithe agus teagmhálaithe tar éis athshuiteáil duit.";
+
+/* Users can create PINs to restore their account data later. They can learn more about this on a sheet. This is the title on that sheet. */
+"PIN_CREATION_LEARN_MORE_TITLE" = "Eolas faoi UAPanna Signal";
 
 /* Label indicating that the attempted PIN does not match the first PIN */
 "PIN_CREATION_MISMATCH_ERROR" = "Ní ionann iad na UAPanna. Bain triail eile as.";
@@ -4820,13 +4856,16 @@
 "PIN_CREATION_WEAK_ERROR" = "Ba chóir duit UAP níos láidre a roghnú";
 
 /* If your attempted PIN is too weak, you'll see an error message. This is the text on the error dialog. */
-"PIN_CREATION_WEAK_ERROR_MESSAGE" = "PINs keep your information stored with Signal encrypted so only you can access it. Choose a stronger PIN to protect your account.";
+"PIN_CREATION_WEAK_ERROR_MESSAGE" = "Coinníonn UAPanna faisnéis a stóráiltear le Signal criptithe ionas nach mbeidh ach tusa in ann í a rochtain. Roghnaigh UAP níos láidre le do chuntas a chosaint.";
 
 /* Error body indicating that the attempt to disable a PIN failed. */
 "PIN_DISABLE_ERROR_MESSAGE" = "Níorbh fhéidir an UAP a dhíchumasú. Iarrfaimid ort ar ball.";
 
 /* Error title indicating that the attempt to disable a PIN failed. */
 "PIN_DISABLE_ERROR_TITLE" = "Theip ar dhíchumasú an UAP";
+
+/* If the user is re-registering, they need to enter their PIN to restore all their data. In some cases, they can skip this entry and lose some data. This text is shown on a button that lets them begin to do this. */
+"PIN_ENTER_EXISTING_SKIP" = "Scipeáil an UAP";
 
 /* Error title indicating that the attempt to recreate a PIN failed. */
 "PIN_RECREATION_ERROR_TITLE" = "Níorbh fhéidir an UAP a chruthú";
@@ -4871,7 +4910,7 @@
 "PIN_REMINDER_TOO_SHORT_ERROR" = "Ní cheadaítear UAP atá níos giorra ná 4 dhigit.";
 
 /* An explanation that you have already pinned the maximum number of conversations. */
-"PINNED_CONVERSATION_LIMIT" = "You can only pin up to 4 chats.";
+"PINNED_CONVERSATION_LIMIT" = "Is féidir leat suas le 4 chomhrá a phionnáil.";
 
 /* The title for pinned conversation section on the conversation list */
 "PINNED_SECTION_TITLE" = "Greamaithe";
@@ -4897,7 +4936,7 @@
 /* Badge indicating that the user is verified. */
 "PRIVACY_IDENTITY_IS_VERIFIED_BADGE" = "Deimhnithe";
 
-/* Label indicating that the user is verified. Embeds {{the user's name or phone number}}. */
+/* Label indicating that the user is verified. Embeds  user's name or phone number}}. */
 "PRIVACY_IDENTITY_IS_VERIFIED_FORMAT" = "Tá %1$@ deimhnithe.";
 
 /* Button that shows the 'scan with camera' view. */
@@ -4910,7 +4949,7 @@
 "PRIVACY_VERIFICATION_FAILED_I_HAVE_WRONG_KEY_FOR_THEM" = "Ní hí seo d'uimhir shábháilteachta le %1$@. An bhfuil tú ag iarraidh an teagmhálaí ceart a dheimhniú?";
 
 /* Alert body */
-"PRIVACY_VERIFICATION_FAILED_MISMATCHED_SAFETY_NUMBERS_IN_CLIPBOARD" = "The number in your clipboard doesn't look like the correct safety number for this chat.";
+"PRIVACY_VERIFICATION_FAILED_MISMATCHED_SAFETY_NUMBERS_IN_CLIPBOARD" = "Is cosúil nach í an uimhir ar do ghearrthaisce an uimhir sábháilteachta cheart don chomhrá seo.";
 
 /* Alert body for user error */
 "PRIVACY_VERIFICATION_FAILED_NO_SAFETY_NUMBERS_IN_CLIPBOARD" = "Níor aimsigh Signal uimhir shábháilteachta sa ghearrthaisce. Ar chóipeáil tú í mar is ceart?";
@@ -4970,7 +5009,7 @@
 "PROFILE_BIO_VIEW_DEFAULT_BIO_ENCRYPTED" = "Criptithe";
 
 /* The 'free to chat' default bio in the profile bio view. */
-"PROFILE_BIO_VIEW_DEFAULT_BIO_FREE_TO_CHAT" = "Tá le fáil chun comhrá a bheith agam";
+"PROFILE_BIO_VIEW_DEFAULT_BIO_FREE_TO_CHAT" = "Saor le comhrá a dhéanamh";
 
 /* The 'Speak Freely' default bio in the profile bio view. */
 "PROFILE_BIO_VIEW_DEFAULT_BIO_SPEAK_FREELY" = "Speak Freely";
@@ -5002,8 +5041,14 @@
 /* Placeholder when the user doesn't have a 'name' defined for profile settings screen. */
 "PROFILE_SETTINGS_NAME_PLACEHOLDER" = "Name";
 
+/* Title for a menu action allowing users to edit their existing username. */
+"PROFILE_SETTINGS_USERNAME_EDIT_USERNAME_ACTION" = "Cuir ainm úsáideora in eagar";
+
 /* A placeholder value shown in the profile settings screen on a tappable item leading to a username selection flow, for when the user doesn't have a username. */
 "PROFILE_SETTINGS_USERNAME_PLACEHOLDER" = "Ainm úsáideora";
+
+/* Title for a menu action allowing users to view their username link QR code. */
+"PROFILE_SETTINGS_USERNAME_VIEW_QR_CODE_ACTION" = "Féach ar an gCód QR";
 
 /* Error message shown when user tries to update profile with a family name that is too long. */
 "PROFILE_VIEW_ERROR_FAMILY_NAME_TOO_LONG" = "Tá do shloinne rófhada.";
@@ -5024,7 +5069,7 @@
 "PROFILE_VIEW_NO_CONNECTION" = "Ní féidir an phróifíl a athrú nuair nach bhfuil tú ceangailte leis an Idirlíon.";
 
 /* Description of the user profile. */
-"PROFILE_VIEW_PROFILE_DESCRIPTION" = "Your profile is end-to-end encrypted. Your profile and changes to it will be visible to your contacts and when you start or accept new chats.";
+"PROFILE_VIEW_PROFILE_DESCRIPTION" = "Tá do phróifíl criptithe ó cheann ceann. Beidh do phróifíl agus aon athrú uirthi infheicthe ag do theagmhálaithe agus nuair a thosaíonn tú ar chomhráite nua nó nuair a ghlacann tú leo.";
 
 /* Button to save the profile view in the profile view. */
 "PROFILE_VIEW_SAVE_BUTTON" = "Sábháil";
@@ -5102,40 +5147,40 @@
 "REACTION_DETAIL_ALL_FORMAT" = "%1$@ Emoji";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_BODY_FORMAT" = "Tugadh %1$@ don teachtaireacht";
+"REACTION_INCOMING_NOTIFICATION_BODY_FORMAT" = "Tugadh freagairt %1$@ do do theachtaireacht";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_ALBUM_BODY_FORMAT" = "Tugadh %1$@ don albam";
+"REACTION_INCOMING_NOTIFICATION_TO_ALBUM_BODY_FORMAT" = "Tugadh freagairt %1$@ do d'albam";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_AUDIO_BODY_FORMAT" = "Tugadh %1$@ don taifead fuaime";
+"REACTION_INCOMING_NOTIFICATION_TO_AUDIO_BODY_FORMAT" = "Tugadh freagairt %1$@ do do mhír fuaime";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_CONTACT_SHARE_BODY_FORMAT" = "Tugadh %1$@ don teagmhálaí a chomhroinn tú";
+"REACTION_INCOMING_NOTIFICATION_TO_CONTACT_SHARE_BODY_FORMAT" = "Tugadh freagairt %1$@ don teagmhálaí a chomhroinn tú";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_FILE_BODY_FORMAT" = "Tugadh %1$@ don chomhad";
+"REACTION_INCOMING_NOTIFICATION_TO_FILE_BODY_FORMAT" = "Tugadh freagairt %1$@ do do chomhad";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_GIF_BODY_FORMAT" = "Tugadh %1$@ don GIF";
+"REACTION_INCOMING_NOTIFICATION_TO_GIF_BODY_FORMAT" = "Tugadh freagairt %1$@ do do GIF";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_PHOTO_BODY_FORMAT" = "Tugadh %1$@ don ghrianghraf";
+"REACTION_INCOMING_NOTIFICATION_TO_PHOTO_BODY_FORMAT" = "Tugadh freagairt %1$@ do do ghrianghraf";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_STICKER_MESSAGE_BODY_FORMAT" = "Tugadh %1$@ don ghreamán";
+"REACTION_INCOMING_NOTIFICATION_TO_STICKER_MESSAGE_BODY_FORMAT" = "Tugadh freagairt %1$@ do do ghreamán";
 
 /* notification body. Embeds {{reaction emoji}} and {{body text}} */
-"REACTION_INCOMING_NOTIFICATION_TO_TEXT_MESSAGE_BODY_FORMAT" = "Tugadh %1$@ do: “%2$@”";
+"REACTION_INCOMING_NOTIFICATION_TO_TEXT_MESSAGE_BODY_FORMAT" = "Tugadh freagairt %1$@ do: \"%2$@\"";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_VIDEO_BODY_FORMAT" = "Tugadh %1$@ don fhíseán";
+"REACTION_INCOMING_NOTIFICATION_TO_VIDEO_BODY_FORMAT" = "Tugadh freagairt %1$@ do d'fhíseán";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_VIEW_ONCE_MESSAGE_BODY_FORMAT" = "Tugadh %1$@ don chomhad meáin aonuaire";
+"REACTION_INCOMING_NOTIFICATION_TO_VIEW_ONCE_MESSAGE_BODY_FORMAT" = "Tugadh freagairt %1$@ do do mheán amhairc aonuaire";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_VOICE_MESSAGE_BODY_FORMAT" = "Tugadh %1$@ don ghlórtheachtaireacht";
+"REACTION_INCOMING_NOTIFICATION_TO_VOICE_MESSAGE_BODY_FORMAT" = "Tugadh freagairt %1$@ do do ghlórphost";
 
 /* Pressing this button marks a thread as read */
 "READ_ACTION" = "Léite";
@@ -5164,8 +5209,11 @@
 /* Alert body for a forgotten SVR (V2) PIN */
 "REGISTER_2FA_FORGOT_SVR_PIN_ALERT_MESSAGE" = "Is éard atá in UAP ná cód 4+ digit a chruthaíonn tú, uimhriúil nó alfa-uimhriúil. Má ligeann tú i ndearmad í, beidh ort fanacht 7 lá sular féidir leat do chuntas a athchlárú.";
 
-/* Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock */
-"REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_ALERT_MESSAGE" = "Is éard atá in UAP ná cód 4+ digit a chruthaíonn tú, uimhriúil nó alfa-uimhriúil. Má ligeann tú i ndearmad í, is féidir leat ceann nua a chruthú. Beidh tú in ann do chuntas a athchlárú ach caillfidh tú socruithe áirithe, an fhaisnéis i do phróifíl ina measc.";
+/* Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock and they cannot necessarily create a new PIN */
+"REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_ALERT_MESSAGE" = "Cód 4+ dhigit is ea do UAP a chruthaigh tú, ar féidir leis a bheith uimhriúil nó alfa-uimhriúil. Mura bhfuil tú in ann cuimhneamh ar do UAP, is féidir leat clárú agus do chuntas a úsáid ach caillfidh tú socruithe áirithe atá sábháilte, amhail d'fhaisnéis phróifíle.";
+
+/* Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock and they can create a new PIN */
+"REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_AND_CAN_CREATE_NEW_PIN_ALERT_MESSAGE" = "Cód 4+ dhigit is ea do UAP a chruthaigh tú, ar féidir leis a bheith uimhriúil nó alfa-uimhriúil. Mura bhfuil tú in ann cuimhneamh ar do UAP, is féidir leat ceann nua a chruthú. Is féidir leat do chuntas a chlárú agus a úsáid ach caillfidh tú socruithe áirithe atá sábháilte, amhail d'fhaisnéis phróifíle.";
 
 /* Alert body for a forgotten V1 PIN */
 "REGISTER_2FA_FORGOT_V1_PIN_ALERT_MESSAGE" = "Is éard atá in UAP ná cód 4+ digit a chruthaíonn tú. Má ligeann tú i ndearmad í, beidh ort fanacht 7 lá sular féidir leat do chuntas a athchlárú.";
@@ -5179,6 +5227,9 @@
 /* No comment provided by engineer. */
 "REGISTER_CONTACTS_WELCOME" = "Fáilte!";
 
+/* Body of action sheet shown when rate-limited during registration. */
+"REGISTER_RATE_LIMITING_ALERT" = "Rinne tú an iomarca iarrachtaí. Fan cúpla nóiméad roimh é a thriail arís.";
+
 /* action sheet body */
 "REGISTER_RATE_LIMITING_BODY" = "Rinne tú an iomarca iarrachtaí. Fan nóiméad sula ndéanfaidh tú iarracht eile.";
 
@@ -5188,17 +5239,26 @@
 /* Title of alert shown when push tokens sync job fails. */
 "REGISTRATION_BODY" = "Theip ort athchlárú le brúfhógraí.";
 
+/* During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the action button on that alert. */
+"REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_ACTION" = "Nuashonraigh";
+
+/* During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the description text on that alert. */
+"REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_DESCRIPTION" = "Le leanúint leis gan chlárú, nuashonraigh chuig an leagan is déanaí de Signal.";
+
+/* During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the title on that alert. */
+"REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_TITLE" = "Nuashonrú De Dhíth";
+
 /* During registration, users may be shown a CAPTCHA to verify that they're human. This text is shown above the CAPTCHA. */
-"REGISTRATION_CAPTCHA_TITLE" = "We need to verify that you’re human";
+"REGISTRATION_CAPTCHA_TITLE" = "Ní mór dúinn a fhíorú gur duine thú";
 
 /* Label for the country code field */
 "REGISTRATION_DEFAULT_COUNTRY_NAME" = "Cód Tíre";
 
 /* If a user is installing Signal on a new phone, they may be asked whether they want to transfer their account from their old device. This is a description on the screen that asks them this question. */
-"REGISTRATION_DEVICE_TRANSFER_CHOICE_EXPLANATION" = "Continuing will disable Signal on other devices currently registered with the same phone number.";
+"REGISTRATION_DEVICE_TRANSFER_CHOICE_EXPLANATION" = "Má leanann tú ar aghaidh, díchumasófar Signal ar ghléasanna eile atá cláraithe leis an uimhir ghutháin chéanna.";
 
 /* If a user is installing Signal on a new phone, they may be asked whether they want to transfer their account from their old device. This is the title on the screen that asks them this question. */
-"REGISTRATION_DEVICE_TRANSFER_CHOICE_TITLE" = "Transfer Account & Messages";
+"REGISTRATION_DEVICE_TRANSFER_CHOICE_TITLE" = "Aistrigh Cuntas agus Teachtaireachtaí";
 
 /* Placeholder text for the phone number textfield */
 "REGISTRATION_ENTERNUMBER_DEFAULT_TEXT" = "Cuir an Uimhir Isteach";
@@ -5215,59 +5275,98 @@
 /* Alert title for network failure during registration */
 "REGISTRATION_ERROR_NETWORK_FAILURE_ALERT_TITLE" = "Check Connection";
 
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This is the description on that screen, explaining what's going on. Embeds {{ duration }}, such as \"7 days\". */
+"REGISTRATION_LOCK_TIMEOUT_DESCRIPTION_FORMAT" = "Glasáladh do chuntas chun do phríobháideachas agus slándáil a chosaint. Tar éis %1$@ neamhghníomhaíochta i do chuntas beidh tú in ann an uimhir ghutháin seo a athchlárú gan do UAP a bheith de dhíth ort. Scriosfar an t-ábhar ar fad.";
+
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This button appears on that screen. Tapping it will tell the user more information. */
+"REGISTRATION_LOCK_TIMEOUT_LEARN_MORE_BUTTON" = "Tuilleadh faisnéise faoi chuntais ghlasáilte";
+
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This button appears on that screen. Tapping it will bump the user back, earlier in registration, so they can register with a different phone number. */
+"REGISTRATION_LOCK_TIMEOUT_RESET_PHONE_NUMBER_BUTTON" = "Úsáid uimhir dhifriúil";
+
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This is the title of that screen. */
+"REGISTRATION_LOCK_TIMEOUT_TITLE" = "Cuntas Glasáilte";
+
+/* A network error occurred during registration, and an error is shown to the user. This is the body on that error sheet. */
+"REGISTRATION_NETWORK_ERROR_BODY" = "Le leanúint leis, seiceáil nasc Idirlín do ghutháin agus triail arís.";
+
+/* A network error occurred during registration, and an error is shown to the user. This is the title on that error sheet. */
+"REGISTRATION_NETWORK_ERROR_TITLE" = "Seiceáil an Nasc";
+
 /* No comment provided by engineer. */
 "REGISTRATION_NON_VALID_NUMBER" = "Tá an uimhir ghutháin seo i bhformáid nach dtacaímid léi. Déan teagmháil leis an bhfoireann tacaíochta.";
 
 /* During registration, users are asked to enter their phone number. This is the subtitle on that screen, which gives users some instructions. */
-"REGISTRATION_PHONE_NUMBER_SUBTITLE" = "Enter your phone number to get started.";
+"REGISTRATION_PHONE_NUMBER_SUBTITLE" = "Cuir d'uimhir ghutháin isteach le tosú air.";
 
 /* During registration, users are asked to enter their phone number. This is the title on that screen. */
-"REGISTRATION_PHONE_NUMBER_TITLE" = "Your Phone Number";
+"REGISTRATION_PHONE_NUMBER_TITLE" = "D'Uimhir Ghutháin";
+
+/* Message for confirmation alert when requesting a voice code during phone number registration. */
+"REGISTRATION_PHONE_NUMBER_VOICE_CODE_ALERT_MESSAGE" = "Cuirfear glao ort chun an uimhir seo a fhíorú. An bhfuil an uimhir ghutháin thuas ceart?";
 
 /* Label for the phone number textfield */
 "REGISTRATION_PHONENUMBER_BUTTON" = "Uimhir Ghutháin";
 
 /* During registration, users are asked to create a PIN code. They'll be taken to a screen to confirm their PIN, much like confirming a password. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_CONFIRM_SUBTITLE" = "Re-enter the PIN you just created.";
+"REGISTRATION_PIN_CONFIRM_SUBTITLE" = "Cuir isteach arís an UAP a chruthaigh tú.";
 
 /* During registration, users are asked to create a PIN code. They'll be taken to a screen to confirm their PIN, much like confirming a password. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_CONFIRM_TITLE" = "Confirm your PIN";
+"REGISTRATION_PIN_CONFIRM_TITLE" = "Deimhnigh d'UAP";
 
 /* During registration, users are asked to create a PIN code. This is the subtitle on the screen where this happens. A \"learn more\" link will be added to the end of this string. */
-"REGISTRATION_PIN_CREATE_SUBTITLE" = "PINs can help you restore your account and keep your info encrypted with Signal.";
+"REGISTRATION_PIN_CREATE_SUBTITLE" = "Is féidir le UAPanna cabhrú leat do chuntas a aischur agus d'fhaisnéis a choinneáil criptithe le Signal.";
 
 /* During registration, users are asked to create a PIN code. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_CREATE_TITLE" = "Create your PIN";
+"REGISTRATION_PIN_CREATE_TITLE" = "Cruthaigh d'UAP";
 
 /* During re-registration, users may be asked to re-enter their PIN code. This is the subtitle on the screen where this happens. A \"learn more\" link will be added to the end of this string. */
-"REGISTRATION_PIN_ENTER_EXISTING_SUBTITLE" = "PINs can help you restore your account and keep your info encrypted with Signal.";
+"REGISTRATION_PIN_ENTER_EXISTING_SUBTITLE" = "Is féidir le UAPanna cabhrú leat do chuntas a aischur agus d'fhaisnéis a choinneáil criptithe le Signal.";
 
 /* During re-registration, users may be asked to re-enter their PIN code. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_ENTER_EXISTING_TITLE" = "Enter your PIN";
+"REGISTRATION_PIN_ENTER_EXISTING_TITLE" = "Cuir isteach d'UAP";
 
 /* During registration, users set up their profile. Users input a family name. This is the placeholder for that field. */
-"REGISTRATION_PROFILE_SETUP_FAMILY_NAME_FIELD_PLACEHOLDER" = "Last Name";
+"REGISTRATION_PROFILE_SETUP_FAMILY_NAME_FIELD_PLACEHOLDER" = "Sloinne";
+
+/* During registration, users can choose who can see their phone number. */
+"REGISTRATION_PROFILE_SETUP_FIND_MY_NUMBER_TITLE" = "Cé hiad na daoine ar féidir leo mé a aimsiú le m'uimhir?";
 
 /* During registration, users set up their profile. Users input a given name. This is the placeholder for that field. */
-"REGISTRATION_PROFILE_SETUP_GIVEN_NAME_FIELD_PLACEHOLDER" = "First Name";
+"REGISTRATION_PROFILE_SETUP_GIVEN_NAME_FIELD_PLACEHOLDER" = "Céadainm";
 
 /* During registration, users set up their profile. They can learn more about the privacy of their profile by clicking a \"learn more\" button. This is the message on a sheet that appears when they do that. */
-"REGISTRATION_PROFILE_SETUP_MORE_INFO_DETAILS" = "Your name, photo and changes to it will be visible to your contacts and when you start or accept new chats.";
+"REGISTRATION_PROFILE_SETUP_MORE_INFO_DETAILS" = "Beidh d'ainm, do ghrianghraf agus aon athruithe orthu infheicthe ag do theagmhálaithe agus nuair a thosaíonn tú ar chomhráite nua nó nuair a ghlacann tú leo.";
 
 /* During registration, users set up their profile. They can learn more about the privacy of their profile by clicking a \"learn more\" button. This is the title on a sheet that appears when they do that. */
-"REGISTRATION_PROFILE_SETUP_MORE_INFO_TITLE" = "About Profile Privacy";
+"REGISTRATION_PROFILE_SETUP_MORE_INFO_TITLE" = "Faisnéis faoi Phríobháideachas Próifíle";
 
 /* During registration, users set up their profile. This is the subtitle on the screen where this is done. It tells users about the privacy of their profile. A \"learn more\" link will be added to the end of this string. */
-"REGISTRATION_PROFILE_SETUP_SUBTITLE" = "Profiles are visible to people you message, contacts, and groups.";
+"REGISTRATION_PROFILE_SETUP_SUBTITLE" = "Bíonn próifílí infheicthe ag daoine a fhaigheann teachtaireachtaí uait, ag do theagmhálaithe agus ag do ghrúpaí.";
 
 /* During registration, users set up their profile. This is the title on the screen where this is done. */
-"REGISTRATION_PROFILE_SETUP_TITLE" = "Set up your profile";
+"REGISTRATION_PROFILE_SETUP_TITLE" = "Socraigh do phróifíl";
+
+/* Error shown if an SMS/call service provider is permanently unable to send a verification code to the provided number. */
+"REGISTRATION_PROVIDER_FAILURE_MESSAGE_PERMANENT" = "Ní féidir le Signal cód SMS a sheoladh chuig d'uimhir de dheasca teip sheachtrach.";
+
+/* Error shown if an SMS/call service provider is temporarily unable to send a verification code to the provided number. */
+"REGISTRATION_PROVIDER_FAILURE_MESSAGE_TRANSIENT" = "Níorbh fhéidir le Signal cód SMS a sheoladh díreach anois de dheasca teip sheachtrach, triail arís ar ball.";
 
 /* No comment provided by engineer. */
 "REGISTRATION_RESTRICTED_MESSAGE" = "Caithfidh tú clárú sular féidir leat teachtaireacht a sheoladh.";
 
+/* Alert shown when running out of attempts at submitting a verification code. */
+"REGISTRATION_SUBMIT_CODE_ATTEMPTS_EXHAUSTED_ALERT" = "Rinne tú an iomarca iarrachtaí ar an gcód a chur isteach. Seol an cód arís agus triail arís.";
+
+/* Alert shown when submitting a verification code too many times. Embeds {{ duration }}, such as \"5:00\" */
+"REGISTRATION_SUBMIT_CODE_RATE_LIMIT_ALERT_FORMAT" = "Rinne tú an iomarca iarrachtaí ar an gcód a chur isteach. Triail arís i gceann %1$@";
+
 /* Error message indicating that device transfer from another device might be possible. */
 "REGISTRATION_TRANSFER_AVAILABLE_DESCRIPTION" = "There was an account previously registered with this number that is available for transfer.";
+
+/* During registration and re-registration, users may have to enter a code to verify ownership of their phone number. If they enter an invalid code, they will see this error message. */
+"REGISTRATION_VERIFICATION_ERROR_INVALID_VERIFICATION_CODE" = "Níl an cód a chuir tú isteach bailí. Seol an cód arís agus triail arís.";
 
 /* Alert view title */
 "REGISTRATION_VERIFICATION_FAILED_TITLE" = "Theip ar Dheimhniú";
@@ -5317,6 +5416,12 @@
 /* No comment provided by engineer. */
 "REREGISTER_FOR_PUSH" = "Re-register Push Notifications";
 
+/* If the user is re-registering, they may need to enter their PIN to restore all their data. If they enter the incorrect PIN, they will be shown a warning. In some cases (such as for this string), the user has the option to skip PIN entry and will lose some data. Embeds {{ number of attempts }}, such as \"3 attempts\". */
+"REREGISTER_INVALID_PIN_WARNING_SKIPPABLE_FORMAT" = "Tá %1$@ fágtha agat. Má úsáideann tú gach iarracht, is féidir leat UAP nua a chruthú. Is féidir leat do chuntas a chlárú agus a úsáid ach caillfidh tú roinnt socruithe amhail an fhaisnéis i do phróifíl.";
+
+/* If the user is re-registering, they may need to enter their PIN to restore all their data. If they enter the incorrect PIN, they will be shown a warning. Embeds {{ number of attempts }}, such as \"3 attempts\". */
+"REREGISTER_INVALID_PIN_WARNING_UNSKIPPABLE_FORMAT" = "Tá %1$@ fágtha agat. Má úsáideann tú gach iarracht, glasálfar do chuntas ar feadh 7 lá. Tar éis 7 lá neamhghníomhaíochta is féidir leat athchlárú gan d'UAP. Scriosfar an t-ábhar ar fad.";
+
 /* Configure reactions reset button text */
 "RESET" = "Athshocraigh";
 
@@ -5343,6 +5448,9 @@
 
 /* Title for the 'safety number confirmation' view */
 "SAFETY_NUMBER_CONFIRMATION_TITLE" = "Athrú ar Uimhir Shábháilteachta";
+
+/* Text explaining that the given contact has had their safety number verified. */
+"SAFETY_NUMBER_CONFIRMATION_VERIFIED" = "Fíoraithe";
 
 /* View safety number action for the 'safety number confirmation' view */
 "SAFETY_NUMBER_CONFIRMATION_VIEW_ACTION" = "Amharc";
@@ -5513,10 +5621,10 @@
 "SENT_MEDIA_QUALITY_STANDARD" = "Caighdeánach";
 
 /* Description for the session refresh alert */
-"SESSION_REFRESH_ALERT_MESSAGE" = "Signal uses end-to-end encryption and it may need to refresh your chat session sometimes. This doesn’t affect your chat’s security but you may have missed a message from this contact and you can ask them to resend it.";
+"SESSION_REFRESH_ALERT_MESSAGE" = "Tá criptiú ó cheann ceann á úsáid ag Signal agus b'fhéidir go mbeidh air seisiún do chomhrá a athnuachan ó am go ham. Ní chuireann sé sin isteach ar shlándáil do chomhrá ach b'fhéidir gur chaill tú teachtaireacht ón duine seo agus go mbeidh ort athsheoladh a iarraidh.";
 
 /* Title for the session refresh alert */
-"SESSION_REFRESH_ALERT_TITLE" = "Chat session refreshed";
+"SESSION_REFRESH_ALERT_TITLE" = "Seisiún an chomhrá athnuaite";
 
 /* Title for the wallpaper choose from photos option */
 "SET_WALLPAPER_CHOOSE_PHOTO" = "Choose from Photos";
@@ -5529,6 +5637,9 @@
 
 /* Title for the 'account' link in settings. */
 "SETTINGS_ACCOUNT" = "Cuntas";
+
+/* Label for button in settings to get your account data report */
+"SETTINGS_ACCOUNT_DATA_REPORT_BUTTON" = "Sonraí do Chuntais";
 
 /* Title for the 'add to block list' view. */
 "SETTINGS_ADD_TO_BLOCK_LIST_TITLE" = "Cuir bac";
@@ -5591,7 +5702,7 @@
 "SETTINGS_AUDIO_DEFAULT_TONE_LABEL_FORMAT" = "%1$@ (réamhshocrú)";
 
 /* A label for the 'add phone number' button in the block list table. */
-"SETTINGS_BLOCK_LIST_ADD_BUTTON" = "Cuir Úsáideoir Bactha Leis";
+"SETTINGS_BLOCK_LIST_ADD_BUTTON" = "Cuir úsáideoir bactha leis";
 
 /* A label that indicates the user has no Signal contacts that they haven't blocked. */
 "SETTINGS_BLOCK_LIST_NO_CONTACTS" = "Níl fiú is teagmhálaí amháin de do chuid ag úsáid Signal.";
@@ -5638,7 +5749,7 @@
 /* Title for the 'old phone number' section in the 'change phone number' settings. */
 "SETTINGS_CHANGE_PHONE_NUMBER_OLD_PHONE_NUMBER_SECTION_TITLE" = "Your Old Number";
 
-/* Label for the 'country code' row in the 'change phone number' settings. */
+/* Label for the 'phone number' row in the 'change phone number' settings. */
 "SETTINGS_CHANGE_PHONE_NUMBER_PHONE_NUMBER_FIELD" = "Uimhir Ghutháin";
 
 /* Format for the 'change phone number' progress view. Embeds: {{ the user's new phone number }}. */
@@ -5723,7 +5834,7 @@
 "SETTINGS_DISAPPEARING_MESSAGES" = "Teachtaireachtaí Gearrshaolacha";
 
 /* Explanation for the 'disappearing messages' privacy settings. */
-"SETTINGS_DISAPPEARING_MESSAGES_FOOTER" = "Set a default disappearing message timer for all new chats started by you.";
+"SETTINGS_DISAPPEARING_MESSAGES_FOOTER" = "Socraigh amadóir teachtaireachtaí sealadacha réamhshocraithe do gach comhrá nua a thosaíonn tú.";
 
 /* Title for the 'donate to signal' link in settings. */
 "SETTINGS_DONATE" = "Bronn airgead ar Signal";
@@ -5735,7 +5846,7 @@
 "SETTINGS_INVITE_TITLE" = "Tabhair Cuireadh do Chairde";
 
 /* Label for settings view that allows user to change the chat color and wallpaper. */
-"SETTINGS_ITEM_COLOR_AND_WALLPAPER" = "Chat Color & Wallpaper";
+"SETTINGS_ITEM_COLOR_AND_WALLPAPER" = "Dath an Chomhrá & Cúlbhrat";
 
 /* Label for settings view that allows user to change the notification sound. */
 "SETTINGS_ITEM_NOTIFICATION_SOUND" = "Teachtaireacht Nua";
@@ -5870,10 +5981,10 @@
 "SETTINGS_PAYMENTS_DEACTIVATE_TITLE" = "Deactivate Payments";
 
 /* Explanation of the 'deactivate payments with balance' process in the 'deactivate payments' settings. */
-"SETTINGS_PAYMENTS_DEACTIVATE_WITH_BALANCE_EXPLANATION" = "It’s recommended that you transfer your funds to another wallet address before deactivating payments. If you choose not to transfer your funds now, they will remain in your wallet linked to Signal if you reactivate payments.";
+"SETTINGS_PAYMENTS_DEACTIVATE_WITH_BALANCE_EXPLANATION" = "Moltar duit do chistí a aistriú chuig seoladh sparáin eile roimh íocaíochtaí a dhíchumasú. Má roghnaíonn tú gan do chistí a aistriú anois, fanfaidh siad i do sparán atá nasctha le Signal má chumasaíonn tú íocaíochtaí arís.";
 
 /* Description for the 'deactivate payments confirmation' UI in the payment settings. */
-"SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_DESCRIPTION" = "Your balance will remain in your wallet linked to Signal if you choose to reactivate payments.";
+"SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_DESCRIPTION" = "Fanfaidh d'iarmhéid i do sparán atá nasctha le Signal má roghnaíonn tú íocaíochtaí a athghníomhachtú.";
 
 /* Title for the 'deactivate payments confirmation' UI in the payment settings. */
 "SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_TITLE" = "Deactivate Without Transferring?";
@@ -5960,7 +6071,7 @@
 "SETTINGS_PAYMENTS_OPT_IN_MESSAGE" = "Use Signal to send and receive MobileCoin, a new privacy focused digital currency. Activate to get started.";
 
 /* Label for 'activate' button in the 'payments opt-in' view in the app settings. */
-"SETTINGS_PAYMENTS_OPT_IN_REACTIVATE_BUTTON" = "Reactivate Payments";
+"SETTINGS_PAYMENTS_OPT_IN_REACTIVATE_BUTTON" = "Athghníomhachtaigh Íocaíochtaí";
 
 /* Title for the 'payments opt-in' view in the app settings. */
 "SETTINGS_PAYMENTS_OPT_IN_TITLE" = "Introducing Payments (Beta)";
@@ -5987,7 +6098,7 @@
 "SETTINGS_PAYMENTS_PAYMENT_ADD_MONEY" = "Add Funds";
 
 /* Label for the 'MobileCoin block index' in the payment details view in the app settings. */
-"SETTINGS_PAYMENTS_PAYMENT_DETAILS_BLOCK_INDEX" = "Cuir Bac ar an Uimhir";
+"SETTINGS_PAYMENTS_PAYMENT_DETAILS_BLOCK_INDEX" = "Blocuimhir";
 
 /* Label for the 'MobileCoin network fee' in the payment details view in the app settings. */
 "SETTINGS_PAYMENTS_PAYMENT_DETAILS_FEE" = "Network Fee";
@@ -6278,16 +6389,16 @@
 "SETTINGS_PAYMENTS_WALLET_ADDRESS_LABEL" = "Your Wallet Address";
 
 /* The title for the phone number discoverability setting section. */
-"SETTINGS_PHONE_NUMBER_DISCOVERABILITY_TITLE" = "Who Can Find Me By Number";
+"SETTINGS_PHONE_NUMBER_DISCOVERABILITY_TITLE" = "Na Daoine ar Féidir leo mé a Aimsiú le hUimhir Ghutháin";
 
 /* Description label for Phone Number Privacy */
-"SETTINGS_PHONE_NUMBER_PRIVACY_DESCRIPTION_LABEL" = "Choose who can see your phone number and who can contact you on Signal with it.";
+"SETTINGS_PHONE_NUMBER_PRIVACY_DESCRIPTION_LABEL" = "Roghnaigh na daoine atá in ann d'uimhir ghutháin a fheiceáil agus teagmháil a dhéanamh leat ar Signal léi.";
 
 /* The title for phone number privacy settings. */
-"SETTINGS_PHONE_NUMBER_PRIVACY_TITLE" = "Phone Number";
+"SETTINGS_PHONE_NUMBER_PRIVACY_TITLE" = "Uimhir Ghutháin";
 
 /* The title for the phone number sharing setting section. */
-"SETTINGS_PHONE_NUMBER_SHARING_TITLE" = "Who Can See My Number";
+"SETTINGS_PHONE_NUMBER_SHARING_TITLE" = "Na Daoine ar Féidir leo m'Uimhir Ghutháin a Fheiceáil";
 
 /* The button text for the dialog asking user to confirm their PIN to disable reminders */
 "SETTINGS_PIN_REMINDER_DISABLE_CONFIRMATION_ACTION" = "Múch Meabhrúcháin";
@@ -6392,10 +6503,10 @@
 "SETTINGS_SHARING_SUGGESTIONS" = "Share Contacts with iOS";
 
 /* Footer for setting for enabling & disabling contact sharing with iOS. */
-"SETTINGS_SHARING_SUGGESTIONS_FOOTER" = "Allow iOS access to Signal contacts and chats for features such as sharing suggestions.";
+"SETTINGS_SHARING_SUGGESTIONS_FOOTER" = "Ceadaigh do iOS rochtain a dhéanamh ar theagmhálaithe agus comhráite Signal le haghaidh gnéithe amhail moltaí a chomhroinnt.";
 
 /* Footer for setting for enabling & disabling contact and notification sharing with iOS. */
-"SETTINGS_SHARING_SUGGESTIONS_NOTIFICATIONS_FOOTER" = "Allow iOS access to Signal contacts and chats for features such as sharing suggestions and notifications.";
+"SETTINGS_SHARING_SUGGESTIONS_NOTIFICATIONS_FOOTER" = "Ceadaigh do iOS rochtain a dhéanamh ar theagmhálaithe agus comhráite Signal le haghaidh gnéithe amhail moltaí agus fógraí a chomhroinnt.";
 
 /* Label for the 'enable registration lock' switch of the privacy settings. */
 "SETTINGS_TWO_FACTOR_AUTH_SWITCH_LABEL" = "Glas Clárúcháin";
@@ -6467,7 +6578,7 @@
 "SHOW_SAFETY_NUMBER_ACTION" = "Taispeáin an Uimhir Shábháilteachta";
 
 /* notification action */
-"SHOW_THREAD_BUTTON_TITLE" = "Show Chat";
+"SHOW_THREAD_BUTTON_TITLE" = "Taispeáin Comhrá";
 
 /* body sent to contacts when inviting to Install Signal */
 "SMS_INVITE_BODY" = "Tá mé ag úsáid Signal agus sílim go dtaitneodh sé leatsa freisin! Seo é an nasc:";
@@ -6569,7 +6680,7 @@
 "STORIES_FORWARD_STORY_ACTION" = "Cuir ar aghaidh";
 
 /* Context menu action to open the chat associated with the selected story */
-"STORIES_GO_TO_CHAT_ACTION" = "Go to Chat";
+"STORIES_GO_TO_CHAT_ACTION" = "Téigh chuig Comhrá";
 
 /* Text indicating you can't reply to a group story because you're not a member of the group */
 "STORIES_GROUP_REPLY_NOT_A_MEMBER" = "Ní féidir leat freagairt don scéal seo mar níl tú i do bhall den ghrúpa seo a thuilleadh.";
@@ -6961,6 +7072,36 @@
 /* Tap to Replace Emoji string for reaction configuration */
 "TAP_REPLACE_EMOJI" = "Tap to replace an emoji";
 
+/* Option in selected text edit menu to make text bold */
+"TEXT_MENU_BOLD" = "Trom";
+
+/* Option in selected text edit menu to clear all text formatting in the selected text range */
+"TEXT_MENU_CLEAR_FORMATTING" = "Clear Formatting";
+
+/* Option in selected text edit menu to view text formatting options */
+"TEXT_MENU_FORMAT" = "Formáidigh";
+
+/* Option in selected text edit menu to make text italic */
+"TEXT_MENU_ITALIC" = "Iodálach";
+
+/* Option in selected text edit menu to look up word definitions */
+"TEXT_MENU_LOOK_UP" = "Cuardaigh";
+
+/* Option in selected text edit menu to make text monospace */
+"TEXT_MENU_MONOSPACE" = "Aonleithead";
+
+/* Option in selected text edit menu to replace text with suggestions */
+"TEXT_MENU_REPLACE" = "Ionadaigh";
+
+/* Option in selected text edit menu to share selected text */
+"TEXT_MENU_SHARE" = "Comhroinn";
+
+/* Option in selected text edit menu to make text spoiler */
+"TEXT_MENU_SPOILER" = "Bacóir";
+
+/* Option in selected text edit menu to make text strikethrough */
+"TEXT_MENU_STRIKETHROUGH" = "Líne tríd";
+
 /* text indicating the message was remotely deleted */
 "THIS_MESSAGE_WAS_DELETED" = "Scriosadh an teachtaireacht seo.";
 
@@ -6968,7 +7109,7 @@
 "THREAD_DETAILS_MORE_MUTUAL_GROUP" = "Ball de %1$@, %2$@, agus %3$lu grúpa eile";
 
 /* Subtitle appearing at the top of the users 'note to self' conversation */
-"THREAD_DETAILS_NOTE_TO_SELF_EXPLANATION" = "You can add notes for yourself in this chat. If your account has any linked devices, new notes will be synced.";
+"THREAD_DETAILS_NOTE_TO_SELF_EXPLANATION" = "Is féidir leat nótaí a chur leis duit féin sa chomhrá seo. Má tá aon ghléasanna nasctha le do chuntas, déanfar nótaí nua a shioncronú.";
 
 /* A string indicating a mutual group the user shares with this contact. Embeds {{mutual group name}} */
 "THREAD_DETAILS_ONE_MUTUAL_GROUP" = "Ball de %1$@";
@@ -7034,7 +7175,7 @@
 "UNARCHIVE_ACTION" = "Díchartlannú";
 
 /* Message shown in conversation view that offers to block an unknown user. */
-"UNKNOWN_CONTACT_BLOCK_OFFER" = "Ní teagmhálaí de do chuid é an t-úsáideoir seo. An bhfuil fonn ort bac a chur ar an úsáideoir seo?";
+"UNKNOWN_CONTACT_BLOCK_OFFER" = "Ní teagmhálaí de do chuid an t-úsáideoir seo. An bhfuil fonn ort bac a chur ar an úsáideoir seo?";
 
 /* Displayed if for some reason we can't determine a contacts phone number *or* name */
 "UNKNOWN_CONTACT_NAME" = "Teagmhálaí Anaithnid";
@@ -7082,13 +7223,13 @@
 "UNLINK_CONFIRMATION_ALERT_TITLE" = "An bhfuil fonn ort “%1$@” a dhínascadh?";
 
 /* Label warning the user that they have been unlinked from their primary device. */
-"UNLINKED_WARNING" = "Níl an gléas nasctha a thuilleadh. Ní mór duit athnascadh le Signal chun dul ar aghaidh ag cur teachtaireachtaí.";
+"UNLINKED_WARNING" = "Níl an gléas seo nasctha a thuilleadh. Athnasc Signal le do ghuthán chun leanúint le seoladh teachtaireachtaí.";
+
+/* If this device has become unlinked from their primary device, they'll see a warning. This is the call to action on that warning. */
+"UNLINKED_WARNING_ACTION_TITLE" = "Athnasc an Gléas";
 
 /* Alert title when unlinking device fails */
 "UNLINKING_FAILED_ALERT_TITLE" = "Níorbh fhéidir le Signal an gléas a dhínascadh.";
-
-/* Label text in device manager for a device with no name */
-"UNNAMED_DEVICE" = "Gléas Gan Ainm";
 
 /* Pressing this button un-pins a thread */
 "UNPIN_ACTION" = "Scoráil";
@@ -7098,6 +7239,9 @@
 
 /* Pressing this button marks a thread as unread */
 "UNREAD_ACTION" = "Neamhléite";
+
+/* Label warning the user that the validation of their username has failed. */
+"UNREGISTERED_USERNAME_WARNING" = "Bhí fadhb ann le d'ainm úsáideora agus níl sé sannta do do chuntas a thuilleadh. Is féidir leat athshocrú a thriail nó ceann nua a roghnú.";
 
 /* No comment provided by engineer. */
 "UNSUPPORTED_ATTACHMENT" = "Fuarthas ceangaltán de chineál nach dtacaímid leis.";
@@ -7127,7 +7271,7 @@
 "USE_PROXY_EXPLANATION" = "Ná húsáid seachfhreastalaí ach amháin mura bhfuil tú in ann nascadh le Signal ar shonraí móibíleacha nó Wi-Fi.";
 
 /* Description of how to update discovery */
-"USERNAME_DISCOVERY_DESCRIPTION" = "Cas as aimsiú uimhreacha gutháin faoi Shocruithe >Uimhir Ghutháin > Na daoine ar féidir leo m'uimhir a aimsiú, chun d'ainm úsáideora a úsáid mar an príomhbhealach ag daoine teagmháil a dhéanamh leat.";
+"USERNAME_DISCOVERY_DESCRIPTION" = "Cas as aimsiú uimhreacha gutháin faoi Shocruithe > Príobháideachas > Uimhir Ghutháin > Na daoine ar féidir leo m'uimhir a aimsiú, chun d'ainm úsáideora a úsáid mar an príomhbhealach ag daoine chun teagmháil a dhéanamh leat.";
 
 /* Description of username discriminator digits */
 "USERNAME_DISCRIMINATOR_DESCRIPTION" = "Péireáiltear ainmneacha úsáideora le tacar digití agus ní chomhroinntear ar do phróifíl iad";
@@ -7136,16 +7280,31 @@
 "USERNAME_EDUCATION_TITLE" = "Socraigh d'ainm úsáideora Signal";
 
 /* Description of username link */
-"USERNAME_LINK_DESCRIPTION" = "Tá nasc uathúil ag gach ainm úsáideora is féidir leat a chomhroinnt le do chairde chun tosú ar chomhrá leat";
+"USERNAME_LINK_DESCRIPTION" = "Tá nasc uathúil ag gach ainm úsáideora, rud is féidir leat a chomhroinnt le do chairde chun tosú ar chomhrá leat";
+
+/* Title for a button to pick the color of your username link QR code. Lowercase styling is intentional. */
+"USERNAME_LINK_QR_CODE_VIEW_COLOR_BUTTON" = "Dath";
+
+/* Text for a label explaining what the username link and QR code give others access to. */
+"USERNAME_LINK_QR_CODE_VIEW_DISCLAIMER_LABEL" = "Ná comhroinn do chód QR ná nasc ach le daoine a bhfuil muinín agat iontu. Agus iad comhroinnte, beidh daoine eile in ann d'ainm úsáideora a fheiceáil agus tosú ar chomhrá leat.";
+
+/* Title for a button that allows users to reset their username link and QR code. */
+"USERNAME_LINK_QR_CODE_VIEW_RESET_BUTTON_TITLE" = "Athshocraigh";
+
+/* Title for a button to share your username link QR code. Lowercase styling is intentional. */
+"USERNAME_LINK_QR_CODE_VIEW_SHARE_BUTTON" = "Comhroinn";
+
+/* A title for a view that allows you to view and interact with a QR code for your username link. */
+"USERNAME_LINK_QR_CODE_VIEW_TITLE_CODE" = "Cód";
 
 /* A message indicating that username lookup failed. */
 "USERNAME_LOOKUP_ERROR_MESSAGE" = "Tharla earráid agus an t-ainm úsáideora á lorg. Triail arís ar ball.";
 
 /* A message indicating that a user-entered username value is not a valid username. Embeds {{ a username }}. */
-"USERNAME_LOOKUP_INVALID_USERNAME_MESSAGE_FORMAT" = "Ní ainm úsáideora bailí é %1$@. Cinntigh gur chuir tú isteach an t-ainm úsáideora iomlán agus a tacar digití ina dhiaidh sin.";
+"USERNAME_LOOKUP_INVALID_USERNAME_MESSAGE_FORMAT" = "Ní ainm úsáideora bailí é %1$@. Cinntigh gur chuir tú isteach an t-ainm úsáideora iomlán agus a thacar digití ina dhiaidh sin.";
 
 /* Title for an action sheet indicating that a user-entered username value is not a valid username. */
-"USERNAME_LOOKUP_INVALID_USERNAME_TITLE" = "Ainm Úsáideora Neamhbhailí";
+"USERNAME_LOOKUP_INVALID_USERNAME_TITLE" = "Ainm úsáideora neamhbhailí";
 
 /* A message indicating that the given username is not associated with a registered Signal account. Embeds {{ a username }}. */
 "USERNAME_LOOKUP_NOT_FOUND_MESSAGE_FORMAT" = "Ní úsáideann %1$@ Signal. Deimhnigh gur chuir tú an t-ainm úsáideora iomlán isteach.";
@@ -7153,8 +7312,8 @@
 /* Title for an action sheet indicating that the given username is not associated with a registered Signal account. */
 "USERNAME_LOOKUP_NOT_FOUND_TITLE" = "Úsáideoir Gan Aimsiú";
 
-/* A prefix appended to all usernames when displayed */
-"USERNAME_PREFIX" = "@";
+/* An error message shown when the user has typed a username that starts with a digit, which is invalid. */
+"USERNAME_SELECTION_CANNOT_START_WITH_DIGIT_ERROR_MESSAGE" = "Ní cheadmhach uimhir mar thús ainm úsáideora.";
 
 /* The title of an action sheet button that will delete a user's username. */
 "USERNAME_SELECTION_DELETE_USERNAME_ACTION_TITLE" = "Scrios Ainm Úsáideora";
@@ -7172,7 +7331,7 @@
 "USERNAME_SELECTION_INVALID_CHARACTERS_ERROR_MESSAGE" = "Ní ceadmhach ann ach a-z, 0-9, agus _.";
 
 /* The message of a sheet that pops up when the user taps \"Learn More\" in text that explains how usernames work. This message help explain that the automatically-generated numeric suffix of their username helps keep their username private, to avoid them being contacted by people by whom they don't want to be contacted. */
-"USERNAME_SELECTION_LEARN_MORE_ACTION_SHEET_MESSAGE" = "Cabhraíonn na digití seo le d'ainm úsáideora a choimeád príobháideach agus teachtaireachtaí gan iarraidh a sheachaint. Ná comhroinn d'ainm úsáideora ach le daoine agus le grúpaí ar mhaith leat comhrá a dhéanamh leo. Má athraíonn tú d'ainm úsáideora gheobhaidh tú tacar nua digití.";
+"USERNAME_SELECTION_LEARN_MORE_ACTION_SHEET_MESSAGE" = "Cabhraíonn na digití seo le d'ainm úsáideora a choimeád príobháideach le gur féidir leat teachtaireachtaí gan iarraidh a sheachaint. Ná comhroinn d'ainm úsáideora ach le daoine agus le grúpaí ar mhaith leat comhrá a dhéanamh leo. Má athraíonn tú d'ainm úsáideora gheobhaidh tú tacar nua digití.";
 
 /* The title of a sheet that pops up when the user taps \"Learn More\" in text that explains how usernames work. The sheet will present a more detailed explanation of the username's numeric suffix. */
 "USERNAME_SELECTION_LEARN_MORE_ACTION_SHEET_TITLE" = "Cad í an uimhir seo?";
@@ -7274,10 +7433,10 @@
 "WALLPAPER_PREVIEW_TITLE" = "Réamhamharc";
 
 /* Clear chat color action in wallpaper settings view. */
-"WALLPAPER_SETTINGS_CLEAR_CHAT_COLOR" = "Clear Chat Color";
+"WALLPAPER_SETTINGS_CLEAR_CHAT_COLOR" = "Glan Dath an Chomhrá";
 
 /* Confirmation dialog when clearing the chat color for a specific chat. */
-"WALLPAPER_SETTINGS_CLEAR_CHAT_COLOR_CHAT_CONFIRMATION" = "Clear chat color for this chat?";
+"WALLPAPER_SETTINGS_CLEAR_CHAT_COLOR_CHAT_CONFIRMATION" = "Glan dath an chomhrá don chomhrá seo?";
 
 /* Clear wallpaper action in wallpaper settings view. */
 "WALLPAPER_SETTINGS_CLEAR_WALLPAPER" = "Glan an cúlbhrat";
@@ -7301,13 +7460,13 @@
 "WALLPAPER_SETTINGS_RESET_ALL_WALLPAPERS" = "Reset All Wallpapers";
 
 /* Message of confirmation dialog when resetting the global wallpaper settings. */
-"WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_MESSAGE" = "Would you like to override all chat colors?";
+"WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_MESSAGE" = "Ar mhaith leat dath gach comhrá a shárú?";
 
 /* Title of confirmation dialog when resetting the global wallpaper settings. */
-"WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_TITLE" = "Reset Chat Colors";
+"WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_TITLE" = "Athshocraigh Dathanna Comhráite";
 
 /* Reset conversation chat color action in wallpaper settings view. */
-"WALLPAPER_SETTINGS_RESET_CONVERSATION_CHAT_COLOR" = "Reset Chat Color";
+"WALLPAPER_SETTINGS_RESET_CONVERSATION_CHAT_COLOR" = "Athshocraigh Dath an Chomhrá";
 
 /* Reset conversation wallpaper action in wallpaper settings view. */
 "WALLPAPER_SETTINGS_RESET_CONVERSATION_WALLPAPER" = "Athshocraigh an cúlbhrat";
@@ -7316,7 +7475,7 @@
 "WALLPAPER_SETTINGS_RESET_DEFAULT_CHAT_COLOR" = "Reset Default Colors";
 
 /* Reset global chat colors action in wallpaper settings view. */
-"WALLPAPER_SETTINGS_RESET_DEFAULT_CHAT_COLORS" = "Reset Chat Colors";
+"WALLPAPER_SETTINGS_RESET_DEFAULT_CHAT_COLORS" = "Athshocraigh Dathanna Comhráite";
 
 /* Label for 'reset default wallpaper' action in the global wallpaper settings. */
 "WALLPAPER_SETTINGS_RESET_DEFAULT_WALLPAPER" = "Reset Default Wallpaper";
@@ -7331,7 +7490,7 @@
 "WALLPAPER_SETTINGS_RESET_WALLPAPERS_CONFIRMATION_TITLE" = "Athshocraigh an cúlbhrat";
 
 /* Set chat color action in color and wallpaper settings view. */
-"WALLPAPER_SETTINGS_SET_CHAT_COLOR" = "Dath an chomhrá";
+"WALLPAPER_SETTINGS_SET_CHAT_COLOR" = "Dath an Chomhrá";
 
 /* Set wallpaper action in wallpaper settings view. */
 "WALLPAPER_SETTINGS_SET_WALLPAPER" = "Socraigh cúlbhrat";

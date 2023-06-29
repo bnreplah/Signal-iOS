@@ -10,28 +10,6 @@ final class ContactDiscoveryV2OperationTest: XCTestCase {
 
     // MARK: - Mocks
 
-    private class MockContactDiscoveryV2ConnectionFactory: ContactDiscoveryV2ConnectionFactory {
-        var onConnectAndPerformHandshake: ((DispatchQueue) -> Promise<ContactDiscoveryV2Connection>)?
-        func connectAndPerformHandshake(on queue: DispatchQueue) -> Promise<ContactDiscoveryV2Connection> {
-            onConnectAndPerformHandshake!(queue)
-        }
-    }
-
-    private class MockContactDiscoveryV2Connection: ContactDiscoveryV2Connection {
-        var onSendRequestAndReadResponse: ((Data) -> Promise<Data>)?
-        func sendRequestAndReadResponse(_ request: Data) -> Promise<Data> {
-            onSendRequestAndReadResponse!(request)
-        }
-
-        var onSendRequestAndReadAllResponses: ((Data) -> Promise<[Data]>)?
-        func sendRequestAndReadAllResponses(_ request: Data) -> Promise<[Data]> {
-            onSendRequestAndReadAllResponses!(request)
-        }
-
-        func disconnect() {
-        }
-    }
-
     private class MockContactDiscoveryV2PersistentState: ContactDiscoveryV2PersistentState {
         var token: Data?
         var prevE164s = Set<E164>()
@@ -59,7 +37,7 @@ final class ContactDiscoveryV2OperationTest: XCTestCase {
     // MARK: - Tests
 
     private lazy var persistentState = MockContactDiscoveryV2PersistentState()
-    private lazy var connectionFactory = MockContactDiscoveryV2ConnectionFactory()
+    private lazy var connectionFactory = MockSgxWebsocketConnectionFactory()
 
     /// In .oneOffUserRequest mode, we should disregard tokens entirely.
     func testOneOffRequest() throws {
@@ -74,10 +52,9 @@ final class ContactDiscoveryV2OperationTest: XCTestCase {
         )
 
         // Prepare the server's responses to the client's request.
-        let connection = MockContactDiscoveryV2Connection()
+        let connection = MockSgxWebsocketConnection<ContactDiscoveryV2WebsocketConfigurator>()
         var newE164s: Data?
-        connection.onSendRequestAndReadResponse = { requestData in
-            let request = try! CDSI_ClientRequest(serializedData: requestData)
+        connection.onSendRequestAndReadResponse = { request in
             XCTAssertEqual(request.token, Data())
             XCTAssertEqual(request.prevE164S, Data())
             XCTAssertEqual(request.newE164S.count, 8)
@@ -85,19 +62,18 @@ final class ContactDiscoveryV2OperationTest: XCTestCase {
 
             var response = CDSI_ClientResponse()
             response.token = Cryptography.generateRandomBytes(65)
-            return .value(try! response.serializedData())
+            return .value(response)
         }
-        connection.onSendRequestAndReadAllResponses = { requestData in
-            let request = try! CDSI_ClientRequest(serializedData: requestData)
+        connection.onSendRequestAndReadAllResponses = { request in
             XCTAssertTrue(request.tokenAck)
 
             var response = CDSI_ClientResponse()
             response.e164PniAciTriples = newE164s! + pni.data + aci.data
-            return .value([try! response.serializedData()])
+            return .value([response])
         }
-        connectionFactory.onConnectAndPerformHandshake = { queue in
+        connectionFactory.setOnConnectAndPerformHandshake({ _ in
             return .value(connection)
-        }
+        })
 
         // Run the discovery operation.
         var operationResults: [ContactDiscoveryV2Operation.DiscoveryResult]?
@@ -124,20 +100,20 @@ final class ContactDiscoveryV2OperationTest: XCTestCase {
         )
 
         // Prepare the server's responses to the client's request.
-        let connection = MockContactDiscoveryV2Connection()
+        let connection = MockSgxWebsocketConnection<ContactDiscoveryV2WebsocketConfigurator>()
         connection.onSendRequestAndReadResponse = { _ in
             var response = CDSI_ClientResponse()
             response.token = Cryptography.generateRandomBytes(65)
-            return .value(try! response.serializedData())
+            return .value(response)
         }
         connection.onSendRequestAndReadAllResponses = { _ in
             var response = CDSI_ClientResponse()
             response.e164PniAciTriples = Data(count: 40)
-            return .value([try! response.serializedData()])
+            return .value([response])
         }
-        connectionFactory.onConnectAndPerformHandshake = { queue in
+        connectionFactory.setOnConnectAndPerformHandshake({ _ in
             return .value(connection)
-        }
+        })
 
         // Run the discovery operation.
         var operationResults: [ContactDiscoveryV2Operation.DiscoveryResult]?
@@ -168,16 +144,16 @@ final class ContactDiscoveryV2OperationTest: XCTestCase {
         persistentState.prevE164s = initialPrevE164s
 
         // Prepare the server's responses to the client's request.
-        let connection = MockContactDiscoveryV2Connection()
+        let connection = MockSgxWebsocketConnection<ContactDiscoveryV2WebsocketConfigurator>()
         connection.onSendRequestAndReadResponse = { requestData in
             return Promise(error: WebSocketError.closeError(
                 statusCode: 4008,
                 closeReason: #"{"retry_after": 1234}"#.data(using: .utf8)!
             ))
         }
-        connectionFactory.onConnectAndPerformHandshake = { queue in
+        connectionFactory.setOnConnectAndPerformHandshake({ _ in
             return .value(connection)
-        }
+        })
 
         // Run the discovery operation.
         var operationError: Error?
@@ -210,13 +186,13 @@ final class ContactDiscoveryV2OperationTest: XCTestCase {
         persistentState.token = Cryptography.generateRandomBytes(65)
 
         // Prepare the server's responses to the client's request.
-        let connection = MockContactDiscoveryV2Connection()
+        let connection = MockSgxWebsocketConnection<ContactDiscoveryV2WebsocketConfigurator>()
         connection.onSendRequestAndReadResponse = { requestData in
             return Promise(error: WebSocketError.closeError(statusCode: 4101, closeReason: nil))
         }
-        connectionFactory.onConnectAndPerformHandshake = { queue in
+        connectionFactory.setOnConnectAndPerformHandshake({ _ in
             return .value(connection)
-        }
+        })
 
         // Run the discovery operation.
         let operationExpectation = expectation(description: "Waiting for operation.")

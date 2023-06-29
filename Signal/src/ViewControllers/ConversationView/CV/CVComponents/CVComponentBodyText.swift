@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
+import SignalServiceKit
+import SignalUI
 
 public class CVComponentBodyText: CVComponentBase, CVComponent {
 
@@ -13,6 +14,7 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
         let bodyText: CVComponentState.BodyText
         let isTextExpanded: Bool
         let searchText: String?
+        let revealedSpoilerIds: Set<Int>
         let hasTapForMore: Bool
         let shouldUseAttributedText: Bool
         let hasPendingMessageRequest: Bool
@@ -49,6 +51,9 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
     }
     private var searchText: String? {
         bodyTextState.searchText
+    }
+    private var revealedSpoilerIds: Set<Int> {
+        bodyTextState.revealedSpoilerIds
     }
     private var hasTapForMore: Bool {
         bodyTextState.hasTapForMore
@@ -117,11 +122,16 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
 
     private static let unfairLock = UnfairLock()
 
-    private static func detectItems(text: String,
-                                    attributedString: NSAttributedString?,
-                                    hasPendingMessageRequest: Bool,
-                                    shouldAllowLinkification: Bool,
-                                    textWasTruncated: Bool) -> [CVTextLabel.Item] {
+    public static func detectItems(
+        text: String,
+        attributedString: NSAttributedString?,
+        hasPendingMessageRequest: Bool,
+        shouldAllowLinkification: Bool,
+        textWasTruncated: Bool,
+        revealedSpoilerIds: Set<StyleIdType>,
+        interactionUniqueId: String,
+        interactionIdentifier: InteractionSnapshotIdentifier
+    ) -> [CVTextLabel.Item] {
 
         // Use a lock to ensure that measurement on and off the main thread
         // don't conflict.
@@ -135,212 +145,63 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
                 owsAssertDebug(text.hasSuffix(DisplayableText.truncatedTextSuffix))
             }
 
-            var items = [CVTextLabel.Item]()
-            // Detect and discard overlapping items, preferring mentions to data items.
-            func hasItemOverlap(_ newItem: CVTextLabel.Item) -> Bool {
-                for oldItem in items {
-                    if let overlap = oldItem.range.intersection(newItem.range),
-                       overlap.length > 0 {
+            func shouldDiscardDataItem(_ dataItem: TextCheckingDataItem) -> Bool {
+                if textWasTruncated {
+                    if NSMaxRange(dataItem.range) == NSMaxRange(text.entireRange) {
+                        // This implies that the data detector *included* our "…" suffix.
+                        // We don't expect this to happen, but if it does it's certainly not intended!
+                        return true
+                    }
+                    if (text as NSString).substring(after: dataItem.range) == DisplayableText.truncatedTextSuffix {
+                        // More likely the item right before the "…" was detected.
+                        // Conservatively assume that the item was truncated.
                         return true
                     }
                 }
                 return false
             }
 
-            // Add mentions.
+            let dataDetector = buildDataDetector(shouldAllowLinkification: shouldAllowLinkification)
+
+            let items: [CVTextLabel.Item]
+
             if let attributedString = attributedString {
-                attributedString.enumerateMentions { mention, range, _ in
-                    guard let mention = mention else { return }
-                    let mentionItem = CVTextLabel.MentionItem(mention: mention, range: range)
-                    let item: CVTextLabel.Item = .mention(mentionItem: mentionItem)
-                    guard !hasItemOverlap(item) else {
-                        owsFailDebug("Item overlap.")
-                        return
+                let recoveredBody = RecoveredHydratedMessageBody.recover(from: attributedString)
+                items = recoveredBody
+                    .tappableItems(
+                        revealedSpoilerIds: revealedSpoilerIds,
+                        dataDetector: dataDetector
+                    )
+                    .compactMap {
+                        switch $0 {
+                        case .unrevealedSpoiler(let unrevealedSpoilerItem):
+                            return .unrevealedSpoiler(CVTextLabel.UnrevealedSpoilerItem(
+                                spoilerId: unrevealedSpoilerItem.id,
+                                interactionUniqueId: interactionUniqueId,
+                                interactionIdentifier: interactionIdentifier,
+                                range: unrevealedSpoilerItem.range
+                            ))
+                        case .mention(let mentionItem):
+                            return .mention(mentionItem: CVTextLabel.MentionItem(
+                                mentionUUID: mentionItem.mentionUuid,
+                                range: mentionItem.range
+                            ))
+                        case .data(let dataItem):
+                            guard !shouldDiscardDataItem(dataItem) else {
+                                return nil
+                            }
+                            return .dataItem(dataItem: dataItem)
+                        }
                     }
-                    items.append(item)
+            } else {
+                items = TextCheckingDataItem.detectedItems(in: text, using: dataDetector).compactMap {
+                    guard !shouldDiscardDataItem($0) else {
+                        return nil
+                    }
+                    return .dataItem(dataItem: $0)
                 }
             }
 
-            // NSDataDetector and UIDataDetector behavior should be aligned.
-            //
-            // TODO: We might want to move this detection logic into
-            // DisplayableText so that we can leverage caching.
-            guard let detector = dataDetector(shouldAllowLinkification: shouldAllowLinkification) else {
-                // If the data detectors can't be built, default to using attributed text.
-                owsFailDebug("Could not build dataDetector.")
-                return []
-            }
-            for match in detector.matches(in: text, options: [], range: text.entireRange) {
-                if textWasTruncated {
-                    if NSMaxRange(match.range) == NSMaxRange(text.entireRange) {
-                        // This implies that the data detector *included* our "…" suffix.
-                        // We don't expect this to happen, but if it does it's certainly not intended!
-                        continue
-                    }
-                    if (text as NSString).substring(after: match.range) == DisplayableText.truncatedTextSuffix {
-                        // More likely the item right before the "…" was detected.
-                        // Conservatively assume that the item was truncated.
-                        continue
-                    }
-                }
-
-                guard let snippet = (text as NSString).substring(with: match.range).strippedOrNil else {
-                    owsFailDebug("Invalid snippet.")
-                    continue
-                }
-
-                let matchUrl = match.url
-
-                let dataType: CVTextLabel.DataItem.DataType
-                var customUrl: URL?
-                let resultType: NSTextCheckingResult.CheckingType = match.resultType
-                if resultType.contains(.orthography) {
-                    Logger.verbose("orthography")
-                    continue
-                } else if resultType.contains(.spelling) {
-                    Logger.verbose("spelling")
-                    continue
-                } else if resultType.contains(.grammar) {
-                    Logger.verbose("grammar")
-                    continue
-                } else if resultType.contains(.date) {
-                    dataType = .date
-
-                    guard matchUrl == nil else {
-                        // Skip building customUrl; we already have a URL.
-                        break
-                    }
-
-                    // NSTextCheckingResult.date is in GMT.
-                    guard let gmtDate = match.date else {
-                        owsFailDebug("Missing date.")
-                        continue
-                    }
-                    // "calshow:" URLs expect GMT.
-                    let timeInterval = gmtDate.timeIntervalSinceReferenceDate
-                    // I'm not sure if there's official docs around these links.
-                    guard let calendarUrl = URL(string: "calshow:\(timeInterval)") else {
-                        owsFailDebug("Couldn't build calendarUrl.")
-                        continue
-                    }
-                    customUrl = calendarUrl
-                } else if resultType.contains(.address) {
-                    Logger.verbose("address")
-
-                    dataType = .address
-
-                    guard matchUrl == nil else {
-                        // Skip building customUrl; we already have a URL.
-                        break
-                    }
-
-                    // https://developer.apple.com/library/archive/featuredarticles/iPhoneURLScheme_Reference/MapLinks/MapLinks.html
-                    guard let urlEncodedAddress = snippet.encodeURIComponent else {
-                        owsFailDebug("Could not URL encode address.")
-                        continue
-                    }
-                    let urlString = "https://maps.apple.com/?q=" + urlEncodedAddress
-                    guard let mapUrl = URL(string: urlString) else {
-                        owsFailDebug("Couldn't build mapUrl.")
-                        continue
-                    }
-                    customUrl = mapUrl
-                } else if resultType.contains(.link) {
-                    if let url = matchUrl,
-                       url.absoluteString.lowercased().hasPrefix("mailto:"),
-                       !snippet.lowercased().hasPrefix("mailto:") {
-                        Logger.verbose("emailAddress")
-                        dataType = .emailAddress
-                    } else {
-                        Logger.verbose("link")
-                        dataType = .link
-                    }
-                } else if resultType.contains(.quote) {
-                    Logger.verbose("quote")
-                    continue
-                } else if resultType.contains(.dash) {
-                    Logger.verbose("dash")
-                    continue
-                } else if resultType.contains(.replacement) {
-                    Logger.verbose("replacement")
-                    continue
-                } else if resultType.contains(.correction) {
-                    Logger.verbose("correction")
-                    continue
-                } else if resultType.contains(.regularExpression) {
-                    Logger.verbose("regularExpression")
-                    continue
-                } else if resultType.contains(.phoneNumber) {
-                    Logger.verbose("phoneNumber")
-
-                    dataType = .phoneNumber
-
-                    guard matchUrl == nil else {
-                        // Skip building customUrl; we already have a URL.
-                        break
-                    }
-
-                    // https://developer.apple.com/library/archive/featuredarticles/iPhoneURLScheme_Reference/PhoneLinks/PhoneLinks.html
-                    let characterSet = CharacterSet(charactersIn: "+0123456789")
-                    guard let phoneNumber = snippet.components(separatedBy: characterSet.inverted).joined().nilIfEmpty else {
-                        owsFailDebug("Invalid phoneNumber.")
-                        continue
-                    }
-                    let urlString = "tel:" + phoneNumber
-                    guard let phoneNumberUrl = URL(string: urlString) else {
-                        owsFailDebug("Couldn't build phoneNumberUrl.")
-                        continue
-                    }
-                    customUrl = phoneNumberUrl
-                } else if resultType.contains(.transitInformation) {
-                    Logger.verbose("transitInformation")
-
-                    dataType = .transitInformation
-
-                    guard matchUrl == nil else {
-                        // Skip building customUrl; we already have a URL.
-                        break
-                    }
-
-                    guard let components = match.components,
-                          let airline = components[.airline]?.nilIfEmpty,
-                          let flight = components[.flight]?.nilIfEmpty else {
-                        Logger.warn("Missing components.")
-                        continue
-                    }
-                    let query = airline + " " + flight
-                    guard let urlEncodedQuery = query.encodeURIComponent else {
-                        owsFailDebug("Could not URL encode query.")
-                        continue
-                    }
-                    let urlString = "https://www.google.com/?q=" + urlEncodedQuery
-                    guard let transitUrl = URL(string: urlString) else {
-                        owsFailDebug("Couldn't build transitUrl.")
-                        continue
-                    }
-                    customUrl = transitUrl
-                } else {
-                    let snippet = (text as NSString).substring(with: match.range)
-                    Logger.verbose("snippet: '\(snippet)'")
-                    owsFailDebug("Unknown link type: \(resultType.rawValue)")
-                    continue
-                }
-
-                guard let url = customUrl ?? matchUrl else {
-                    owsFailDebug("Missing url: \(dataType).")
-                    continue
-                }
-
-                let dataItem = CVTextLabel.DataItem(dataType: dataType,
-                                                    range: match.range,
-                                                    snippet: snippet,
-                                                    url: url)
-                let item: CVTextLabel.Item = .dataItem(dataItem: dataItem)
-                guard !hasItemOverlap(item) else {
-                    continue
-                }
-                items.append(item)
-            }
             return items
         }
     }
@@ -353,6 +214,7 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
         let textExpansion = viewStateSnapshot.textExpansion
         let searchText = viewStateSnapshot.searchText
         let isTextExpanded = textExpansion.isTextExpanded(interactionId: interaction.uniqueId)
+        let revealedSpoilerIds = viewStateSnapshot.spoilerReveal[.fromInteraction(interaction)] ?? Set()
 
         let items: [CVTextLabel.Item]
         var shouldUseAttributedText = false
@@ -364,11 +226,16 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
 
             switch textValue {
             case .text(let text):
-                items = detectItems(text: text,
-                                    attributedString: nil,
-                                    hasPendingMessageRequest: hasPendingMessageRequest,
-                                    shouldAllowLinkification: shouldAllowLinkification,
-                                    textWasTruncated: textWasTruncated)
+                items = detectItems(
+                    text: text,
+                    attributedString: nil,
+                    hasPendingMessageRequest: hasPendingMessageRequest,
+                    shouldAllowLinkification: shouldAllowLinkification,
+                    textWasTruncated: textWasTruncated,
+                    revealedSpoilerIds: revealedSpoilerIds,
+                    interactionUniqueId: interaction.uniqueId,
+                    interactionIdentifier: .fromInteraction(interaction)
+                )
 
                 // UILabels are much cheaper than UITextViews, and we can
                 // usually use them for rendering body text.
@@ -384,11 +251,17 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
                     shouldUseAttributedText = !items.isEmpty
                 }
             case .attributedText(let attributedText):
-                items = detectItems(text: attributedText.string,
-                                    attributedString: attributedText,
-                                    hasPendingMessageRequest: hasPendingMessageRequest,
-                                    shouldAllowLinkification: shouldAllowLinkification,
-                                    textWasTruncated: textWasTruncated)
+                items = detectItems(
+                    text: attributedText.string,
+                    attributedString: attributedText,
+                    hasPendingMessageRequest: hasPendingMessageRequest,
+                    shouldAllowLinkification: shouldAllowLinkification,
+                    textWasTruncated: textWasTruncated,
+                    revealedSpoilerIds: revealedSpoilerIds,
+                    interactionUniqueId: interaction.uniqueId,
+                    interactionIdentifier: .fromInteraction(interaction)
+                )
+
                 shouldUseAttributedText = true
             }
         } else {
@@ -398,6 +271,7 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
         return State(bodyText: bodyText,
                      isTextExpanded: isTextExpanded,
                      searchText: searchText,
+                     revealedSpoilerIds: revealedSpoilerIds,
                      hasTapForMore: hasTapForMore,
                      shouldUseAttributedText: shouldUseAttributedText,
                      hasPendingMessageRequest: hasPendingMessageRequest,
@@ -446,26 +320,26 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
         owsAssertDebug(DisplayableText.kMaxJumbomojiCount == 5)
 
         if let jumbomojiCount = bodyText.jumbomojiCount {
-            let basePointSize = UIFont.ows_dynamicTypeBodyClamped.pointSize
+            let basePointSize = UIFont.dynamicTypeBodyClamped.pointSize
             switch jumbomojiCount {
             case 0:
                 break
             case 1:
-                return UIFont.ows_regularFont(withSize: basePointSize * 3.5)
+                return UIFont.regularFont(ofSize: basePointSize * 3.5)
             case 2:
-                return UIFont.ows_regularFont(withSize: basePointSize * 3.0)
+                return UIFont.regularFont(ofSize: basePointSize * 3.0)
             case 3:
-                return UIFont.ows_regularFont(withSize: basePointSize * 2.75)
+                return UIFont.regularFont(ofSize: basePointSize * 2.75)
             case 4:
-                return UIFont.ows_regularFont(withSize: basePointSize * 2.5)
+                return UIFont.regularFont(ofSize: basePointSize * 2.5)
             case 5:
-                return UIFont.ows_regularFont(withSize: basePointSize * 2.25)
+                return UIFont.regularFont(ofSize: basePointSize * 2.25)
             default:
                 owsFailDebug("Unexpected jumbomoji count: \(jumbomojiCount)")
             }
         }
 
-        return UIFont.ows_dynamicTypeBody
+        return UIFont.dynamicTypeBody
     }
 
     private var bodyTextColor: UIColor {
@@ -580,10 +454,10 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
 
     private var labelConfigForRemotelyDeleted: CVLabelConfig {
         let text = (isIncoming
-                        ? NSLocalizedString("THIS_MESSAGE_WAS_DELETED", comment: "text indicating the message was remotely deleted")
-                        : NSLocalizedString("YOU_DELETED_THIS_MESSAGE", comment: "text indicating the message was remotely deleted by you"))
+                        ? OWSLocalizedString("THIS_MESSAGE_WAS_DELETED", comment: "text indicating the message was remotely deleted")
+                        : OWSLocalizedString("YOU_DELETED_THIS_MESSAGE", comment: "text indicating the message was remotely deleted by you"))
         return CVLabelConfig(text: text,
-                             font: textMessageFont.ows_italic,
+                             font: textMessageFont.italic(),
                              textColor: bodyTextColor,
                              numberOfLines: 0,
                              lineBreakMode: .byWordWrapping,
@@ -591,10 +465,10 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
     }
 
     private var labelConfigForOversizeTextDownloading: CVLabelConfig {
-        let text = NSLocalizedString("MESSAGE_STATUS_DOWNLOADING",
+        let text = OWSLocalizedString("MESSAGE_STATUS_DOWNLOADING",
                                      comment: "message status while message is downloading.")
         return CVLabelConfig(text: text,
-                             font: textMessageFont.ows_italic,
+                             font: textMessageFont.italic(),
                              textColor: bodyTextColor,
                              numberOfLines: 0,
                              lineBreakMode: .byWordWrapping,
@@ -638,25 +512,37 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
                          items: bodyTextState.items)
     }
 
-    public static func linkifyData(attributedText: NSMutableAttributedString,
-                                   linkifyStyle: LinkifyStyle,
-                                   hasPendingMessageRequest: Bool,
-                                   shouldAllowLinkification: Bool,
-                                   textWasTruncated: Bool) {
+    public static func linkifyData(
+        attributedText: NSMutableAttributedString,
+        linkifyStyle: LinkifyStyle,
+        hasPendingMessageRequest: Bool,
+        shouldAllowLinkification: Bool,
+        textWasTruncated: Bool,
+        revealedSpoilerIds: Set<StyleIdType>,
+        interactionUniqueId: String,
+        interactionIdentifier: InteractionSnapshotIdentifier
+    ) {
 
-        let items = detectItems(text: attributedText.string,
-                                attributedString: attributedText,
-                                hasPendingMessageRequest: hasPendingMessageRequest,
-                                shouldAllowLinkification: shouldAllowLinkification,
-                                textWasTruncated: textWasTruncated)
+        let items = detectItems(
+            text: attributedText.string,
+            attributedString: attributedText,
+            hasPendingMessageRequest: hasPendingMessageRequest,
+            shouldAllowLinkification: shouldAllowLinkification,
+            textWasTruncated: textWasTruncated,
+            revealedSpoilerIds: revealedSpoilerIds,
+            interactionUniqueId: interactionUniqueId,
+            interactionIdentifier: interactionIdentifier
+        )
         Self.linkifyData(attributedText: attributedText,
                          linkifyStyle: linkifyStyle,
                          items: items)
     }
 
-    private static func linkifyData(attributedText: NSMutableAttributedString,
-                                    linkifyStyle: LinkifyStyle,
-                                    items: [CVTextLabel.Item]) {
+    public static func linkifyData(
+        attributedText: NSMutableAttributedString,
+        linkifyStyle: LinkifyStyle,
+        items: [CVTextLabel.Item]
+    ) {
 
         // Sort so that we can detect overlap.
         let items = items.sorted {
@@ -667,13 +553,9 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
         for item in items {
             let range = item.range
 
-            guard range.location >= lastIndex else {
-                owsFailDebug("Overlapping ranges.")
-                continue
-            }
             switch item {
-            case .mention, .referencedUser:
-                // Do nothing; mentions and referenced users are already styled.
+            case .mention, .referencedUser, .unrevealedSpoiler:
+                // Do nothing; these are already styled.
                 continue
             case .dataItem(let dataItem):
                 guard let link = dataItem.url.absoluteString.nilIfEmpty else {
@@ -710,7 +592,7 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = textAlignment
 
-        let attributedText = attributedTextParam.mutableCopy() as! NSMutableAttributedString
+        var attributedText = attributedTextParam.mutableCopy() as! NSMutableAttributedString
         attributedText.addAttributes(
             [
                 .font: textMessageFont,
@@ -721,6 +603,7 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
         )
         linkifyData(attributedText: attributedText)
 
+        var matchedSearchRanges = [NSRange]()
         if let searchText = searchText,
            searchText.count >= ConversationSearchController.kMinimumSearchTextLength {
             let searchableText = FullTextSearchFinder.normalize(text: searchText)
@@ -731,13 +614,25 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
                                            options: [.withoutAnchoringBounds],
                                            range: attributedText.string.entireRange) {
                     owsAssertDebug(match.range.length >= ConversationSearchController.kMinimumSearchTextLength)
-                    attributedText.addAttribute(.backgroundColor, value: UIColor.yellow, range: match.range)
-                    attributedText.addAttribute(.foregroundColor, value: UIColor.ows_black, range: match.range)
+                    matchedSearchRanges.append(match.range)
                 }
             } catch {
                 owsFailDebug("Error: \(error)")
             }
         }
+
+        let messageBody = RecoveredHydratedMessageBody.recover(from: attributedText)
+        attributedText = messageBody.reapplyAttributes(
+            config: HydratedMessageBody.DisplayConfiguration(
+                mention: isIncoming ? .incomingMessageBubble : .outgoingMessageBubble,
+                style: StyleDisplayConfiguration.forMessageBubble(
+                    isIncoming: isIncoming,
+                    revealedSpoilerIds: revealedSpoilerIds
+                ),
+                searchRanges: .matchedRanges(matchedSearchRanges)
+            ),
+            isDarkThemeEnabled: isDarkThemeEnabled
+        )
 
         var extraCacheKeyFactors = [String]()
         if hasPendingMessageRequest {
@@ -803,10 +698,10 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
 
         let bodyTextLabel = componentView.bodyTextLabel
         if let item = bodyTextLabel.itemForGesture(sender: sender) {
+            bodyTextLabel.animate(selectedItem: item)
             componentDelegate.didTapBodyTextItem(item)
             return true
         }
-
         if hasTapForMore {
             let itemViewModel = CVItemViewModelImpl(renderItem: renderItem)
             componentDelegate.didTapTruncatedTextMessage(itemViewModel)
@@ -834,6 +729,7 @@ public class CVComponentBodyText: CVComponentBase, CVComponent {
         guard let item = bodyTextLabel.itemForGesture(sender: sender) else {
             return nil
         }
+        bodyTextLabel.animate(selectedItem: item)
         return CVLongPressHandler(delegate: componentDelegate,
                                   renderItem: renderItem,
                                   gestureLocation: .bodyText(item: item))

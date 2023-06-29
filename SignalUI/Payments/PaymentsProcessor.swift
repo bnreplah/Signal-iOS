@@ -3,13 +3,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import MobileCoin
+import SignalServiceKit
 
-@objc
 public class PaymentsProcessor: NSObject {
 
-    @objc
     public required override init() {
         super.init()
 
@@ -61,14 +59,14 @@ public class PaymentsProcessor: NSObject {
     // This ensures that they are processed serially.
     let processingQueue_outgoing: OperationQueue = {
         let operationQueue = OperationQueue()
-        operationQueue.name = "PaymentsProcessor.outgoing"
+        operationQueue.name = "PaymentsProcessor-Outgoing"
         operationQueue.maxConcurrentOperationCount = 1
         return operationQueue
     }()
     // We use another queue for all other processing.
     let processingQueue_default: OperationQueue = {
         let operationQueue = OperationQueue()
-        operationQueue.name = "PaymentsProcessor.default"
+        operationQueue.name = "PaymentsProcessor-Default"
         // We want a concurrency level high enough to ensure that
         // high-priority operations are processed in a timely manner.
         operationQueue.maxConcurrentOperationCount = 3
@@ -178,7 +176,6 @@ public class PaymentsProcessor: NSObject {
 
     // Retries occur after a fixed delay (e.g. per exponential backoff)
     // but this should short-circuit if reachability becomes available.
-    @objc
     fileprivate class RetryScheduler: NSObject {
 
         private let paymentModel: TSPaymentModel
@@ -425,17 +422,6 @@ private class PaymentProcessingOperation: OWSOperation {
     // period of time, to ensure that the operation queue doesn't
     // stall and payments are processed in a timely manner.
     fileprivate static let maxInterval: TimeInterval = kSecondInterval * 30
-
-    fileprivate static func buildBadDataError(_ message: String,
-                                              file: String = #file,
-                                              function: String = #function,
-                                              line: Int = #line) -> Error {
-        if DebugFlags.paymentsIgnoreBadData.get() {
-            return OWSGenericError(message)
-        } else {
-            return OWSAssertionError(message, file: file, function: function, line: line)
-        }
-    }
 
     // Try to usher a payment "one step forward" in the processing
     // state machine.

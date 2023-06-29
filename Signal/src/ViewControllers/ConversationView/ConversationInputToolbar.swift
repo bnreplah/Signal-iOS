@@ -6,9 +6,8 @@
 import Photos
 import SignalMessaging
 import SignalUI
-import UIKit
 
-public protocol ConversationInputToolbarDelegate: AnyObject {
+protocol ConversationInputToolbarDelegate: AnyObject {
 
     func sendButtonPressed()
 
@@ -34,7 +33,7 @@ public protocol ConversationInputToolbarDelegate: AnyObject {
 
     func voiceMemoGestureWasInterrupted()
 
-    func sendVoiceMemoDraft(_ draft: VoiceMessageModel)
+    func sendVoiceMemoDraft(_ draft: VoiceMessageInterruptedDraft)
 
     // MARK: Attachments
 
@@ -60,21 +59,24 @@ public protocol ConversationInputToolbarDelegate: AnyObject {
 public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, QuotedReplyPreviewDelegate {
 
     private var conversationStyle: ConversationStyle
+    private let spoilerReveal: SpoilerRevealState
 
     private let mediaCache: CVMediaCache
 
     private weak var inputToolbarDelegate: ConversationInputToolbarDelegate?
 
-    public init(
+    init(
         conversationStyle: ConversationStyle,
+        spoilerReveal: SpoilerRevealState,
         mediaCache: CVMediaCache,
         messageDraft: MessageBody?,
-        quotedReply: OWSQuotedReplyModel?,
+        quotedReply: QuotedReplyModel?,
         inputToolbarDelegate: ConversationInputToolbarDelegate,
         inputTextViewDelegate: ConversationInputTextViewDelegate,
-        mentionDelegate: MentionTextViewDelegate
+        mentionDelegate: BodyRangesTextViewDelegate
     ) {
         self.conversationStyle = conversationStyle
+        self.spoilerReveal = spoilerReveal
         self.mediaCache = mediaCache
         self.inputToolbarDelegate = inputToolbarDelegate
         self.linkPreviewFetcher = LinkPreviewFetcher(
@@ -163,7 +165,7 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
     private lazy var inputTextView: ConversationInputTextView = {
         let inputTextView = ConversationInputTextView()
         inputTextView.textViewToolbarDelegate = self
-        inputTextView.font = .ows_dynamicTypeBody
+        inputTextView.font = .dynamicTypeBody
         inputTextView.setContentHuggingLow()
         inputTextView.setCompressionResistanceLow()
         inputTextView.accessibilityIdentifier = UIView.accessibilityIdentifier(in: self, name: "inputTextView")
@@ -172,11 +174,11 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
 
     private lazy var attachmentButton: AttachmentButton = {
         let button = AttachmentButton()
-        button.accessibilityLabel = NSLocalizedString(
+        button.accessibilityLabel = OWSLocalizedString(
             "ATTACHMENT_LABEL",
             comment: "Accessibility label for attaching photos"
         )
-        button.accessibilityHint = NSLocalizedString(
+        button.accessibilityHint = OWSLocalizedString(
             "ATTACHMENT_HINT",
             comment: "Accessibility hint describing what you can do with the attachment button"
         )
@@ -189,15 +191,14 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
     }()
 
     private lazy var stickerButton: UIButton = {
-        let imageResourceName = Theme.isDarkThemeEnabled ? "sticker-solid-24" : "sticker-outline-24"
         let button = UIButton(type: .system)
         button.tintColor = Theme.primaryIconColor
-        button.accessibilityLabel = NSLocalizedString(
+        button.accessibilityLabel = OWSLocalizedString(
             "INPUT_TOOLBAR_STICKER_BUTTON_ACCESSIBILITY_LABEL",
             comment: "accessibility label for the button which shows the sticker picker"
         )
         button.accessibilityIdentifier = UIView.accessibilityIdentifier(in: self, name: "stickerButton")
-        button.setImage(UIImage(imageLiteralResourceName: imageResourceName), for: .normal)
+        button.setImage(UIImage(imageLiteralResourceName: "sticker"), for: .normal)
         button.addTarget(self, action: #selector(stickerButtonPressed), for: .touchUpInside)
         button.autoSetDimensions(to: CGSize(width: 40, height: LayoutMetrics.minTextViewHeight))
         button.setContentHuggingHorizontalHigh()
@@ -206,15 +207,14 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
     }()
 
     private lazy var keyboardButton: UIButton = {
-        let imageResourceName = Theme.isDarkThemeEnabled ? "keyboard-solid-24" : "keyboard-outline-24"
         let button = UIButton(type: .system)
         button.tintColor = Theme.primaryIconColor
-        button.accessibilityLabel = NSLocalizedString(
+        button.accessibilityLabel = OWSLocalizedString(
             "INPUT_TOOLBAR_KEYBOARD_BUTTON_ACCESSIBILITY_LABEL",
             comment: "accessibility label for the button which shows the regular keyboard instead of sticker picker"
         )
         button.accessibilityIdentifier = UIView.accessibilityIdentifier(in: self, name: "keyboardButton")
-        button.setImage(UIImage(imageLiteralResourceName: imageResourceName), for: .normal)
+        button.setImage(UIImage(imageLiteralResourceName: "keyboard"), for: .normal)
         button.addTarget(self, action: #selector(keyboardButtonPressed), for: .touchUpInside)
         button.autoSetDimensions(to: CGSize(width: 40, height: LayoutMetrics.minTextViewHeight))
         button.setContentHuggingHorizontalHigh()
@@ -297,9 +297,9 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
 
     private func createContentsWithMessageDraft(
         _ messageDraft: MessageBody?,
-        quotedReply: OWSQuotedReplyModel?,
+        quotedReply: QuotedReplyModel?,
         inputTextViewDelegate: ConversationInputTextViewDelegate,
-        mentionDelegate: MentionTextViewDelegate
+        mentionDelegate: BodyRangesTextViewDelegate
     ) {
         // The input toolbar should *always* be laid out left-to-right, even when using
         // a right-to-left language. The convention for messaging apps is for the send
@@ -587,7 +587,7 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
     }
 
     func updateFontSizes() {
-        inputTextView.font = .ows_dynamicTypeBody
+        inputTextView.font = .dynamicTypeBody
     }
 
     // MARK: Right Edge Buttons
@@ -625,16 +625,16 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
         lazy var cameraButton: UIButton = {
             let button = UIButton(type: .system)
             button.tintColor = Theme.primaryIconColor
-            button.accessibilityLabel = NSLocalizedString(
+            button.accessibilityLabel = OWSLocalizedString(
                 "CAMERA_BUTTON_LABEL",
                 comment: "Accessibility label for camera button."
             )
-            button.accessibilityHint = NSLocalizedString(
+            button.accessibilityHint = OWSLocalizedString(
                 "CAMERA_BUTTON_HINT",
                 comment: "Accessibility hint describing what you can do with the camera button"
             )
             button.accessibilityIdentifier = UIView.accessibilityIdentifier(in: self, name: "cameraButton")
-            button.setImage(Theme.iconImage(.cameraButton), for: .normal)
+            button.setImage(Theme.iconImage(.buttonCamera), for: .normal)
             button.bounds.size = CGSize(width: 40, height: LayoutMetrics.minToolbarItemHeight)
             return button
         }()
@@ -642,16 +642,16 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
         lazy var voiceMemoButton: UIButton = {
             let button = UIButton(type: .system)
             button.tintColor = Theme.primaryIconColor
-            button.accessibilityLabel = NSLocalizedString(
+            button.accessibilityLabel = OWSLocalizedString(
                 "INPUT_TOOLBAR_VOICE_MEMO_BUTTON_ACCESSIBILITY_LABEL",
                 comment: "accessibility label for the button which records voice memos"
             )
-            button.accessibilityHint = NSLocalizedString(
+            button.accessibilityHint = OWSLocalizedString(
                 "INPUT_TOOLBAR_VOICE_MEMO_BUTTON_ACCESSIBILITY_HINT",
                 comment: "accessibility hint for the button which records voice memos"
             )
             button.accessibilityIdentifier = UIView.accessibilityIdentifier(in: self, name: "voiceMemoButton")
-            button.setImage(Theme.iconImage(.micButton), for: .normal)
+            button.setImage(Theme.iconImage(.buttonMicrophone), for: .normal)
             button.bounds.size = CGSize(width: 40, height: LayoutMetrics.minToolbarItemHeight)
             return button
         }()
@@ -744,7 +744,7 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
             return view
         }()
 
-        private let iconImageView = UIImageView(image: UIImage(imageLiteralResourceName: "plus-24"))
+        private let iconImageView = UIImageView(image: UIImage(imageLiteralResourceName: "plus"))
 
         private override init(frame: CGRect) {
             super.init(frame: frame)
@@ -848,10 +848,10 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
 
     // MARK: Message Body
 
-    var messageBody: MessageBody? { inputTextView.messageBody }
+    var messageBodyForSending: MessageBody? { inputTextView.messageBodyForSending }
 
     func setMessageBody(_ messageBody: MessageBody?, animated: Bool, doLayout: Bool = true) {
-        inputTextView.messageBody = messageBody
+        inputTextView.setMessageBody(messageBody, txProvider: DependenciesBridge.shared.db.readTxProvider)
 
         // It's important that we set the textViewHeight before
         // doing any animation in `ensureButtonVisibility(withAnimation:doLayout)`
@@ -894,7 +894,7 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
 
     // MARK: Quoted Reply
 
-    var quotedReply: OWSQuotedReplyModel? {
+    var quotedReply: QuotedReplyModel? {
         didSet {
             guard oldValue != quotedReply else { return }
 
@@ -918,7 +918,11 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
             return
         }
 
-        let quotedMessagePreview = QuotedReplyPreview(quotedReply: quotedReply, conversationStyle: conversationStyle)
+        let quotedMessagePreview = QuotedReplyPreview(
+            quotedReply: quotedReply,
+            conversationStyle: conversationStyle,
+            spoilerReveal: spoilerReveal
+        )
         quotedMessagePreview.delegate = self
         quotedMessagePreview.setContentHuggingHorizontalLow()
         quotedMessagePreview.setCompressionResistanceHorizontalLow()
@@ -968,8 +972,9 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
     }
 
     var draftReply: ThreadReplyInfo? {
-        guard let quotedReply = quotedReply else { return nil }
-        return ThreadReplyInfo(timestamp: quotedReply.timestamp, authorAddress: quotedReply.authorAddress)
+        guard let quotedReply else { return nil }
+        guard let serviceId = quotedReply.authorAddress.serviceId else { return nil }
+        return ThreadReplyInfo(timestamp: quotedReply.timestamp, author: serviceId)
     }
 
     func quotedReplyPreviewDidPressCancel(_ preview: QuotedReplyPreview) {
@@ -1020,7 +1025,7 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
     private func updateInputLinkPreview() {
         AssertIsOnMainThread()
 
-        linkPreviewFetcher.update(messageBody?.text ?? "", enableIfEmpty: true)
+        linkPreviewFetcher.update(messageBodyForSending?.text ?? "", enableIfEmpty: true)
     }
 
     private func updateLinkPreviewView() {
@@ -1289,7 +1294,7 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
         }
     }
 
-    var voiceMemoDraft: VoiceMessageModel?
+    var voiceMemoDraft: VoiceMessageInterruptedDraft?
     private var voiceMemoStartTime: Date?
     private var voiceMemoUpdateTimer: Timer?
     private var voiceMemoTooltipView: UIView?
@@ -1315,18 +1320,18 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
         let recordingLabel = UILabel()
         recordingLabel.textAlignment = .left
         recordingLabel.textColor = Theme.primaryTextColor
-        recordingLabel.font = .ows_dynamicTypeBodyClamped.ows_medium.ows_monospaced
+        recordingLabel.font = .dynamicTypeBodyClamped.monospaced().medium()
         recordingLabel.accessibilityIdentifier = UIView.accessibilityIdentifier(in: self, name: "recordingLabel")
         voiceMemoContentView.addSubview(recordingLabel)
         self.voiceMemoRecordingLabel = recordingLabel
 
         updateVoiceMemo()
 
-        let cancelArrowFontSize = ScaleFromIPhone5To7Plus(18.4, 20)
+        let cancelArrowFontSize = CGFloat.scaleFromIPhone5To7Plus(18.4, 20)
         let cancelString = NSMutableAttributedString(
             string: "\u{F104}",
             attributes: [
-                .font: UIFont.ows_fontAwesomeFont(cancelArrowFontSize),
+                .font: UIFont.awesomeFont(ofSize: cancelArrowFontSize),
                 .foregroundColor: Theme.secondaryTextAndIconColor,
                 .baselineOffset: -1
             ]
@@ -1335,7 +1340,7 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
             NSAttributedString(
                 string: "  ",
                 attributes: [
-                    .font: UIFont.ows_fontAwesomeFont(cancelArrowFontSize),
+                    .font: UIFont.awesomeFont(ofSize: cancelArrowFontSize),
                     .foregroundColor: Theme.secondaryTextAndIconColor,
                     .baselineOffset: -1
                 ]
@@ -1343,9 +1348,9 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
         )
         cancelString.append(
             NSAttributedString(
-                string: NSLocalizedString("VOICE_MESSAGE_CANCEL_INSTRUCTIONS", comment: "Indicates how to cancel a voice message."),
+                string: OWSLocalizedString("VOICE_MESSAGE_CANCEL_INSTRUCTIONS", comment: "Indicates how to cancel a voice message."),
                 attributes: [
-                    .font: UIFont.ows_dynamicTypeSubheadlineClamped,
+                    .font: UIFont.dynamicTypeSubheadlineClamped,
                     .foregroundColor: Theme.secondaryTextAndIconColor
                 ]
             )
@@ -1358,7 +1363,9 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
 
         let redCircleView = CircleView(diameter: 80)
         redCircleView.backgroundColor = .ows_accentRed
-        let whiteIconView = UIImageView(image: UIImage(imageLiteralResourceName: "mic-solid-36"))
+        let whiteIconView = UIImageView(image: UIImage(imageLiteralResourceName: "mic-fill"))
+        whiteIconView.tintColor = .white
+        whiteIconView.autoSetDimensions(to: .square(36))
         redCircleView.addSubview(whiteIconView)
         whiteIconView.autoCenterInSuperview()
         addSubview(redCircleView)
@@ -1366,9 +1373,9 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
         redCircleView.autoPinEdge(toSuperviewEdge: .right, withInset: 12)
         self.voiceMemoRedRecordingCircle = redCircleView
 
-        let imageView = UIImageView(image: UIImage(imageLiteralResourceName: "mic-solid-24").withRenderingMode(.alwaysTemplate))
+        let imageView = UIImageView(image: UIImage(imageLiteralResourceName: "mic-fill"))
         imageView.tintColor = .ows_accentRed
-        imageView.setContentHuggingHigh()
+        imageView.autoSetDimensions(to: .square(24))
         voiceMemoContentView.addSubview(imageView)
         imageView.autoVCenterInSuperview()
         imageView.autoPinEdge(toSuperviewEdge: .left, withInset: 12)
@@ -1418,7 +1425,7 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
             repeats: true)
     }
 
-    func showVoiceMemoDraft(_ voiceMemoDraft: VoiceMessageModel) {
+    func showVoiceMemoDraft(_ voiceMemoDraft: VoiceMessageInterruptedDraft) {
         AssertIsOnMainThread()
 
         isShowingVoiceMemoUI = true
@@ -1437,10 +1444,16 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
         voiceMemoUpdateTimer = nil
 
         let draftView = VoiceMessageDraftView(
-            voiceMessageModel: voiceMemoDraft,
-            mediaCache: mediaCache) { [weak self] in
-                self?.hideVoiceMemoUI(animated: true)
+            voiceMessageInterruptedDraft: voiceMemoDraft,
+            mediaCache: mediaCache,
+            deleteAction: { [weak self] in
+                Self.databaseStorage.asyncWrite {
+                    voiceMemoDraft.clearDraft(transaction: $0)
+                } completion: {
+                    self?.hideVoiceMemoUI(animated: true)
+                }
             }
+        )
         voiceMemoContentView.addSubview(draftView)
         draftView.autoPinEdgesToSuperviewEdges()
     }
@@ -1492,7 +1505,7 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
             return
         }
 
-        ImpactHapticFeedback.impactOccured(style: .medium)
+        ImpactHapticFeedback.impactOccurred(style: .medium)
 
         let cancelButton = OWSButton(block: { [weak self] in
             self?.inputToolbarDelegate?.voiceMemoGestureDidCancel()
@@ -1502,7 +1515,7 @@ public class ConversationInputToolbar: UIView, LinkPreviewViewDraftDelegate, Quo
         cancelButton.setTitleColor(.ows_accentRed, for: .normal)
         cancelButton.setTitleColor(.ows_accentRed.withAlphaComponent(0.4), for: .highlighted)
         cancelButton.titleLabel?.textAlignment = .right
-        cancelButton.titleLabel?.font = .ows_dynamicTypeBodyClamped.ows_medium
+        cancelButton.titleLabel?.font = .dynamicTypeBodyClamped.medium()
         cancelButton.accessibilityIdentifier = UIView.accessibilityIdentifier(in: self, name: "cancelButton")
         voiceMemoContentView.addSubview(cancelButton)
 
@@ -1908,14 +1921,14 @@ extension ConversationInputToolbar {
             owsFailDebug("inputToolbarDelegate == nil")
             return
         }
-        ImpactHapticFeedback.impactOccured(style: .light)
+        ImpactHapticFeedback.impactOccurred(style: .light)
         inputToolbarDelegate.cameraButtonPressed()
     }
 
     @objc
     private func attachmentButtonPressed() {
         Logger.verbose("")
-        ImpactHapticFeedback.impactOccured(style: .light)
+        ImpactHapticFeedback.impactOccurred(style: .light)
         toggleKeyboardType(.attachment, animated: true)
     }
 
@@ -1945,7 +1958,7 @@ extension ConversationInputToolbar {
     private func stickerButtonPressed() {
         Logger.verbose("")
 
-        ImpactHapticFeedback.impactOccured(style: .light)
+        ImpactHapticFeedback.impactOccurred(style: .light)
 
         var hasInstalledStickerPacks: Bool = false
         databaseStorage.read { transaction in
@@ -1962,7 +1975,7 @@ extension ConversationInputToolbar {
     private func keyboardButtonPressed() {
         Logger.verbose("")
 
-        ImpactHapticFeedback.impactOccured(style: .light)
+        ImpactHapticFeedback.impactOccurred(style: .light)
 
         toggleKeyboardType(.system, animated: true)
     }

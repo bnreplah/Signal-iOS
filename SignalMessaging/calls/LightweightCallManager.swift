@@ -6,7 +6,6 @@
 import SignalServiceKit
 import SignalRingRTC
 
-@objc
 open class LightweightCallManager: NSObject, Dependencies {
 
     public let sfuClient: SFUClient
@@ -21,14 +20,13 @@ open class LightweightCallManager: NSObject, Dependencies {
         httpClient.delegate = self
     }
 
-    @objc
     open dynamic func peekCallAndUpdateThread(
         _ thread: TSGroupThread,
         expectedEraId: String? = nil,
         triggerEventTimestamp: UInt64 = NSDate.ows_millisecondTimeStamp(),
         completion: (() -> Void)? = nil
     ) {
-        guard RemoteConfig.groupCalling, thread.isLocalUserFullMember else { return }
+        guard thread.isLocalUserFullMember else { return }
 
         firstly(on: DispatchQueue.global()) { () -> Promise<PeekInfo> in
             if let expectedEraId = expectedEraId {
@@ -151,7 +149,6 @@ open class LightweightCallManager: NSObject, Dependencies {
         }
     }
 
-    @objc
     open dynamic func postUserNotificationIfNecessary(groupCallMessage: OWSGroupCallMessage, transaction: SDSAnyWriteTransaction) {
         AssertNotOnMainThread()
 

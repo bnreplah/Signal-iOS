@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
+import SignalCoreKit
+import SignalUI
 
 class PhotoCaptureInteractiveDismiss: UIPercentDrivenInteractiveTransition {
     var interactionInProgress = false
@@ -83,7 +84,7 @@ class PhotoCaptureInteractiveDismiss: UIPercentDrivenInteractiveTransition {
         case .ended:
             if shouldCompleteTransition {
                 finish()
-                interactiveDismissDelegate?.interactiveDismissDidFinish(self)
+                interactiveDismissDelegate?.interactiveDismiss(self, didFinishWithVelocity: nil)
             } else {
                 cancel()
                 interactiveDismissDelegate?.interactiveDismissDidCancel(self)

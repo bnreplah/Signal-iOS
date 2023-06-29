@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
+import SignalCoreKit
+import SignalUI
 
 class DeviceTransferNavigationController: UINavigationController {
 
@@ -18,7 +19,7 @@ class DeviceTransferNavigationController: UINavigationController {
         setNavigationBarHidden(true, animated: false)
 
         let dismissButton = UIButton()
-        dismissButton.setTemplateImageName("x-24", tintColor: Theme.primaryIconColor)
+        dismissButton.setTemplateImage(Theme.iconImage(.buttonX), tintColor: Theme.primaryIconColor)
         dismissButton.addTarget(self, action: #selector(tappedDismiss), for: .touchUpInside)
 
         view.addSubview(dismissButton)
@@ -33,20 +34,20 @@ class DeviceTransferNavigationController: UINavigationController {
     }
 
     @objc
-    func tappedDismiss() {
+    private func tappedDismiss() {
         AssertIsOnMainThread()
 
         if let topVC = topViewController as? DeviceTransferBaseViewController, topVC.requiresDismissConfirmation {
             let actionSheet = ActionSheetController(
-                title: NSLocalizedString("DEVICE_TRANSFER_CANCEL_CONFIRMATION_TITLE",
+                title: OWSLocalizedString("DEVICE_TRANSFER_CANCEL_CONFIRMATION_TITLE",
                                          comment: "The title of the dialog asking the user if they want to cancel a device transfer"),
-                message: NSLocalizedString("DEVICE_TRANSFER_CANCEL_CONFIRMATION_MESSAGE",
+                message: OWSLocalizedString("DEVICE_TRANSFER_CANCEL_CONFIRMATION_MESSAGE",
                                            comment: "The message of the dialog asking the user if they want to cancel a device transfer")
             )
             actionSheet.addAction(OWSActionSheets.cancelAction)
 
             let okAction = ActionSheetAction(
-                title: NSLocalizedString("DEVICE_TRANSFER_CANCEL_CONFIRMATION_ACTION",
+                title: OWSLocalizedString("DEVICE_TRANSFER_CANCEL_CONFIRMATION_ACTION",
                                          comment: "The stop action of the dialog asking the user if they want to cancel a device transfer"),
                 style: .destructive
             ) { _ in
@@ -103,7 +104,7 @@ class DeviceTransferBaseViewController: UIViewController {
         let titleLabel = UILabel()
         titleLabel.text = text
         titleLabel.textColor = Theme.primaryTextColor
-        titleLabel.font = UIFont.ows_dynamicTypeTitle2.ows_semibold
+        titleLabel.font = UIFont.dynamicTypeTitle2.semibold()
         titleLabel.numberOfLines = 0
         titleLabel.lineBreakMode = .byWordWrapping
         titleLabel.textAlignment = .center
@@ -113,7 +114,7 @@ class DeviceTransferBaseViewController: UIViewController {
     func explanationLabel(explanationText: String) -> UILabel {
         let explanationLabel = UILabel()
         explanationLabel.textColor = Theme.secondaryTextAndIconColor
-        explanationLabel.font = .ows_dynamicTypeBody2
+        explanationLabel.font = .dynamicTypeBody2
         explanationLabel.text = explanationText
         explanationLabel.numberOfLines = 0
         explanationLabel.textAlignment = .center
@@ -122,7 +123,7 @@ class DeviceTransferBaseViewController: UIViewController {
     }
 
     func button(title: String, selector: Selector) -> OWSFlatButton {
-        let font = UIFont.ows_dynamicTypeBodyClamped.ows_semibold
+        let font = UIFont.dynamicTypeBodyClamped.semibold()
         let buttonHeight = OWSFlatButton.heightForFont(font)
         let button = OWSFlatButton.button(title: title,
                                           font: font,

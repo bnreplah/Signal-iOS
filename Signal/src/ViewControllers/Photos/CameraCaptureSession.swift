@@ -23,11 +23,11 @@ extension PhotoCaptureError: LocalizedError, UserErrorDescriptionProvider {
     var localizedDescription: String {
         switch self {
         case .initializationFailed:
-            return NSLocalizedString("PHOTO_CAPTURE_UNABLE_TO_INITIALIZE_CAMERA", comment: "alert title")
+            return OWSLocalizedString("PHOTO_CAPTURE_UNABLE_TO_INITIALIZE_CAMERA", comment: "alert title")
         case .captureFailed:
-            return NSLocalizedString("PHOTO_CAPTURE_UNABLE_TO_CAPTURE_IMAGE", comment: "alert title")
+            return OWSLocalizedString("PHOTO_CAPTURE_UNABLE_TO_CAPTURE_IMAGE", comment: "alert title")
         case .assertionError, .invalidVideo:
-            return NSLocalizedString("PHOTO_CAPTURE_GENERIC_ERROR", comment: "alert title, generic error preventing user from capturing a photo")
+            return OWSLocalizedString("PHOTO_CAPTURE_GENERIC_ERROR", comment: "alert title, generic error preventing user from capturing a photo")
         }
     }
 }
@@ -69,7 +69,7 @@ class CameraCaptureSession: NSObject {
     lazy var previewView = CapturePreviewView(session: avCaptureSession)
 
     let avCaptureSession = AVCaptureSession()
-    private static let sessionQueue = DispatchQueue(label: "CameraCaptureSession")
+    private static let sessionQueue = DispatchQueue(label: "org.signal.capture.camera")
     private var sessionQueue: DispatchQueue { CameraCaptureSession.sessionQueue }
 
     // Separate session for capturing audio is necessary to eliminate
@@ -389,9 +389,7 @@ class CameraCaptureSession: NSObject {
 
     private class func availableVideoCaptureDevices(forPosition position: AVCaptureDevice.Position) -> [AVCaptureDevice.DeviceType: AVCaptureDevice] {
         var queryDeviceTypes: [AVCaptureDevice.DeviceType] = [ .builtInWideAngleCamera, .builtInTelephotoCamera, .builtInDualCamera ]
-        if #available(iOS 13, *) {
-            queryDeviceTypes.append(contentsOf: [ .builtInUltraWideCamera, .builtInDualWideCamera, .builtInTripleCamera ])
-        }
+        queryDeviceTypes.append(contentsOf: [ .builtInUltraWideCamera, .builtInDualWideCamera, .builtInTripleCamera ])
         let session = AVCaptureDevice.DiscoverySession(deviceTypes: queryDeviceTypes, mediaType: .video, position: position)
         let deviceMap = session.devices.reduce(into: [AVCaptureDevice.DeviceType: AVCaptureDevice]()) { deviceMap, device in
             deviceMap[device.deviceType] = device
@@ -415,14 +413,6 @@ class CameraCaptureSession: NSObject {
 
     private func cameraSwitchOverZoomFactors(forPosition position: AVCaptureDevice.Position) -> [CGFloat] {
         let deviceMap = position == .front ? availableFrontVideoCaptureDeviceMap : availableRearVideoCaptureDeviceMap
-
-        guard #available(iOS 13, *) else {
-            // No iOS 12 device can have triple camera system.
-            if deviceMap[.builtInDualCamera] != nil {
-                return UIDevice.current.isPlusSizePhone ? [ 2.5 ] : [ 2 ]
-            }
-            return []
-        }
 
         if let multiCameraDevice = deviceMap[.builtInTripleCamera] ?? deviceMap[.builtInDualWideCamera] ?? deviceMap[.builtInDualCamera] {
             return multiCameraDevice.virtualDeviceSwitchOverVideoZoomFactors.map { CGFloat(truncating: $0) }
@@ -451,7 +441,7 @@ class CameraCaptureSession: NSObject {
         var cameras: Set<CameraType> = []
 
         // AVCaptureDevice.DiscoverySession returns devices in an arbitrary order, explicit ordering is required
-        if #available(iOS 13, *), avTypes.contains(.builtInUltraWideCamera) {
+        if avTypes.contains(.builtInUltraWideCamera) {
             cameras.insert(.ultraWide)
         }
 
@@ -481,13 +471,11 @@ class CameraCaptureSession: NSObject {
             }
         }() else { return nil }
 
-        if #available(iOS 13, *) {
-            if let device = devices[.builtInTripleCamera] {
-                return device
-            }
-            if let device = devices[.builtInDualWideCamera] {
-                return device
-            }
+        if let device = devices[.builtInTripleCamera] {
+            return device
+        }
+        if let device = devices[.builtInDualWideCamera] {
+            return device
         }
         return devices[.builtInDualCamera] ?? devices[.builtInWideAngleCamera]
     }
@@ -563,7 +551,7 @@ class CameraCaptureSession: NSObject {
         let cameraZoomFactorMultiplier = cameraZoomFactorMultiplier(forPosition: position)
 
         var cameraMap: [CameraType: CGFloat] = [:]
-        if #available(iOS 13, *), avTypes.contains(.builtInUltraWideCamera) {
+        if avTypes.contains(.builtInUltraWideCamera) {
             owsAssertDebug(cameraZoomFactorMultiplier != 1, "cameraZoomFactorMultiplier could not be 1 because there's UW camera available.")
             cameraMap[.ultraWide] = cameraZoomFactorMultiplier
         }
@@ -717,7 +705,7 @@ class CameraCaptureSession: NSObject {
             return
         }
 
-        ImpactHapticFeedback.impactOccured(style: .medium)
+        ImpactHapticFeedback.impactOccurred(style: .medium)
 
         let previewLayer = previewView.previewLayer
         let captureRect = previewLayer.metadataOutputRectConverted(fromLayerRect: previewLayer.bounds)
@@ -1138,13 +1126,13 @@ private class VideoCapture: NSObject, AVCaptureVideoDataOutputSampleBufferDelega
     let videoDataOutput = AVCaptureVideoDataOutput()
     let audioDataOutput = AVCaptureAudioDataOutput()
 
-    private static let videoCaptureQueue = DispatchQueue(label: "VideoCapture.video", qos: .userInteractive)
+    private static let videoCaptureQueue = DispatchQueue(label: "org.signal.capture.video", qos: .userInteractive)
     private var videoCaptureQueue: DispatchQueue { VideoCapture.videoCaptureQueue }
 
-    private static let audioCaptureQueue = DispatchQueue(label: "VideoCapture.audio", qos: .userInteractive)
+    private static let audioCaptureQueue = DispatchQueue(label: "org.signal.capture.audio", qos: .userInteractive)
     private var audioCaptureQueue: DispatchQueue { VideoCapture.audioCaptureQueue }
 
-    private let recordingQueue = DispatchQueue(label: "VideoCapture.recording", qos: .userInteractive)
+    private let recordingQueue = DispatchQueue(label: "org.signal.capture.recording", qos: .userInteractive)
 
     private var assetWriter: AVAssetWriter?
     private var videoWriterInput: AVAssetWriterInput?
@@ -1444,7 +1432,6 @@ private class PhotoCapture: NSObject {
         let photoSettings = AVCapturePhotoSettings()
         photoSettings.flashMode = flashMode
         photoSettings.isHighResolutionPhotoEnabled = true
-        photoSettings.isAutoStillImageStabilizationEnabled = avCaptureOutput.isStillImageStabilizationSupported
 
         let photoProcessor = PhotoProcessor(delegate: delegate, captureRect: captureRect) { [weak self] in
             self?.photoProcessors[photoSettings.uniqueID] = nil

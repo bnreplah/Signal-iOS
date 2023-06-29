@@ -9,7 +9,6 @@ import SignalMessaging
 import SignalServiceKit
 import Vision
 
-@objc
 public enum QRCodeScanOutcome: UInt {
     case stopScanning
     case continueScanning
@@ -17,7 +16,6 @@ public enum QRCodeScanOutcome: UInt {
 
 // MARK: -
 
-@objc
 public protocol QRCodeScanDelegate: AnyObject {
     // A QR code scan might yield a String payload, Data payload or both.
     //
@@ -55,10 +53,8 @@ public protocol QRCodeScanDelegate: AnyObject {
 
 // MARK: -
 
-@objc
 public class QRCodeScanViewController: OWSViewController {
 
-    @objc(QRCodeScanViewAppearance)
     public enum Appearance: UInt {
         case normal
         case unadorned
@@ -84,14 +80,12 @@ public class QRCodeScanViewController: OWSViewController {
 
     private let appearance: Appearance
 
-    @objc
     public weak var delegate: QRCodeScanDelegate?
 
     private var scanner: QRCodeScanner?
 
     private let canDeliverResultsFlag = AtomicBool(false)
 
-    @objc
     public required init(appearance: Appearance) {
         self.appearance = appearance
         super.init()
@@ -115,7 +109,6 @@ public class QRCodeScanViewController: OWSViewController {
 
     // MARK: - View Lifecycle
 
-    @objc
     public override func viewDidLoad() {
         AssertIsOnMainThread()
 
@@ -162,14 +155,14 @@ public class QRCodeScanViewController: OWSViewController {
     }
 
     @objc
-    func didEnterBackground() {
+    private func didEnterBackground() {
         AssertIsOnMainThread()
 
         stopScanning()
     }
 
     @objc
-    func didBecomeActive() {
+    private func didBecomeActive() {
         AssertIsOnMainThread()
 
         tryToStartScanning()
@@ -223,7 +216,7 @@ public class QRCodeScanViewController: OWSViewController {
             let maskingView = BezierPathView { layer, bounds in
                 // Add a circular mask
                 let path = UIBezierPath(rect: bounds)
-                let margin = ScaleFromIPhone5To7Plus(8, 16)
+                let margin = CGFloat.scaleFromIPhone5To7Plus(8, 16)
 
                 // Center the circle's bounding rectangle
                 let circleDiameter = bounds.size.smallerAxis - margin * 2
@@ -371,7 +364,7 @@ public class QRCodeScanViewController: OWSViewController {
                 self.stopScanning()
 
                 // Vibrate
-                ImpactHapticFeedback.impactOccured(style: .medium)
+                ImpactHapticFeedback.impactOccurred(style: .medium)
 
             case .continueScanning:
                 break
@@ -606,7 +599,7 @@ private class QRCodeScanner {
 
     lazy private(set) var previewView = QRCodeScanPreviewView(session: session)
 
-    private let sessionQueue = DispatchQueue(label: "QRCodeScanner.sessionQueue")
+    private let sessionQueue = DispatchQueue(label: "org.signal.qrcode-scanner")
 
     private let session = AVCaptureSession()
     private let output: QRCodeScanOutput
@@ -760,11 +753,9 @@ private class QRCodeScanner {
         // Camera types in descending order of preference.
         var deviceTypes = [AVCaptureDevice.DeviceType]()
         deviceTypes.append(.builtInWideAngleCamera)
-        if #available(iOS 13, *) {
-            deviceTypes.append(.builtInUltraWideCamera)
-            deviceTypes.append(.builtInDualWideCamera)
-            deviceTypes.append(.builtInTripleCamera)
-        }
+        deviceTypes.append(.builtInUltraWideCamera)
+        deviceTypes.append(.builtInDualWideCamera)
+        deviceTypes.append(.builtInTripleCamera)
         deviceTypes.append(.builtInDualCamera)
         deviceTypes.append(.builtInTelephotoCamera)
 

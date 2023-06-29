@@ -3,8 +3,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import SignalServiceKit
 import MessageUI
+import SignalServiceKit
+import SignalUI
 
 struct SupportEmailModel: Dependencies {
 
@@ -29,17 +30,17 @@ struct SupportEmailModel: Dependencies {
     /// An unlocalized string used for filtering by support
     var supportFilter: String = SupportEmailModel.supportFilterDefault
 
-    var localizedSubject: String = NSLocalizedString(
+    var localizedSubject: String = OWSLocalizedString(
         "SUPPORT_EMAIL_SUBJECT",
         comment: "Localized subject for support request emails"
     )
     var deviceType: String = UIDevice.current.model
     var deviceIdentifier: String = String(sysctlKey: "hw.machine")?.replacingOccurrences(of: UIDevice.current.model, with: "") ?? "Unknown"
-    var iosVersion: String = AppVersion.iOSVersionString
-    var signalVersion4: String = appVersion.currentAppVersion4
+    var iosVersion: String = AppVersion.iosVersionString
+    var signalVersion4: String = AppVersion.shared.currentAppVersion4
     var locale: String = NSLocale.current.identifier
 
-    var userDescription: String? = NSLocalizedString(
+    var userDescription: String? = OWSLocalizedString(
         "SUPPORT_EMAIL_DEFAULT_DESCRIPTION",
         comment: "Default prompt for user description in support email requests"
     )
@@ -50,7 +51,6 @@ struct SupportEmailModel: Dependencies {
 
 // MARK: -
 
-@objc
 final class ComposeSupportEmailOperation: NSObject {
 
     enum EmailError: LocalizedError, UserErrorDescriptionProvider {
@@ -66,23 +66,22 @@ final class ComposeSupportEmailOperation: NSObject {
         public var localizedDescription: String {
             switch self {
             case .logUploadTimedOut:
-                return NSLocalizedString("ERROR_DESCRIPTION_REQUEST_TIMED_OUT",
+                return OWSLocalizedString("ERROR_DESCRIPTION_REQUEST_TIMED_OUT",
                                          comment: "Error indicating that a socket request timed out.")
             case let .logUploadFailure(underlyingError):
                 return underlyingError?.errorDescription ??
-                    NSLocalizedString("ERROR_DESCRIPTION_LOG_UPLOAD_FAILED",
+                    OWSLocalizedString("ERROR_DESCRIPTION_LOG_UPLOAD_FAILED",
                                       comment: "Generic error indicating that log upload failed")
             case .invalidURL:
-                return NSLocalizedString("ERROR_DESCRIPTION_INVALID_SUPPORT_EMAIL",
+                return OWSLocalizedString("ERROR_DESCRIPTION_INVALID_SUPPORT_EMAIL",
                                          comment: "Error indicating that a support mailto link could not be created.")
             case .failedToOpenURL:
-                return NSLocalizedString("ERROR_DESCRIPTION_COULD_NOT_LAUNCH_EMAIL",
+                return OWSLocalizedString("ERROR_DESCRIPTION_COULD_NOT_LAUNCH_EMAIL",
                                          comment: "Error indicating that openURL for a mailto: URL failed.")
             }
         }
     }
 
-    @objc
     public static var canSendEmails: Bool {
         return UIApplication.shared.canOpenURL(MailtoLink(to: "", subject: "", body: "").url!)
     }
@@ -90,7 +89,6 @@ final class ComposeSupportEmailOperation: NSObject {
     private var model: SupportEmailModel
     private var isCancelled: Bool = false
 
-    @objc
     class func sendEmailWithDefaultErrorHandling(supportFilter: String, logUrl: URL? = nil) {
         sendEmail(supportFilter: supportFilter, logUrl: logUrl).catch { error in
             OWSActionSheets.showErrorAlert(message: error.userErrorDescription)
@@ -198,43 +196,43 @@ final class ComposeSupportEmailOperation: NSObject {
         let bodyComponents: [String?] = [
             model.userDescription,
             "",
-            NSLocalizedString(
+            OWSLocalizedString(
                 "SUPPORT_EMAIL_INFO_DIVIDER",
                 comment: "Localized divider for support request emails internal information"
             ),
             String(
-                format: NSLocalizedString(
+                format: OWSLocalizedString(
                     "SUPPORT_EMAIL_FILTER_LABEL_FORMAT",
                     comment: "Localized label for support request email filter string. Embeds {{filter text}}."
                 ), model.supportFilter
             ),
             String(
-                format: NSLocalizedString(
+                format: OWSLocalizedString(
                     "SUPPORT_EMAIL_HARDWARE_LABEL_FORMAT",
                     comment: "Localized label for support request email hardware string (e.g. iPhone or iPad). Embeds {{hardware text}}."
                 ), model.deviceType
             ),
             String(
-                format: NSLocalizedString(
+                format: OWSLocalizedString(
                     "SUPPORT_EMAIL_HID_LABEL_FORMAT",
                     comment: "Localized label for support request email HID string (e.g. 12,1). Embeds {{hid text}}."
                 ), model.deviceIdentifier
             ),
             String(
-                format: NSLocalizedString(
+                format: OWSLocalizedString(
                     "SUPPORT_EMAIL_IOS_VERSION_LABEL_FORMAT",
                     comment: "Localized label for support request email iOS Version string (e.g. 13.4). Embeds {{ios version}}."
                 ), model.iosVersion
             ),
             String(
-                format: NSLocalizedString(
+                format: OWSLocalizedString(
                     "SUPPORT_EMAIL_SIGNAL_VERSION_LABEL_FORMAT",
                     comment: "Localized label for support request email signal version string. Embeds {{signal version}}."
                 ), model.signalVersion4
             ), {
                 if let debugURLString = model.resolvedDebugString {
                     return String(
-                        format: NSLocalizedString(
+                        format: OWSLocalizedString(
                             "SUPPORT_EMAIL_LOG_URL_LABEL_FORMAT",
                             comment: "Localized label for support request email debug log URL. Embeds {{debug log url}}."
                         ), debugURLString
@@ -242,7 +240,7 @@ final class ComposeSupportEmailOperation: NSObject {
                 } else { return nil }
             }(),
             String(
-                format: NSLocalizedString(
+                format: OWSLocalizedString(
                     "SUPPORT_EMAIL_LOCALE_LABEL_FORMAT",
                     comment: "Localized label for support request email locale string. Embeds {{locale}}."
                 ), model.locale

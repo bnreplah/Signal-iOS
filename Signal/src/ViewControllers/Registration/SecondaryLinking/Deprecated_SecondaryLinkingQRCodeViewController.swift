@@ -3,11 +3,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import SafariServices
 import SignalMessaging
+import SignalUI
 
-@objc
 public class Deprecated_SecondaryLinkingQRCodeViewController: Deprecated_OnboardingBaseViewController {
 
     let provisioningController: Deprecated_ProvisioningController
@@ -26,13 +25,13 @@ public class Deprecated_SecondaryLinkingQRCodeViewController: Deprecated_Onboard
 
         view.backgroundColor = Theme.backgroundColor
 
-        let titleLabel = self.createTitleLabel(text: NSLocalizedString("SECONDARY_ONBOARDING_SCAN_CODE_TITLE", comment: "header text while displaying a QR code which, when scanned, will link this device."))
+        let titleLabel = self.createTitleLabel(text: OWSLocalizedString("SECONDARY_ONBOARDING_SCAN_CODE_TITLE", comment: "header text while displaying a QR code which, when scanned, will link this device."))
         primaryView.addSubview(titleLabel)
         titleLabel.accessibilityIdentifier = "onboarding.linking.titleLabel"
         titleLabel.setContentHuggingHigh()
 
-        let bodyLabel = self.createTitleLabel(text: NSLocalizedString("SECONDARY_ONBOARDING_SCAN_CODE_BODY", comment: "body text while displaying a QR code which, when scanned, will link this device."))
-        bodyLabel.font = UIFont.ows_dynamicTypeBody
+        let bodyLabel = self.createTitleLabel(text: OWSLocalizedString("SECONDARY_ONBOARDING_SCAN_CODE_BODY", comment: "body text while displaying a QR code which, when scanned, will link this device."))
+        bodyLabel.font = UIFont.dynamicTypeBody
         bodyLabel.numberOfLines = 0
         primaryView.addSubview(bodyLabel)
         bodyLabel.accessibilityIdentifier = "onboarding.linking.bodyLabel"
@@ -41,10 +40,10 @@ public class Deprecated_SecondaryLinkingQRCodeViewController: Deprecated_Onboard
         qrCodeView.setContentHuggingVerticalLow()
 
         let explanationLabel = UILabel()
-        explanationLabel.text = NSLocalizedString("SECONDARY_ONBOARDING_SCAN_CODE_HELP_TEXT",
+        explanationLabel.text = OWSLocalizedString("SECONDARY_ONBOARDING_SCAN_CODE_HELP_TEXT",
                                                   comment: "Link text for page with troubleshooting info shown on the QR scanning screen")
         explanationLabel.textColor = Theme.accentBlueColor
-        explanationLabel.font = UIFont.ows_dynamicTypeSubheadlineClamped
+        explanationLabel.font = UIFont.dynamicTypeSubheadlineClamped
         explanationLabel.numberOfLines = 0
         explanationLabel.textAlignment = .center
         explanationLabel.lineBreakMode = .byWordWrapping
@@ -120,7 +119,7 @@ public class Deprecated_SecondaryLinkingQRCodeViewController: Deprecated_Onboard
             self.qrCodeURL = url
             try self.qrCodeView.setQR(url: url)
         }.catch { error in
-            let title = NSLocalizedString("SECONDARY_DEVICE_ERROR_FETCHING_LINKING_CODE", comment: "alert title")
+            let title = OWSLocalizedString("SECONDARY_DEVICE_ERROR_FETCHING_LINKING_CODE", comment: "alert title")
             let alert = ActionSheetController(title: title, message: error.userErrorDescription)
 
             let retryAction = ActionSheetAction(title: CommonStrings.retryButton,

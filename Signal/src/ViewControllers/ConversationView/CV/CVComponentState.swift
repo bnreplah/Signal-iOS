@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import SignalMessaging
+import SignalServiceKit
 import SignalUI
 
 public class CVComponentState: Equatable, Dependencies {
@@ -101,8 +101,7 @@ public class CVComponentState: Equatable, Dependencies {
     struct QuotedReply: Equatable {
         let viewState: QuotedMessageView.State
 
-        // TODO: convert OWSQuotedReplyModel to Swift.
-        var quotedReplyModel: OWSQuotedReplyModel { viewState.quotedReplyModel }
+        var quotedReplyModel: QuotedReplyModel { viewState.quotedReplyModel }
         var displayableQuotedText: DisplayableText? { viewState.displayableQuotedText }
     }
     let quotedReply: QuotedReply?
@@ -383,6 +382,10 @@ public class CVComponentState: Equatable, Dependencies {
 
         let interaction: TSInteraction
         let itemBuildingContext: CVItemBuildingContext
+
+        var revealedSpoilerIdsSnapshot: Set<StyleIdType> {
+            return itemBuildingContext.viewStateSnapshot.spoilerReveal[.fromInteraction(interaction)] ?? Set()
+        }
 
         var senderName: SenderName?
         var senderAvatar: SenderAvatar?
@@ -732,7 +735,7 @@ fileprivate extension CVComponentState.Builder {
                 owsFailDebug("Invalid message.")
                 return build()
             }
-            return try populateAndBuild(message: message)
+            return try populateAndBuild(message: message, revealedSpoilerIdsSnapshot: revealedSpoilerIdsSnapshot)
         case .unknown:
             owsFailDebug("Unknown interaction type.")
             return build()
@@ -770,7 +773,10 @@ fileprivate extension CVComponentState.Builder {
         return FailedOrPendingDownloads(attachmentPointers: attachmentPointers)
     }
 
-    mutating func populateAndBuild(message: TSMessage) throws -> CVComponentState {
+    mutating func populateAndBuild(
+        message: TSMessage,
+        revealedSpoilerIdsSnapshot: Set<StyleIdType>
+    ) throws -> CVComponentState {
 
         if message.wasRemotelyDeleted {
             // If the message has been remotely deleted, suppress everything else.
@@ -792,7 +798,7 @@ fileprivate extension CVComponentState.Builder {
 
         // Check for quoted replies _before_ media album handling,
         // since that logic may exit early.
-        buildQuotedReply(message: message)
+        buildQuotedReply(message: message, revealedSpoilerIdsSnapshot: revealedSpoilerIdsSnapshot)
 
         try buildBodyText(message: message)
 
@@ -957,13 +963,13 @@ fileprivate extension CVComponentState.Builder {
                                          action: .didTapSendMessage(contactShare: contactShare))
             bottomButtonsActions.append(action)
         } else if hasInviteButton {
-            let action = CVMessageAction(title: NSLocalizedString("ACTION_INVITE",
+            let action = CVMessageAction(title: OWSLocalizedString("ACTION_INVITE",
                                                                   comment: "Label for 'invite' button in contact view."),
                                          accessibilityIdentifier: "invite_contact_share",
                                          action: .didTapSendInvite(contactShare: contactShare))
             bottomButtonsActions.append(action)
         } else if hasAddToContactsButton {
-            let action = CVMessageAction(title: NSLocalizedString("CONVERSATION_VIEW_ADD_TO_CONTACTS_OFFER",
+            let action = CVMessageAction(title: OWSLocalizedString("CONVERSATION_VIEW_ADD_TO_CONTACTS_OFFER",
                                                                   comment: "Message shown in conversation view that offers to add an unknown user to your phone's contacts."),
                                          accessibilityIdentifier: "add_to_contacts",
                                          action: .didTapAddToContacts(contactShare: contactShare))
@@ -1013,23 +1019,31 @@ fileprivate extension CVComponentState.Builder {
     }
 
     // TODO: Should we validate and throw errors?
-    mutating func buildQuotedReply(message: TSMessage) {
-        guard let quotedReplyModel = OWSQuotedReplyModel.quotedReply(from: message, transaction: transaction) else {
+    mutating func buildQuotedReply(
+        message: TSMessage,
+        revealedSpoilerIdsSnapshot: Set<StyleIdType>
+    ) {
+        guard let quotedReplyModel = QuotedReplyModel(message: message, transaction: transaction) else {
             return
         }
         var displayableQuotedText: DisplayableText?
         if let quotedBody = quotedReplyModel.body,
            !quotedBody.isEmpty {
-            displayableQuotedText = CVComponentState.displayableQuotedText(text: quotedBody,
-                                                                           ranges: quotedReplyModel.bodyRanges,
-                                                                           interaction: message,
-                                                                           transaction: transaction)
+            displayableQuotedText = CVComponentState.displayableQuotedText(
+                text: quotedBody,
+                ranges: quotedReplyModel.bodyRanges,
+                interaction: message,
+                revealedSpoilerIdsSnapshot: revealedSpoilerIdsSnapshot,
+                transaction: transaction
+            )
         }
-        let viewState = QuotedMessageView.stateForConversation(quotedReplyModel: quotedReplyModel,
-                                                               displayableQuotedText: displayableQuotedText,
-                                                               conversationStyle: conversationStyle,
-                                                               isOutgoing: isOutgoing,
-                                                               transaction: transaction)
+        let viewState = QuotedMessageView.stateForConversation(
+            quotedReplyModel: quotedReplyModel,
+            displayableQuotedText: displayableQuotedText,
+            conversationStyle: conversationStyle,
+            isOutgoing: isOutgoing,
+            transaction: transaction
+        )
         self.quotedReply = QuotedReply(viewState: viewState)
     }
 
@@ -1110,7 +1124,7 @@ fileprivate extension CVComponentState.Builder {
             throw OWSAssertionError("Missing attachment.")
         }
 
-        if attachment.isAudio, let audioAttachment = AudioAttachment(attachment: attachment, owningMessage: interaction as? TSMessage) {
+        if attachment.isAudio, let audioAttachment = AudioAttachment(attachment: attachment, owningMessage: interaction as? TSMessage, metadata: nil) {
             self.audioAttachment = audioAttachment
             return
         }
@@ -1186,7 +1200,7 @@ fileprivate extension CVComponentState.Builder {
         self.giftBadge = GiftBadge(
             messageUniqueId: messageUniqueId,
             otherUserShortName: threadViewModel.shortName ?? threadViewModel.name,
-            cachedBadge: SubscriptionManager.getCachedBadge(level: .giftBadge(level)),
+            cachedBadge: SubscriptionManagerImpl.getCachedBadge(level: .giftBadge(level)),
             expirationDate: expirationDate,
             redemptionState: giftBadge.redemptionState
         )
@@ -1202,10 +1216,18 @@ public extension CVComponentState {
                                     ranges: MessageBodyRanges?,
                                     interaction: TSInteraction,
                                     transaction: SDSAnyReadTransaction) -> DisplayableText {
-        let mentionStyle: Mention.Style = (interaction as? TSOutgoingMessage != nil) ? .outgoing : .incoming
-        return DisplayableText.displayableText(withMessageBody: MessageBody(text: text, ranges: ranges ?? .empty),
-                                               mentionStyle: mentionStyle,
-                                               transaction: transaction)
+        let isOutgoingMessage = interaction is TSOutgoingMessage
+        return DisplayableText.displayableText(
+            withMessageBody: MessageBody(text: text, ranges: ranges ?? .empty),
+            displayConfig: HydratedMessageBody.DisplayConfiguration(
+                mention: isOutgoingMessage ? .outgoingMessageBubble : .incomingMessageBubble,
+                style: .forMessageBubble(
+                    isIncoming: !isOutgoingMessage,
+                    revealedSpoilerIds: Set()
+                ),
+                searchRanges: nil
+            ),
+            transaction: transaction)
     }
 
     static func displayableBodyText(oversizeTextAttachment attachmentStream: TSAttachmentStream,
@@ -1231,10 +1253,18 @@ public extension CVComponentState {
             }
         }()
 
-        let mentionStyle: Mention.Style = (interaction as? TSOutgoingMessage != nil) ? .outgoing : .incoming
-        return DisplayableText.displayableText(withMessageBody: MessageBody(text: text, ranges: ranges ?? .empty),
-                                               mentionStyle: mentionStyle,
-                                               transaction: transaction)
+        let isOutgoingMessage = interaction is TSOutgoingMessage
+        return DisplayableText.displayableText(
+            withMessageBody: MessageBody(text: text, ranges: ranges ?? .empty),
+            displayConfig: HydratedMessageBody.DisplayConfiguration(
+                mention: isOutgoingMessage ? .outgoingMessageBubble : .incomingMessageBubble,
+                style: .forMessageBubble(
+                    isIncoming: !isOutgoingMessage,
+                    revealedSpoilerIds: Set()
+                ),
+                searchRanges: nil
+            ),
+            transaction: transaction)
     }
 }
 
@@ -1242,21 +1272,39 @@ public extension CVComponentState {
 
 fileprivate extension CVComponentState {
 
-    static func displayableQuotedText(text: String,
-                                      ranges: MessageBodyRanges?,
-                                      interaction: TSInteraction,
-                                      transaction: SDSAnyReadTransaction) -> DisplayableText {
-        return DisplayableText.displayableText(withMessageBody: MessageBody(text: text, ranges: ranges ?? .empty),
-                                               mentionStyle: .quotedReply,
-                                               transaction: transaction)
+    static func displayableQuotedText(
+        text: String,
+        ranges: MessageBodyRanges?,
+        interaction: TSInteraction,
+        revealedSpoilerIdsSnapshot: Set<StyleIdType>,
+        transaction: SDSAnyReadTransaction
+    ) -> DisplayableText {
+        return DisplayableText.displayableText(
+            withMessageBody: MessageBody(text: text, ranges: ranges ?? .empty),
+            displayConfig: HydratedMessageBody.DisplayConfiguration(
+                mention: .quotedReply,
+                style: .quotedReply(revealedSpoilerIds: revealedSpoilerIdsSnapshot),
+                searchRanges: nil
+            ),
+            transaction: transaction
+        )
     }
 
     static func displayableCaption(text: String,
                                    attachmentId: String,
                                    transaction: SDSAnyReadTransaction) -> DisplayableText {
-        return DisplayableText.displayableText(withMessageBody: MessageBody(text: text, ranges: .empty),
-                                               mentionStyle: .incoming,
-                                               transaction: transaction)
+        return DisplayableText.displayableText(
+            withMessageBody: MessageBody(text: text, ranges: .empty),
+            displayConfig: HydratedMessageBody.DisplayConfiguration(
+                mention: .incomingMessageBubble,
+                style: .forMessageBubble(
+                    isIncoming: true,
+                    revealedSpoilerIds: Set()
+                ),
+                searchRanges: nil
+            ),
+            transaction: transaction
+        )
     }
 }
 

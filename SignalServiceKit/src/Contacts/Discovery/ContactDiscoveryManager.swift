@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import SignalCoreKit
 
 /// A ContactDiscoveryManager coordinates CDS lookup requests.
 ///
@@ -84,9 +85,6 @@ public enum ContactDiscoveryMode {
     /// this lookup is complete.
     case outgoingMessage
 
-    /// Used when manually migrating a group from v1 to v2.
-    case groupMigration
-
     /// Used during contact intersection.
     case contactIntersection
 
@@ -94,7 +92,6 @@ public enum ContactDiscoveryMode {
         .oneOffUserRequest,
         .uuidBackfill,
         .outgoingMessage,
-        .groupMigration,
         .contactIntersection
     ]
 }
@@ -112,9 +109,22 @@ public final class ContactDiscoveryManagerImpl: NSObject, ContactDiscoveryManage
         SwiftSingletons.register(self)
     }
 
-    @objc
-    convenience override init() {
-        self.init(contactDiscoveryTaskQueue: ContactDiscoveryTaskQueueImpl())
+    public convenience init(
+        db: DB,
+        recipientFetcher: RecipientFetcher,
+        recipientMerger: RecipientMerger,
+        tsAccountManager: TSAccountManager,
+        websocketFactory: WebSocketFactory
+    ) {
+        self.init(
+            contactDiscoveryTaskQueue: ContactDiscoveryTaskQueueImpl(
+                db: db,
+                recipientFetcher: recipientFetcher,
+                recipientMerger: recipientMerger,
+                tsAccountManager: tsAccountManager,
+                websocketFactory: websocketFactory
+            )
+        )
     }
 
     public func lookUp(phoneNumbers: Set<String>, mode: ContactDiscoveryMode) -> Promise<Set<SignalRecipient>> {
@@ -312,7 +322,7 @@ public final class ContactDiscoveryManagerImpl: NSObject, ContactDiscoveryManage
             case .oneOffUserRequest, .uuidBackfill, .contactIntersection:
                 // These always perform a fetch -- no need to consult the cache.
                 return true
-            case .outgoingMessage, .groupMigration:
+            case .outgoingMessage:
                 // Fall through to check the cache before initiating the request.
                 break
             }
@@ -337,7 +347,7 @@ public final class ContactDiscoveryManagerImpl: NSObject, ContactDiscoveryManage
         ) {
             let now = Date()
             let missingPhoneNumbers = requestedPhoneNumbers
-                .subtracting(signalRecipients.lazy.compactMap { $0.recipientPhoneNumber })
+                .subtracting(signalRecipients.lazy.compactMap { $0.phoneNumber })
             for missingPhoneNumber in missingPhoneNumbers {
                 phoneNumberFetchDates[missingPhoneNumber] = now
             }

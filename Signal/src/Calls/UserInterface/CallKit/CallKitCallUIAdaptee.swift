@@ -3,12 +3,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
-import UIKit
-import CallKit
 import AVFoundation
-import SignalServiceKit
+import CallKit
 import SignalMessaging
+import SignalServiceKit
+import SignalUI
 
 /**
  * Connects user interface to the CallService using CallKit.
@@ -46,7 +45,7 @@ final class CallKitCallUIAdaptee: NSObject, CallUIAdaptee, CXProviderDelegate {
 
     // The app's provider configuration, representing its CallKit capabilities
     class func buildProviderConfiguration(useSystemCallLog: Bool) -> CXProviderConfiguration {
-        let localizedName = NSLocalizedString("APPLICATION_NAME", comment: "Name of application")
+        let localizedName = OWSLocalizedString("APPLICATION_NAME", comment: "Name of application")
         let providerConfiguration = CXProviderConfiguration(localizedName: localizedName)
 
         providerConfiguration.supportsVideo = true
@@ -111,10 +110,10 @@ final class CallKitCallUIAdaptee: NSObject, CallUIAdaptee, CXProviderDelegate {
         if showNamesOnCallScreen {
             return contactsManager.displayNameWithSneakyTransaction(thread: call.thread)
         } else if call.isIndividualCall {
-            return NSLocalizedString("CALLKIT_ANONYMOUS_CONTACT_NAME",
+            return OWSLocalizedString("CALLKIT_ANONYMOUS_CONTACT_NAME",
                                      comment: "The generic name used for calls if CallKit privacy is enabled")
         } else {
-            return NSLocalizedString("CALLKIT_ANONYMOUS_GROUP_NAME",
+            return OWSLocalizedString("CALLKIT_ANONYMOUS_GROUP_NAME",
                                      comment: "The generic name used for group calls if CallKit privacy is enabled")
         }
     }
@@ -485,7 +484,7 @@ final class CallKitCallUIAdaptee: NSObject, CallUIAdaptee, CXProviderDelegate {
     func provider(_ provider: CXProvider, timedOutPerforming action: CXAction) {
         AssertIsOnMainThread()
 
-        if #available(iOS 13, *), let muteAction = action as? CXSetMutedCallAction {
+        if let muteAction = action as? CXSetMutedCallAction {
             guard callManager.callWithLocalId(muteAction.callUUID) != nil else {
                 // When a call is over, if it was muted, CallKit "helpfully" attempts to unmute the
                 // call with "CXSetMutedCallAction", presumably to help us clean up state.

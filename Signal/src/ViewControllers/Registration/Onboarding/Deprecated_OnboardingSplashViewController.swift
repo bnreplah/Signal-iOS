@@ -6,9 +6,8 @@
 import SafariServices
 import SignalMessaging
 import SignalServiceKit
-import UIKit
+import SignalUI
 
-@objc
 public class Deprecated_OnboardingSplashViewController: Deprecated_OnboardingBaseViewController {
 
     let modeSwitchButton = UIButton()
@@ -28,7 +27,7 @@ public class Deprecated_OnboardingSplashViewController: Deprecated_OnboardingBas
 
         view.addSubview(modeSwitchButton)
         modeSwitchButton.setTemplateImageName(
-            Deprecated_OnboardingController.defaultOnboardingMode == .registering ? "link-24" : "link-broken-24",
+            Deprecated_OnboardingController.defaultOnboardingMode == .registering ? "link" : "link-slash",
             tintColor: .ows_gray25
         )
         modeSwitchButton.autoSetDimensions(to: CGSize(square: 40))
@@ -50,19 +49,19 @@ public class Deprecated_OnboardingSplashViewController: Deprecated_OnboardingBas
         heroImageView.setContentHuggingVerticalLow()
         heroImageView.accessibilityIdentifier = "onboarding.splash." + "heroImageView"
 
-        let titleLabel = self.createTitleLabel(text: NSLocalizedString("ONBOARDING_SPLASH_TITLE", comment: "Title of the 'onboarding splash' view."))
+        let titleLabel = self.createTitleLabel(text: OWSLocalizedString("ONBOARDING_SPLASH_TITLE", comment: "Title of the 'onboarding splash' view."))
         primaryView.addSubview(titleLabel)
         titleLabel.accessibilityIdentifier = "onboarding.splash." + "titleLabel"
 
         if !TSConstants.isUsingProductionService {
-            titleLabel.text = "Internal Staging Build" + "\n" + "\(appVersion.currentAppVersion4)"
+            titleLabel.text = "Internal Staging Build" + "\n" + "\(AppVersion.shared.currentAppVersion4)"
         }
 
         let explanationLabel = UILabel()
-        explanationLabel.text = NSLocalizedString("ONBOARDING_SPLASH_TERM_AND_PRIVACY_POLICY",
+        explanationLabel.text = OWSLocalizedString("ONBOARDING_SPLASH_TERM_AND_PRIVACY_POLICY",
                                                   comment: "Link to the 'terms and privacy policy' in the 'onboarding splash' view.")
         explanationLabel.textColor = Theme.accentBlueColor
-        explanationLabel.font = UIFont.ows_dynamicTypeSubheadlineClamped
+        explanationLabel.font = UIFont.dynamicTypeSubheadlineClamped
         explanationLabel.numberOfLines = 0
         explanationLabel.textAlignment = .center
         explanationLabel.lineBreakMode = .byWordWrapping
@@ -91,26 +90,21 @@ public class Deprecated_OnboardingSplashViewController: Deprecated_OnboardingBas
         stackView.autoPinEdgesToSuperviewMargins()
     }
 
-    override public func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        // Whenever this view appears, we should switch back to the default
-        // registration mode. If the user wants to use the other one, they need to
-        // tap the link icon and confirm their selection.
-        onboardingController.onboardingMode = Deprecated_OnboardingController.defaultOnboardingMode
+    override func shouldShowBackButton() -> Bool {
+        return false
     }
 
     // MARK: - Events
 
     @objc
-    func didTapModeSwitch() {
+    private func didTapModeSwitch() {
         Logger.info("")
 
         onboardingController.onboardingSplashRequestedModeSwitch(viewController: self)
     }
 
     @objc
-    func explanationLabelTapped(sender: UIGestureRecognizer) {
+    private func explanationLabelTapped(sender: UIGestureRecognizer) {
         guard sender.state == .recognized else {
             return
         }
@@ -120,7 +114,7 @@ public class Deprecated_OnboardingSplashViewController: Deprecated_OnboardingBas
     }
 
     @objc
-    func continuePressed() {
+    private func continuePressed() {
         Logger.info("")
 
         onboardingController.onboardingSplashDidComplete(viewController: self)

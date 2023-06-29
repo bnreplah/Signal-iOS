@@ -1,2 +1,1 @@
-• New animation improvements in the media and avatar viewers let you smoothly step back and see the big picture.
-• We fixed a couple of layout bugs that would sometimes cause buttons to show up in the wrong place on new iPhones, like invisible castaways marooned underneath Apple's Dynamic Island.
+• We updated the icons within the app to help improve legibility, especially if you live within the darkness of Dark Mode. The previous icons merely adopted the dark. These new icons were born in it, molded by it.

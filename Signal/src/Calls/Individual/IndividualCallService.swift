@@ -13,7 +13,6 @@ import CallKit
 // MARK: - CallService
 
 // This class' state should only be accessed on the main queue.
-@objc
 final public class IndividualCallService: NSObject {
 
     private var callManager: CallService.CallManagerType {
@@ -24,7 +23,6 @@ final public class IndividualCallService: NSObject {
 
     static let fallbackIceServer = RTCIceServer(urlStrings: ["stun:stun1.l.google.com:19302"])
 
-    @objc
     public override init() {
         super.init()
 
@@ -51,7 +49,7 @@ final public class IndividualCallService: NSObject {
         call.individualCall.createOrUpdateCallInteractionAsync(callType: .outgoingIncomplete)
 
         // Get the current local device Id, must be valid for lifetime of the call.
-        let localDeviceId = tsAccountManager.storedDeviceId()
+        let localDeviceId = tsAccountManager.storedDeviceId
 
         do {
             try callManager.placeCall(call: call, callMediaType: call.individualCall.offerMediaType.asCallMediaType, localDevice: localDeviceId)
@@ -219,7 +217,7 @@ final public class IndividualCallService: NSObject {
 
         BenchEventStart(title: "Incoming Call Connection", eventId: "call-\(newCall.localId)")
 
-        guard tsAccountManager.isOnboarded(with: transaction) else {
+        guard tsAccountManager.isOnboarded(transaction: transaction) else {
             Logger.warn("user is not onboarded, skipping call.")
             newCall.individualCall.createOrUpdateCallInteraction(callType: .incomingMissed, transaction: transaction)
 
@@ -271,7 +269,7 @@ final public class IndividualCallService: NSObject {
             Logger.info("Ignoring call offer from \(thread.contactAddress) due to insufficient permissions.")
 
             // Send the need permission message to the caller, so they know why we rejected their call.
-            let localDeviceId = tsAccountManager.storedDeviceId(with: transaction)
+            let localDeviceId = tsAccountManager.storedDeviceId(transaction: transaction)
             callManager(
                 callManager,
                 shouldSendHangup: callId,
@@ -319,7 +317,7 @@ final public class IndividualCallService: NSObject {
         }
 
         // Get the current local device Id, must be valid for lifetime of the call.
-        let localDeviceId = tsAccountManager.storedDeviceId(with: transaction)
+        let localDeviceId = tsAccountManager.storedDeviceId(transaction: transaction)
         let isPrimaryDevice = tsAccountManager.isPrimaryDevice(transaction: transaction)
 
         do {
@@ -471,13 +469,13 @@ final public class IndividualCallService: NSObject {
                 }
             }
 
-            let useTurnOnly = isUnknownCaller || Self.preferences.doCallsHideIPAddress()
+            let useTurnOnly = isUnknownCaller || Self.preferences.doCallsHideIPAddress
 
-            let useLowBandwidth = CallService.shouldUseLowBandwidthWithSneakyTransaction(for: NetworkRoute(localAdapterType: .unknown))
-            Logger.info("Configuring call for \(useLowBandwidth ? "low" : "standard") bandwidth")
+            let useLowData = CallService.shouldUseLowDataWithSneakyTransaction(for: NetworkRoute(localAdapterType: .unknown))
+            Logger.info("Configuring call for \(useLowData ? "low" : "standard") data")
 
             // Tell the Call Manager to proceed with its active call.
-            try self.callManager.proceed(callId: callId, iceServers: iceServers, hideIp: useTurnOnly, videoCaptureController: call.videoCaptureController, bandwidthMode: useLowBandwidth ? .low : .normal, audioLevelsIntervalMillis: nil)
+            try self.callManager.proceed(callId: callId, iceServers: iceServers, hideIp: useTurnOnly, videoCaptureController: call.videoCaptureController, dataMode: useLowData ? .low : .normal, audioLevelsIntervalMillis: nil)
         }.catch { error in
             owsFailDebug("\(error)")
             guard call === self.callService.currentCall else {
@@ -1318,7 +1316,7 @@ final public class IndividualCallService: NSObject {
             return
         }
 
-        guard !OWSWindowManager.shared.hasCall else {
+        guard !WindowManager.shared.hasCall else {
             // call screen is visible
             return
         }

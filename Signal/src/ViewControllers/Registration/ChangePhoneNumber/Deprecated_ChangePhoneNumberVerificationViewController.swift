@@ -3,11 +3,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import UIKit
 import SignalCoreKit
+import SignalServiceKit
+import SignalUI
 
 // Most of the logic for the verification views resides in RegistrationVerificationViewController.
-@objc
 public class Deprecated_ChangePhoneNumberVerificationViewController: Deprecated_RegistrationBaseViewController {
 
     private let changePhoneNumberController: Deprecated_ChangePhoneNumberController

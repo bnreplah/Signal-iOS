@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import UIKit
+import SignalServiceKit
 
 class EditorTextLayer: CATextLayer {
 
@@ -120,7 +120,7 @@ private class TextFrameLayer: CAShapeLayer {
 
     private func commonInit() {
         fillColor = UIColor.clear.cgColor
-        lineWidth = 3 * CGHairlineWidth()
+        lineWidth = .hairlineWidthFraction(3)
         strokeColor = UIColor.white.cgColor
 
         addSublayer(leftCircleLayer)

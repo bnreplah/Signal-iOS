@@ -342,7 +342,6 @@ struct StorageServiceProtos_ContactRecord {
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  /// @trustedMapping
   var serviceUuid: String {
     get {return _storage._serviceUuid}
     set {_uniqueStorage()._serviceUuid = newValue}
@@ -741,6 +740,7 @@ struct StorageServiceProtos_AccountRecord {
     set {_uniqueStorage()._username = newValue}
   }
 
+  /// Removed 'has' prefix on spec definition to avoid name conflict.
   var completedUsernameOnboarding: Bool {
     get {return _storage._completedUsernameOnboarding}
     set {_uniqueStorage()._completedUsernameOnboarding = newValue}

@@ -17,7 +17,9 @@ import UIKit
 /// this lets us associate them with this device's ongoing calls. The CallRecord also holds
 /// other metadata like call status to allow us to update the state of the TSCall accordingly.
 @objc
-public final class CallRecord: NSObject, SDSCodableModel {
+public final class CallRecord: NSObject, SDSCodableModel, Decodable {
+    public static var recordType: UInt { 0 }
+
     public static let databaseTableName = "model_CallRecord"
 
     public enum CodingKeys: String, CodingKey, ColumnExpression, CaseIterable {
@@ -170,6 +172,7 @@ public final class CallRecord: NSObject, SDSCodableModel {
             return
         }
         if let callRecord = Self.fetch(forCallId: callId, transaction: transaction) {
+            Logger.info("Found existing call record, updating")
             var needsSync = false
             callRecord.anyUpdate(transaction: transaction) {
                 if isAllowedTransition(from: $0.status, to: status) {
@@ -199,6 +202,7 @@ public final class CallRecord: NSObject, SDSCodableModel {
                 Self.sendSyncMessage(forInteraction: interaction, record: callRecord, transaction: transaction)
             }
         } else {
+            Logger.info("Creating new call record")
             let callRecord = CallRecord(
                 callId: callId,
                 interactionUniqueId: interaction.uniqueId,
@@ -223,17 +227,23 @@ public final class CallRecord: NSObject, SDSCodableModel {
         for interaction: TSCall,
         transaction: SDSAnyWriteTransaction
     ) {
-        if
+        guard
             let newStatus = interaction.callType.callRecordStatus,
-            let callRecord = Self.fetch(for: interaction, transaction: transaction),
-            isAllowedTransition(from: callRecord.status, to: newStatus)
-        {
-            callRecord.anyUpdate(transaction: transaction) {
-                $0.status = newStatus
-            }
-            // If we got past the above if statement checks, this should trigger a sync message.
-            Self.sendSyncMessage(forInteraction: interaction, record: callRecord, transaction: transaction)
+            let callRecord = Self.fetch(for: interaction, transaction: transaction)
+        else {
+            Logger.info("No existing call record found")
+            return
         }
+        guard isAllowedTransition(from: callRecord.status, to: newStatus) else {
+            Logger.error("Illegal call transition: \(callRecord.status) to \(newStatus)")
+            return
+        }
+        Logger.info("Updating existing call record to \(newStatus)")
+        callRecord.anyUpdate(transaction: transaction) {
+            $0.status = newStatus
+        }
+        // If we got past the above if statement checks, this should trigger a sync message.
+        Self.sendSyncMessage(forInteraction: interaction, record: callRecord, transaction: transaction)
     }
 
     @objc
@@ -373,6 +383,7 @@ public final class CallRecord: NSObject, SDSCodableModel {
         // any effect on local state (and remote devices should be robust to
         // out of order updates). Just send the message when we are ready.
         guard AppReadiness.isAppReady else {
+            Logger.info("Delaying call disposition sync message because app isn't launched")
             AppReadiness.runNowOrWhenAppDidBecomeReadyAsync {
                 Self.databaseStorage.asyncWrite {
                     guard
@@ -388,6 +399,7 @@ public final class CallRecord: NSObject, SDSCodableModel {
             return
         }
         guard let eventEnum = callRecord.status.objcEvent else {
+            Logger.info("Not sending local only call event, status: \(callRecord.status)")
             return
         }
         guard let callId = UInt64(callRecord.callIdString) else {
@@ -411,6 +423,7 @@ public final class CallRecord: NSObject, SDSCodableModel {
             peerUuid: peerUuidData
         )
         let message = OutgoingCallEventSyncMessage(thread: thread, event: event, transaction: transaction)
+        Logger.info("Sending call sync event, direction: \(callRecord.direction) event: \(eventEnum)")
         Self.sskJobQueues.messageSenderJobQueue.add(message: message.asPreparer, transaction: transaction)
     }
 

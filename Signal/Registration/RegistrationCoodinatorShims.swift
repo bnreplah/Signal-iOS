@@ -6,14 +6,19 @@
 import Contacts
 import Foundation
 import SignalMessaging
+import SignalServiceKit
 
 extension RegistrationCoordinatorImpl {
 
     public enum Shims {
         public typealias AccountManager = _RegistrationCoordinator_AccountManagerShim
+        public typealias ContactsManager = _RegistrationCoordinator_ContactsManagerShim
         public typealias ContactsStore = _RegistrationCoordinator_CNContactsStoreShim
         public typealias ExperienceManager = _RegistrationCoordinator_ExperienceManagerShim
+        public typealias MessagePipelineSupervisor = _RegistrationCoordinator_MessagePipelineSupervisorShim
+        public typealias MessageProcessor = _RegistrationCoordinator_MessageProcessorShim
         public typealias OWS2FAManager = _RegistrationCoordinator_OWS2FAManagerShim
+        public typealias PreKeyManager = _RegistrationCoordinator_PreKeyManagerShim
         public typealias ProfileManager = _RegistrationCoordinator_ProfileManagerShim
         public typealias PushRegistrationManager = _RegistrationCoordinator_PushRegistrationManagerShim
         public typealias ReceiptManager = _RegistrationCoordinator_ReceiptManagerShim
@@ -23,9 +28,13 @@ extension RegistrationCoordinatorImpl {
     }
     public enum Wrappers {
         public typealias AccountManager = _RegistrationCoordinator_AccountManagerWrapper
+        public typealias ContactsManager = _RegistrationCoordinator_ContactsManagerWrapper
         public typealias ContactsStore = _RegistrationCoordinator_CNContactsStoreWrapper
         public typealias ExperienceManager = _RegistrationCoordinator_ExperienceManagerWrapper
+        public typealias MessagePipelineSupervisor = _RegistrationCoordinator_MessagePipelineSupervisorWrapper
+        public typealias MessageProcessor = _RegistrationCoordinator_MessageProcessorWrapper
         public typealias OWS2FAManager = _RegistrationCoordinator_OWS2FAManagerWrapper
+        public typealias PreKeyManager = _RegistrationCoordinator_PreKeyManagerWrapper
         public typealias ProfileManager = _RegistrationCoordinator_ProfileManagerWrapper
         public typealias PushRegistrationManager = _RegistrationCoordinator_PushRegistrationManagerWrapper
         public typealias ReceiptManager = _RegistrationCoordinator_ReceiptManagerWrapper
@@ -39,7 +48,7 @@ extension RegistrationCoordinatorImpl {
 
 public protocol _RegistrationCoordinator_AccountManagerShim {
 
-    func performInitialStorageServiceRestore() -> Promise<Void>
+    func performInitialStorageServiceRestore(authedAccount: AuthedAccount) -> Promise<Void>
 }
 
 public class _RegistrationCoordinator_AccountManagerWrapper: _RegistrationCoordinator_AccountManagerShim {
@@ -47,8 +56,31 @@ public class _RegistrationCoordinator_AccountManagerWrapper: _RegistrationCoordi
     private let manager: AccountManager
     public init(_ manager: AccountManager) { self.manager = manager }
 
-    public func performInitialStorageServiceRestore() -> Promise<Void> {
-        return manager.performInitialStorageServiceRestore()
+    public func performInitialStorageServiceRestore(authedAccount: AuthedAccount) -> Promise<Void> {
+        return manager.performInitialStorageServiceRestore(authedAccount: authedAccount)
+    }
+}
+
+// MARK: OWSContactsManager
+
+public protocol _RegistrationCoordinator_ContactsManagerShim {
+
+    func fetchSystemContactsOnceIfAlreadyAuthorized()
+
+    func setIsPrimaryDevice()
+}
+
+public class _RegistrationCoordinator_ContactsManagerWrapper: _RegistrationCoordinator_ContactsManagerShim {
+
+    private let manager: OWSContactsManager
+    public init(_ manager: OWSContactsManager) { self.manager = manager }
+
+    public func fetchSystemContactsOnceIfAlreadyAuthorized() {
+        manager.fetchSystemContactsOnceIfAlreadyAuthorized()
+    }
+
+    public func setIsPrimaryDevice() {
+        manager.setIsPrimaryDevice()
     }
 }
 
@@ -107,11 +139,63 @@ public class _RegistrationCoordinator_ExperienceManagerWrapper: _RegistrationCoo
     }
 }
 
+// MARK: - MessagePipelineSupervisor
+
+public protocol _RegistrationCoordinator_MessagePipelineSupervisorShim {
+
+    func suspendMessageProcessingWithoutHandle(for: MessagePipelineSupervisor.Suspension)
+
+    func unsuspendMessageProcessing(for: MessagePipelineSupervisor.Suspension)
+}
+
+public class _RegistrationCoordinator_MessagePipelineSupervisorWrapper: _RegistrationCoordinator_MessagePipelineSupervisorShim {
+
+    private let supervisor: MessagePipelineSupervisor
+
+    public init(_ supervisor: MessagePipelineSupervisor) {
+        self.supervisor = supervisor
+    }
+
+    public func suspendMessageProcessingWithoutHandle(for suspension: MessagePipelineSupervisor.Suspension) {
+        supervisor.suspendMessageProcessingWithoutHandle(for: suspension)
+    }
+
+    public func unsuspendMessageProcessing(for suspension: MessagePipelineSupervisor.Suspension) {
+        supervisor.unsuspendMessageProcessing(for: suspension)
+    }
+}
+
+// MARK: - MessageProcessor
+
+public protocol _RegistrationCoordinator_MessageProcessorShim {
+
+    func waitForProcessingCompleteAndThenSuspend(
+        for suspension: MessagePipelineSupervisor.Suspension
+    ) -> Guarantee<Void>
+}
+
+public class _RegistrationCoordinator_MessageProcessorWrapper: _RegistrationCoordinator_MessageProcessorShim {
+
+    private let processor: MessageProcessor
+
+    public init(_ processor: MessageProcessor) {
+        self.processor = processor
+    }
+
+    public func waitForProcessingCompleteAndThenSuspend(
+        for suspension: MessagePipelineSupervisor.Suspension
+    ) -> Guarantee<Void> {
+        return processor.waitForProcessingCompleteAndThenSuspend(for: suspension)
+    }
+}
+
 // MARK: - OWS2FAManager
 
 public protocol _RegistrationCoordinator_OWS2FAManagerShim {
 
     func pinCode(_ tx: DBReadTransaction) -> String?
+
+    func clearLocalPinCode(_ tx: DBWriteTransaction)
 
     func isReglockEnabled(_ tx: DBReadTransaction) -> Bool
 
@@ -129,6 +213,10 @@ public class _RegistrationCoordinator_OWS2FAManagerWrapper: _RegistrationCoordin
         return manager.pinCode(with: SDSDB.shimOnlyBridge(tx))
     }
 
+    public func clearLocalPinCode(_ tx: DBWriteTransaction) {
+        return manager.clearLocalPinCode(transaction: SDSDB.shimOnlyBridge(tx))
+    }
+
     public func isReglockEnabled(_ tx: DBReadTransaction) -> Bool {
         return manager.isRegistrationLockV2Enabled(transaction: SDSDB.shimOnlyBridge(tx))
     }
@@ -139,6 +227,32 @@ public class _RegistrationCoordinator_OWS2FAManagerWrapper: _RegistrationCoordin
 
     public func markRegistrationLockEnabled(_ tx: DBWriteTransaction) {
         manager.markRegistrationLockV2Enabled(transaction: SDSDB.shimOnlyBridge(tx))
+    }
+}
+
+// MARK: - PreKeyManager
+
+public protocol _RegistrationCoordinator_PreKeyManagerShim {
+
+    func createPreKeys(
+        auth: ChatServiceAuth
+    ) -> Promise<Void>
+}
+
+public class _RegistrationCoordinator_PreKeyManagerWrapper: _RegistrationCoordinator_PreKeyManagerShim {
+
+    public init() {}
+
+    public func createPreKeys(
+        auth: ChatServiceAuth
+    ) -> Promise<Void> {
+        let (promise, future) = Promise<Void>.pending()
+        TSPreKeyManager.createPreKeys(
+            with: auth,
+            success: future.resolve,
+            failure: future.reject
+        )
+        return promise
     }
 }
 
@@ -155,7 +269,8 @@ public protocol _RegistrationCoordinator_ProfileManagerShim {
     func updateLocalProfile(
         givenName: String,
         familyName: String?,
-        avatarData: Data?
+        avatarData: Data?,
+        authedAccount: AuthedAccount
     ) -> Promise<Void>
 }
 
@@ -171,7 +286,8 @@ public class _RegistrationCoordinator_ProfileManagerWrapper: _RegistrationCoordi
     public func updateLocalProfile(
         givenName: String,
         familyName: String?,
-        avatarData: Data?
+        avatarData: Data?,
+        authedAccount: AuthedAccount
     ) -> Promise<Void> {
         return OWSProfileManager.updateLocalProfilePromise(
             profileGivenName: givenName,
@@ -180,7 +296,8 @@ public class _RegistrationCoordinator_ProfileManagerWrapper: _RegistrationCoordi
             profileBioEmoji: nil,
             profileAvatarData: avatarData,
             visibleBadgeIds: [],
-            userProfileWriter: .registration
+            userProfileWriter: .registration,
+            authedAccount: authedAccount
         )
     }
 }
@@ -192,7 +309,7 @@ extension Registration {
         case success
         case pushUnsupported(description: String)
         case networkError
-        case genericError
+        case genericError(Error)
     }
 }
 
@@ -204,9 +321,12 @@ public protocol _RegistrationCoordinator_PushRegistrationManagerShim {
 
     func requestPushToken() -> Guarantee<String?>
 
+    func receivePreAuthChallengeToken() -> Guarantee<String>
+
+    func clearPreAuthChallengeToken()
+
     func syncPushTokensForcingUpload(
-        authUsername: String,
-        authPassword: String
+        auth: ChatServiceAuth
     ) -> Guarantee<Registration.SyncPushTokensResult>
 }
 
@@ -224,18 +344,23 @@ public class _RegistrationCoordinator_PushRegistrationManagerWrapper: _Registrat
     }
 
     public func requestPushToken() -> Guarantee<String?> {
-        return manager.requestPushTokens(forceRotation: false)
+        return manager.requestPushTokens(forceRotation: false, timeOutEventually: true)
             .map { $0.0 }
             .recover { _ in return .value(nil) }
     }
 
+    public func receivePreAuthChallengeToken() -> Guarantee<String> {
+        return manager.receivePreAuthChallengeToken()
+    }
+
+    public func clearPreAuthChallengeToken() {
+        manager.clearPreAuthChallengeToken()
+    }
+
     public func syncPushTokensForcingUpload(
-        authUsername: String,
-        authPassword: String
+        auth: ChatServiceAuth
     ) -> Guarantee<Registration.SyncPushTokensResult> {
-        let job = SyncPushTokensJob(mode: .forceUpload)
-        job.authUsername = authUsername
-        job.authPassword = authPassword
+        let job = SyncPushTokensJob(mode: .forceUpload, auth: auth)
         return job.run()
             .map(on: SyncScheduler()) { return .success }
             .recover(on: SyncScheduler()) { error -> Guarantee<Registration.SyncPushTokensResult> in
@@ -246,7 +371,7 @@ public class _RegistrationCoordinator_PushRegistrationManagerWrapper: _Registrat
                 case PushRegistrationError.pushNotSupported(let description):
                     return .value(.pushUnsupported(description: description))
                 default:
-                    return .value(.genericError)
+                    return .value(.genericError(error))
                 }
             }
     }
@@ -278,14 +403,19 @@ public class _RegistrationCoordinator_ReceiptManagerWrapper: _RegistrationCoordi
 
 public protocol _RegistrationCoordinator_RemoteConfigShim {
 
-    var canReceiveGiftBadges: Bool { get }
+    func refreshRemoteConfig(account: AuthedAccount) -> Promise<RemoteConfig.SVRConfiguration>
 }
 
 public class _RegistrationCoordinator_RemoteConfigWrapper: _RegistrationCoordinator_RemoteConfigShim {
 
-    public init() {}
+    private let remoteConfig: RemoteConfigManager
+    public init(_ remoteConfig: RemoteConfigManager) { self.remoteConfig = remoteConfig }
 
-    public var canReceiveGiftBadges: Bool { RemoteConfig.canSendGiftBadges }
+    public func refreshRemoteConfig(account: AuthedAccount) -> Promise<RemoteConfig.SVRConfiguration> {
+        return firstly(on: DispatchQueue.main) { [remoteConfig] in
+            return remoteConfig.refresh(account: account)
+        }.map(on: SyncScheduler(), \.svrConfiguration)
+    }
 }
 
 // MARK: - TSAccountManager
@@ -303,14 +433,32 @@ public protocol _RegistrationCoordinator_TSAccountManagerShim {
     func setIsDiscoverableByPhoneNumber(
         _ isDiscoverable: Bool,
         updateStorageService: Bool,
+        authedAccount: AuthedAccount,
         _ transaction: DBWriteTransaction
     )
 
+    func resetForReregistration(
+        e164: E164,
+        aci: UUID,
+        _ tx: DBWriteTransaction
+    )
+
     func didRegister(
-        _ accountIdentity: RegistrationServiceResponses.AccountIdentityResponse,
+        e164: E164,
+        aci: UUID,
+        pni: UUID,
         authToken: String,
         _ tx: DBWriteTransaction
     )
+
+    func updateLocalPhoneNumber(
+        e164: E164,
+        aci: UUID,
+        pni: UUID,
+        _ tx: DBWriteTransaction
+    )
+
+    func setIsOnboarded(_ tx: DBWriteTransaction)
 }
 
 public class _RegistrationCoordinator_TSAccountManagerWrapper: _RegistrationCoordinator_TSAccountManagerShim {
@@ -345,27 +493,62 @@ public class _RegistrationCoordinator_TSAccountManagerWrapper: _RegistrationCoor
     public func setIsDiscoverableByPhoneNumber(
         _ isDiscoverable: Bool,
         updateStorageService: Bool,
+        authedAccount: AuthedAccount,
         _ transaction: DBWriteTransaction
     ) {
         manager.setIsDiscoverableByPhoneNumber(
             isDiscoverable,
             updateStorageService: updateStorageService,
+            authedAccount: authedAccount,
             transaction: SDSDB.shimOnlyBridge(transaction)
         )
     }
 
+    public func resetForReregistration(
+        e164: E164,
+        aci: UUID,
+        _ tx: DBWriteTransaction
+    ) {
+        manager.resetForReregistration(
+            withLocalPhoneNumber: .init(e164),
+            localAci: aci,
+            wasPrimaryDevice: true,
+            transaction: SDSDB.shimOnlyBridge(tx)
+        )
+    }
+
     public func didRegister(
-        _ accountIdentity: RegistrationServiceResponses.AccountIdentityResponse,
+        e164: E164,
+        aci: UUID,
+        pni: UUID,
         authToken: String,
         _ tx: DBWriteTransaction
     ) {
         manager.didRegisterPrimary(
-            withE164: accountIdentity.e164,
-            aci: accountIdentity.aci,
-            pni: accountIdentity.pni,
+            withE164: E164ObjC(e164),
+            aci: aci,
+            pni: pni,
             authToken: authToken,
             transaction: SDSDB.shimOnlyBridge(tx)
         )
+    }
+
+    public func updateLocalPhoneNumber(
+        e164: E164,
+        aci: UUID,
+        pni: UUID,
+        _ tx: DBWriteTransaction
+    ) {
+        manager.updateLocalPhoneNumber(
+            E164ObjC(e164),
+            aci: aci,
+            pni: pni,
+            transaction: SDSDB.shimOnlyBridge(tx)
+        )
+    }
+
+    public func setIsOnboarded(_ tx: DBWriteTransaction) {
+        manager.setIsOnboarded(true, transaction: SDSDB.shimOnlyBridge(tx))
     }
 }
 

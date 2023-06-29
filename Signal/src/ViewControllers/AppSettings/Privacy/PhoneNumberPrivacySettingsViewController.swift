@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
+import SignalServiceKit
 import SignalUI
 
 class PhoneNumberPrivacySettingsViewController: OWSTableViewController2 {
@@ -64,7 +64,7 @@ class PhoneNumberPrivacySettingsViewController: OWSTableViewController2 {
 
             sections.append(findByNumberSection)
         }
-        contents.addSections(sections)
+        contents.add(sections: sections)
 
         self.contents = contents
     }
@@ -103,6 +103,7 @@ class PhoneNumberPrivacySettingsViewController: OWSTableViewController2 {
             self?.tsAccountManager.setIsDiscoverableByPhoneNumber(
                 isDiscoverable,
                 updateStorageService: true,
+                authedAccount: .implicit(),
                 transaction: transaction
             )
 
@@ -128,6 +129,7 @@ class PhoneNumberPrivacySettingsViewController: OWSTableViewController2 {
                 self?.tsAccountManager.setIsDiscoverableByPhoneNumber(
                     true,
                     updateStorageService: true,
+                    authedAccount: .implicit(),
                     transaction: transaction
                 )
             }
@@ -175,10 +177,6 @@ extension PhoneNumberPrivacySettingsViewController {
             return OWSLocalizedString(
                 "PHONE_NUMBER_SHARING_EVERYBODY_DESCRIPTION",
                 comment: "A user friendly description of the 'everybody' phone number sharing mode.")
-        case .contactsOnly:
-            return OWSLocalizedString(
-                "PHONE_NUMBER_SHARING_CONTACTS_ONLY_DESCRIPTION",
-                comment: "A user friendly description of the 'contacts only' phone number sharing mode.")
         case .nobody:
             return OWSLocalizedString(
                 "PHONE_NUMBER_SHARING_NOBODY_DESCRIPTION",
@@ -192,10 +190,6 @@ extension PhoneNumberPrivacySettingsViewController {
             return OWSLocalizedString(
                 "PHONE_NUMBER_SHARING_EVERYBODY",
                 comment: "A user friendly name for the 'everybody' phone number sharing mode.")
-        case .contactsOnly:
-            return OWSLocalizedString(
-                "PHONE_NUMBER_SHARING_CONTACTS_ONLY",
-                comment: "A user friendly name for the 'contacts only' phone number sharing mode.")
         case .nobody:
             return OWSLocalizedString(
                 "PHONE_NUMBER_SHARING_NOBODY",

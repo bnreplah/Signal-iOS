@@ -13,7 +13,7 @@ public protocol RegistrationSessionManager {
 
     /// Begins a new session, first attempting to restore any existing valid session for the same number.
     /// See `Registration.BeginSessionResponse` for possible responses, including errors.
-    func beginOrRestoreSession(e164: String, apnsToken: String?) -> Guarantee<Registration.BeginSessionResponse>
+    func beginOrRestoreSession(e164: E164, apnsToken: String?) -> Guarantee<Registration.BeginSessionResponse>
 
     /// Fulfill a challenge for the session (e.g. a captcha).
     /// See `Registration.UpdateSessionResponse` for possible responses, including errors.
@@ -31,7 +31,7 @@ public protocol RegistrationSessionManager {
     /// Typically called once the session is verified and is used to complete registration.
     /// Note: a session is NOT automatically completed when `RegistrationSession.verified` is true, as the registration
     /// process may be interrupted before using the verified session to actually register. (e.g. the user backgrounds the app).
-    func completeSession()
+    func clearPersistedSession(_ transaction: DBWriteTransaction)
 }
 
 public enum Registration {
@@ -92,7 +92,7 @@ public enum Registration {
     public struct ServerFailureResponse: Equatable {
         public let session: RegistrationSession
 
-        /// If true, whatever failure occured isn't likely to be resolved by retrying.
+        /// If true, whatever failure occurred isn't likely to be resolved by retrying.
         /// Otherwise a retry after some delay is appropriate. (e.g. let the user retry)
         public let isPermanent: Bool
 

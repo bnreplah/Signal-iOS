@@ -13,7 +13,7 @@ struct DiscoveredContactInfo: Hashable {
 /// An item that fetches contact info from the ContactDiscoveryService
 /// Intended to be used by ContactDiscoveryTaskQueue. You probably don't want to use this directly.
 protocol ContactDiscoveryOperation {
-    init(e164sToLookup: Set<E164>, mode: ContactDiscoveryMode)
+    init(e164sToLookup: Set<E164>, mode: ContactDiscoveryMode, websocketFactory: WebSocketFactory)
     func perform(on queue: DispatchQueue) -> Promise<Set<DiscoveredContactInfo>>
 }
 
@@ -78,15 +78,8 @@ public class ContactDiscoveryError: NSError, UserErrorDescriptionProvider {
         case generic = 1
         case assertion
 
-        /// An error indicating that the current user has an expired auth token
-        case unauthorized
-        /// An error indicating that a hardcoded resource is unavailable. Best recourse is to update the app.
-        case unexpectedResponse
-        /// An error indicating response timeout.
-        case timeout
         /// An error indicating that the failure was because of a rate limit
         case rateLimit
-
         /// Any generic 4xx error that doesn't fit in the above categories
         case genericClientError
         /// Any generic 5xx error that doesn't fit in the above categories

@@ -64,22 +64,22 @@ public class BadgeExpirationSheetState {
     public lazy var titleText: String = {
         switch mode {
         case .subscriptionExpiredBecauseOfChargeFailure, .subscriptionExpiredBecauseNotRenewed:
-            return NSLocalizedString(
+            return OWSLocalizedString(
                 "BADGE_EXPIRED_SUBSCRIPTION_TITLE",
                 comment: "Title for subscription on the badge expiration sheet."
             )
         case .boostExpired:
-            return NSLocalizedString(
+            return OWSLocalizedString(
                 "BADGE_EXPIRED_BOOST_TITLE",
                 comment: "Title for boost on the badge expiration sheet."
             )
         case .giftBadgeExpired:
-            return NSLocalizedString(
+            return OWSLocalizedString(
                 "DONATION_FROM_A_FRIEND_BADGE_EXPIRED_TITLE",
                 comment: "Someone donated on your behalf and you got a badge, which expired. A sheet appears to tell you about this. This is the title on that sheet."
             )
         case .giftNotRedeemed:
-            return NSLocalizedString(
+            return OWSLocalizedString(
                 "DONATION_FROM_A_FRIEND_BADGE_NOT_REDEEMED_TITLE",
                 comment: "Someone donated on your behalf and you got a badge, which expired before you could redeem it. A sheet appears to tell you about this. This is the title on that sheet."
             )
@@ -93,13 +93,13 @@ public class BadgeExpirationSheetState {
                 chargeErrorCode: chargeFailure.code,
                 paymentMethod: paymentMethod
             )
-            let formatText = NSLocalizedString(
+            let formatText = OWSLocalizedString(
                 "BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_CHARGE_FAILURE_BODY_FORMAT",
                 comment: "String explaining to the user that their subscription badge has expired on the badge expiry sheet. Embeds {failure-specific sentence(s)}."
             )
             return Body(String(format: formatText, failureSpecificText), hasLearnMoreLink: true)
         case .subscriptionExpiredBecauseNotRenewed:
-            let formatText = NSLocalizedString(
+            let formatText = OWSLocalizedString(
                 "BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_INACTIVITY_BODY_FORMAT",
                 comment: "Body of the sheet shown when your subscription is canceled due to inactivity"
             )
@@ -107,25 +107,25 @@ public class BadgeExpirationSheetState {
         case let .boostExpired(hasCurrentSubscription):
             let bodyText: String
             if hasCurrentSubscription {
-                bodyText = NSLocalizedString(
+                bodyText = OWSLocalizedString(
                     "BADGE_EXPIRED_BOOST_CURRENT_SUSTAINER_BODY",
                     comment: "String explaining to the user that their boost badge has expired while they are a current subscription sustainer on the badge expiry sheet."
                 )
             } else {
-                bodyText = NSLocalizedString(
+                bodyText = OWSLocalizedString(
                     "BADGE_EXPIRED_BOOST_BODY",
                     comment: "String explaining to the user that their boost badge has expired on the badge expiry sheet."
                 )
             }
             return Body(bodyText)
         case .giftBadgeExpired:
-            let bodyText = NSLocalizedString(
+            let bodyText = OWSLocalizedString(
                 "DONATION_FROM_A_FRIEND_BADGE_EXPIRED_BODY",
                 comment: "Someone donated on your behalf and you got a badge, which expired. A sheet appears to tell you about this. This is the text on that sheet."
             )
             return Body(bodyText)
         case let .giftNotRedeemed(fullName):
-            let formatText = NSLocalizedString(
+            let formatText = OWSLocalizedString(
                 "DONATION_FROM_A_FRIEND_BADGE_NOT_REDEEMED_BODY_FORMAT",
                 comment: "Someone donated on your behalf and you got a badge, which expired before you could redeem it. A sheet appears to tell you about this. This is the text on that sheet. Embeds {{contact name}}."
             )
@@ -147,7 +147,7 @@ public class BadgeExpirationSheetState {
         }()
 
         if shouldAskUsersToDonate {
-            let text = NSLocalizedString(
+            let text = OWSLocalizedString(
                 "BADGE_EXPIRED_DONATE_BUTTON",
                 comment: "Button text when a badge expires, asking users to donate"
             )
@@ -189,7 +189,7 @@ class BadgeExpirationSheet: OWSTableSheetViewController {
         let headerSection = OWSTableSection()
         headerSection.hasBackground = false
         headerSection.customHeaderHeight = 1
-        contents.addSection(headerSection)
+        contents.add(headerSection)
 
         headerSection.add(.init(customCellBlock: { [weak self] in
             let cell = OWSTableItem.newCell()
@@ -212,7 +212,7 @@ class BadgeExpirationSheet: OWSTableSheetViewController {
             stackView.setCustomSpacing(16, after: badgeImageView)
 
             let titleLabel = UILabel()
-            titleLabel.font = .ows_dynamicTypeTitle2.ows_semibold
+            titleLabel.font = .dynamicTypeTitle2.semibold()
             titleLabel.textColor = Theme.primaryTextColor
             titleLabel.textAlignment = .center
             titleLabel.numberOfLines = 0
@@ -222,12 +222,12 @@ class BadgeExpirationSheet: OWSTableSheetViewController {
 
             let bodyLabel: UIView
             if self.state.body.hasLearnMoreLink {
-                let learnMore = NSLocalizedString(
+                let learnMore = OWSLocalizedString(
                     "BADGE_EXPIRED_LEARN_MORE_LINK",
                     comment: "Text for the 'learn more' link in the badge expiration sheet, shown when a badge expires due to a charge failure"
                 ).styled(with: .link(SupportConstants.badgeExpirationLearnMoreURL))
                 let label = LinkingTextView()
-                label.attributedText = .composed(of: [self.state.body.text, " ", learnMore]).styled(with: .color(Theme.primaryTextColor), .font(.ows_dynamicTypeBody))
+                label.attributedText = .composed(of: [self.state.body.text, " ", learnMore]).styled(with: .color(Theme.primaryTextColor), .font(.dynamicTypeBody))
                 label.textAlignment = .center
                 label.linkTextAttributes = [
                     .foregroundColor: Theme.accentBlueColor,
@@ -237,7 +237,7 @@ class BadgeExpirationSheet: OWSTableSheetViewController {
                 bodyLabel = label
             } else {
                 let label = UILabel()
-                label.font = .ows_dynamicTypeBody
+                label.font = .dynamicTypeBody
                 label.textColor = Theme.primaryTextColor
                 label.numberOfLines = 0
                 label.text = self.state.body.text
@@ -252,7 +252,7 @@ class BadgeExpirationSheet: OWSTableSheetViewController {
 
         let buttonSection = OWSTableSection()
         buttonSection.hasBackground = false
-        contents.addSection(buttonSection)
+        contents.add(buttonSection)
         buttonSection.add(.init(customCellBlock: { [weak self] in
             let cell = OWSTableItem.newCell()
             cell.selectionStyle = .none
@@ -268,7 +268,7 @@ class BadgeExpirationSheet: OWSTableSheetViewController {
             stackView.autoPinEdgesToSuperviewEdges()
 
             let actionButton = OWSFlatButton.button(title: self.state.actionButton.text,
-                                                    font: UIFont.ows_dynamicTypeBody.ows_semibold,
+                                                    font: UIFont.dynamicTypeBody.semibold(),
                                                     titleColor: .white,
                                                     backgroundColor: .ows_accentBlue,
                                                     target: self,
@@ -298,13 +298,13 @@ class BadgeExpirationSheet: OWSTableSheetViewController {
     }
 
     @objc
-    func didTapAction() {
+    private func didTapAction() {
         didDismiss()
         delegate?.badgeExpirationSheetActionTapped(state.actionButton.action)
     }
 
     @objc
-    func didDismiss() {
+    private func didDismiss() {
         dismiss(animated: true, completion: nil)
     }
 }

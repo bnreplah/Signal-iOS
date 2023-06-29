@@ -16,14 +16,17 @@ public extension OWSProfileManager {
     // The returned promise will fail if the service can't be updated
     // (or in the unlikely fact that another error occurs) but this
     // manager will continue to retry until the update succeeds.
-    class func updateLocalProfilePromise(profileGivenName: String?,
-                                         profileFamilyName: String?,
-                                         profileBio: String?,
-                                         profileBioEmoji: String?,
-                                         profileAvatarData: Data?,
-                                         visibleBadgeIds: [String],
-                                         unsavedRotatedProfileKey: OWSAES256Key? = nil,
-                                         userProfileWriter: UserProfileWriter) -> Promise<Void> {
+    class func updateLocalProfilePromise(
+        profileGivenName: String?,
+        profileFamilyName: String?,
+        profileBio: String?,
+        profileBioEmoji: String?,
+        profileAvatarData: Data?,
+        visibleBadgeIds: [String],
+        unsavedRotatedProfileKey: OWSAES256Key? = nil,
+        userProfileWriter: UserProfileWriter,
+        authedAccount: AuthedAccount = .implicit()
+    ) -> Promise<Void> {
         assert(CurrentAppContext().isMainApp)
 
         return DispatchQueue.global().async(.promise) {
@@ -36,24 +39,39 @@ public extension OWSProfileManager {
                                         unsavedRotatedProfileKey: unsavedRotatedProfileKey,
                                         userProfileWriter: userProfileWriter)
         }.then(on: DispatchQueue.main) { update in
-            return self.attemptToUpdateProfileOnService(update: update)
+            return self.attemptToUpdateProfileOnService(update: update, authedAccount: authedAccount)
         }.then { (_) throws -> Promise<Void> in
             guard unsavedRotatedProfileKey == nil else {
                 Logger.info("Skipping local profile fetch during key rotation.")
                 return Promise.value(())
             }
-
-            guard let localAddress = TSAccountManager.shared.localAddress else {
-                throw OWSAssertionError("missing local address")
+            var localAddress: SignalServiceAddress
+            switch authedAccount.info {
+            case .explicit(let info):
+                localAddress = info.localUserAddress()
+            case .implicit:
+                guard let address = TSAccountManager.shared.localAddress else {
+                    throw OWSAssertionError("missing local address")
+                }
+                localAddress = address
             }
-            return ProfileFetcherJob.fetchProfilePromise(address: localAddress, mainAppOnly: false, ignoreThrottling: true, fetchType: .default).asVoid()
+            return ProfileFetcherJob.fetchProfilePromise(
+                address: localAddress,
+                mainAppOnly: false,
+                ignoreThrottling: true,
+                fetchType: .default,
+                authedAccount: authedAccount
+            ).asVoid()
         }.done(on: DispatchQueue.global()) { () -> Void in
             Logger.verbose("Profile update did complete.")
         }
     }
 
     // This will re-upload the existing local profile state.
-    func reuploadLocalProfilePromise(unsavedRotatedProfileKey: OWSAES256Key? = nil) -> Promise<Void> {
+    func reuploadLocalProfilePromise(
+        unsavedRotatedProfileKey: OWSAES256Key? = nil,
+        authedAccount: AuthedAccount = .implicit()
+    ) -> Promise<Void> {
         Logger.info("")
 
         let profileGivenName: String?
@@ -92,14 +110,17 @@ public extension OWSProfileManager {
             }
         }
         assert(profileGivenName != nil)
-        return OWSProfileManager.updateLocalProfilePromise(profileGivenName: profileGivenName,
-                                                           profileFamilyName: profileFamilyName,
-                                                           profileBio: profileBio,
-                                                           profileBioEmoji: profileBioEmoji,
-                                                           profileAvatarData: profileAvatarData,
-                                                           visibleBadgeIds: visibleBadgeIds,
-                                                           unsavedRotatedProfileKey: unsavedRotatedProfileKey,
-                                                           userProfileWriter: userProfileWriter)
+        return OWSProfileManager.updateLocalProfilePromise(
+            profileGivenName: profileGivenName,
+            profileFamilyName: profileFamilyName,
+            profileBio: profileBio,
+            profileBioEmoji: profileBioEmoji,
+            profileAvatarData: profileAvatarData,
+            visibleBadgeIds: visibleBadgeIds,
+            unsavedRotatedProfileKey: unsavedRotatedProfileKey,
+            userProfileWriter: userProfileWriter,
+            authedAccount: authedAccount
+        )
     }
 
     @objc
@@ -113,9 +134,10 @@ public extension OWSProfileManager {
             addresses.insert(SignalServiceAddress(phoneNumber: phoneNumber))
         }
 
-        return AnySignalRecipientFinder().signalRecipients(for: Array(addresses), transaction: transaction)
-            .filter { $0.devices.count > 0 }
-            .map { $0.address }
+        return Array(
+            AnySignalRecipientFinder().signalRecipients(for: Array(addresses), transaction: transaction)
+                .lazy.filter { $0.isRegistered }.map { $0.address }
+        )
     }
 
     @objc
@@ -123,19 +145,22 @@ public extension OWSProfileManager {
     func rotateProfileKey(
         intersectingPhoneNumbers: [String],
         intersectingUUIDs: [String],
-        intersectingGroupIds: [Data]
+        intersectingGroupIds: [Data],
+        authedAccount: AuthedAccount
     ) -> AnyPromise {
         return AnyPromise(rotateProfileKey(
             intersectingPhoneNumbers: intersectingPhoneNumbers,
             intersectingUUIDs: intersectingUUIDs,
-            intersectingGroupIds: intersectingGroupIds
+            intersectingGroupIds: intersectingGroupIds,
+            authedAccount: authedAccount
         ))
     }
 
     func rotateProfileKey(
         intersectingPhoneNumbers: [String],
         intersectingUUIDs: [String],
-        intersectingGroupIds: [Data]
+        intersectingGroupIds: [Data],
+        authedAccount: AuthedAccount
     ) -> Promise<Void> {
         guard tsAccountManager.isRegisteredPrimaryDevice else {
             return Promise(error: OWSAssertionError("tsAccountManager.isRegistered was unexpectedly false"))
@@ -161,7 +186,7 @@ public extension OWSProfileManager {
             // profile key.
 
             let newProfileKey = OWSAES256Key.generateRandom()
-            return self.reuploadLocalProfilePromise(unsavedRotatedProfileKey: newProfileKey).map { newProfileKey }
+            return self.reuploadLocalProfilePromise(unsavedRotatedProfileKey: newProfileKey, authedAccount: authedAccount).map { newProfileKey }
         }.then(on: DispatchQueue.global()) { newProfileKey -> Promise<Void> in
             guard let localAddress = self.tsAccountManager.localAddress, let serviceId = localAddress.serviceId else {
                 throw OWSAssertionError("Missing local address")
@@ -170,9 +195,12 @@ public extension OWSProfileManager {
             Logger.info("Persisting rotated profile key and kicking off subsequent operations.")
 
             return self.databaseStorage.write(.promise) { transaction in
-                self.setLocalProfileKey(newProfileKey,
-                                        userProfileWriter: .localUser,
-                                        transaction: transaction)
+                self.setLocalProfileKey(
+                    newProfileKey,
+                    userProfileWriter: .localUser,
+                    authedAccount: authedAccount,
+                    transaction: transaction
+                )
 
                 // Whenever a user's profile key changes, we need to fetch a new
                 // profile key credential for them.
@@ -253,24 +281,27 @@ public extension OWSProfileManager {
 @objc
 public extension OWSProfileManager {
     @available(swift, obsoleted: 1.0)
-    class func updateProfileOnServiceIfNecessary() {
-        updateProfileOnServiceIfNecessary()
+    class func updateProfileOnServiceIfNecessary(authedAccount: AuthedAccount) {
+        updateProfileOnServiceIfNecessary(authedAccount: authedAccount)
     }
 
     // This will re-upload the existing local profile state.
     @available(swift, obsoleted: 1.0)
-    func reuploadLocalProfilePromise() -> AnyPromise {
-        return AnyPromise(reuploadLocalProfilePromise())
+    func reuploadLocalProfilePromise(authedAccount: AuthedAccount) -> AnyPromise {
+        return AnyPromise(reuploadLocalProfilePromise(authedAccount: authedAccount))
     }
 
     @available(swift, obsoleted: 1.0)
-    class func updateLocalProfilePromise(profileGivenName: String?,
-                                         profileFamilyName: String?,
-                                         profileBio: String?,
-                                         profileBioEmoji: String?,
-                                         profileAvatarData: Data?,
-                                         visibleBadgeIds: [String],
-                                         userProfileWriter: UserProfileWriter) -> AnyPromise {
+    class func updateLocalProfilePromise(
+        profileGivenName: String?,
+        profileFamilyName: String?,
+        profileBio: String?,
+        profileBioEmoji: String?,
+        profileAvatarData: Data?,
+        visibleBadgeIds: [String],
+        userProfileWriter: UserProfileWriter,
+        authedAccount: AuthedAccount
+    ) -> AnyPromise {
         return AnyPromise(updateLocalProfilePromise(
             profileGivenName: profileGivenName,
             profileFamilyName: profileFamilyName,
@@ -278,7 +309,8 @@ public extension OWSProfileManager {
             profileBioEmoji: profileBioEmoji,
             profileAvatarData: profileAvatarData,
             visibleBadgeIds: visibleBadgeIds,
-            userProfileWriter: userProfileWriter
+            userProfileWriter: userProfileWriter,
+            authedAccount: authedAccount
         ))
     }
 
@@ -384,17 +416,17 @@ extension OWSProfileManager {
     // MARK: -
 
     @objc
-    public func updateProfileOnServiceIfNecessary() {
-        switch Self._updateProfileOnServiceIfNecessary() {
+    public func updateProfileOnServiceIfNecessary(authedAccount: AuthedAccount) {
+        switch Self._updateProfileOnServiceIfNecessary(authedAccount: authedAccount) {
         case .notReady, .updating:
             return
         case .notNeeded:
-            repairAvatarIfNeeded()
+            repairAvatarIfNeeded(authedAccount: authedAccount)
         }
     }
 
-    public class func updateProfileOnServiceIfNecessary(retryDelay: TimeInterval = 1) {
-        _updateProfileOnServiceIfNecessary(retryDelay: retryDelay)
+    public class func updateProfileOnServiceIfNecessary(authedAccount: AuthedAccount, retryDelay: TimeInterval = 1) {
+        _updateProfileOnServiceIfNecessary(authedAccount: authedAccount, retryDelay: retryDelay)
     }
 
     private enum UpdateProfileStatus {
@@ -404,7 +436,10 @@ extension OWSProfileManager {
     }
 
     @discardableResult
-    private class func _updateProfileOnServiceIfNecessary(retryDelay: TimeInterval = 1) -> UpdateProfileStatus {
+    private class func _updateProfileOnServiceIfNecessary(
+        authedAccount: AuthedAccount,
+        retryDelay: TimeInterval = 1
+    ) -> UpdateProfileStatus {
         AssertIsOnMainThread()
 
         guard AppReadiness.isAppReady else {
@@ -426,8 +461,11 @@ extension OWSProfileManager {
             return .notNeeded
         }
         firstly {
-            attemptToUpdateProfileOnService(update: update,
-                                            retryDelay: retryDelay)
+            attemptToUpdateProfileOnService(
+                update: update,
+                retryDelay: retryDelay,
+                authedAccount: authedAccount
+            )
         }.done { _ in
             Logger.info("Update succeeded.")
         }.catch { error in
@@ -438,7 +476,7 @@ extension OWSProfileManager {
 
     private static var avatarRepairPromise: Promise<Void>?
 
-    private func repairAvatarIfNeeded() {
+    private func repairAvatarIfNeeded(authedAccount: AuthedAccount) {
         guard CurrentAppContext().isMainApp else {
             return
         }
@@ -460,7 +498,7 @@ extension OWSProfileManager {
         }
 
         Self.avatarRepairPromise = firstly {
-            reuploadLocalProfilePromise()
+            reuploadLocalProfilePromise(authedAccount: authedAccount)
         }.done { _ in
             Logger.info("Avatar repair succeeded.")
             self.clearAvatarRepairNeeded()
@@ -504,8 +542,11 @@ extension OWSProfileManager {
         }
     }
 
-    fileprivate class func attemptToUpdateProfileOnService(update: PendingProfileUpdate,
-                                                           retryDelay: TimeInterval = 1) -> Promise<Void> {
+    fileprivate class func attemptToUpdateProfileOnService(
+        update: PendingProfileUpdate,
+        retryDelay: TimeInterval = 1,
+        authedAccount: AuthedAccount
+    ) -> Promise<Void> {
         AssertIsOnMainThread()
 
         Logger.verbose("")
@@ -531,7 +572,7 @@ extension OWSProfileManager {
             writeProfileAvatarToDisk(attempt: attempt)
         }.then(on: DispatchQueue.global()) { () -> Promise<Void> in
             Logger.info("Versioned profile update, avatarUrlPath: \(attempt.avatarUrlPath?.nilIfEmpty != nil), avatarFilename: \(attempt.avatarFilename?.nilIfEmpty != nil)")
-            return updateProfileOnServiceVersioned(attempt: attempt)
+            return updateProfileOnServiceVersioned(attempt: attempt, authedAccount: authedAccount)
         }.done(on: DispatchQueue.global()) { _ in
             self.databaseStorage.write { (transaction: SDSAnyWriteTransaction) -> Void in
                 guard tryToDequeueProfileUpdate(update: attempt.update, transaction: transaction) else {
@@ -547,12 +588,15 @@ extension OWSProfileManager {
                     }
                 }
 
-                self.updateLocalProfile(with: attempt,
-                                        userProfileWriter: userProfileWriter,
-                                        transaction: transaction)
+                self.updateLocalProfile(
+                    with: attempt,
+                    userProfileWriter: userProfileWriter,
+                    authedAccount: authedAccount,
+                    transaction: transaction
+                )
             }
 
-            self.attemptDidComplete(retryDelay: retryDelay, didSucceed: true)
+            self.attemptDidComplete(retryDelay: retryDelay, didSucceed: true, authedAccount: authedAccount)
         }.recover(on: DispatchQueue.global()) { error in
             // We retry network errors forever (with exponential backoff).
             // Other errors cause us to give up immediately.
@@ -567,7 +611,7 @@ extension OWSProfileManager {
                     _ = tryToDequeueProfileUpdate(update: attempt.update, transaction: transaction)
                 }
             }
-            self.attemptDidComplete(retryDelay: retryDelay, didSucceed: false)
+            self.attemptDidComplete(retryDelay: retryDelay, didSucceed: false, authedAccount: authedAccount)
 
             // We don't actually want to recover; in this block we
             // handle the business logic consequences of the error,
@@ -579,7 +623,7 @@ extension OWSProfileManager {
         return promise
     }
 
-    private class func attemptDidComplete(retryDelay: TimeInterval, didSucceed: Bool) {
+    private class func attemptDidComplete(retryDelay: TimeInterval, didSucceed: Bool, authedAccount: AuthedAccount) {
         // We use a "self-only" contact sync to indicate to desktop
         // that we've changed our profile and that it should do a
         // profile fetch for "self".
@@ -596,7 +640,9 @@ extension OWSProfileManager {
 
         // Notify all our devices that the profile has changed.
         // Older linked devices may not handle this message.
-        self.syncManager.sendFetchLatestProfileSyncMessage()
+        if tsAccountManager.isRegisteredAndReady {
+            self.syncManager.sendFetchLatestProfileSyncMessage()
+        }
 
         DispatchQueue.main.async {
             // Clear this flag immediately.
@@ -605,12 +651,12 @@ extension OWSProfileManager {
             // There may be another update enqueued that we should kick off.
             // Or we may need to retry.
             if didSucceed {
-                self.updateProfileOnServiceIfNecessary()
+                self.updateProfileOnServiceIfNecessary(authedAccount: authedAccount)
             } else {
                 // We don't want to get in a retry loop, so we use exponential backoff
                 // in the failure case.
                 DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + retryDelay, execute: {
-                    self.updateProfileOnServiceIfNecessary(retryDelay: (retryDelay + 1) * 2)
+                    self.updateProfileOnServiceIfNecessary(authedAccount: authedAccount, retryDelay: (retryDelay + 1) * 2)
                 })
             }
         }
@@ -633,7 +679,10 @@ extension OWSProfileManager {
         return promise
     }
 
-    private class func updateProfileOnServiceVersioned(attempt: ProfileUpdateAttempt) -> Promise<Void> {
+    private class func updateProfileOnServiceVersioned(
+        attempt: ProfileUpdateAttempt,
+        authedAccount: AuthedAccount
+    ) -> Promise<Void> {
         Logger.info("avatar?: \(attempt.update.profileAvatarData != nil), " +
                         "profileGivenName?: \(attempt.update.profileGivenName != nil), " +
                         "profileFamilyName?: \(attempt.update.profileFamilyName != nil), " +
@@ -641,30 +690,39 @@ extension OWSProfileManager {
                         "profileBioEmoji?: \(attempt.update.profileBioEmoji != nil) " +
                         "visibleBadges?: \(attempt.update.visibleBadgeIds.count).")
         return firstly(on: DispatchQueue.global()) {
-            Self.versionedProfilesSwift.updateProfilePromise(profileGivenName: attempt.update.profileGivenName,
-                                                             profileFamilyName: attempt.update.profileFamilyName,
-                                                             profileBio: attempt.update.profileBio,
-                                                             profileBioEmoji: attempt.update.profileBioEmoji,
-                                                             profileAvatarData: attempt.update.profileAvatarData,
-                                                             visibleBadgeIds: attempt.update.visibleBadgeIds,
-                                                             unsavedRotatedProfileKey: attempt.update.unsavedRotatedProfileKey)
+            Self.versionedProfilesSwift.updateProfilePromise(
+                profileGivenName: attempt.update.profileGivenName,
+                profileFamilyName: attempt.update.profileFamilyName,
+                profileBio: attempt.update.profileBio,
+                profileBioEmoji: attempt.update.profileBioEmoji,
+                profileAvatarData: attempt.update.profileAvatarData,
+                visibleBadgeIds: attempt.update.visibleBadgeIds,
+                unsavedRotatedProfileKey: attempt.update.unsavedRotatedProfileKey,
+                authedAccount: authedAccount
+            )
         }.map(on: DispatchQueue.global()) { versionedUpdate in
             attempt.avatarUrlPath = versionedUpdate.avatarUrlPath
         }
     }
 
-    private class func updateLocalProfile(with attempt: ProfileUpdateAttempt,
-                                          userProfileWriter: UserProfileWriter,
-                                          transaction: SDSAnyWriteTransaction) {
+    private class func updateLocalProfile(
+        with attempt: ProfileUpdateAttempt,
+        userProfileWriter: UserProfileWriter,
+        authedAccount: AuthedAccount,
+        transaction: SDSAnyWriteTransaction
+    ) {
         Logger.verbose("profile givenName: \(String(describing: attempt.update.profileGivenName)), familyName: \(String(describing: attempt.update.profileFamilyName)), avatarFilename: \(String(describing: attempt.avatarFilename))")
 
-        attempt.userProfile.update(givenName: attempt.update.profileGivenName,
-                                   familyName: attempt.update.profileFamilyName,
-                                   avatarUrlPath: attempt.avatarUrlPath,
-                                   avatarFileName: attempt.avatarFilename,
-                                   userProfileWriter: userProfileWriter,
-                                   transaction: transaction,
-                                   completion: nil)
+        attempt.userProfile.update(
+            givenName: attempt.update.profileGivenName,
+            familyName: attempt.update.profileFamilyName,
+            avatarUrlPath: attempt.avatarUrlPath,
+            avatarFileName: attempt.avatarFilename,
+            userProfileWriter: userProfileWriter,
+            authedAccount: authedAccount,
+            transaction: transaction,
+            completion: nil
+        )
     }
 
     // MARK: - Update Queue
@@ -857,7 +915,7 @@ public extension OWSProfileManager {
         let profileKey: Data
     }
 
-    private static let serialQueue = DispatchQueue(label: "ProfileManager.serialQueue")
+    private static let serialQueue = DispatchQueue(label: "org.signal.profile-manager")
 
     private static var avatarDownloadCache = [CacheKey: Promise<Data>]()
 

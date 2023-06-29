@@ -3,62 +3,18 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
-import UIKit
+import SignalServiceKit
 
-@objc
 public class CVTextLabel: NSObject {
-
-    public struct DataItem: Equatable {
-        public enum DataType: UInt, Equatable, CustomStringConvertible {
-            case link
-            case address
-            case phoneNumber
-            case date
-            case transitInformation
-            case emailAddress
-
-            // MARK: - CustomStringConvertible
-
-            public var description: String {
-                switch self {
-                case .link:
-                    return ".link"
-                case .address:
-                    return ".address"
-                case .phoneNumber:
-                    return ".phoneNumber"
-                case .date:
-                    return ".date"
-                case .transitInformation:
-                    return ".transitInformation"
-                case .emailAddress:
-                    return ".emailAddress"
-                }
-            }
-        }
-
-        public let dataType: DataType
-        public let range: NSRange
-        public let snippet: String
-        public let url: URL
-
-        public init(dataType: DataType, range: NSRange, snippet: String, url: URL) {
-            self.dataType = dataType
-            self.range = range
-            self.snippet = snippet
-            self.url = url
-        }
-    }
 
     // MARK: -
 
     public struct MentionItem: Equatable {
-        public let mention: Mention
+        public let mentionUUID: UUID
         public let range: NSRange
 
-        public init(mention: Mention, range: NSRange) {
-            self.mention = mention
+        public init(mentionUUID: UUID, range: NSRange) {
+            self.mentionUUID = mentionUUID
             self.range = range
         }
     }
@@ -77,10 +33,32 @@ public class CVTextLabel: NSObject {
 
     // MARK: -
 
+    public struct UnrevealedSpoilerItem: Equatable {
+        public let spoilerId: Int
+        public let interactionUniqueId: String
+        public let interactionIdentifier: InteractionSnapshotIdentifier
+        public let range: NSRange
+
+        public init(
+            spoilerId: Int,
+            interactionUniqueId: String,
+            interactionIdentifier: InteractionSnapshotIdentifier,
+            range: NSRange
+        ) {
+            self.spoilerId = spoilerId
+            self.interactionUniqueId = interactionUniqueId
+            self.interactionIdentifier = interactionIdentifier
+            self.range = range
+        }
+    }
+
+    // MARK: -
+
     public enum Item: Equatable, CustomStringConvertible {
-        case dataItem(dataItem: DataItem)
+        case dataItem(dataItem: TextCheckingDataItem)
         case mention(mentionItem: MentionItem)
         case referencedUser(referencedUserItem: ReferencedUserItem)
+        case unrevealedSpoiler(UnrevealedSpoilerItem)
 
         public var range: NSRange {
             switch self {
@@ -90,6 +68,8 @@ public class CVTextLabel: NSObject {
                 return mentionItem.range
             case .referencedUser(let referencedUserItem):
                 return referencedUserItem.range
+            case .unrevealedSpoiler(let item):
+                return item.range
             }
         }
 
@@ -101,6 +81,8 @@ public class CVTextLabel: NSObject {
                 return ".mention"
             case .referencedUser:
                 return ".referencedUser"
+            case .unrevealedSpoiler:
+                return ".unrevealedSpoiler"
             }
         }
     }
@@ -232,8 +214,12 @@ public class CVTextLabel: NSObject {
 
     // MARK: - Gestures
 
-    public func itemForGesture(sender: UIGestureRecognizer, animated: Bool = true) -> Item? {
-        label.itemForGesture(sender: sender, animated: animated)
+    public func itemForGesture(sender: UIGestureRecognizer) -> Item? {
+        label.itemForGesture(sender: sender)
+    }
+
+    public func animate(selectedItem: Item) {
+        label.animate(selectedItem: selectedItem)
     }
 
     // MARK: -
@@ -370,14 +356,13 @@ public class CVTextLabel: NSObject {
                 return nil
             }
 
-            let glyphRange = layoutManager.glyphRange(for: textContainer)
-            let boundingRect = layoutManager.boundingRect(forGlyphRange: glyphRange, in: textContainer)
-            guard boundingRect.contains(location) else {
+            guard let characterIndex = textContainer.characterIndex(
+                of: location,
+                textStorage: textStorage,
+                layoutManager: layoutManager
+            ) else {
                 return nil
             }
-
-            let glyphIndex = layoutManager.glyphIndex(for: location, in: textContainer)
-            let characterIndex = layoutManager.characterIndexForGlyph(at: glyphIndex)
 
             for item in config.items {
                 if item.range.contains(characterIndex) {
@@ -402,16 +387,12 @@ public class CVTextLabel: NSObject {
 
         // MARK: - Gestures
 
-        public func itemForGesture(sender: UIGestureRecognizer, animated: Bool) -> Item? {
+        public func itemForGesture(sender: UIGestureRecognizer) -> Item? {
             AssertIsOnMainThread()
 
             let location = sender.location(in: self)
             guard let selectedItem = item(at: location) else {
                 return nil
-            }
-
-            if animated {
-                animate(selectedItem: selectedItem)
             }
 
             return selectedItem
@@ -447,6 +428,9 @@ extension CVTextLabel.Label: UIDragInteractionDelegate {
             return []
         case .referencedUser:
             // Dragging is not applicable to referenced users
+            return []
+        case .unrevealedSpoiler:
+            // Dragging is not applicable for spoilers.
             return []
         case .dataItem(let dataItem):
             animate(selectedItem: selectedItem)

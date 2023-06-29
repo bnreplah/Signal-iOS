@@ -3,9 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import SignalMessaging
-import UIKit
+import SignalUI
 
 public struct SendPaymentInfo {
     let recipient: SendPaymentRecipient
@@ -125,12 +124,12 @@ class SendPaymentHelper: Dependencies {
     }
 
     public static var bottomButtonFont: UIFont {
-        UIFont.ows_dynamicTypeBody.ows_semibold
+        UIFont.dynamicTypeBody.semibold()
     }
 
     public static func buildBottomLabel() -> UILabel {
         let label = UILabel()
-        label.font = .ows_dynamicTypeBody2Clamped
+        label.font = .dynamicTypeBody2Clamped
         label.textColor = Theme.secondaryTextAndIconColor
         label.textAlignment = .center
         return label
@@ -146,7 +145,7 @@ class SendPaymentHelper: Dependencies {
             return
         }
 
-        let format = NSLocalizedString("PAYMENTS_NEW_PAYMENT_BALANCE_FORMAT",
+        let format = OWSLocalizedString("PAYMENTS_NEW_PAYMENT_BALANCE_FORMAT",
                                        comment: "Format for the 'balance' indicator. Embeds {{ the current payments balance }}.")
         balanceLabel.text = String(format: format,
                                    Self.formatMobileCoinAmount(maximumPaymentAmount))
@@ -203,7 +202,7 @@ class SendPaymentHelper: Dependencies {
 
         let formattedAmount = PaymentsFormat.format(paymentAmount: paymentAmount,
                                                     isShortForm: false)
-        let format = NSLocalizedString("PAYMENTS_NEW_PAYMENT_CURRENCY_FORMAT",
+        let format = OWSLocalizedString("PAYMENTS_NEW_PAYMENT_CURRENCY_FORMAT",
                                        comment: "Format for currency amounts in the 'send payment' UI. Embeds {{ %1$@ the current payments balance, %2$@ the currency indicator }}.")
         return String(format: format,
                       formattedAmount,

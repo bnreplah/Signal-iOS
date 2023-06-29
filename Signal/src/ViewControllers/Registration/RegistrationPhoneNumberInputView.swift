@@ -3,8 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
-import UIKit
+import SignalServiceKit
 import SignalUI
 
 protocol RegistrationPhoneNumberInputViewDelegate: AnyObject {
@@ -58,7 +57,7 @@ class RegistrationPhoneNumberInputView: UIStackView {
 
     public var nationalNumber: String { nationalNumberView.text?.asciiDigitsOnly ?? "" }
 
-    public var e164: String {
+    public var e164: E164? {
         return RegistrationPhoneNumber(
             countryState: countryState,
             nationalNumber: nationalNumber
@@ -84,7 +83,7 @@ class RegistrationPhoneNumberInputView: UIStackView {
 
     private lazy var countryCodeLabel: UILabel = {
         let result = UILabel()
-        result.font = .ows_dynamicTypeBody
+        result.font = .dynamicTypeBody
         result.textAlignment = .center
         result.setCompressionResistanceHigh()
         result.setContentHuggingHorizontalHigh()
@@ -92,7 +91,7 @@ class RegistrationPhoneNumberInputView: UIStackView {
     }()
 
     private lazy var countryCodeChevron: UIImageView = {
-        let result = UIImageView(image: .init(named: "chevron-down-18"))
+        let result = UIImageView(image: UIImage(imageLiteralResourceName: "chevron-down-extra-small"))
         result.autoSetDimensions(to: .square(12))
         result.setCompressionResistanceHigh()
         return result
@@ -118,26 +117,24 @@ class RegistrationPhoneNumberInputView: UIStackView {
 
     private let dividerView: UIView = {
         let result = UIView()
-        result.autoSetDimension(.width, toSize: CGHairlineWidth())
+        result.autoSetDimension(.width, toSize: .hairlineWidth)
         result.setContentHuggingHorizontalHigh()
         return result
     }()
 
     private lazy var nationalNumberView: UITextField = {
         let result = UITextField()
-        result.font = UIFont.ows_dynamicTypeBodyClamped
+        result.font = UIFont.dynamicTypeBodyClamped
         result.textAlignment = .left
         result.textContentType = .telephoneNumber
 
         if #available(iOS 14, *) {
             result.keyboardType = .phonePad
-        } else if #available(iOS 13, *) {
+        } else {
             // There's [a bug][0] in iOS 13 where predictions aren't provided for `.numberPad`
             // keyboard types. We could change this to `.numbersAndPunctuation` if we wanted to
             // trade predictions for a less-appropriate keyboard.
             // [0]: https://developer.apple.com/forums/thread/120703
-            result.keyboardType = .numberPad
-        } else {
             result.keyboardType = .numberPad
         }
 
@@ -148,6 +145,8 @@ class RegistrationPhoneNumberInputView: UIStackView {
         result.accessibilityIdentifier = "registration.phonenumber.phoneNumberTextField"
 
         result.delegate = self
+
+        result.addTarget(delegate, action: #selector(didChange), for: .valueChanged)
 
         return result
     }()
@@ -205,8 +204,6 @@ extension RegistrationPhoneNumberInputView: UITextFieldDelegate {
             maxDigits: maxNationalNumberDigits,
             format: formatNationalNumber
         )
-
-        delegate?.didChange()
 
         return result
     }

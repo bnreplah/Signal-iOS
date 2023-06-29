@@ -9,7 +9,6 @@
 #import "MessageSender.h"
 #import "OWSError.h"
 #import "OWSReceiptsForSenderMessage.h"
-#import "SSKEnvironment.h"
 #import "TSContactThread.h"
 #import "TSYapDatabaseObject.h"
 #import <SignalServiceKit/SignalServiceKit-Swift.h>
@@ -98,10 +97,8 @@ NSString *NSStringForOWSReceiptType(OWSReceiptType receiptType)
     static dispatch_queue_t _serialQueue;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NS_VALID_UNTIL_END_OF_SCOPE NSString *label = [OWSDispatch createLabel:@"outgoingReceipts"];
-        const char *cStringLabel = [label cStringUsingEncoding:NSUTF8StringEncoding];
-
-        _serialQueue = dispatch_queue_create(cStringLabel, DISPATCH_QUEUE_SERIAL_WITH_AUTORELEASE_POOL);
+        _serialQueue
+            = dispatch_queue_create("org.signal.outgoing-receipts", DISPATCH_QUEUE_SERIAL_WITH_AUTORELEASE_POOL);
     });
 
     return _serialQueue;
@@ -337,9 +334,9 @@ NSString *NSStringForOWSReceiptType(OWSReceiptType receiptType)
     NSString *label = [NSString stringWithFormat:@"Receipt Send: %@", NSStringForOWSReceiptType(receiptType)];
     PendingTask *pendingTask = [self.pendingTasks buildPendingTaskWithLabel:label];
 
-    MessageReceiptSet *persistedSet = [self fetchReceiptSetWithType:receiptType
-                                                            address:address
-                                                        transaction:transaction];
+    MessageReceiptSet *persistedSet = [self fetchAndMergeReceiptSetWithType:receiptType
+                                                                    address:address
+                                                                transaction:transaction];
     [persistedSet insertWithTimestamp:timestamp messageUniqueId:messageUniqueId];
     [self storeReceiptSet:persistedSet type:receiptType address:address transaction:transaction];
     [transaction addAsyncCompletionWithQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
@@ -352,9 +349,9 @@ NSString *NSStringForOWSReceiptType(OWSReceiptType receiptType)
 {
     OWSAssertDebug(address.isValid);
     DatabaseStorageAsyncWrite(self.databaseStorage, ^(SDSAnyWriteTransaction *transaction) {
-        MessageReceiptSet *persistedSet = [self fetchReceiptSetWithType:receiptType
-                                                                address:address
-                                                            transaction:transaction];
+        MessageReceiptSet *persistedSet = [self fetchAndMergeReceiptSetWithType:receiptType
+                                                                        address:address
+                                                                    transaction:transaction];
         [persistedSet subtract:dequeueSet];
         [self storeReceiptSet:persistedSet type:receiptType address:address transaction:transaction];
     });

@@ -4,15 +4,21 @@
 //
 
 import Foundation
+import SignalCoreKit
+import SignalServiceKit
 @testable import Signal
 
 extension RegistrationCoordinatorImpl {
 
     public enum TestMocks {
         public typealias AccountManager = _RegistrationCoordinator_AccountManagerMock
+        public typealias ContactsManager = _RegistrationCoordinator_ContactsManagerMock
         public typealias ContactsStore = _RegistrationCoordinator_CNContactsStoreMock
         public typealias ExperienceManager = _RegistrationCoordinator_ExperienceManagerMock
+        public typealias MessagePipelineSupervisor = _RegistrationCoordinator_MessagePipelineSupervisorMock
+        public typealias MessageProcessor = _RegistrationCoordinator_MessageProcessorMock
         public typealias OWS2FAManager = _RegistrationCoordinator_OWS2FAManagerMock
+        public typealias PreKeyManager = _RegistrationCoordinator_PreKeyManagerMock
         public typealias ProfileManager = _RegistrationCoordinator_ProfileManagerMock
         public typealias PushRegistrationManager = _RegistrationCoordinator_PushRegistrationManagerMock
         public typealias ReceiptManager = _RegistrationCoordinator_ReceiptManagerMock
@@ -28,10 +34,25 @@ public class _RegistrationCoordinator_AccountManagerMock: _RegistrationCoordinat
 
     public init() {}
 
-    public var performInitialStorageServiceRestoreMock: (() -> Promise<Void>)?
+    public var performInitialStorageServiceRestoreMock: ((AuthedAccount) -> Promise<Void>)?
 
-    public func performInitialStorageServiceRestore() -> Promise<Void> {
-        return performInitialStorageServiceRestoreMock!()
+    public func performInitialStorageServiceRestore(authedAccount: AuthedAccount) -> Promise<Void> {
+        return performInitialStorageServiceRestoreMock!(authedAccount)
+    }
+}
+
+// MARK: - ContactsManager
+
+public class _RegistrationCoordinator_ContactsManagerMock: _RegistrationCoordinator_ContactsManagerShim {
+
+    public init() {}
+
+    public func fetchSystemContactsOnceIfAlreadyAuthorized() {
+        // TODO[Registration]: test that this gets called.
+    }
+
+    public func setIsPrimaryDevice() {
+        // TODO[Registration]: test that this gets called.
     }
 }
 
@@ -74,6 +95,36 @@ public class _RegistrationCoordinator_ExperienceManagerMock: _RegistrationCoordi
     }
 }
 
+// MARK: - MessagePipelineSupervisor
+
+public class _RegistrationCoordinator_MessagePipelineSupervisorMock: _RegistrationCoordinator_MessagePipelineSupervisorShim {
+
+    public init() {}
+
+    public var suspensions = Set<MessagePipelineSupervisor.Suspension>()
+
+    public func suspendMessageProcessingWithoutHandle(for suspension: MessagePipelineSupervisor.Suspension) {
+        suspensions.insert(suspension)
+    }
+
+    public func unsuspendMessageProcessing(for suspension: MessagePipelineSupervisor.Suspension) {
+        suspensions.remove(suspension)
+    }
+}
+
+// MARK: - MessageProcessor
+
+public class _RegistrationCoordinator_MessageProcessorMock: _RegistrationCoordinator_MessageProcessorShim {
+
+    public init() {}
+
+    public var waitForProcessingCompleteAndThenSuspendMock: (() -> Guarantee<Void>)?
+
+    public func waitForProcessingCompleteAndThenSuspend(for suspension: MessagePipelineSupervisor.Suspension) -> Guarantee<Void> {
+        return waitForProcessingCompleteAndThenSuspendMock!()
+    }
+}
+
 // MARK: - OWS2FAManager
 
 public class _RegistrationCoordinator_OWS2FAManagerMock: _RegistrationCoordinator_OWS2FAManagerShim {
@@ -84,6 +135,12 @@ public class _RegistrationCoordinator_OWS2FAManagerMock: _RegistrationCoordinato
 
     public func pinCode(_ tx: SignalServiceKit.DBReadTransaction) -> String? {
         return pinCodeMock!()
+    }
+
+    public var clearLocalPinCodeMock: (() -> Void)?
+
+    public func clearLocalPinCode(_ tx: SignalServiceKit.DBWriteTransaction) {
+        clearLocalPinCodeMock?()
     }
 
     public var isReglockEnabledMock: (() -> Bool)?
@@ -105,6 +162,16 @@ public class _RegistrationCoordinator_OWS2FAManagerMock: _RegistrationCoordinato
     }
 }
 
+// MARK: - PreKeyManager
+
+public class _RegistrationCoordinator_PreKeyManagerMock: _RegistrationCoordinator_PreKeyManagerShim {
+    public var createPreKeysMock: ((ChatServiceAuth) -> Promise<Void>)?
+
+    public func createPreKeys(auth: ChatServiceAuth) -> Promise<Void> {
+        return createPreKeysMock!(auth)
+    }
+}
+
 // MARK: - ProfileManager
 
 public class _RegistrationCoordinator_ProfileManagerMock: _RegistrationCoordinator_ProfileManagerShim {
@@ -119,11 +186,23 @@ public class _RegistrationCoordinator_ProfileManagerMock: _RegistrationCoordinat
 
     public var localProfileKey: OWSAES256Key { return localProfileKeyMock() }
 
-    public var updateLocalProfileMock: ((_ givenName: String, _ familyName: String?, _ avatarData: Data?) -> Promise<Void>)?
+    public var updateLocalProfileMock: ((
+        _ givenName: String,
+        _ familyName: String?,
+        _ avatarData: Data?,
+        _ authedAccount: AuthedAccount
+    ) -> Promise<Void>)?
 
-    public func updateLocalProfile(givenName: String, familyName: String?, avatarData: Data?) -> Promise<Void> {
-        return updateLocalProfileMock!(givenName, familyName, avatarData)
+    public func updateLocalProfile(
+        givenName: String,
+        familyName: String?,
+        avatarData: Data?,
+        authedAccount: AuthedAccount
+    ) -> Promise<Void> {
+        return updateLocalProfileMock!(givenName, familyName, avatarData, authedAccount)
     }
+
+    func setIsOnboarded(_ tx: DBWriteTransaction) {}
 }
 
 // MARK: - PushRegistrationManager
@@ -149,13 +228,26 @@ public class _RegistrationCoordinator_PushRegistrationManagerMock: _Registration
         return requestPushTokenMock!()
     }
 
-    public var syncPushTokensForcingUploadMock: ((_ authUsername: String, _ authPassword: String) -> Guarantee<Registration.SyncPushTokensResult>)?
+    public var receivePreAuthChallengeTokenMock: (() -> Guarantee<String>)!
+
+    public func receivePreAuthChallengeToken() -> Guarantee<String> {
+        return receivePreAuthChallengeTokenMock!()
+    }
+
+    public var didClearPreAuthChallengeToken = false
+
+    public func clearPreAuthChallengeToken() {
+        didClearPreAuthChallengeToken = true
+    }
+
+    public var syncPushTokensForcingUploadMock: ((
+        _ auth: ChatServiceAuth
+    ) -> Guarantee<Registration.SyncPushTokensResult>)?
 
     public func syncPushTokensForcingUpload(
-        authUsername: String,
-        authPassword: String
+        auth: ChatServiceAuth
     ) -> Guarantee<Registration.SyncPushTokensResult> {
-        return syncPushTokensForcingUploadMock!(authUsername, authPassword)
+        return syncPushTokensForcingUploadMock!(auth)
     }
 }
 
@@ -182,13 +274,15 @@ public class _RegistrationCoordinator_ReceiptManagerMock: _RegistrationCoordinat
     }
 }
 
-// MARK: - Remote Config
+// MARK: - RemoteConfig
 
 public class _RegistrationCoordinator_RemoteConfigMock: _RegistrationCoordinator_RemoteConfigShim {
 
-    public var canReceiveGiftBadgesMock: (() -> Bool) = { true }
+    public init() {}
 
-    public var canReceiveGiftBadges: Bool { canReceiveGiftBadgesMock() }
+    public func refreshRemoteConfig(account: AuthedAccount) -> Promise<RemoteConfig.SVRConfiguration> {
+        return .value(.mirroring)
+    }
 }
 
 // MARK: - TSAccountManager
@@ -209,10 +303,15 @@ public class _RegistrationCoordinator_TSAccountManagerMock: _RegistrationCoordin
         return isDiscoverableByPhoneNumberMock()
     }
 
-    public var setIsDiscoverableByPhoneNumberMock: ((_ isDiscoverable: Bool, _ updateStorageService: Bool) -> Void)?
+    public var setIsDiscoverableByPhoneNumberMock: ((_ isDiscoverable: Bool, _ authedAccount: AuthedAccount, _ updateStorageService: Bool) -> Void)?
 
-    public func setIsDiscoverableByPhoneNumber(_ isDiscoverable: Bool, updateStorageService: Bool, _ transaction: SignalServiceKit.DBWriteTransaction) {
-        setIsDiscoverableByPhoneNumberMock?(isDiscoverable, updateStorageService)
+    public func setIsDiscoverableByPhoneNumber(
+        _ isDiscoverable: Bool,
+        updateStorageService: Bool,
+        authedAccount: AuthedAccount,
+        _ transaction: SignalServiceKit.DBWriteTransaction
+    ) {
+        setIsDiscoverableByPhoneNumberMock?(isDiscoverable, authedAccount, updateStorageService)
     }
 
     public var isManualMessageFetchEnabledMock: () -> Bool = { false }
@@ -227,10 +326,49 @@ public class _RegistrationCoordinator_TSAccountManagerMock: _RegistrationCoordin
         setIsManualMessageFetchEnabledMock?(isEnabled)
     }
 
-    public var didRegisterMock: ((_ accountIdentity: RegistrationServiceResponses.AccountIdentityResponse, _ authToken: String) -> Void)?
+    public var resetForReregistrationMock: ((
+        _ e164: E164,
+        _ aci: UUID
+    ) -> Void)?
 
-    public func didRegister(_ accountIdentity: RegistrationServiceResponses.AccountIdentityResponse, authToken: String, _ tx: DBWriteTransaction) {
-        didRegisterMock?(accountIdentity, authToken)
+    public func resetForReregistration(
+        e164: E164,
+        aci: UUID,
+        _ tx: DBWriteTransaction
+    ) {
+        resetForReregistrationMock?(e164, aci)
+    }
+
+    public var didRegisterMock: ((
+        _ e164: E164,
+        _ aci: UUID,
+        _ pni: UUID,
+        _ authToken: String
+    ) -> Void)?
+
+    public func didRegister(
+        e164: E164,
+        aci: UUID,
+        pni: UUID,
+        authToken: String,
+        _ tx: DBWriteTransaction
+    ) {
+        didRegisterMock?(e164, aci, pni, authToken)
+    }
+
+    public var updateLocalPhoneNumberMock: ((
+        _ e164: E164,
+        _ aci: UUID,
+        _ pni: UUID
+    ) -> Void)?
+
+    public func updateLocalPhoneNumber(
+        e164: E164,
+        aci: UUID,
+        pni: UUID,
+        _ tx: DBWriteTransaction
+    ) {
+        updateLocalPhoneNumberMock?(e164, aci, pni)
     }
 
     public var registrationIdMock: (() -> UInt32) = { 8 /* an arbitrary default value */ }
@@ -244,11 +382,15 @@ public class _RegistrationCoordinator_TSAccountManagerMock: _RegistrationCoordin
     public func getOrGeneratePniRegistrationId(_ transaction: DBWriteTransaction) -> UInt32 {
         return pniRegistrationIdMock()
     }
+
+    public func setIsOnboarded(_ tx: SignalServiceKit.DBWriteTransaction) {}
 }
 
 // MARK: UDManager
 
 public class _RegistrationCoordinator_UDManagerMock: _RegistrationCoordinator_UDManagerShim {
+
+    public init() {}
 
     public var shouldAllowUnrestrictedAccessLocalMock: (() -> Bool) = { true }
 

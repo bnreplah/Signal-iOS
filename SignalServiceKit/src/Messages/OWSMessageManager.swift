@@ -7,7 +7,7 @@ import LibSignalClient
 
 /// An ObjC wrapper around UnidentifiedSenderMessageContent.ContentHint
 @objc
-public enum SealedSenderContentHint: Int, CustomStringConvertible {
+public enum SealedSenderContentHint: Int, Codable, CustomStringConvertible {
     /// Indicates that the content of a message requires rendering user-visible errors immediately
     /// upon decryption failure. It is not expected that it will be resent, and we make no attempt
     /// to preserve ordering if it is.
@@ -75,60 +75,35 @@ extension OWSMessageManager {
         Self.pendingTasks.buildPendingTask(label: label)
     }
 
-    @objc
-    public func updateApplicationBadgeCount() {
-        let readUnreadCount: (SDSAnyReadTransaction) -> UInt = { transaction in
-            InteractionFinder.unreadCountInAllThreads(transaction: transaction.unwrapGrdbRead)
-        }
-
-        let fetchBadgeCount = { () -> Promise<UInt> in
-            // The main app gets to perform this synchronously
-            if CurrentAppContext().isMainApp {
-                return .value(self.databaseStorage.read(block: readUnreadCount))
-            } else {
-                return self.databaseStorage.read(.promise, readUnreadCount)
-            }
-        }
-
-        fetchBadgeCount().done {
-            CurrentAppContext().setMainAppBadgeNumber(Int($0))
-        }.catch { error in
-            owsFailDebug("Failed to update badge number: \(error)")
-        }
-    }
-
-    @objc
-    func isValidEnvelope(_ envelope: SSKProtoEnvelope) -> Bool {
-        return envelope.isValid
-    }
-
-    /// Performs a limited amount of time sensitive processing before scheduling the remainder of message processing
+    /// Performs a limited amount of time sensitive processing before scheduling
+    /// the remainder of message processing
     ///
-    /// Currently, the preprocess step only parses sender key distribution messages to update the sender key store. It's important
-    /// the sender key store is updated *before* the write transaction completes since we don't know if the next message to be
-    /// decrypted will depend on the sender key store being up to date.
+    /// Currently, the preprocess step only parses sender key distribution
+    /// messages to update the sender key store. It's important the sender key
+    /// store is updated *before* the write transaction completes since we don't
+    /// know if the next message to be decrypted will depend on the sender key
+    /// store being up to date.
     ///
     /// Some other things worth noting:
-    /// - We should preprocess *all* envelopes, even those where the sender is blocked. This is important because it protects us
-    /// from a case where the recipeint blocks and then unblocks a user. If the sender they blocked sent an SKDM while the user was
-    /// blocked, their understanding of the world is that we have saved the SKDM. After unblock, if we don't have the SKDM we'll fail
-    /// to decrypt.
-    /// - This *needs* to happen in the very same write transaction where the message was decrypted. It's important to keep in mind
-    /// that the NSE could race with the main app when processing messages. The write transaction is used to protect us from any races.
+    ///
+    /// - We should preprocess *all* envelopes, even those where the sender is
+    /// blocked. This is important because it protects us from a case where the
+    /// recipient blocks and then unblocks a user. If the sender they blocked
+    /// sent an SKDM while the user was blocked, their understanding of the
+    /// world is that we have saved the SKDM. After unblock, if we don't have
+    /// the SKDM we'll fail to decrypt.
+    ///
+    /// - This *needs* to happen in the very same write transaction where the
+    /// message was decrypted. It's important to keep in mind that the NSE could
+    /// race with the main app when processing messages. The write transaction
+    /// is used to protect us from any races.
     @objc
-    func preprocessEnvelope(envelope: SSKProtoEnvelope, plaintext: Data?, transaction: SDSAnyWriteTransaction) {
-        guard CurrentAppContext().shouldProcessIncomingMessages else {
-            owsFail("Should not process messages")
-        }
-        guard self.tsAccountManager.isRegistered else {
-            owsFailDebug("Not registered")
-            return
-        }
-        guard isValidEnvelope(envelope) else {
-            owsFailDebug("Invalid envelope")
-            return
-        }
-        guard let plaintext = plaintext else {
+    func preprocessEnvelope(
+        _ identifiedEnvelope: IdentifiedIncomingEnvelope,
+        plaintext: Data?,
+        transaction: SDSAnyWriteTransaction
+    ) {
+        guard let plaintext else {
             Logger.warn("No plaintext")
             return
         }
@@ -149,39 +124,95 @@ extension OWSMessageManager {
 
         if let skdmBytes = contentProto.senderKeyDistributionMessage {
             Logger.info("Preprocessing content: \(description(for: contentProto))")
-            handleIncomingEnvelope(envelope, withSenderKeyDistributionMessage: skdmBytes, transaction: transaction)
+            handleIncomingEnvelope(identifiedEnvelope, withSenderKeyDistributionMessage: skdmBytes, transaction: transaction)
         }
     }
 
-    @objc(saveSpamReportingTokenForEnvelope:transaction:)
-    func saveSpamReportingToken(
-        for envelope: SSKProtoEnvelope,
-        transaction: SDSAnyWriteTransaction
+    public func processEnvelope(
+        _ envelope: SSKProtoEnvelope,
+        plaintextData: Data?,
+        wasReceivedByUD: Bool,
+        serverDeliveryTimestamp: UInt64,
+        shouldDiscardVisibleMessages: Bool,
+        tx: SDSAnyWriteTransaction
     ) {
-        guard
-            let sourceUuid = envelope.sourceUuid,
-            let sourceServiceId = ServiceId(uuidString: sourceUuid)
-        else {
-            Logger.warn(
-                "Received an envelope without a valid source UUID. Did the server send bad data?"
-            )
+        let identifiedEnvelope: IdentifiedIncomingEnvelope
+        do {
+            let validatedEnvelope = try ValidatedIncomingEnvelope(envelope)
+            identifiedEnvelope = try IdentifiedIncomingEnvelope(validatedEnvelope: validatedEnvelope)
+        } catch {
+            Logger.warn("Dropping invalid envelope \(error)")
             return
         }
+        if blockingManager.isAddressBlocked(SignalServiceAddress(identifiedEnvelope.sourceServiceId), transaction: tx) {
+            return
+        }
+        checkForUnknownLinkedDevice(in: identifiedEnvelope, tx: tx)
+        switch identifiedEnvelope.envelopeType {
+        case .ciphertext, .prekeyBundle, .unidentifiedSender, .senderkeyMessage, .plaintextContent:
+            guard let plaintextData else {
+                return owsFailDebug("Missing decrypted data for envelope \(Self.description(for: envelope))")
+            }
+            let request = MessageManagerRequest(
+                identifiedEnvelope: identifiedEnvelope,
+                plaintextData: plaintextData,
+                wasReceivedByUD: wasReceivedByUD,
+                serverDeliveryTimestamp: serverDeliveryTimestamp,
+                shouldDiscardVisibleMessages: shouldDiscardVisibleMessages,
+                transaction: tx
+            )
+            if let request {
+                handle(request, context: PassthroughDeliveryReceiptContext(), transaction: tx)
+            }
+        case .receipt:
+            owsAssertDebug(plaintextData == nil)
+            handleDeliveryReceipt(identifiedEnvelope, context: PassthroughDeliveryReceiptContext(), transaction: tx)
+        case .keyExchange:
+            Logger.warn("Received Key Exchange Message, not supported")
+        case .unknown:
+            Logger.warn("Received an unknown message type")
+        default:
+            Logger.warn("Received unhandled envelope type: \(identifiedEnvelope.envelopeType)")
+        }
+        finishProcessingEnvelope(identifiedEnvelope, tx: tx)
+    }
 
+    /// Called when we've finished processing an envelope.
+    ///
+    /// If we call this method, we tried to process an envelope. However, the
+    /// contents of that envelope may or may not be valid.
+    ///
+    /// Cases where we won't call this method:
+    /// - The envelope is missing a sender (or a device ID)
+    /// - The envelope has a sender but they're blocked
+    /// - The envelope is missing a timestamp
+    /// - The user isn't registered
+    ///
+    /// Cases where we will call this method:
+    /// - The envelope contains a fully valid message
+    /// - The envelope contains a message with an invalid reaction
+    /// - The envelope contains a link preview but the URL isn't in the message
+    /// - & so on, for many "errors" that are handled elsewhere
+    func finishProcessingEnvelope(_ identifiedEnvelope: IdentifiedIncomingEnvelope, tx: SDSAnyWriteTransaction) {
+        saveSpamReportingToken(for: identifiedEnvelope, tx: tx)
+        clearLeftoverPlaceholders(for: identifiedEnvelope, tx: tx)
+    }
+
+    private func saveSpamReportingToken(for identifiedEnvelope: IdentifiedIncomingEnvelope, tx: SDSAnyWriteTransaction) {
         guard
-            let rawSpamReportingToken = envelope.spamReportingToken,
+            let rawSpamReportingToken = identifiedEnvelope.envelope.spamReportingToken,
             let spamReportingToken = SpamReportingToken(data: rawSpamReportingToken)
         else {
             Logger.debug("Received an envelope without a spam reporting token. Doing nothing")
             return
         }
 
-        Logger.info("Saving spam reporting token. Envelope timestamp: \(envelope.timestamp)")
+        Logger.info("Saving spam reporting token. Envelope timestamp: \(identifiedEnvelope.timestamp)")
         do {
             try SpamReportingTokenRecord(
-                sourceUuid: sourceServiceId,
+                sourceUuid: identifiedEnvelope.sourceServiceId,
                 spamReportingToken: spamReportingToken
-            ).upsert(transaction.unwrapGrdbWrite.database)
+            ).upsert(tx.unwrapGrdbWrite.database)
         } catch {
             owsFailBeta(
                 "Couldn't save spam reporting token record. Continuing on, to avoid interrupting message processing. Error: \(error)"
@@ -189,23 +220,87 @@ extension OWSMessageManager {
         }
     }
 
+    /// Clear any remaining placeholders for a fully-processed message.
+    ///
+    /// We need to check to make sure that we clear any placeholders that may
+    /// have been inserted for this message. This would happen if:
+    ///
+    /// - This is a resend of a message that we had previously failed to decrypt
+    ///
+    /// - The message does not result in an inserted TSIncomingMessage or
+    /// TSOutgoingMessage. For example, a read receipt. In that case, we should
+    /// just clear the placeholder.
+    private func clearLeftoverPlaceholders(for envelope: IdentifiedIncomingEnvelope, tx: SDSAnyWriteTransaction) {
+        do {
+            let placeholders = try InteractionFinder.interactions(
+                withTimestamp: envelope.timestamp,
+                filter: { ($0 as? OWSRecoverableDecryptionPlaceholder)?.sender?.serviceId == envelope.sourceServiceId },
+                transaction: tx
+            )
+            owsAssertDebug(placeholders.count <= 1)
+            for placeholder in placeholders {
+                placeholder.anyRemove(transaction: tx)
+            }
+        } catch {
+            owsFailDebug("Failed to fetch placeholders: \(error)")
+        }
+    }
+
+    @objc
+    func handleIncomingSyncRequest(_ request: SSKProtoSyncMessageRequest, transaction: SDSAnyWriteTransaction) {
+        guard tsAccountManager.isRegisteredPrimaryDevice else {
+            // Don't respond to sync requests from a linked device.
+            return
+        }
+        switch request.type {
+        case .contacts:
+            // We respond asynchronously because populating the sync message will
+            // create transactions and it's not practical (due to locking in the
+            // OWSIdentityManager) to plumb our transaction through.
+            //
+            // In rare cases this means we won't respond to the sync request, but
+            // that's acceptable.
+            let pendingTask = Self.buildPendingTask(label: "syncAllContacts")
+            DispatchQueue.global().async {
+                self.syncManager.syncAllContacts().ensure(on: DispatchQueue.global()) {
+                    pendingTask.complete()
+                }.catch(on: DispatchQueue.global()) { error in
+                    Logger.error("Error: \(error)")
+                }
+            }
+
+        case .blocked:
+            Logger.info("Received request for block list")
+            let pendingTask = Self.buildPendingTask(label: "syncBlockList")
+            blockingManager.syncBlockList { pendingTask.complete() }
+
+        case .configuration:
+            // We send _two_ responses to the "configuration request".
+            syncManager.sendConfigurationSyncMessage()
+            StickerManager.syncAllInstalledPacks(transaction: transaction)
+
+        case .keys:
+            syncManager.sendKeysSyncMessage()
+
+        case .unknown, .none:
+            owsFailDebug("Ignoring sync request with unexpected type")
+        }
+    }
+
     @objc
     func handleIncomingEnvelope(
-        _ envelope: SSKProtoEnvelope,
+        _ identifiedEnvelope: IdentifiedIncomingEnvelope,
         withSenderKeyDistributionMessage skdmData: Data,
-        transaction writeTx: SDSAnyWriteTransaction) {
-
-        guard let sourceAddress = envelope.sourceAddress, sourceAddress.isValid else {
-            return owsFailDebug("Invalid source address")
-        }
-
+        transaction writeTx: SDSAnyWriteTransaction
+    ) {
         do {
             let skdm = try SenderKeyDistributionMessage(bytes: skdmData.map { $0 })
-            let sourceDeviceId = envelope.sourceDevice
-            let protocolAddress = try ProtocolAddress(from: sourceAddress, deviceId: sourceDeviceId)
+            let sourceServiceId = identifiedEnvelope.sourceServiceId
+            let sourceDeviceId = identifiedEnvelope.sourceDeviceId
+            let protocolAddress = try ProtocolAddress(uuid: sourceServiceId.uuidValue, deviceId: sourceDeviceId)
             try processSenderKeyDistributionMessage(skdm, from: protocolAddress, store: senderKeyStore, context: writeTx)
 
-            Logger.info("Processed incoming sender key distribution message. Sender: \(sourceAddress).\(sourceDeviceId)")
+            Logger.info("Processed incoming sender key distribution message from \(sourceServiceId).\(sourceDeviceId)")
 
         } catch {
             owsFailDebug("Failed to process incoming sender key \(error)")
@@ -214,22 +309,20 @@ extension OWSMessageManager {
 
     @objc
     func handleIncomingEnvelope(
-        _ envelope: SSKProtoEnvelope,
+        _ identifiedEnvelope: IdentifiedIncomingEnvelope,
         withDecryptionErrorMessage bytes: Data,
         transaction writeTx: SDSAnyWriteTransaction
     ) {
-        guard let sourceAddress = envelope.sourceAddress, sourceAddress.isValid else {
-            return owsFailDebug("Invalid source address")
-        }
-        let sourceDeviceId = envelope.sourceDevice
+        let sourceServiceId = identifiedEnvelope.sourceServiceId
+        let sourceDeviceId = identifiedEnvelope.sourceDeviceId
 
         do {
             let errorMessage = try DecryptionErrorMessage(bytes: bytes)
-            guard errorMessage.deviceId == tsAccountManager.storedDeviceId() else {
+            guard errorMessage.deviceId == tsAccountManager.storedDeviceId(transaction: writeTx) else {
                 Logger.info("Received a DecryptionError message targeting a linked device. Ignoring.")
                 return
             }
-            let protocolAddress = try ProtocolAddress(from: sourceAddress, deviceId: sourceDeviceId)
+            let protocolAddress = try ProtocolAddress(uuid: sourceServiceId.uuidValue, deviceId: sourceDeviceId)
 
             let didPerformSessionReset: Bool
 
@@ -241,9 +334,11 @@ extension OWSMessageManager {
                 let sessionRecord = try sessionStore.loadSession(for: protocolAddress, context: writeTx)
                 if try sessionRecord?.currentRatchetKeyMatches(ratchetKey) == true {
                     Logger.info("Decryption error included ratchet key. Archiving...")
-                    sessionStore.archiveSession(for: sourceAddress,
-                                                deviceId: Int32(sourceDeviceId),
-                                                transaction: writeTx)
+                    sessionStore.archiveSession(
+                        for: SignalServiceAddress(sourceServiceId),
+                        deviceId: Int32(sourceDeviceId),
+                        transaction: writeTx
+                    )
                     didPerformSessionReset = true
                 } else {
                     Logger.info("Ratchet key mismatch. Leaving session as-is.")
@@ -252,17 +347,17 @@ extension OWSMessageManager {
             } else {
                 // If we don't have a ratchet key, this was a sender key session message.
                 // Let's log any info about SKDMs that we had sent to the address requesting resend
-                senderKeyStore.logSKDMInfo(for: sourceAddress, transaction: writeTx)
+                senderKeyStore.logSKDMInfo(for: SignalServiceAddress(sourceServiceId), transaction: writeTx)
                 didPerformSessionReset = false
             }
 
             Logger.warn("Performing message resend of timestamp \(errorMessage.timestamp)")
             let resendResponse = OWSOutgoingResendResponse(
-                address: sourceAddress,
-                deviceId: Int64(sourceDeviceId),
+                address: SignalServiceAddress(sourceServiceId),
+                deviceId: sourceDeviceId,
                 failedTimestamp: errorMessage.timestamp,
                 didResetSession: didPerformSessionReset,
-                transaction: writeTx
+                tx: writeTx
             )
 
             let sendBlock = { (transaction: SDSAnyWriteTransaction) in
@@ -286,14 +381,189 @@ extension OWSMessageManager {
         }
     }
 
+    @objc(OWSEditProcessingResult)
+    enum EditProcessingResult: Int, Error {
+        case editedMessageMissing
+        case invalidEdit
+        case success
+    }
+
+    @objc
+    func handleIncomingEnvelope(
+        _ identifiedEnvelope: IdentifiedIncomingEnvelope,
+        editSyncMessage: SSKProtoSyncMessage,
+        transaction tx: SDSAnyWriteTransaction
+    ) -> EditProcessingResult {
+
+        guard let sentMessage = editSyncMessage.sent else {
+            return .invalidEdit
+        }
+
+        guard let transcript = OWSIncomingSentMessageTranscript(
+            proto: sentMessage,
+            serverTimestamp: identifiedEnvelope.serverTimestamp,
+            transaction: tx
+        ) else {
+            Logger.warn("Missing edit transcript.")
+            return .invalidEdit
+        }
+
+        guard let thread = transcript.thread else {
+            Logger.warn("Missing edit message thread.")
+            return .invalidEdit
+        }
+
+        guard let editMessage = editSyncMessage.sent?.editMessage else {
+            Logger.warn("Missing edit message.")
+            return .invalidEdit
+        }
+
+        // Find the target message to edit. If missing,
+        // return and enqueue the message to be handled as early delivery
+        guard
+            let targetMessage = EditMessageFinder.editTarget(
+                timestamp: editMessage.targetSentTimestamp,
+                authorAci: nil,
+                transaction: tx
+            )
+        else {
+            Logger.warn("Edit cannot find the target message")
+            return .editedMessageMissing
+        }
+
+        guard let message = handleMessageEdit(
+            envelope: identifiedEnvelope,
+            thread: thread,
+            editTarget: targetMessage,
+            editMessage: editMessage,
+            transaction: tx
+        ) else {
+            Logger.info("Failed to insert edit sync message")
+            return .invalidEdit
+        }
+
+        if let msg = message as? TSOutgoingMessage {
+            msg.updateWithWasSentFromLinkedDevice(
+                withUDRecipients: transcript.udRecipients,
+                nonUdRecipients: transcript.nonUdRecipients,
+                isSentUpdate: false,
+                transaction: tx
+            )
+        }
+
+        return .success
+    }
+
+    @objc
+    func handleIncomingEnvelope(
+        _ identifiedEnvelope: IdentifiedIncomingEnvelope,
+        withEditMessage editMessage: SSKProtoEditMessage,
+        wasReceivedByUD: Bool,
+        transaction tx: SDSAnyWriteTransaction
+    ) -> EditProcessingResult {
+
+        guard let dataMessage = editMessage.dataMessage else {
+            Logger.warn("Missing edit message data.")
+            return .invalidEdit
+        }
+
+        guard let thread = preprocessDataMessage(
+            dataMessage,
+            envelope: identifiedEnvelope.envelope,
+            transaction: tx
+        ) else {
+            Logger.warn("Missing edit message thread.")
+            return .invalidEdit
+        }
+
+        // Find the target message to edit. If missing,
+        // return and enqueue the message to be handled as early delivery
+        guard let targetMessage = EditMessageFinder.editTarget(
+            timestamp: editMessage.targetSentTimestamp,
+            authorAci: identifiedEnvelope.sourceServiceId,
+            transaction: tx
+        ) else {
+            Logger.warn("Edit cannot find the target message")
+            return .editedMessageMissing
+        }
+
+        guard let message = handleMessageEdit(
+            envelope: identifiedEnvelope,
+            thread: thread,
+            editTarget: targetMessage,
+            editMessage: editMessage,
+            transaction: tx
+        ) else {
+            Logger.info("Failed to insert edit message")
+            return .invalidEdit
+        }
+
+        if wasReceivedByUD {
+            self.outgoingReceiptManager.enqueueDeliveryReceipt(
+                for: identifiedEnvelope.envelope,
+                messageUniqueId: message.uniqueId,
+                transaction: tx
+            )
+        }
+
+        return .success
+    }
+
+    private func handleMessageEdit(
+        envelope: IdentifiedIncomingEnvelope,
+        thread: TSThread,
+        editTarget: EditMessageTarget,
+        editMessage: SSKProtoEditMessage,
+        transaction tx: SDSAnyWriteTransaction
+    ) -> TSMessage? {
+
+        guard let dataMessage = editMessage.dataMessage else {
+            owsFailDebug("Missing dataMessage in edit")
+            return nil
+        }
+
+        let editManager = EditManager(
+            context: .init(
+                dataStore: EditManager.Wrappers.DataStore(),
+                groupsShim: EditManager.Wrappers.Groups(groupsV2: groupsV2),
+                linkPreviewShim: EditManager.Wrappers.LinkPreview()
+            )
+        )
+
+        let message = editManager.processIncomingEditMessage(
+            dataMessage,
+            thread: thread,
+            editTarget: editTarget,
+            serverTimestamp: envelope.serverTimestamp,
+            tx: tx.asV2Write
+        )
+
+        guard let message else {
+            return nil
+        }
+
+        // Start downloading any new attachments
+        self.attachmentDownloads.enqueueDownloadOfAttachmentsForNewMessage(
+            message,
+            transaction: tx
+        )
+
+        DispatchQueue.main.async {
+            self.typingIndicatorsImpl.didReceiveIncomingMessage(
+                inThread: thread,
+                address: SignalServiceAddress(envelope.sourceServiceId),
+                deviceId: UInt(envelope.sourceDeviceId)
+            )
+        }
+
+        return message
+    }
+
     @objc
     public static func descriptionForDataMessageContents(_ dataMessage: SSKProtoDataMessage) -> String {
         var splits = [String]()
         if !dataMessage.attachments.isEmpty {
             splits.append("attachments: \(dataMessage.attachments.count)")
-        }
-        if dataMessage.group != nil {
-            splits.append("groupV1")
         }
         if dataMessage.groupV2 != nil {
             splits.append("groupV2")
@@ -342,32 +612,40 @@ extension OWSMessageManager {
         }
         return "[" + splits.joined(separator: ", ") + "]"
     }
-}
-
-extension SSKProtoEnvelope {
-    var isValid: Bool {
-        guard timestamp >= 1 else {
-            owsFailDebug("Invalid timestamp")
-            return false
-        }
-        guard SDS.fitsInInt64(timestamp) else {
-            owsFailDebug("Invalid timestamp")
-            return false
-        }
-        guard hasValidSource else {
-            owsFailDebug("Invalid source")
-            return false
-        }
-        guard sourceDevice >= 1 else {
-            owsFailDebug("Invalid source device")
-            return false
-        }
-        return true
-    }
 
     @objc
+    func checkForUnknownLinkedDevice(in envelope: IdentifiedIncomingEnvelope, tx: SDSAnyWriteTransaction) {
+        let serviceId = envelope.sourceServiceId
+        let deviceId = envelope.sourceDeviceId
+
+        guard serviceId == tsAccountManager.localIdentifiers(transaction: tx)?.aci else {
+            return
+        }
+
+        // Check if the SignalRecipient (used for sending messages) knows about
+        // this device.
+        let recipient = DependenciesBridge.shared.recipientFetcher.fetchOrCreate(serviceId: serviceId, tx: tx.asV2Write)
+        if !recipient.deviceIds.contains(deviceId) {
+            Logger.info("Message received from unknown linked device; adding to local SignalRecipient: \(deviceId).")
+            recipient.modifyAndSave(deviceIdsToAdd: [deviceId], deviceIdsToRemove: [], tx: tx)
+        }
+
+        // Check if OWSDevice (ie the "Linked Devices" UI) knows about this device.
+        let hasDevice = OWSDevice.anyFetchAll(transaction: tx).contains(where: { $0.deviceId == deviceId })
+        if !hasDevice {
+            Logger.info("Message received from unknown linked device; refreshing device list: \(deviceId).")
+            OWSDevicesService.refreshDevices()
+            profileManager.fetchLocalUsersProfile(authedAccount: .implicit())
+        }
+    }
+}
+
+// MARK: -
+
+extension SSKProtoEnvelope {
+    @objc
     var formattedAddress: String {
-        return "\(String(describing: sourceAddress)).\(sourceDevice)"
+        return "\(String(describing: sourceServiceId)).\(sourceDevice)"
     }
 }
 
@@ -391,6 +669,8 @@ extension SSKProtoContent {
             message.append("<DecryptionErrorMessage: \(decryptionErrorMessage) />")
         } else if let storyMessage = self.storyMessage {
             message.append("<StoryMessage: \(storyMessage) />")
+        } else if let editMessage = self.editMessage {
+            message.append("<EditMessage: \(editMessage) />")
         }
 
          // SKDM's are not mutually exclusive with other content types
@@ -470,9 +750,6 @@ extension SSKProtoDataMessage {
     @objc
     var contentDescription: String {
         var parts = [String]()
-        if group != nil {
-            parts.append("(Group:YES) )")
-        }
         if Int64(flags) & Int64(SSKProtoDataMessageFlags.endSession.rawValue) != 0 {
             parts.append("EndSession")
         } else if Int64(flags) & Int64(SSKProtoDataMessageFlags.expirationTimerUpdate.rawValue) != 0 {
@@ -497,9 +774,6 @@ extension SSKProtoSyncMessage {
         if contacts != nil {
             return "Contacts"
         }
-        if groups != nil {
-            return "Groups"
-        }
         if let request = self.request {
             if !request.hasType {
                 return "Unknown sync request."
@@ -507,18 +781,14 @@ extension SSKProtoSyncMessage {
             switch request.unwrappedType {
             case .contacts:
                 return "ContactRequest"
-            case .groups:
-                return "GroupRequest"
             case .blocked:
                 return "BlockedRequest"
             case .configuration:
                 return "ConfigurationRequest"
             case .keys:
                 return "KeysRequest"
-            case .pniIdentity:
-                return "PniIdentityRequest"
             default:
-                owsFailDebug("Unknown sync message request type")
+                owsFailDebug("Unknown sync message request type: \(request.unwrappedType)")
                 return "UnknownRequest"
             }
         }
@@ -528,8 +798,8 @@ extension SSKProtoSyncMessage {
         if blocked != nil {
             return "Blocked"
         }
-        if let verified = verified {
-            return "Verification for: \(String(describing: verified.destinationAddress))"
+        if verified != nil {
+            return "Verification"
         }
         if configuration != nil {
             return "Configuration"
@@ -579,11 +849,11 @@ extension SSKProtoSyncMessage {
         if !viewed.isEmpty {
             return "ViewedReceipt"
         }
-        if pniIdentity != nil {
-            return "PniIdentity"
-        }
         if callEvent != nil {
             return "CallDispositionEvent"
+        }
+        if pniChangeNumber != nil {
+            return "PniChangeNumber"
         }
         owsFailDebug("Unknown sync message type")
         return "Unknown"
@@ -593,6 +863,9 @@ extension SSKProtoSyncMessage {
 
 @objc
 class MessageManagerRequest: NSObject {
+    @objc
+    let identifiedEnvelope: IdentifiedIncomingEnvelope
+
     @objc
     let envelope: SSKProtoEnvelope
 
@@ -653,27 +926,29 @@ class MessageManagerRequest: NSObject {
         if protoContent?.hasSenderKeyDistributionMessage ?? false {
             return .hasSenderKeyDistributionMessage
         }
+        if protoContent?.editMessage != nil {
+            return .editMessage
+        }
         return .unknown
     }
 
     @objc
-    init?(envelope: SSKProtoEnvelope,
-          plaintextData: Data,
-          wasReceivedByUD: Bool,
-          serverDeliveryTimestamp: UInt64,
-          shouldDiscardVisibleMessages: Bool,
-          transaction: SDSAnyWriteTransaction) {
-        guard envelope.isValid, let sourceAddress = envelope.sourceAddress else {
-            owsFailDebug("Missing envelope")
-            return nil
-        }
-        self.envelope = envelope
+    init?(
+        identifiedEnvelope: IdentifiedIncomingEnvelope,
+        plaintextData: Data,
+        wasReceivedByUD: Bool,
+        serverDeliveryTimestamp: UInt64,
+        shouldDiscardVisibleMessages: Bool,
+        transaction: SDSAnyWriteTransaction
+    ) {
+        self.identifiedEnvelope = identifiedEnvelope
+        self.envelope = identifiedEnvelope.envelope
         self.plaintextData = plaintextData
         self.wasReceivedByUD = wasReceivedByUD
         self.serverDeliveryTimestamp = serverDeliveryTimestamp
         self.shouldDiscardVisibleMessages = shouldDiscardVisibleMessages
 
-        if Self.isDuplicate(envelope, address: sourceAddress, transaction: transaction) {
+        if Self.isDuplicate(identifiedEnvelope, tx: transaction) {
             Logger.info("Ignoring previously received envelope from \(envelope.formattedAddress) with timestamp: \(envelope.timestamp)")
             return nil
         }
@@ -712,12 +987,12 @@ class MessageManagerRequest: NSObject {
         }
     }
 
-    private static func isDuplicate(_ envelope: SSKProtoEnvelope,
-                                    address: SignalServiceAddress,
-                                    transaction: SDSAnyReadTransaction) -> Bool {
-        return InteractionFinder.existsIncomingMessage(timestamp: envelope.timestamp,
-                                                       address: address,
-                                                       sourceDeviceId: envelope.sourceDevice,
-                                                       transaction: transaction)
+    private static func isDuplicate(_ identifiedEnvelope: IdentifiedIncomingEnvelope, tx: SDSAnyReadTransaction) -> Bool {
+        return InteractionFinder.existsIncomingMessage(
+            timestamp: identifiedEnvelope.timestamp,
+            sourceServiceId: identifiedEnvelope.sourceServiceId,
+            sourceDeviceId: identifiedEnvelope.sourceDeviceId,
+            transaction: tx
+        )
     }
 }

@@ -3,24 +3,21 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
+import SignalServiceKit
+import SignalUI
 
-@objc
 class AppUpdateNag: NSObject {
 
     // MARK: Public
 
-    @objc(shared)
     public static let shared: AppUpdateNag = {
         let versionService = AppStoreVersionService()
         let nagManager = AppUpdateNag(versionService: versionService)
         return nagManager
     }()
 
-    @objc
     public func showAppUpgradeNagIfNecessary() {
-
-        let currentVersion = self.currentVersion
+        let currentVersion = AppVersion.shared.currentAppReleaseVersion
 
         guard let bundleIdentifier = self.bundleIdentifier else {
             owsFailDebug("bundleIdentifier was unexpectedly nil")
@@ -62,17 +59,12 @@ class AppUpdateNag: NSObject {
 
     // MARK: - KV Store
 
-    @objc
     public let keyValueStore = SDSKeyValueStore(collection: "TSStorageManagerAppUpgradeNagCollection")
 
     // MARK: - Bundle accessors
 
     var bundle: Bundle {
         return Bundle.main
-    }
-
-    var currentVersion: String {
-        appVersion.currentAppReleaseVersion
     }
 
     var bundleIdentifier: String? {
@@ -98,7 +90,7 @@ class AppUpdateNag: NSObject {
             return
         }
 
-        let intervalBeforeNag = 7 * kDayInterval
+        let intervalBeforeNag = 21 * kDayInterval
         guard Date() > Date.init(timeInterval: intervalBeforeNag, since: firstHeardOfNewVersionDate) else {
             Logger.info("firstHeardOfNewVersionDate: \(firstHeardOfNewVersionDate) not nagging for new release yet.")
             return
@@ -130,12 +122,12 @@ class AppUpdateNag: NSObject {
     }
 
     func presentUpgradeNag(appStoreRecord: AppStoreRecord) {
-        let title = NSLocalizedString("APP_UPDATE_NAG_ALERT_TITLE", comment: "Title for the 'new app version available' alert.")
+        let title = OWSLocalizedString("APP_UPDATE_NAG_ALERT_TITLE", comment: "Title for the 'new app version available' alert.")
 
-        let bodyFormat = NSLocalizedString("APP_UPDATE_NAG_ALERT_MESSAGE_FORMAT", comment: "Message format for the 'new app version available' alert. Embeds: {{The latest app version number}}")
+        let bodyFormat = OWSLocalizedString("APP_UPDATE_NAG_ALERT_MESSAGE_FORMAT", comment: "Message format for the 'new app version available' alert. Embeds: {{The latest app version number}}")
         let bodyText = String(format: bodyFormat, appStoreRecord.version)
-        let updateButtonText = NSLocalizedString("APP_UPDATE_NAG_ALERT_UPDATE_BUTTON", comment: "Label for the 'update' button in the 'new app version available' alert.")
-        let dismissButtonText = NSLocalizedString("APP_UPDATE_NAG_ALERT_DISMISS_BUTTON", comment: "Label for the 'dismiss' button in the 'new app version available' alert.")
+        let updateButtonText = OWSLocalizedString("APP_UPDATE_NAG_ALERT_UPDATE_BUTTON", comment: "Label for the 'update' button in the 'new app version available' alert.")
+        let dismissButtonText = OWSLocalizedString("APP_UPDATE_NAG_ALERT_DISMISS_BUTTON", comment: "Label for the 'dismiss' button in the 'new app version available' alert.")
 
         let alert = ActionSheetController(title: title, message: bodyText)
 

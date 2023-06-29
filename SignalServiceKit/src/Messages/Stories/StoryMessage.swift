@@ -9,7 +9,9 @@ import LibSignalClient
 import UIKit
 
 @objc
-public final class StoryMessage: NSObject, SDSCodableModel {
+public final class StoryMessage: NSObject, SDSCodableModel, Decodable {
+    public static var recordType: UInt { 0 }
+
     public static let databaseTableName = "model_StoryMessage"
 
     public enum CodingKeys: String, CodingKey, ColumnExpression, CaseIterable {
@@ -22,6 +24,7 @@ public final class StoryMessage: NSObject, SDSCodableModel {
         case direction
         case manifest
         case attachment
+        case replyCount
     }
 
     public var id: Int64?
@@ -41,7 +44,10 @@ public final class StoryMessage: NSObject, SDSCodableModel {
     public let direction: Direction
 
     public private(set) var manifest: StoryManifest
-    public let attachment: StoryMessageAttachment
+    private let _attachment: SerializedStoryMessageAttachment
+    public var attachment: StoryMessageAttachment {
+        return _attachment.asPublicAttachment
+    }
 
     public var sendingState: TSOutgoingMessageState {
         switch manifest {
@@ -118,8 +124,8 @@ public final class StoryMessage: NSObject, SDSCodableModel {
     @objc
     public var allAttachmentIds: [String] {
         switch attachment {
-        case .file(let attachmentId):
-            return [attachmentId]
+        case .file(let file):
+            return [file.attachmentId]
         case .text(let attachment):
             if let preview = attachment.preview, let imageAttachmentId = preview.imageAttachmentId {
                 return [imageAttachmentId]
@@ -129,6 +135,10 @@ public final class StoryMessage: NSObject, SDSCodableModel {
         }
     }
 
+    public var replyCount: UInt64
+
+    public var hasReplies: Bool { replyCount > 0 }
+
     public var context: StoryContext { groupId.map { .groupId($0) } ?? .authorUuid(authorUuid) }
 
     public init(
@@ -136,7 +146,8 @@ public final class StoryMessage: NSObject, SDSCodableModel {
         authorUuid: UUID,
         groupId: Data?,
         manifest: StoryManifest,
-        attachment: StoryMessageAttachment
+        attachment: StoryMessageAttachment,
+        replyCount: UInt64
     ) {
         self.uniqueId = UUID().uuidString
         self.timestamp = timestamp
@@ -149,7 +160,8 @@ public final class StoryMessage: NSObject, SDSCodableModel {
             self.direction = .outgoing
         }
         self.manifest = manifest
-        self.attachment = attachment
+        self._attachment = attachment.asSerializable
+        self.replyCount = replyCount
     }
 
     @discardableResult
@@ -193,19 +205,36 @@ public final class StoryMessage: NSObject, SDSCodableModel {
                 throw OWSAssertionError("Invalid file attachment for StoryMessage.")
             }
             attachmentPointer.anyInsert(transaction: transaction)
-            attachment = .file(attachmentId: attachmentPointer.uniqueId)
+            attachment = .file(StoryMessageFileAttachment(
+                attachmentId: attachmentPointer.uniqueId,
+                storyBodyRangeProtos: storyMessage.bodyRanges
+            ))
         } else if let textAttachmentProto = storyMessage.textAttachment {
-            attachment = .text(attachment: try TextAttachment(from: textAttachmentProto, transaction: transaction))
+            attachment = .text(try TextAttachment(
+                from: textAttachmentProto,
+                bodyRanges: storyMessage.bodyRanges,
+                transaction: transaction
+            ))
         } else {
             throw OWSAssertionError("Missing attachment for StoryMessage.")
         }
+
+        // Count replies in case any came in out of order (e.g. from a recipient
+        // who got the story and replied before we even got it.
+        let replyCount = Self.countReplies(
+            authorUuid: authorUuid,
+            timestamp: timestamp,
+            isGroupStory: groupId != nil,
+            transaction
+        )
 
         let record = StoryMessage(
             timestamp: timestamp,
             authorUuid: authorUuid,
             groupId: groupId,
             manifest: manifest,
-            attachment: attachment
+            attachment: attachment,
+            replyCount: replyCount
         )
         record.anyInsert(transaction: transaction)
 
@@ -256,19 +285,38 @@ public final class StoryMessage: NSObject, SDSCodableModel {
                 throw OWSAssertionError("Invalid file attachment for StoryMessage.")
             }
             attachmentPointer.anyInsert(transaction: transaction)
-            attachment = .file(attachmentId: attachmentPointer.uniqueId)
+            attachment = .file(StoryMessageFileAttachment(
+                attachmentId: attachmentPointer.uniqueId,
+                storyBodyRangeProtos: storyMessage.bodyRanges
+            ))
         } else if let textAttachmentProto = storyMessage.textAttachment {
-            attachment = .text(attachment: try TextAttachment(from: textAttachmentProto, transaction: transaction))
+            attachment = .text(try TextAttachment(
+                from: textAttachmentProto,
+                bodyRanges: storyMessage.bodyRanges,
+                transaction: transaction
+            ))
         } else {
             throw OWSAssertionError("Missing attachment for StoryMessage.")
         }
 
+        let authorUuid = tsAccountManager.localUuid!
+
+        // Count replies in some recipient replied and sent us the reply
+        // before our linked device sent us the transcript.
+        let replyCount = Self.countReplies(
+            authorUuid: authorUuid,
+            timestamp: proto.timestamp,
+            isGroupStory: groupId != nil,
+            transaction
+        )
+
         let record = StoryMessage(
             timestamp: proto.timestamp,
-            authorUuid: tsAccountManager.localUuid!,
+            authorUuid: authorUuid,
             groupId: groupId,
             manifest: manifest,
-            attachment: attachment
+            attachment: attachment,
+            replyCount: replyCount
         )
         record.anyInsert(transaction: transaction)
 
@@ -306,7 +354,10 @@ public final class StoryMessage: NSObject, SDSCodableModel {
         )
 
         attachment.anyInsert(transaction: transaction)
-        let attachment: StoryMessageAttachment = .file(attachmentId: attachment.uniqueId)
+        let attachment: StoryMessageAttachment = .file(StoryMessageFileAttachment(
+            attachmentId: attachment.uniqueId,
+            captionStyles: [] /* If someday a system story caption has styles, they'd go here. */
+        ))
 
         let record = StoryMessage(
             // NOTE: As of now these only get created for the onboarding story, and that happens
@@ -317,7 +368,8 @@ public final class StoryMessage: NSObject, SDSCodableModel {
             authorUuid: Self.systemStoryAuthorUUID,
             groupId: nil,
             manifest: manifest,
-            attachment: attachment
+            attachment: attachment,
+            replyCount: 0
         )
         record.anyInsert(transaction: transaction)
 
@@ -414,6 +466,57 @@ public final class StoryMessage: NSObject, SDSCodableModel {
             recipientStates[recipientUuid] = recipientState
 
             record.manifest = .outgoing(recipientStates: recipientStates)
+        }
+    }
+
+    // MARK: - Reply Counts
+
+    public func incrementReplyCount(_ tx: SDSAnyWriteTransaction) {
+        anyUpdate(transaction: tx) { record in
+            record.replyCount += 1
+        }
+    }
+
+    public func decrementReplyCount(_ tx: SDSAnyWriteTransaction) {
+        anyUpdate(transaction: tx) { record in
+            record.replyCount = max(0, record.replyCount - 1)
+        }
+    }
+
+    private static func countReplies(
+        authorUuid: UUID,
+        timestamp: UInt64,
+        isGroupStory: Bool,
+        _ tx: SDSAnyReadTransaction
+    ) -> UInt64 {
+        let transaction: GRDBReadTransaction
+        switch tx.readTransaction {
+        case .grdbRead(let grdbRead):
+            transaction = grdbRead
+        }
+
+        guard !SignalServiceAddress(uuid: authorUuid).isSystemStoryAddress else {
+            // No replies on system stories.
+            return 0
+        }
+        do {
+            let sql: String = """
+                SELECT COUNT(*)
+                FROM \(InteractionRecord.databaseTableName)
+                WHERE \(interactionColumn: .storyTimestamp) = ?
+                AND \(interactionColumn: .storyAuthorUuidString) = ?
+                AND \(interactionColumn: .isGroupStoryReply) = ?
+            """
+            guard let count = try UInt64.fetchOne(
+                transaction.database,
+                sql: sql,
+                arguments: [timestamp, authorUuid.uuidString, isGroupStory]
+            ) else {
+                throw OWSAssertionError("count was unexpectedly nil")
+            }
+            return count
+        } catch {
+            owsFail("error: \(error)")
         }
     }
 
@@ -534,13 +637,21 @@ public final class StoryMessage: NSObject, SDSCodableModel {
     }
 
     public func downloadIfNecessary(transaction: SDSAnyWriteTransaction) {
-        guard
-            case .file(let attachmentId) = attachment,
-            let pointer = TSAttachment.anyFetch(uniqueId: attachmentId, transaction: transaction) as? TSAttachmentPointer,
-            ![.enqueued, .downloading].contains(pointer.state)
-        else { return }
-
-        attachmentDownloads.enqueueDownloadOfAttachmentsForNewStoryMessage(self, transaction: transaction)
+        switch attachment {
+        case .file(let file):
+            guard
+                let pointer = TSAttachment.anyFetch(
+                    uniqueId: file.attachmentId,
+                    transaction: transaction
+                ) as? TSAttachmentPointer,
+                ![.enqueued, .downloading].contains(pointer.state)
+            else {
+                return
+            }
+            attachmentDownloads.enqueueDownloadOfAttachmentsForNewStoryMessage(self, transaction: transaction)
+        case .text:
+            return
+        }
     }
 
     public func remotelyDeleteForAllRecipients(transaction: SDSAnyWriteTransaction) {
@@ -690,13 +801,13 @@ public final class StoryMessage: NSObject, SDSCodableModel {
     }
 
     @objc
-    public class func anyEnumerate(
+    public static func anyEnumerateObjc(
         transaction: SDSAnyReadTransaction,
-        batched: Bool = false,
+        batched: Bool,
         block: @escaping (StoryMessage, UnsafeMutablePointer<ObjCBool>) -> Void
     ) {
-        let batchSize = batched ? Batching.kDefaultBatchSize : 0
-        anyEnumerate(transaction: transaction, batchSize: batchSize, block: block)
+        let batchingPreference: BatchingPreference = batched ? .batched() : .unbatched
+        anyEnumerate(transaction: transaction, batchingPreference: batchingPreference, block: block)
     }
 
     // MARK: - Codable
@@ -714,21 +825,23 @@ public final class StoryMessage: NSObject, SDSCodableModel {
         groupId = try container.decodeIfPresent(Data.self, forKey: .groupId)
         direction = try container.decode(Direction.self, forKey: .direction)
         manifest = try container.decode(StoryManifest.self, forKey: .manifest)
-        attachment = try container.decode(StoryMessageAttachment.self, forKey: .attachment)
+        _attachment = try container.decode(SerializedStoryMessageAttachment.self, forKey: .attachment)
+        replyCount = try container.decode(UInt64.self, forKey: .replyCount)
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         if let id = id { try container.encode(id, forKey: .id) }
-        try container.encode(recordType, forKey: .recordType)
+        try container.encode(Self.recordType, forKey: .recordType)
         try container.encode(uniqueId, forKey: .uniqueId)
         try container.encode(timestamp, forKey: .timestamp)
         try container.encode(authorUuid, forKey: .authorUuid)
         if let groupId = groupId { try container.encode(groupId, forKey: .groupId) }
         try container.encode(direction, forKey: .direction)
         try container.encode(manifest, forKey: .manifest)
-        try container.encode(attachment, forKey: .attachment)
+        try container.encode(_attachment, forKey: .attachment)
+        try container.encode(replyCount, forKey: .replyCount)
     }
 }
 
@@ -761,8 +874,7 @@ public struct StoryReceivedState: Codable {
 public struct StoryRecipientState: Codable {
     public var allowsReplies: Bool
     public var contexts: [UUID]
-    @DecodableDefault.OutgoingMessageSending
-    public var sendingState: OWSOutgoingMessageRecipientState
+    @DecodableDefault.OutgoingMessageSending public var sendingState: OWSOutgoingMessageRecipientState
     public var sendingErrorCode: Int?
     public var viewedTimestamp: UInt64?
 
@@ -811,11 +923,6 @@ extension StoryRecipientState {
 }
 
 extension OWSOutgoingMessageRecipientState: Codable {}
-
-public enum StoryMessageAttachment: Codable {
-    case file(attachmentId: String)
-    case text(attachment: TextAttachment)
-}
 
 extension SignalServiceAddress {
 

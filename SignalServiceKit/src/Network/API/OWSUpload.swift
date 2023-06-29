@@ -28,7 +28,7 @@ public class OWSUpload: NSObject {
 
     @objc
     public static let serialQueue: DispatchQueue = {
-        return DispatchQueue(label: OWSDispatch.createLabel("upload"),
+        return DispatchQueue(label: "org.signal.upload",
                              qos: .utility,
                              autoreleaseFrequency: .workItem)
     }()
@@ -140,7 +140,7 @@ public class OWSAttachmentUploadV2: NSObject {
     private func performRequest(_ request: TSRequest) -> Promise<HTTPResponse> {
         networkManager.makePromise(
             request: request,
-            canTryWebSocket: (
+            canUseWebSocket: (
                 OWSWebSocket.canAppUseSocketsToMakeRequests
                 && socketManager.canMakeRequests(webSocketType: .identified)
             )
@@ -637,8 +637,7 @@ public extension OWSUpload {
                         uploadForm: OWSUploadFormV2,
                         uploadUrlPath: String,
                         progressBlock: ProgressBlock? = nil) -> Promise<String> {
-
-        guard !AppExpiry.shared.isExpired else {
+        if DependenciesBridge.shared.appExpiry.isExpired {
             return Promise(error: OWSAssertionError("App is expired."))
         }
 

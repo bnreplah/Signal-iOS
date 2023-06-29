@@ -22,7 +22,7 @@ public class UUIDBackfillTask {
         self.contactDiscoveryManager = contactDiscoveryManager
         self.databaseStorage = databaseStorage
 
-        self.queue = DispatchQueue(label: "uuid-backfill-task", target: .sharedUserInitiated)
+        self.queue = DispatchQueue(label: "org.signal.uuid-backfill-task", target: .sharedUserInitiated)
     }
 
     // MARK: - Public
@@ -56,7 +56,7 @@ public class UUIDBackfillTask {
         e164sToFetch.formUnion(
             allRecipientsWithoutUUID
                 .lazy
-                .compactMap { $0.recipientPhoneNumber }
+                .compactMap { $0.phoneNumber }
                 .compactMap { PhoneNumber.tryParsePhoneNumber(fromUserSpecifiedText: $0)?.toE164() }
         )
 

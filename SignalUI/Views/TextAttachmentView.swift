@@ -15,8 +15,7 @@ open class TextAttachmentView: UIView {
 
     convenience public init(attachment: TextAttachment) {
         self.init(
-            text: attachment.text,
-            textStyle: attachment.textStyle,
+            textContent: attachment.textContent,
             textForegroundColor: attachment.textForegroundColor,
             textBackgroundColor: attachment.textBackgroundColor,
             background: attachment.background,
@@ -26,8 +25,7 @@ open class TextAttachmentView: UIView {
 
     convenience public init(attachment: UnsentTextAttachment) {
         self.init(
-            text: attachment.text,
-            textStyle: attachment.textStyle,
+            textContent: attachment.textContent,
             textForegroundColor: attachment.textForegroundColor,
             textBackgroundColor: attachment.textBackgroundColor,
             background: attachment.background,
@@ -37,16 +35,14 @@ open class TextAttachmentView: UIView {
     }
 
     public init(
-        text: String?,
-        textStyle: TextAttachment.TextStyle,
+        textContent: TextAttachment.TextContent,
         textForegroundColor: UIColor?,
         textBackgroundColor: UIColor?,
         background: TextAttachment.Background,
         linkPreview: OWSLinkPreview?,
         linkPreviewDraft: OWSLinkPreviewDraft? = nil
     ) {
-        self.text = text
-        self.textStyle = textStyle
+        self.textContent = textContent
         self.textForegroundColor = textForegroundColor ?? Theme.darkThemePrimaryColor
         self.textBackgroundColor = textBackgroundColor
         self.background = background
@@ -227,13 +223,15 @@ open class TextAttachmentView: UIView {
 
     // MARK: - Attributes
 
-    public var text: String? {
+    public var textContent: TextAttachment.TextContent {
         didSet { updateTextAttributes() }
     }
 
-    public var textStyle: TextAttachment.TextStyle = .regular {
+    private var revealedSpoilerIds = Set<StyleIdType>() {
         didSet { updateTextAttributes() }
     }
+
+    private var tappableItems: [HydratedMessageBody.TappableItem]?
 
     public private(set) var textForegroundColor: UIColor = Theme.darkThemePrimaryColor
 
@@ -258,27 +256,59 @@ open class TextAttachmentView: UIView {
     public func updateTextAttributes() {
         defer { updateVisibilityOfComponents(animated: false) }
 
-        guard let text = text else { return }
-
-        var textLabel: UILabel
-        if let existingLabel = self.textLabel {
-            textLabel = existingLabel
-        } else {
-            textLabel = UILabel()
-            textLabel.adjustsFontSizeToFitWidth = true
-            textLabel.allowsDefaultTighteningForTruncation = true
-            textLabel.lineBreakMode = .byWordWrapping
-            textLabel.minimumScaleFactor = 0.2
-            textLabel.numberOfLines = 0
-            addSubview(textLabel)
-            self.textLabel = textLabel
+        func loadTextLabel() -> UILabel {
+            if let existingLabel = self.textLabel {
+                return existingLabel
+            } else {
+                let textLabel = UILabel()
+                textLabel.adjustsFontSizeToFitWidth = true
+                textLabel.allowsDefaultTighteningForTruncation = true
+                textLabel.lineBreakMode = .byWordWrapping
+                textLabel.minimumScaleFactor = 0.2
+                textLabel.numberOfLines = 0
+                addSubview(textLabel)
+                self.textLabel = textLabel
+                return textLabel
+            }
         }
 
-        let (fontPointSize, textAlignment) = sizeAndAlignment(forText: text)
-        textLabel.text = transformedText(text, for: textStyle)
-        textLabel.textAlignment = textAlignment
-        textLabel.font = .font(for: textStyle, withPointSize: fontPointSize)
-        textLabel.textColor = textForegroundColor
+        let textLabel: UILabel
+        switch textContent {
+        case .empty:
+            tappableItems = nil
+            return
+        case .styled(let text, let textStyle):
+            textLabel = loadTextLabel()
+            let (fontPointSize, textAlignment) = sizeAndAlignment(forText: text)
+            textLabel.text = transformedText(text, for: textStyle)
+            textLabel.textAlignment = textAlignment
+            textLabel.font = .font(for: textStyle, withPointSize: fontPointSize)
+            textLabel.textColor = textForegroundColor
+            tappableItems = nil
+        case .styledRanges(let body):
+            textLabel = loadTextLabel()
+            let (fontPointSize, textAlignment) = sizeAndAlignment(forText: body.text)
+            let font = UIFont.font(for: .regular, withPointSize: fontPointSize)
+
+            self.tappableItems = body.asHydratedMessageBody().tappableItems(
+                revealedSpoilerIds: revealedSpoilerIds,
+                dataDetector: nil
+            )
+
+            let attrText = body.asAttributedStringForDisplay(
+                config: StyleDisplayConfiguration(
+                    baseFont: font,
+                    textColor: .fixed(textForegroundColor),
+                    revealAllIds: false,
+                    revealedIds: self.revealedSpoilerIds
+                ),
+                isDarkThemeEnabled: Theme.isDarkThemeEnabled
+            )
+            textLabel.font = font
+            textLabel.attributedText = attrText
+            textLabel.textAlignment = textAlignment
+            textLabel.textColor = textForegroundColor
+        }
 
         if let textBackgroundColor = textBackgroundColor {
             var textBackgroundView: UIView
@@ -303,10 +333,11 @@ open class TextAttachmentView: UIView {
 
     open func updateVisibilityOfComponents(animated: Bool) {
         let isEditing = isEditing
-        if text != nil {
+        switch textContent {
+        case .styledRanges, .styled:
             textLabel?.setIsHidden(isEditing, animated: animated)
             textBackgroundView?.setIsHidden(isEditing || textBackgroundColor == nil, animated: animated)
-        } else {
+        case .empty:
             textLabel?.setIsHidden(true, animated: animated)
             textBackgroundView?.setIsHidden(true, animated: animated)
         }
@@ -365,7 +396,16 @@ open class TextAttachmentView: UIView {
     private var forceCompactLayoutForLinkPreview = false
 
     private func shouldUseCompactLayoutForLinkPreview() -> Bool {
-        if let text = text, text.count >= 50 { return true }
+        let text: String
+        switch textContent {
+        case .empty:
+            return forceCompactLayoutForLinkPreview
+        case .styledRanges(let body):
+            text = body.text
+        case .styled(let body, _):
+            text = body
+        }
+        if text.count >= 50 { return true }
         return forceCompactLayoutForLinkPreview
     }
 
@@ -426,6 +466,33 @@ open class TextAttachmentView: UIView {
             return true
         }
 
+        // Note: the tap targeting here is not perfect.
+        // Eventually, move this to a better system than UILabel
+        // indexing, once we do custom spoiler animations.
+        let labelLocation = gesture.location(in: textLabel)
+        if
+            let textLabel,
+            textLabel.bounds.contains(labelLocation),
+            let tapIndex = textLabel.characterIndex(of: labelLocation)
+        {
+            let spoilerItem = tappableItems?.lazy
+                .compactMap {
+                    switch $0 {
+                    case .unrevealedSpoiler(let unrevealedSpoiler):
+                        return unrevealedSpoiler
+                    case .data, .mention:
+                        return nil
+                    }
+                }
+                .first(where: {
+                    $0.range.contains(tapIndex)
+                })
+            if let spoilerItem {
+                revealedSpoilerIds.insert(spoilerItem.id)
+                return true
+            }
+        }
+
         return false
     }
 
@@ -482,7 +549,7 @@ open class TextAttachmentView: UIView {
                 layout = .compact
                 thumbnailImageView.backgroundColor = .ows_gray02
                 thumbnailImageView.contentMode = .center
-                thumbnailImageView.image = UIImage(imageLiteralResourceName: "link-diagonal")
+                thumbnailImageView.image = UIImage(imageLiteralResourceName: "link")
                 thumbnailImageView.tintColor = Theme.lightThemePrimaryColor
             }
 
@@ -531,7 +598,7 @@ open class TextAttachmentView: UIView {
             if let title = title {
                 let titleLabel = UILabel()
                 titleLabel.text = title
-                titleLabel.font = .ows_dynamicTypeSubheadlineClamped.ows_semibold
+                titleLabel.font = .dynamicTypeSubheadlineClamped.semibold()
                 titleLabel.textColor = isDraft ? Theme.darkThemePrimaryColor : Theme.lightThemePrimaryColor
                 titleLabel.numberOfLines = 2
                 titleLabel.setCompressionResistanceVerticalHigh()
@@ -542,7 +609,7 @@ open class TextAttachmentView: UIView {
             if let description = description {
                 let descriptionLabel = UILabel()
                 descriptionLabel.text = description
-                descriptionLabel.font = .ows_dynamicTypeFootnoteClamped
+                descriptionLabel.font = .dynamicTypeFootnoteClamped
                 descriptionLabel.textColor = isDraft ? Theme.darkThemePrimaryColor : Theme.lightThemePrimaryColor
                 descriptionLabel.numberOfLines = 2
                 descriptionLabel.setCompressionResistanceVerticalHigh()
@@ -553,10 +620,10 @@ open class TextAttachmentView: UIView {
             let footerLabel = UILabel()
             footerLabel.numberOfLines = 1
             if hasTitleOrDescription {
-                footerLabel.font = .ows_dynamicTypeCaption1Clamped
+                footerLabel.font = .dynamicTypeCaption1Clamped
                 footerLabel.textColor = isDraft ? Theme.darkThemeSecondaryTextAndIconColor : .ows_gray60
             } else {
-                footerLabel.font = .ows_dynamicTypeSubheadlineClamped.ows_semibold
+                footerLabel.font = .dynamicTypeSubheadlineClamped.semibold()
                 footerLabel.textColor = isDraft ? Theme.darkThemePrimaryColor : Theme.lightThemePrimaryColor
             }
             footerLabel.setCompressionResistanceVerticalHigh()
@@ -567,7 +634,7 @@ open class TextAttachmentView: UIView {
             if let displayDomain = OWSLinkPreviewManager.displayDomain(forUrl: linkPreview.urlString) {
                 footerText = displayDomain.lowercased()
             } else {
-                footerText = NSLocalizedString(
+                footerText = OWSLocalizedString(
                     "LINK_PREVIEW_UNKNOWN_DOMAIN",
                     comment: "Label for link previews with an unknown host."
                 ).uppercased()
@@ -611,16 +678,16 @@ private class LinkPreviewTooltipView: TooltipView {
 
     public override func bubbleContentView() -> UIView {
         let titleLabel = UILabel()
-        titleLabel.text = NSLocalizedString(
+        titleLabel.text = OWSLocalizedString(
             "STORY_LINK_PREVIEW_VISIT_LINK_TOOLTIP",
             comment: "Tooltip prompting the user to visit a story link."
         )
-        titleLabel.font = UIFont.ows_dynamicTypeBody2Clamped.ows_semibold
+        titleLabel.font = UIFont.dynamicTypeBody2Clamped.semibold()
         titleLabel.textColor = .ows_white
 
         let urlLabel = UILabel()
         urlLabel.text = url.absoluteString
-        urlLabel.font = .ows_dynamicTypeCaption1Clamped
+        urlLabel.font = .dynamicTypeCaption1Clamped
         urlLabel.textColor = .ows_white
 
         let stackView = UIStackView(arrangedSubviews: [titleLabel, urlLabel])

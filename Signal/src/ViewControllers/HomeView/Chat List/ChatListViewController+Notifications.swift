@@ -3,13 +3,14 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
+import SignalCoreKit
+import SignalMessaging
+import SignalUI
 
 extension ChatListViewController {
 
     public static let clearSearch = Notification.Name("clearSearch")
 
-    @objc
     public func observeNotifications() {
         AssertIsOnMainThread()
 
@@ -51,7 +52,7 @@ extension ChatListViewController {
                                                object: nil)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(appExpiryDidChange),
-                                               name: AppExpiry.AppExpiryDidChange,
+                                               name: AppExpiryImpl.AppExpiryDidChange,
                                                object: nil)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(preferContactAvatarsPreferenceDidChange),
@@ -60,10 +61,6 @@ extension ChatListViewController {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(blockListDidChange),
                                                name: BlockingManager.blockListDidChange,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(uiContentSizeCategoryDidChange),
-                                               name: UIContentSizeCategory.didChangeNotification,
                                                object: nil)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(clearSearch),
@@ -91,6 +88,11 @@ extension ChatListViewController {
             name: SSKReachability.owsReachabilityDidChange,
             object: nil
         )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(usernameFailedValidation),
+            name: Usernames.Validation.usernameValidationDidChange,
+            object: nil)
 
         contactsViewHelper.addObserver(self)
 
@@ -221,20 +223,19 @@ extension ChatListViewController {
     }
 
     @objc
-    private func uiContentSizeCategoryDidChange(_ notification: NSNotification) {
-        AssertIsOnMainThread()
-
-        // This is expensive but this event is very rare.
-        reloadTableDataAndResetCellContentCache()
-    }
-
-    @objc
     private func clearSearch(_ notification: NSNotification) {
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.1) { [weak self] in
             if let self = self {
                 self.searchBar.delegate?.searchBarCancelButtonClicked?(self.searchBar)
             }
         }
+    }
+
+    @objc
+    private func usernameFailedValidation(_ notification: NSNotification) {
+        AssertIsOnMainThread()
+
+        updateReminderViews()
     }
 }
 

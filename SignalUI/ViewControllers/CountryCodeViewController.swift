@@ -47,7 +47,6 @@ public class CountryCodeViewController: OWSTableViewController2 {
 
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .stop,
-
             target: self,
             action: #selector(didPressCancel),
             accessibilityIdentifier: "cancel")
@@ -76,7 +75,7 @@ public class CountryCodeViewController: OWSTableViewController2 {
                 self?.countryWasSelected(countryState: countryState)
             })
         }
-        contents.addSection(section)
+        contents.add(section)
 
         self.contents = contents
     }
@@ -138,7 +137,7 @@ extension CountryCodeViewController: UISearchBarDelegate {
 
 extension CountryCodeViewController: OWSTableViewControllerDelegate {
 
-    public func tableViewWillBeginDragging() {
+    public func tableViewWillBeginDragging(_ tableView: UITableView) {
         searchBar.resignFirstResponder()
     }
 }

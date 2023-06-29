@@ -3,12 +3,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
-import UIKit
 import ContactsUI
+import SignalServiceKit
 import SignalUI
 
-@objc
 public enum ConversationSettingsPresentationMode: UInt {
     case `default`
     case showVerification
@@ -18,7 +16,6 @@ public enum ConversationSettingsPresentationMode: UInt {
 
 // MARK: -
 
-@objc
 public protocol ConversationSettingsViewDelegate: AnyObject {
 
     func conversationColorWasUpdated()
@@ -33,13 +30,12 @@ public protocol ConversationSettingsViewDelegate: AnyObject {
 // MARK: -
 
 // TODO: We should describe which state updates & when it is committed.
-@objc
 class ConversationSettingsViewController: OWSTableViewController2, BadgeCollectionDataSource {
 
-    @objc
     public weak var conversationSettingsViewDelegate: ConversationSettingsViewDelegate?
 
     private(set) var threadViewModel: ThreadViewModel
+    private let spoilerReveal: SpoilerRevealState
 
     var thread: TSThread {
         threadViewModel.threadRecord
@@ -56,7 +52,6 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
 
     var groupViewHelper: GroupViewHelper
 
-    @objc
     public var showVerificationOnAppear = false
 
     var disappearingMessagesConfiguration: OWSDisappearingMessagesConfiguration
@@ -67,14 +62,17 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
 
     var shouldRefreshAttachmentsOnReappear = false
 
-    @objc
-    public required init(threadViewModel: ThreadViewModel) {
+    public required init(
+        threadViewModel: ThreadViewModel,
+        spoilerReveal: SpoilerRevealState
+    ) {
         self.threadViewModel = threadViewModel
+        self.spoilerReveal = spoilerReveal
         groupViewHelper = GroupViewHelper(threadViewModel: threadViewModel)
 
-        disappearingMessagesConfiguration = Self.databaseStorage.read { transaction in
-            OWSDisappearingMessagesConfiguration.fetchOrBuildDefault(with: threadViewModel.threadRecord,
-                                                                     transaction: transaction)
+        disappearingMessagesConfiguration = Self.databaseStorage.read { tx in
+            let dmConfigurationStore = DependenciesBridge.shared.disappearingMessagesConfigurationStore
+            return dmConfigurationStore.fetchOrBuildDefault(for: .thread(threadViewModel.threadRecord), tx: tx.asV2Read)
         }
 
         super.init()
@@ -103,10 +101,6 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
                                                name: BlockingManager.blockListDidChange,
                                                object: nil)
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(updateTableContents),
-                                               name: UIContentSizeCategory.didChangeNotification,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
                                                selector: #selector(attachmentsAddedOrRemoved(notification:)),
                                                name: MediaGalleryManager.newAttachmentsAvailableNotification,
                                                object: nil)
@@ -118,8 +112,8 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
 
     // MARK: - Accessors
 
-    var isBlockedByMigration: Bool {
-        groupViewHelper.isBlockedByMigration
+    var isGroupV1Thread: Bool {
+        groupViewHelper.isGroupV1Thread
     }
 
     var canEditConversationAttributes: Bool {
@@ -149,7 +143,6 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
 
     // MARK: - View Lifecycle
 
-    @objc
     public override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -181,11 +174,6 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
         updateNavigationBar()
     }
 
-    override func themeDidChange() {
-        super.themeDidChange()
-        updateTableContents()
-    }
-
     private var shouldShowEditButton: Bool {
         if isGroupThread {
             return true
@@ -208,7 +196,7 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
 
         if shouldShowEditButton {
             navigationItem.rightBarButtonItem = UIBarButtonItem(
-                title: NSLocalizedString(
+                title: OWSLocalizedString(
                     "CONVERSATION_SETTINGS_EDIT",
                     comment: "Label for the 'edit' button in conversation settings view."
                 ),
@@ -254,6 +242,22 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
         coordinator.animate { _ in } completion: { _ in
             self.updateTableContents()
         }
+    }
+
+    /// The base implementation of this reloads the table contents, which does
+    /// not update header/footer views. Since we need those to be updated, we
+    /// instead recreate the table contents wholesale.
+    override func themeDidChange() {
+        super.themeDidChange()
+        updateTableContents()
+    }
+
+    /// The base implementation of this reloads the table contents, which does
+    /// not update header/footer views. Since we need those to be updated, we
+    /// instead recreate the table contents wholesale.
+    override func contentSizeCategoryDidChange() {
+        super.contentSizeCategoryDidChange()
+        updateTableContents()
     }
 
     // MARK: -
@@ -352,7 +356,7 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
 
     func showAddToSystemContactsActionSheet(contactThread: TSContactThread) {
         let actionSheet = ActionSheetController()
-        let createNewTitle = NSLocalizedString(
+        let createNewTitle = OWSLocalizedString(
             "CONVERSATION_SETTINGS_NEW_CONTACT",
             comment: "Label for 'new contact' button in conversation settings view."
         )
@@ -364,7 +368,7 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
             }
         ))
 
-        let addToExistingTitle = NSLocalizedString(
+        let addToExistingTitle = OWSLocalizedString(
             "CONVERSATION_SETTINGS_ADD_TO_EXISTING_CONTACT",
             comment: "Label for 'new contact' button in conversation settings view."
         )
@@ -493,7 +497,6 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
         navigationController?.pushViewController(viewController, animated: true)
     }
 
-    @objc
     public func buildMemberRequestsAndInvitesView() -> UIViewController? {
         guard let groupThread = thread as? TSGroupThread else {
             owsFailDebug("Invalid thread.")
@@ -575,12 +578,12 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
     }
 
     func showLeaveGroupConfirmAlert(replacementAdminUuid: UUID? = nil) {
-        let alert = ActionSheetController(title: NSLocalizedString("CONFIRM_LEAVE_GROUP_TITLE",
+        let alert = ActionSheetController(title: OWSLocalizedString("CONFIRM_LEAVE_GROUP_TITLE",
                                                                    comment: "Alert title"),
-                                          message: NSLocalizedString("CONFIRM_LEAVE_GROUP_DESCRIPTION",
+                                          message: OWSLocalizedString("CONFIRM_LEAVE_GROUP_DESCRIPTION",
                                                                      comment: "Alert body"))
 
-        let leaveAction = ActionSheetAction(title: NSLocalizedString("LEAVE_BUTTON_TITLE",
+        let leaveAction = ActionSheetAction(title: OWSLocalizedString("LEAVE_BUTTON_TITLE",
                                                                      comment: "Confirmation button within contextual alert"),
                                             accessibilityIdentifier: UIView.accessibilityIdentifier(in: self, name: "leave_group_confirm"),
                                             style: .destructive) { _ in
@@ -596,17 +599,17 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
         let candidates = self.replacementAdminCandidates
         guard !candidates.isEmpty else {
             // TODO: We could offer a "delete group locally" option here.
-            OWSActionSheets.showErrorAlert(message: NSLocalizedString("GROUPS_CANT_REPLACE_ADMIN_ALERT_MESSAGE",
+            OWSActionSheets.showErrorAlert(message: OWSLocalizedString("GROUPS_CANT_REPLACE_ADMIN_ALERT_MESSAGE",
                                                                       comment: "Message for the 'can't replace group admin' alert."))
             return
         }
 
-        let alert = ActionSheetController(title: NSLocalizedString("GROUPS_REPLACE_ADMIN_ALERT_TITLE",
+        let alert = ActionSheetController(title: OWSLocalizedString("GROUPS_REPLACE_ADMIN_ALERT_TITLE",
                                                                    comment: "Title for the 'replace group admin' alert."),
-                                          message: NSLocalizedString("GROUPS_REPLACE_ADMIN_ALERT_MESSAGE",
+                                          message: OWSLocalizedString("GROUPS_REPLACE_ADMIN_ALERT_MESSAGE",
                                                                      comment: "Message for the 'replace group admin' alert."))
 
-        alert.addAction(ActionSheetAction(title: NSLocalizedString("GROUPS_REPLACE_ADMIN_BUTTON",
+        alert.addAction(ActionSheetAction(title: OWSLocalizedString("GROUPS_REPLACE_ADMIN_BUTTON",
                                                                    comment: "Label for the 'replace group admin' button."),
                                           accessibilityIdentifier: UIView.accessibilityIdentifier(in: self, name: "replace_admin_alert"),
                                           style: .default) { _ in
@@ -716,7 +719,7 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
             let now = Date()
 
             if threadViewModel.mutedUntilTimestamp == ThreadAssociatedData.alwaysMutedTimestamp {
-                unmuteTitle = NSLocalizedString(
+                unmuteTitle = OWSLocalizedString(
                     "CONVERSATION_SETTINGS_MUTED_ALWAYS_UNMUTE",
                     comment: "Indicates that this thread is muted forever."
                 )
@@ -736,7 +739,7 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
                     dateFormatter.timeStyle = .short
                 }
 
-                let formatString = NSLocalizedString(
+                let formatString = OWSLocalizedString(
                     "CONVERSATION_SETTINGS_MUTED_UNTIL_UNMUTE_FORMAT",
                     comment: "Indicates that this thread is muted until a given date or time. Embeds {{The date or time which the thread is muted until}}."
                 )
@@ -748,7 +751,7 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
         }
 
         let actionSheet = ActionSheetController(
-            title: threadViewModel.isMuted ? unmuteTitle : NSLocalizedString(
+            title: threadViewModel.isMuted ? unmuteTitle : OWSLocalizedString(
                 "CONVERSATION_SETTINGS_MUTE_ACTION_SHEET_TITLE",
                 comment: "Title for the mute action sheet"
             )
@@ -756,7 +759,7 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
 
         if threadViewModel.isMuted {
             let action =
-                ActionSheetAction(title: NSLocalizedString("CONVERSATION_SETTINGS_UNMUTE_ACTION",
+                ActionSheetAction(title: OWSLocalizedString("CONVERSATION_SETTINGS_UNMUTE_ACTION",
                                                            comment: "Label for button to unmute a thread."),
                                   accessibilityIdentifier: UIView.accessibilityIdentifier(in: fromVC, name: "unmute")) { _ in
                     setThreadMutedUntilTimestamp(0, threadViewModel: threadViewModel)
@@ -765,7 +768,7 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
             actionSheet.addAction(action)
         } else {
             #if DEBUG
-            actionSheet.addAction(ActionSheetAction(title: NSLocalizedString("CONVERSATION_SETTINGS_MUTE_ONE_MINUTE_ACTION",
+            actionSheet.addAction(ActionSheetAction(title: OWSLocalizedString("CONVERSATION_SETTINGS_MUTE_ONE_MINUTE_ACTION",
                                                                              comment: "Label for button to mute a thread for a minute."),
                                                     accessibilityIdentifier: UIView.accessibilityIdentifier(in: fromVC, name: "mute_1_minute")) { _ in
                 setThreadMuted(threadViewModel: threadViewModel) {
@@ -776,7 +779,7 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
                 actionExecuted()
             })
             #endif
-            actionSheet.addAction(ActionSheetAction(title: NSLocalizedString("CONVERSATION_SETTINGS_MUTE_ONE_HOUR_ACTION",
+            actionSheet.addAction(ActionSheetAction(title: OWSLocalizedString("CONVERSATION_SETTINGS_MUTE_ONE_HOUR_ACTION",
                                                                              comment: "Label for button to mute a thread for a hour."),
                                                     accessibilityIdentifier: UIView.accessibilityIdentifier(in: fromVC, name: "mute_1_hour")) { _ in
                 setThreadMuted(threadViewModel: threadViewModel) {
@@ -786,7 +789,7 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
                 }
                 actionExecuted()
             })
-            actionSheet.addAction(ActionSheetAction(title: NSLocalizedString("CONVERSATION_SETTINGS_MUTE_EIGHT_HOUR_ACTION",
+            actionSheet.addAction(ActionSheetAction(title: OWSLocalizedString("CONVERSATION_SETTINGS_MUTE_EIGHT_HOUR_ACTION",
                                                                              comment: "Label for button to mute a thread for eight hours."),
                                                     accessibilityIdentifier: UIView.accessibilityIdentifier(in: fromVC, name: "mute_8_hour")) { _ in
                 setThreadMuted(threadViewModel: threadViewModel) {
@@ -796,7 +799,7 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
                 }
                 actionExecuted()
             })
-            actionSheet.addAction(ActionSheetAction(title: NSLocalizedString("CONVERSATION_SETTINGS_MUTE_ONE_DAY_ACTION",
+            actionSheet.addAction(ActionSheetAction(title: OWSLocalizedString("CONVERSATION_SETTINGS_MUTE_ONE_DAY_ACTION",
                                                                              comment: "Label for button to mute a thread for a day."),
                                                     accessibilityIdentifier: UIView.accessibilityIdentifier(in: fromVC, name: "mute_1_day")) { _ in
                 setThreadMuted(threadViewModel: threadViewModel) {
@@ -806,7 +809,7 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
                 }
                 actionExecuted()
             })
-            actionSheet.addAction(ActionSheetAction(title: NSLocalizedString("CONVERSATION_SETTINGS_MUTE_ONE_WEEK_ACTION",
+            actionSheet.addAction(ActionSheetAction(title: OWSLocalizedString("CONVERSATION_SETTINGS_MUTE_ONE_WEEK_ACTION",
                                                                              comment: "Label for button to mute a thread for a week."),
                                                     accessibilityIdentifier: UIView.accessibilityIdentifier(in: fromVC, name: "mute_1_week")) { _ in
                 setThreadMuted(threadViewModel: threadViewModel) {
@@ -816,7 +819,7 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
                 }
                 actionExecuted()
             })
-            actionSheet.addAction(ActionSheetAction(title: NSLocalizedString("CONVERSATION_SETTINGS_MUTE_ALWAYS_ACTION",
+            actionSheet.addAction(ActionSheetAction(title: OWSLocalizedString("CONVERSATION_SETTINGS_MUTE_ALWAYS_ACTION",
                                                                              comment: "Label for button to mute a thread forever."),
                                                     accessibilityIdentifier: UIView.accessibilityIdentifier(in: fromVC, name: "mute_always")) { _ in
                 setThreadMutedUntilTimestamp(ThreadAssociatedData.alwaysMutedTimestamp, threadViewModel: threadViewModel)
@@ -852,12 +855,20 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
     func showMediaGallery() {
         Logger.debug("")
 
-        let tileVC = AllMediaViewController(thread: thread, name: threadViewModel.name)
+        let tileVC = AllMediaViewController(
+            thread: thread,
+            spoilerReveal: spoilerReveal,
+            name: threadViewModel.name
+        )
         navigationController?.pushViewController(tileVC, animated: true)
     }
 
     func showMediaPageView(for attachmentStream: TSAttachmentStream) {
-        let vc = MediaPageViewController(initialMediaAttachment: attachmentStream, thread: thread)
+        let vc = MediaPageViewController(
+            initialMediaAttachment: attachmentStream,
+            thread: thread,
+            spoilerReveal: spoilerReveal
+        )
         if vc.viewControllers?.isEmpty ?? true {
             // Failed to load the item. Could be because it was deleted just as we tried to show it.
             return
@@ -869,7 +880,9 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
     private(set) var recentMedia = OrderedDictionary<String, (attachment: TSAttachmentStream, imageView: UIImageView)>() {
         didSet { AssertIsOnMainThread() }
     }
-    private lazy var mediaGalleryFinder = MediaGalleryFinder(thread: thread)
+
+    private lazy var mediaGalleryFinder = MediaGalleryFinder(thread: thread, allowedMediaType: nil)
+
     func updateRecentAttachments() {
         let recentAttachments = databaseStorage.read { transaction in
             mediaGalleryFinder.recentMediaAttachments(limit: maximumRecentMedia, transaction: transaction.unwrapGrdbRead)
@@ -913,7 +926,7 @@ class ConversationSettingsViewController: OWSTableViewController2, BadgeCollecti
     }
 
     @objc
-    func editButtonWasPressed(_ sender: Any) {
+    private func editButtonWasPressed(_ sender: Any) {
         owsAssertDebug(canEditConversationAttributes)
 
         if isGroupThread {
@@ -1076,19 +1089,19 @@ extension ConversationSettingsViewController: ReplaceAdminViewControllerDelegate
 extension ConversationSettingsViewController: MediaPresentationContextProvider {
     func mediaPresentationContext(item: Media, in coordinateSpace: UICoordinateSpace) -> MediaPresentationContext? {
         let mediaView: UIView
-        let cornerRadius: CGFloat
+        let mediaViewShape: MediaViewShape
         switch item {
         case .gallery(let galleryItem):
             guard let imageView = recentMedia[galleryItem.attachmentStream.uniqueId]?.imageView else { return nil }
             mediaView = imageView
-            cornerRadius = imageView.layer.cornerRadius
+            mediaViewShape = .rectangle(imageView.layer.cornerRadius)
         case .image:
             guard let avatarView = avatarView as? ConversationAvatarView else { return nil }
             mediaView = avatarView
             if case .circular = avatarView.configuration.shape {
-                cornerRadius = 0.5 * CGFloat(avatarView.configuration.sizeClass.diameter)
+                mediaViewShape = .circle
             } else {
-                cornerRadius = 0
+                mediaViewShape = .rectangle(0)
             }
         }
 
@@ -1098,11 +1111,13 @@ extension ConversationSettingsViewController: MediaPresentationContextProvider {
         }
 
         let presentationFrame = coordinateSpace.convert(mediaView.frame, from: mediaSuperview)
+        let clippingAreaInsets = UIEdgeInsets(top: tableView.adjustedContentInset.top, leading: 0, bottom: 0, trailing: 0)
 
         return MediaPresentationContext(
             mediaView: mediaView,
             presentationFrame: presentationFrame,
-            cornerRadius: cornerRadius
+            mediaViewShape: mediaViewShape,
+            clippingAreaInsets: clippingAreaInsets
         )
     }
 

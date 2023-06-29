@@ -3,14 +3,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import SignalMessaging
 import SignalUI
 
-@objc
 class AppSettingsViewController: OWSTableViewController2 {
 
-    @objc
     class func inModalNavigationController() -> OWSNavigationController {
         OWSNavigationController(rootViewController: AppSettingsViewController())
     }
@@ -18,7 +15,7 @@ class AppSettingsViewController: OWSTableViewController2 {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = NSLocalizedString("SETTINGS_NAV_BAR_TITLE", comment: "Title for settings activity")
+        title = OWSLocalizedString("SETTINGS_NAV_BAR_TITLE", comment: "Title for settings activity")
         navigationItem.leftBarButtonItem = .init(barButtonSystemItem: .done, target: self, action: #selector(didTapDone))
 
         defaultSeparatorInsetLeading = Self.cellHInnerMargin + 24 + OWSTableItem.iconSpacing
@@ -47,7 +44,7 @@ class AppSettingsViewController: OWSTableViewController2 {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(subscriptionStateDidChange),
-            name: SubscriptionManager.SubscriptionJobQueueDidFinishJobNotification,
+            name: SubscriptionManagerImpl.SubscriptionJobQueueDidFinishJobNotification,
             object: nil
         )
 
@@ -60,26 +57,26 @@ class AppSettingsViewController: OWSTableViewController2 {
     }
 
     @objc
-    func didTapDone() {
+    private func didTapDone() {
         dismiss(animated: true)
     }
 
     @objc
-    func localProfileDidChange() {
+    private func localProfileDidChange() {
         AssertIsOnMainThread()
 
         updateTableContents()
     }
 
     @objc
-    func localNumberDidChange() {
+    private func localNumberDidChange() {
         AssertIsOnMainThread()
 
         updateTableContents()
     }
 
     @objc
-    func subscriptionStateDidChange() {
+    private func subscriptionStateDidChange() {
         AssertIsOnMainThread()
 
         updateTableContents()
@@ -92,7 +89,7 @@ class AppSettingsViewController: OWSTableViewController2 {
     }
 
     @objc
-    func hasExpiredGiftBadgeDidChange() {
+    private func hasExpiredGiftBadgeDidChange() {
         AssertIsOnMainThread()
 
         let oldValue = self.hasExpiredGiftBadge
@@ -120,12 +117,12 @@ class AppSettingsViewController: OWSTableViewController2 {
                 self?.navigationController?.pushViewController(vc, animated: true)
             }
         ))
-        contents.addSection(profileSection)
+        contents.add(profileSection)
 
         let section1 = OWSTableSection()
         section1.add(.disclosureItem(
             icon: .settingsAccount,
-            name: NSLocalizedString("SETTINGS_ACCOUNT", comment: "Title for the 'account' link in settings."),
+            name: OWSLocalizedString("SETTINGS_ACCOUNT", comment: "Title for the 'account' link in settings."),
             accessibilityIdentifier: UIView.accessibilityIdentifier(in: self, name: "account"),
             actionBlock: { [weak self] in
                 let vc = AccountSettingsViewController()
@@ -135,7 +132,7 @@ class AppSettingsViewController: OWSTableViewController2 {
         if self.tsAccountManager.isPrimaryDevice {
             section1.add(.disclosureItem(
                 icon: .settingsLinkedDevices,
-                name: NSLocalizedString("LINKED_DEVICES_TITLE", comment: "Menu item and navbar title for the device manager"),
+                name: OWSLocalizedString("LINKED_DEVICES_TITLE", comment: "Menu item and navbar title for the device manager"),
                 accessibilityIdentifier: UIView.accessibilityIdentifier(in: self, name: "linked-devices"),
                 actionBlock: { [weak self] in
                     let vc = LinkedDevicesTableViewController()
@@ -147,16 +144,16 @@ class AppSettingsViewController: OWSTableViewController2 {
             guard let self = self else { return UITableViewCell() }
             let accessoryView: UIView?
             if self.hasExpiredGiftBadge {
-                let imageView = UIImageView(image: UIImage(named: "info-solid-24")?.withRenderingMode(.alwaysTemplate))
+                let imageView = UIImageView(image: UIImage(imageLiteralResourceName: "info-fill"))
                 imageView.tintColor = Theme.accentBlueColor
                 imageView.autoSetDimensions(to: CGSize(square: 24))
                 accessoryView = imageView
             } else {
                 accessoryView = nil
             }
-            return OWSTableItem.buildCellWithAccessoryLabel(
+            return OWSTableItem.buildCell(
                 icon: .settingsDonate,
-                itemName: NSLocalizedString("SETTINGS_DONATE", comment: "Title for the 'donate to signal' link in settings."),
+                itemName: OWSLocalizedString("SETTINGS_DONATE", comment: "Title for the 'donate to signal' link in settings."),
                 accessoryType: .disclosureIndicator,
                 accessoryView: accessoryView,
                 accessibilityIdentifier: UIView.accessibilityIdentifier(in: self, name: "donate")
@@ -164,12 +161,12 @@ class AppSettingsViewController: OWSTableViewController2 {
         }, actionBlock: { [weak self] in
             self?.didTapDonate()
         }))
-        contents.addSection(section1)
+        contents.add(section1)
 
         let section2 = OWSTableSection()
         section2.add(.disclosureItem(
             icon: .settingsAppearance,
-            name: NSLocalizedString("SETTINGS_APPEARANCE_TITLE", comment: "The title for the appearance settings."),
+            name: OWSLocalizedString("SETTINGS_APPEARANCE_TITLE", comment: "The title for the appearance settings."),
             accessibilityIdentifier: UIView.accessibilityIdentifier(in: self, name: "appearance"),
             actionBlock: { [weak self] in
                 let vc = AppearanceSettingsTableViewController()
@@ -178,7 +175,7 @@ class AppSettingsViewController: OWSTableViewController2 {
         ))
         section2.add(.disclosureItem(
             icon: .settingsChats,
-            name: NSLocalizedString("SETTINGS_CHATS", comment: "Title for the 'chats' link in settings."),
+            name: OWSLocalizedString("SETTINGS_CHATS", comment: "Title for the 'chats' link in settings."),
             accessibilityIdentifier: UIView.accessibilityIdentifier(in: self, name: "chats"),
             actionBlock: { [weak self] in
                 let vc = ChatsSettingsViewController()
@@ -188,7 +185,7 @@ class AppSettingsViewController: OWSTableViewController2 {
         if RemoteConfig.stories {
             section2.add(.disclosureItem(
                 icon: .settingsStories,
-                name: NSLocalizedString(
+                name: OWSLocalizedString(
                     "STORY_SETTINGS_TITLE",
                     comment: "Label for the stories section of the settings view"
                 ),
@@ -201,7 +198,7 @@ class AppSettingsViewController: OWSTableViewController2 {
         }
         section2.add(.disclosureItem(
             icon: .settingsNotifications,
-            name: NSLocalizedString("SETTINGS_NOTIFICATIONS", comment: "The title for the notification settings."),
+            name: OWSLocalizedString("SETTINGS_NOTIFICATIONS", comment: "The title for the notification settings."),
             accessibilityIdentifier: UIView.accessibilityIdentifier(in: self, name: "notifications"),
             actionBlock: { [weak self] in
                 let vc = NotificationSettingsViewController()
@@ -210,7 +207,7 @@ class AppSettingsViewController: OWSTableViewController2 {
         ))
         section2.add(.disclosureItem(
             icon: .settingsPrivacy,
-            name: NSLocalizedString("SETTINGS_PRIVACY_TITLE", comment: "The title for the privacy settings."),
+            name: OWSLocalizedString("SETTINGS_PRIVACY_TITLE", comment: "The title for the privacy settings."),
             accessibilityIdentifier: UIView.accessibilityIdentifier(in: self, name: "privacy"),
             actionBlock: { [weak self] in
                 let vc = PrivacySettingsViewController()
@@ -219,14 +216,14 @@ class AppSettingsViewController: OWSTableViewController2 {
         ))
         section2.add(.disclosureItem(
             icon: .settingsDataUsage,
-            name: NSLocalizedString("SETTINGS_DATA", comment: "Label for the 'data' section of the app settings."),
+            name: OWSLocalizedString("SETTINGS_DATA", comment: "Label for the 'data' section of the app settings."),
             accessibilityIdentifier: UIView.accessibilityIdentifier(in: self, name: "data-usage"),
             actionBlock: { [weak self] in
                 let vc = DataSettingsTableViewController()
                 self?.navigationController?.pushViewController(vc, animated: true)
             }
         ))
-        contents.addSection(section2)
+        contents.add(section2)
 
         if payments.shouldShowPaymentsUI {
             let paymentsSection = OWSTableSection()
@@ -246,7 +243,7 @@ class AppSettingsViewController: OWSTableViewController2 {
                     subviews.append(UIView.spacer(withWidth: OWSTableItem.iconSpacing))
 
                     let nameLabel = UILabel()
-                    nameLabel.text = NSLocalizedString("SETTINGS_PAYMENTS_TITLE",
+                    nameLabel.text = OWSLocalizedString("SETTINGS_PAYMENTS_TITLE",
                                                        comment: "Label for the 'payments' section of the app settings.")
                     nameLabel.textColor = Theme.primaryTextColor
                     nameLabel.font = OWSTableItem.primaryLabelFont
@@ -271,7 +268,7 @@ class AppSettingsViewController: OWSTableViewController2 {
                     if unreadPaymentsCount > 0 {
                         let unreadLabel = UILabel()
                         unreadLabel.text = OWSFormat.formatUInt(min(9, unreadPaymentsCount))
-                        unreadLabel.font = .ows_dynamicTypeBody2Clamped
+                        unreadLabel.font = .dynamicTypeBody2Clamped
                         unreadLabel.textColor = .ows_white
 
                         let unreadBadge = OWSLayerView.circleView()
@@ -304,7 +301,7 @@ class AppSettingsViewController: OWSTableViewController2 {
                     self?.navigationController?.pushViewController(vc, animated: true)
                 }
             ))
-            contents.addSection(paymentsSection)
+            contents.add(paymentsSection)
         }
 
         let section3 = OWSTableSection()
@@ -319,13 +316,13 @@ class AppSettingsViewController: OWSTableViewController2 {
         ))
         section3.add(.item(
             icon: .settingsInvite,
-            name: NSLocalizedString("SETTINGS_INVITE_TITLE", comment: "Settings table view cell label"),
+            name: OWSLocalizedString("SETTINGS_INVITE_TITLE", comment: "Settings table view cell label"),
             accessibilityIdentifier: UIView.accessibilityIdentifier(in: self, name: "invite"),
             actionBlock: { [weak self] in
                 self?.showInviteFlow()
             }
         ))
-        contents.addSection(section3)
+        contents.add(section3)
 
         if DebugFlags.internalSettings {
             let internalSection = OWSTableSection()
@@ -338,7 +335,7 @@ class AppSettingsViewController: OWSTableViewController2 {
                     self?.navigationController?.pushViewController(vc, animated: true)
                 }
             ))
-            contents.addSection(internalSection)
+            contents.add(internalSection)
         }
 
         self.contents = contents
@@ -383,12 +380,12 @@ class AppSettingsViewController: OWSTableViewController2 {
 
         let nameLabel = UILabel()
         vStackView.addArrangedSubview(nameLabel)
-        nameLabel.font = UIFont.ows_dynamicTypeTitle2Clamped.ows_medium
+        nameLabel.font = UIFont.dynamicTypeTitle2Clamped.medium()
         if let fullName = snapshot.fullName, !fullName.isEmpty {
             nameLabel.text = fullName
             nameLabel.textColor = Theme.primaryTextColor
         } else {
-            nameLabel.text = NSLocalizedString(
+            nameLabel.text = OWSLocalizedString(
                 "APP_SETTINGS_EDIT_PROFILE_NAME_PROMPT",
                 comment: "Text prompting user to edit their profile name."
             )
@@ -399,7 +396,7 @@ class AppSettingsViewController: OWSTableViewController2 {
             guard let text = text, !text.isEmpty else { return }
 
             let label = UILabel()
-            label.font = .ows_dynamicTypeFootnoteClamped
+            label.font = .dynamicTypeFootnoteClamped
             label.text = text
             label.textColor = Theme.secondaryTextAndIconColor
 

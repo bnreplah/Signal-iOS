@@ -13,34 +13,15 @@ public enum AccountManagerError: Error {
 
 // MARK: -
 
-/**
- * Signal is actually two services - textSecure for messages and red phone (for calls). 
- * AccountManager delegates to both.
- */
-@objc
-public class AccountManager: NSObject {
+public class AccountManager: NSObject, Dependencies {
 
-    @objc
     public override init() {
         super.init()
 
         SwiftSingletons.register(self)
-
-        AppReadiness.runNowOrWhenAppDidBecomeReadySync {
-            if self.tsAccountManager.isRegistered {
-                self.recordUuidIfNecessary()
-            }
-        }
     }
 
     // MARK: registration
-
-    func deprecated_requestRegistrationVerification(e164: String, captchaToken: String?, isSMS: Bool) -> Promise<Void> {
-        deprecated_requestAccountVerification(e164: e164,
-                                   captchaToken: captchaToken,
-                                   isSMS: isSMS,
-                                   mode: .registration)
-    }
 
     public enum VerificationMode {
         case registration
@@ -59,8 +40,10 @@ public class AccountManager: NSObject {
                 guard !self.tsAccountManager.isRegistered else {
                     throw OWSAssertionError("requesting account verification when already registered")
                 }
-
-                self.tsAccountManager.phoneNumberAwaitingVerification = e164
+                guard let phoneNumber = E164(e164) else {
+                    throw OWSAssertionError("Requesting account verification for an invalid E164")
+                }
+                self.tsAccountManager.phoneNumberAwaitingVerification = E164ObjC(phoneNumber)
 
             case .changePhoneNumber:
                 // Don't set phoneNumberAwaitingVerification in the "change phone number" flow.
@@ -80,8 +63,8 @@ public class AccountManager: NSObject {
         return firstly {
             return self.pushRegistrationManager.requestPushTokens(forceRotation: false)
         }.then { (vanillaToken: String, voipToken: String?) -> Promise<String?> in
-            let (pushPromise, pushFuture) = Promise<String>.pending()
-            self.pushRegistrationManager.preauthChallengeFuture = pushFuture
+            self.pushRegistrationManager.clearPreAuthChallengeToken()
+            let pushPromise = self.pushRegistrationManager.receivePreAuthChallengeToken()
 
             return self.accountServiceClient.deprecated_requestPreauthChallenge(
                 e164: e164,
@@ -121,7 +104,7 @@ public class AccountManager: NSObject {
     func register(verificationCode: String, pin: String?, checkForAvailableTransfer: Bool) -> Promise<Void> {
         if verificationCode.isEmpty {
             let error = OWSError(error: .userError,
-                                 description: NSLocalizedString("REGISTRATION_ERROR_BLANK_VERIFICATION_CODE",
+                                 description: OWSLocalizedString("REGISTRATION_ERROR_BLANK_VERIFICATION_CODE",
                                                                 comment: "alert body during registration"),
                                  isRetryable: false)
             return Promise(error: error)
@@ -149,8 +132,8 @@ public class AccountManager: NSObject {
                 // If the user previously had a PIN, but we don't have record of it,
                 // mark them as pending restoration during onboarding. Reg lock users
                 // will have already restored their PIN by this point.
-                if response.hasPreviouslyUsedKBS, !DependenciesBridge.shared.keyBackupService.hasMasterKey {
-                    DependenciesBridge.shared.keyBackupService.recordPendingRestoration(transaction: transaction.asV2Write)
+                if response.hasPreviouslyUsedKBS, !DependenciesBridge.shared.svr.hasMasterKey(transaction: transaction.asV2Read) {
+                    LegacyKbsStateManager.shared.recordPendingRestoration(transaction: transaction.asV2Write)
                 }
             }
 
@@ -158,7 +141,7 @@ public class AccountManager: NSObject {
         }.then {
             self.createPreKeys()
         }.done {
-            self.profileManager.fetchLocalUsersProfile()
+            self.profileManager.fetchLocalUsersProfile(authedAccount: .implicit())
         }.then { _ -> Promise<Void> in
             return self.syncPushTokens().recover { (error) -> Promise<Void> in
                 switch error {
@@ -180,63 +163,126 @@ public class AccountManager: NSObject {
         }
     }
 
-    func requestChangePhoneNumber(newPhoneNumber: String, verificationCode: String, registrationLock: String?) -> Promise<Void> {
+    func deprecated_requestChangePhoneNumber(
+        newPhoneNumber: String,
+        verificationCode: String,
+        registrationLock: String?
+    ) -> Promise<Void> {
         guard let verificationCode = verificationCode.nilIfEmpty else {
-            let error = OWSError(error: .userError,
-                                 description: NSLocalizedString("REGISTRATION_ERROR_BLANK_VERIFICATION_CODE",
-                                                                comment: "alert body during registration"),
-                                 isRetryable: false)
+            let error = OWSError(
+                error: .userError,
+                description: OWSLocalizedString(
+                    "REGISTRATION_ERROR_BLANK_VERIFICATION_CODE",
+                    comment: "alert body during registration"
+                ),
+                isRetryable: false
+            )
+
             return Promise(error: error)
+        }
+
+        guard let newE164 = E164(newPhoneNumber) else {
+            return Promise(error: OWSAssertionError("Invalid new phone number!"))
         }
 
         Logger.info("Changing phone number.")
 
-        // Mark a change as in flight.  If the change is interrupted,
-        // we'll use /whoami on next app launch to ensure local client
-        // state reflects current service state.
-        let changeToken = Self.databaseStorage.write { transaction in
-            ChangePhoneNumber.changeWillBegin(transaction: transaction)
-        }
+        typealias PniParameters = PniDistribution.Parameters
+        typealias ChangeToken = LegacyChangePhoneNumber.ChangeToken
 
-        return firstly {
-            // Change the phone number on the service.
-            self.changePhoneNumberRequest(newPhoneNumber: newPhoneNumber,
-                                          verificationCode: verificationCode,
-                                          registrationLock: registrationLock)
-        }.map(on: DispatchQueue.global()) { response in
-            // Try to take the change from the service.
-            try ChangePhoneNumber.updateLocalPhoneNumber(from: response)
-        }.done(on: DispatchQueue.global()) { localPhoneNumber in
-            owsAssertDebug(localPhoneNumber.localPhoneNumber == newPhoneNumber)
+        return firstly { () -> Promise<(PniParameters, ChangeToken)> in
+            // Mark a change as in flight.  If the change is interrupted, we'll
+            // check on next app launch to ensure local client state reflects
+            // current service state.
 
-            // Mark change as complete.
-            Self.databaseStorage.write { transaction in
-                ChangePhoneNumber.changeDidComplete(changeToken: changeToken, transaction: transaction)
+            databaseStorage.write { transaction -> Promise<(PniParameters, ChangeToken)> in
+                legacyChangePhoneNumber.deprecated_buildNewChangeToken(
+                    forNewE164: newE164,
+                    transaction: transaction
+                )
             }
+        }.then(on: DispatchQueue.global()) { (parameters, changeToken) -> Promise<Void> in
+            firstly { () -> Promise<ChangePhoneNumberResponse> in
+                // Make the request to change phone number and PNI parameters on
+                // the service.
 
-            self.profileManager.fetchLocalUsersProfile()
+                self.makeChangePhoneNumberRequest(
+                    newE164: newE164,
+                    verificationCode: verificationCode,
+                    registrationLock: registrationLock,
+                    pniChangePhoneNumberParameters: parameters
+                )
+            }.map(on: DispatchQueue.global()) { changePhoneNumberResponse -> Void in
+                // Update local state to match new service state.
+
+                self.databaseStorage.write { transaction in
+                    self.legacyChangePhoneNumber.changeDidComplete(
+                        changeToken: changeToken,
+                        successfulChangeParams: LegacyChangePhoneNumber.SuccessfulChangeParams(
+                            newServiceE164: changePhoneNumberResponse.e164,
+                            serviceAci: changePhoneNumberResponse.aci,
+                            servicePni: changePhoneNumberResponse.pni
+                        ),
+                        transaction: transaction
+                    )
+                }
+
+                self.profileManager.fetchLocalUsersProfile(authedAccount: .implicit())
+            }
         }
     }
 
-    private func changePhoneNumberRequest(newPhoneNumber: String,
-                                          verificationCode: String,
-                                          registrationLock: String?) -> Promise<WhoAmIResponse> {
-        return Promise { future in
-            let request = OWSRequestFactory.changePhoneNumberRequest(newPhoneNumberE164: newPhoneNumber,
-                                                                     verificationCode: verificationCode,
-                                                                     registrationLock: registrationLock)
-            tsAccountManager.verifyChangePhoneNumber(request: request,
-                                                     success: future.resolve,
-                                                     failure: future.reject)
-        }.map(on: DispatchQueue.global()) { json in
-            return try WhoAmIResponse.parse(json)
+    private struct ChangePhoneNumberResponse: Decodable {
+        private enum CodingKeys: String, CodingKey {
+            case aci = "uuid"
+            case pni
+            case e164 = "number"
+        }
+
+        let aci: UUID
+        let pni: UUID
+        let e164: E164
+    }
+
+    private func makeChangePhoneNumberRequest(
+        newE164: E164,
+        verificationCode: String,
+        registrationLock: String?,
+        pniChangePhoneNumberParameters: PniDistribution.Parameters
+    ) -> Promise<ChangePhoneNumberResponse> {
+        firstly { () -> Promise<HTTPResponse> in
+            let request = OWSRequestFactory.changePhoneNumberRequest(
+                newPhoneNumberE164: newE164.stringValue,
+                verificationCode: verificationCode,
+                registrationLock: registrationLock,
+                pniChangePhoneNumberParameters: pniChangePhoneNumberParameters
+            )
+
+            return networkManager.makePromise(request: request)
+        }.map(on: DispatchQueue.global()) { response -> ChangePhoneNumberResponse in
+            let statusCode = response.responseStatusCode
+
+            switch statusCode {
+            case 200, 204:
+                guard let data = response.responseBodyData else {
+                    throw OWSAssertionError("Missing or invalid body data!")
+                }
+
+                Logger.info("Change-number request accepted!")
+
+                return try JSONDecoder().decode(ChangePhoneNumberResponse.self, from: data)
+            default:
+                throw OWSAssertionError("Unexpected status while verifying code: \(statusCode)")
+            }
+        }.recover(on: DispatchQueue.global()) { error throws -> Promise<ChangePhoneNumberResponse> in
+            throw TSAccountManager.processRegistrationError(error)
         }
     }
 
-    func performInitialStorageServiceRestore() -> Promise<Void> {
+    func performInitialStorageServiceRestore(authedAccount: AuthedAccount = .implicit()) -> Promise<Void> {
         BenchEventStart(title: "waiting for initial storage service restore", eventId: "initial-storage-service-restore")
         return firstly {
-            self.storageServiceManager.restoreOrCreateManifestIfNecessary().asVoid()
+            self.storageServiceManager.restoreOrCreateManifestIfNecessary(authedAccount: authedAccount).asVoid()
         }.done {
             // In the case that we restored our profile from a previous registration,
             // re-upload it so that the user does not need to refill in all the details.
@@ -251,7 +297,7 @@ public class AccountManager: NSObject {
                 // Note we *don't* return this promise. There's no need to block registration on
                 // it completing, and if there are any errors, it's durable.
                 firstly {
-                    self.profileManagerImpl.reuploadLocalProfilePromise()
+                    self.profileManagerImpl.reuploadLocalProfilePromise(authedAccount: authedAccount)
                 }.catch { error in
                     Logger.error("error: \(error)")
                 }
@@ -268,7 +314,7 @@ public class AccountManager: NSObject {
         // * Secondary devices _cannot_ be re-linked to primaries with a different uuid.
         if tsAccountManager.isReregistering {
             var canChangePhoneNumbers = false
-            if let oldUUID = tsAccountManager.reregistrationUUID(),
+            if let oldUUID = tsAccountManager.reregistrationUUID,
                let newUUID = provisionMessage.aci {
                 if !tsAccountManager.isPrimaryDevice,
                    oldUUID != newUUID {
@@ -286,7 +332,7 @@ public class AccountManager: NSObject {
             // * Secondary devices _cannot_ be re-linked to primaries with a different phone number
             //   unless the uuid is present and has not changed.
             if !canChangePhoneNumbers,
-               let reregistrationPhoneNumber = tsAccountManager.reregistrationPhoneNumber(),
+               let reregistrationPhoneNumber = tsAccountManager.reregistrationPhoneNumber,
                reregistrationPhoneNumber != provisionMessage.phoneNumber {
                 Logger.verbose("reregistrationPhoneNumber: \(reregistrationPhoneNumber)")
                 Logger.verbose("provisionMessage.phoneNumber: \(provisionMessage.phoneNumber)")
@@ -295,7 +341,11 @@ public class AccountManager: NSObject {
             }
         }
 
-        tsAccountManager.phoneNumberAwaitingVerification = provisionMessage.phoneNumber
+        guard let phoneNumber = E164(provisionMessage.phoneNumber) else {
+            return Promise(error: OWSAssertionError("Primary E164 isn't valid"))
+        }
+
+        tsAccountManager.phoneNumberAwaitingVerification = E164ObjC(phoneNumber)
         tsAccountManager.uuidAwaitingVerification = provisionMessage.aci
         tsAccountManager.pniAwaitingVerification = provisionMessage.pni
 
@@ -330,6 +380,7 @@ public class AccountManager: NSObject {
 
                 self.profileManagerImpl.setLocalProfileKey(provisionMessage.profileKey,
                                                            userProfileWriter: .linking,
+                                                           authedAccount: .implicit(),
                                                            transaction: transaction)
 
                 if let areReadReceiptsEnabled = provisionMessage.areReadReceiptsEnabled {
@@ -340,9 +391,6 @@ public class AccountManager: NSObject {
                 self.tsAccountManager.setStoredServerAuthToken(serverAuthToken,
                                                                deviceId: response.deviceId,
                                                                transaction: transaction)
-
-                self.tsAccountManager.setStoredDeviceName(deviceName,
-                                                          transaction: transaction)
             }
         }.then { _ -> Promise<Void> in
             self.createPreKeys()
@@ -362,7 +410,10 @@ public class AccountManager: NSObject {
                 }
             }
         }.then(on: DispatchQueue.global()) {
-            self.serviceClient.updateSecondaryDeviceCapabilities()
+            let hasBackedUpMasterKey = self.databaseStorage.read { tx in
+                DependenciesBridge.shared.svr.hasBackedUpMasterKey(transaction: tx.asV2Read)
+            }
+            return self.serviceClient.updateSecondaryDeviceCapabilities(hasBackedUpMasterKey: hasBackedUpMasterKey)
         }.done {
             self.completeRegistration()
         }.then { _ -> Promise<Void> in
@@ -375,7 +426,7 @@ public class AccountManager: NSObject {
             let storageServiceRestorePromise = firstly {
                 NotificationCenter.default.observe(once: .OWSSyncManagerKeysSyncDidComplete).asVoid()
             }.then {
-                StorageServiceManager.shared.restoreOrCreateManifestIfNecessary().asVoid()
+                StorageServiceManagerImpl.shared.restoreOrCreateManifestIfNecessary(authedAccount: .implicit()).asVoid()
             }.ensure {
                 BenchEventComplete(eventId: "initial-storage-service-restore")
             }.timeout(seconds: 60)
@@ -427,20 +478,32 @@ public class AccountManager: NSObject {
                 throw OWSAssertionError("phoneNumberAwaitingVerification was unexpectedly nil")
             }
 
-            let request = OWSRequestFactory.verifyPrimaryDeviceRequest(verificationCode: verificationCode,
-                                                                       phoneNumber: phoneNumber,
-                                                                       authKey: serverAuthToken,
-                                                                       pin: pin,
-                                                                       checkForAvailableTransfer: checkForAvailableTransfer)
+            let accountAttributes = self.databaseStorage.write { transaction in
+                return AccountAttributes.deprecated_generateForInitialRegistration(
+                    fromDependencies: self,
+                    svr: DependenciesBridge.shared.svr,
+                    transaction: transaction
+                )
+            }
+
+            let request = OWSRequestFactory.deprecated_verifyPrimaryDeviceRequest(
+                verificationCode: verificationCode,
+                phoneNumber: phoneNumber.stringValue,
+                authPassword: serverAuthToken,
+                checkForAvailableTransfer: checkForAvailableTransfer,
+                attributes: accountAttributes
+            )
 
             tsAccountManager.verifyRegistration(request: request,
                                                 success: future.resolve,
                                                 failure: future.reject)
         }.map(on: DispatchQueue.global()) { responseObject throws -> RegistrationResponse in
             self.databaseStorage.write { transaction in
-                self.tsAccountManager.setStoredServerAuthToken(serverAuthToken,
-                                                               deviceId: OWSDevicePrimaryDeviceId,
-                                                               transaction: transaction)
+                self.tsAccountManager.setStoredServerAuthToken(
+                    serverAuthToken,
+                    deviceId: OWSDevice.primaryDeviceId,
+                    transaction: transaction
+                )
             }
 
             guard let responseObject = responseObject else {
@@ -509,37 +572,6 @@ public class AccountManager: NSObject {
                 throw OWSAssertionError("Missing or invalid JSON")
             }
             return turnServerInfo
-        }
-    }
-
-    func recordUuidIfNecessary() {
-        DispatchQueue.global().async {
-            _ = self.ensureUuid().catch { error in
-                // Until we're in a UUID-only world, don't require a
-                // local UUID.
-                owsFailDebug("error: \(error)")
-            }
-        }
-    }
-
-    func ensureUuid() -> Promise<UUID> {
-        if let existingUuid = tsAccountManager.localUuid {
-            return Promise.value(existingUuid)
-        }
-
-        return accountServiceClient.getAccountWhoAmI().map(on: DispatchQueue.global()) { whoAmIResponse in
-            let uuid = whoAmIResponse.aci
-
-            // It's possible this method could be called multiple times, so we check
-            // again if it's been set. We dont bother serializing access since it should
-            // be idempotent.
-            if let existingUuid = self.tsAccountManager.localUuid {
-                assert(existingUuid == uuid)
-                return existingUuid
-            }
-            Logger.info("Recording UUID for legacy user")
-            self.tsAccountManager.recordUuidForLegacyUser(uuid)
-            return uuid
         }
     }
 

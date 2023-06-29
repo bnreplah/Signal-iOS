@@ -3,15 +3,14 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import UIKit
+import SignalServiceKit
+import SignalUI
 
-@objc
 public class Deprecated_OnboardingBaseViewController: Deprecated_RegistrationBaseViewController {
 
     // Unlike a delegate, we can and should retain a strong reference to the OnboardingController.
     let onboardingController: Deprecated_OnboardingController
 
-    @objc
     public init(onboardingController: Deprecated_OnboardingController) {
         self.onboardingController = onboardingController
 
@@ -29,8 +28,7 @@ public class Deprecated_OnboardingBaseViewController: Deprecated_RegistrationBas
 
         if shouldShowBackButton() {
             let backButton = UIButton()
-            let backButtonImage = CurrentAppContext().isRTL ? #imageLiteral(resourceName: "NavBarBackRTL") : #imageLiteral(resourceName: "NavBarBack")
-            backButton.setTemplateImage(backButtonImage, tintColor: Theme.secondaryTextAndIconColor)
+            backButton.setTemplateImage(UIImage(imageLiteralResourceName: "NavBarBack"), tintColor: Theme.secondaryTextAndIconColor)
             backButton.addTarget(self, action: #selector(navigateBack), for: .touchUpInside)
 
             view.addSubview(backButton)

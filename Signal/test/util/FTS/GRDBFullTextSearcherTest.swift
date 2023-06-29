@@ -8,9 +8,9 @@ import Contacts
 @testable import Signal
 @testable import SignalMessaging
 @testable import SignalServiceKit
+@testable import SignalUI
 
 // TODO: We might be able to merge this with OWSFakeContactsManager.
-@objc
 class GRDBFullTextSearcherContactsManager: NSObject, ContactsManagerProtocol {
     func fetchSignalAccount(for address: SignalServiceAddress, transaction: SDSAnyReadTransaction) -> SignalAccount? {
         nil
@@ -167,7 +167,7 @@ class GRDBFullTextSearcherTest: SignalBaseTest {
         let fakeContactsManager = GRDBFullTextSearcherContactsManager()
         fakeContactsManager.setMockDisplayName("Alice", for: aliceRecipient)
         fakeContactsManager.setMockDisplayName("Bob Barker", for: bobRecipient)
-        SSKEnvironment.shared.contactsManagerRef = fakeContactsManager
+        SSKEnvironment.shared.setContactsManagerForUnitTests(fakeContactsManager)
 
         // ensure local client has necessary "registered" state
         let localE164Identifier = "+13235551234"
@@ -492,35 +492,6 @@ class GRDBFullTextSearcherTest: SignalBaseTest {
         XCTAssertEqual(0, getResultSet(searchText: "DEFEAT").messages.count)
     }
 
-    func testModelLifecycle3() {
-
-        self.write { transaction in
-            let thread = try! GroupManager.createGroupForTests(members: [self.aliceRecipient, self.bobRecipient, self.tsAccountManager.localAddress!],
-                                                               name: "Lifecycle",
-                                                               transaction: transaction)
-
-            let message1 = TSOutgoingMessage(in: thread, messageBody: "This world contains glory and despair.", attachmentId: nil)
-            let message2 = TSOutgoingMessage(in: thread, messageBody: "This world contains hope and despair.", attachmentId: nil)
-
-            message1.anyInsert(transaction: transaction)
-            message2.anyInsert(transaction: transaction)
-        }
-
-        XCTAssertEqual(1, getResultSet(searchText: "GLORY").messages.count)
-        XCTAssertEqual(1, getResultSet(searchText: "HOPE").messages.count)
-        XCTAssertEqual(2, getResultSet(searchText: "DESPAIR").messages.count)
-        XCTAssertEqual(0, getResultSet(searchText: "DEFEAT").messages.count)
-
-        self.write { transaction in
-            TSInteraction.anyRemoveAllWithoutInstantation(transaction: transaction)
-        }
-
-        XCTAssertEqual(0, getResultSet(searchText: "GLORY").messages.count)
-        XCTAssertEqual(0, getResultSet(searchText: "HOPE").messages.count)
-        XCTAssertEqual(0, getResultSet(searchText: "DESPAIR").messages.count)
-        XCTAssertEqual(0, getResultSet(searchText: "DEFEAT").messages.count)
-    }
-
     func testDiacritics() {
 
         self.write { transaction in
@@ -557,7 +528,7 @@ class GRDBFullTextSearcherTest: SignalBaseTest {
                 XCTFail("Missing snippet.", file: file, line: line)
                 continue
             }
-            XCTAssertTrue(snippet.lowercased().contains(expectedSnippetContent.lowercased()), file: file, line: line)
+            XCTAssertTrue(snippet.string.lowercased().contains(expectedSnippetContent.lowercased()), file: file, line: line)
         }
     }
 
@@ -682,10 +653,12 @@ class GRDBFullTextSearcherTest: SignalBaseTest {
     }
 
     private func getResultSet(searchText: String) -> HomeScreenSearchResultSet {
-        var results: HomeScreenSearchResultSet!
         self.read { transaction in
-            results = self.searcher.searchForHomeScreen(searchText: searchText, transaction: transaction)
+            self.searcher.searchForHomeScreen(
+                searchText: searchText,
+                isCanceled: { false },
+                transaction: transaction
+            )!
         }
-        return results
     }
 }

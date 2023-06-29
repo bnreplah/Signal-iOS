@@ -3,8 +3,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import CoreServices
+import SignalServiceKit
+import SignalUI
 
 class SetWallpaperViewController: OWSTableViewController2 {
     lazy var collectionView = WallpaperCollectionView(container: self,
@@ -34,7 +35,7 @@ class SetWallpaperViewController: OWSTableViewController2 {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = NSLocalizedString("SET_WALLPAPER_TITLE", comment: "Title for the set wallpaper settings view.")
+        title = OWSLocalizedString("SET_WALLPAPER_TITLE", comment: "Title for the set wallpaper settings view.")
 
         updateTableContents()
     }
@@ -65,15 +66,15 @@ class SetWallpaperViewController: OWSTableViewController2 {
     }
 
     @objc
-    func updateTableContents() {
+    private func updateTableContents() {
         let contents = OWSTableContents()
 
         let photosSection = OWSTableSection()
         photosSection.customHeaderHeight = 14
 
         let choosePhotoItem = OWSTableItem.disclosureItem(
-            icon: .settingsAllMedia,
-            name: NSLocalizedString("SET_WALLPAPER_CHOOSE_PHOTO",
+            icon: .buttonPhotoLibrary,
+            name: OWSLocalizedString("SET_WALLPAPER_CHOOSE_PHOTO",
                                     comment: "Title for the wallpaper choose from photos option"),
             accessibilityIdentifier: UIView.accessibilityIdentifier(in: self, name: "choose_photo")
         ) { [weak self] in
@@ -86,10 +87,10 @@ class SetWallpaperViewController: OWSTableViewController2 {
         }
         photosSection.add(choosePhotoItem)
 
-        contents.addSection(photosSection)
+        contents.add(photosSection)
 
         let presetsSection = OWSTableSection()
-        presetsSection.headerTitle = NSLocalizedString("SET_WALLPAPER_PRESETS",
+        presetsSection.headerTitle = OWSLocalizedString("SET_WALLPAPER_PRESETS",
                                                        comment: "Title for the wallpaper presets section")
 
         let presetsItem = OWSTableItem { [weak self] in
@@ -101,7 +102,7 @@ class SetWallpaperViewController: OWSTableViewController2 {
         } actionBlock: {}
         presetsSection.add(presetsItem)
 
-        contents.addSection(presetsSection)
+        contents.add(presetsSection)
 
         self.contents = contents
     }

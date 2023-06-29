@@ -194,8 +194,7 @@ public class OWSURLSession: NSObject, OWSURLSessionProtocol {
     }
 
     public func dataTaskPromise(request: URLRequest, ignoreAppExpiry: Bool = false) -> Promise<HTTPResponse> {
-
-        guard ignoreAppExpiry || !Self.appExpiry.isExpired else {
+        if !ignoreAppExpiry && DependenciesBridge.shared.appExpiry.isExpired {
             return Promise(error: OWSAssertionError("App is expired."))
         }
 
@@ -466,13 +465,14 @@ public class OWSURLSession: NSObject, OWSURLSessionProtocol {
 
     private class func checkForRemoteDeprecation(task: URLSessionTask,
                                                  response: URLResponse?) {
-
         guard let httpResponse = response as? HTTPURLResponse,
-              httpResponse.statusCode == AppExpiry.appExpiredStatusCode else {
+              httpResponse.statusCode == AppExpiryImpl.appExpiredStatusCode else {
                   return
               }
 
-        AppExpiry.shared.setHasAppExpiredAtCurrentVersion()
+        let appExpiry = DependenciesBridge.shared.appExpiry
+        let db = DependenciesBridge.shared.db
+        appExpiry.setHasAppExpiredAtCurrentVersion(db: db)
     }
 
     // MARK: Request building
@@ -502,6 +502,8 @@ public class OWSURLSession: NSObject, OWSURLSessionProtocol {
             owsFailDebug("Missing requestUrl.")
             return Promise(error: OWSHTTPError.missingRequest)
         }
+
+        let appExpiry = DependenciesBridge.shared.appExpiry
         guard !appExpiry.isExpired else {
             owsFailDebug("App is expired.")
             return Promise(error: OWSHTTPError.invalidAppState(requestUrl: rawRequestUrl))
@@ -598,8 +600,7 @@ public class OWSURLSession: NSObject, OWSURLSessionProtocol {
         ignoreAppExpiry: Bool = false,
         progress progressBlock: ProgressBlock? = nil
     ) -> Promise<HTTPResponse> {
-
-        guard ignoreAppExpiry || !Self.appExpiry.isExpired else {
+        if !ignoreAppExpiry && DependenciesBridge.shared.appExpiry.isExpired {
             return Promise(error: OWSAssertionError("App is expired."))
         }
 
@@ -639,8 +640,8 @@ public class OWSURLSession: NSObject, OWSURLSessionProtocol {
         progress progressBlock: ProgressBlock? = nil,
         taskBlock: () -> URLSessionDownloadTask
     ) -> Promise<OWSUrlDownloadResponse> {
-
-        guard !Self.appExpiry.isExpired else {
+        let appExpiry = DependenciesBridge.shared.appExpiry
+        if appExpiry.isExpired {
             return Promise(error: OWSAssertionError("App is expired."))
         }
 
@@ -690,7 +691,6 @@ public class OWSURLSession: NSObject, OWSURLSessionProtocol {
         }
     }
 
-    @available(iOS 13, *)
     private func webSocketState(forTask task: URLSessionTask) -> WebSocketTaskState? {
         lock.withLock {
             self.taskStateMap[task.taskIdentifier] as? WebSocketTaskState
@@ -934,7 +934,6 @@ extension OWSURLSession: URLSessionDownloadDelegate {
 
 extension OWSURLSession: URLSessionWebSocketDelegate {
 
-    @available(iOS 13, *)
     public func webSocketTask(requestUrl: URL, didOpenBlock: @escaping (String?) -> Void, didCloseBlock: @escaping (Error) -> Void) -> URLSessionWebSocketTask {
         // We can't pass a URLRequest here since it prevents the proxy from
         // operating correctly. See `SSKWebSocketNative.init(...)` for more details
@@ -944,12 +943,10 @@ extension OWSURLSession: URLSessionWebSocketDelegate {
         return task
     }
 
-    @available(iOS 13, *)
     public func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol: String?) {
         webSocketState(forTask: webSocketTask)?.openBlock(didOpenWithProtocol)
     }
 
-    @available(iOS 13, *)
     public func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
         guard let webSocketState = removeCompletedTaskState(webSocketTask) as? WebSocketTaskState else { return }
         webSocketState.closeBlock(WebSocketError.closeError(statusCode: closeCode.rawValue, closeReason: reason))
@@ -1007,7 +1004,6 @@ private class UploadOrDataTaskState: TaskState {
 
 // MARK: - WebSocketTaskState
 
-@available(iOS 13, *)
 private class WebSocketTaskState: TaskState {
     typealias OpenBlock = (String?) -> Void
     typealias CloseBlock = (Error) -> Void
@@ -1176,12 +1172,10 @@ extension URLSessionDelegateBox: URLSessionDelegate, URLSessionTaskDelegate, URL
 }
 
 extension URLSessionDelegateBox: URLSessionWebSocketDelegate {
-    @available(iOS 13, *)
     public func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol: String?) {
         weakDelegate?.urlSession(session, webSocketTask: webSocketTask, didOpenWithProtocol: didOpenWithProtocol)
     }
 
-    @available(iOS 13, *)
     public func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
         weakDelegate?.urlSession(session, webSocketTask: webSocketTask, didCloseWith: closeCode, reason: reason)
     }

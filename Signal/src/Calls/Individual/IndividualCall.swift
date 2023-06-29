@@ -3,10 +3,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
+import AVFoundation
 import SignalMessaging
 import SignalServiceKit
 import SignalRingRTC
+import WebRTC
 
 public enum CallState: String {
     case idle
@@ -55,7 +56,6 @@ public protocol IndividualCallDelegate: AnyObject {
  *
  * This class' state should only be accessed on the main queue.
  */
-@objc
 public class IndividualCall: NSObject {
 
     // Mark -
@@ -114,7 +114,6 @@ public class IndividualCall: NSObject {
 
     // MARK: -
 
-    @objc
     public var remoteAddress: SignalServiceAddress { thread.contactAddress }
 
     public var isEnded: Bool {

@@ -6,7 +6,6 @@
 import Foundation
 import SignalMessaging
 
-@objc
 public extension ThreadUtil {
     // MARK: - Durable Message Enqueue
 
@@ -14,7 +13,7 @@ public extension ThreadUtil {
     class func enqueueMessage(body messageBody: MessageBody?,
                               mediaAttachments: [SignalAttachment] = [],
                               thread: TSThread,
-                              quotedReplyModel: OWSQuotedReplyModel? = nil,
+                              quotedReplyModel: QuotedReplyModel? = nil,
                               linkPreviewDraft: OWSLinkPreviewDraft? = nil,
                               persistenceCompletionHandler persistenceCompletion: PersistenceCompletion? = nil,
                               transaction readTransaction: SDSAnyReadTransaction) -> TSOutgoingMessage {
@@ -43,7 +42,7 @@ public extension ThreadUtil {
             logInProduction: true
         )
         BenchManager.benchAsync(title: "Send Message Milestone: Enqueue \(message.timestamp)") { benchmarkCompletion in
-            Self.enqueueSendAsyncWrite { writeTransaction in
+            enqueueSendAsyncWrite { writeTransaction in
                 outgoingMessagePreparer.insertMessage(linkPreviewDraft: linkPreviewDraft,
                                                       transaction: writeTransaction)
                 Self.sskJobQueues.messageSenderJobQueue.add(
@@ -70,7 +69,7 @@ public extension ThreadUtil {
     class func createUnsentMessage(body messageBody: MessageBody?,
                                    mediaAttachments: [SignalAttachment],
                                    thread: TSThread,
-                                   quotedReplyModel: OWSQuotedReplyModel? = nil,
+                                   quotedReplyModel: QuotedReplyModel? = nil,
                                    linkPreviewDraft: OWSLinkPreviewDraft? = nil,
                                    transaction: SDSAnyWriteTransaction) throws -> TSOutgoingMessage {
 
@@ -87,11 +86,11 @@ public extension ThreadUtil {
 // MARK: -
 
 extension OutgoingMessagePreparer {
-    @objc
+
     public convenience init(messageBody: MessageBody?,
                             mediaAttachments: [SignalAttachment] = [],
                             thread: TSThread,
-                            quotedReplyModel: OWSQuotedReplyModel? = nil,
+                            quotedReplyModel: QuotedReplyModel? = nil,
                             transaction: SDSAnyReadTransaction) {
 
         var attachments = mediaAttachments
@@ -119,7 +118,8 @@ extension OutgoingMessagePreparer {
             bodyRanges = nil
         }
 
-        let expiresInSeconds = thread.disappearingMessagesDuration(with: transaction)
+        let dmConfigurationStore = DependenciesBridge.shared.disappearingMessagesConfigurationStore
+        let expiresInSeconds = dmConfigurationStore.durationSeconds(for: thread, tx: transaction.asV2Read)
 
         assert(attachments.allSatisfy { !$0.hasError && !$0.mimeType.isEmpty })
 

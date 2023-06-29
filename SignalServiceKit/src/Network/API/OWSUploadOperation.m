@@ -6,11 +6,9 @@
 #import "OWSUploadOperation.h"
 #import "HTTPUtils.h"
 #import "MIMETypeUtil.h"
-#import "OWSDispatch.h"
 #import "OWSError.h"
 #import "OWSOperation.h"
 #import "OWSUpload.h"
-#import "SSKEnvironment.h"
 #import "TSAttachmentStream.h"
 #import <SignalCoreKit/Cryptography.h>
 #import <SignalServiceKit/SignalServiceKit-Swift.h>
@@ -41,7 +39,7 @@ NSString *const kAttachmentUploadAttachmentIDKey = @"kAttachmentUploadAttachment
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         operationQueue = [NSOperationQueue new];
-        operationQueue.name = @"Uploads";
+        operationQueue.name = @"OWSUpload";
 
         // TODO: Tune this limit.
         operationQueue.maxConcurrentOperationCount = CurrentAppContext().isNSE ? 2 : 8;

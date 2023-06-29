@@ -8,7 +8,7 @@ import GRDB
 import SignalCoreKit
 
 @objc(OWSReaction) // Named explicitly to preserve NSKeyedUnarchiving compatability
-public final class OWSReaction: NSObject, SDSCodableModel, NSSecureCoding {
+public final class OWSReaction: NSObject, SDSCodableModel, Decodable, NSSecureCoding {
     public static let databaseTableName = "model_OWSReaction"
     public static var recordType: UInt { SDSRecordType.reaction.rawValue }
 
@@ -67,16 +67,14 @@ public final class OWSReaction: NSObject, SDSCodableModel, NSSecureCoding {
         notificationsManager?.cancelNotifications(reactionId: uniqueId)
     }
 
-    // TODO: Figure out how to avoid having to duplicate this implementation
-    // in order to expose the method to ObjC
     @objc
-    public class func anyEnumerate(
+    public static func anyEnumerateObjc(
         transaction: SDSAnyReadTransaction,
-        batched: Bool = false,
+        batched: Bool,
         block: @escaping (OWSReaction, UnsafeMutablePointer<ObjCBool>) -> Void
     ) {
-        let batchSize = batched ? Batching.kDefaultBatchSize : 0
-        anyEnumerate(transaction: transaction, batchSize: batchSize, block: block)
+        let batchingPreference: BatchingPreference = batched ? .batched() : .unbatched
+        anyEnumerate(transaction: transaction, batchingPreference: batchingPreference, block: block)
     }
 
     // MARK: - Codable
@@ -93,9 +91,14 @@ public final class OWSReaction: NSObject, SDSCodableModel, NSSecureCoding {
         uniqueMessageId = try container.decode(String.self, forKey: .uniqueMessageId)
         emoji = try container.decode(String.self, forKey: .emoji)
 
-        let reactorUuid = try container.decodeIfPresent(UUID.self, forKey: .reactorUUID)
-        let reactorE164 = try container.decodeIfPresent(String.self, forKey: .reactorE164)
-        reactor = SignalServiceAddress(uuid: reactorUuid, phoneNumber: reactorE164)
+        // If we have a ServiceId, ignore the phone number.
+        if let reactorServiceId = try container.decodeIfPresent(ServiceId.self, forKey: .reactorUUID) {
+            reactor = SignalServiceAddress(reactorServiceId)
+        } else if let reactorPhoneNumber = try container.decodeIfPresent(String.self, forKey: .reactorE164) {
+            reactor = SignalServiceAddress(phoneNumber: reactorPhoneNumber)
+        } else {
+            reactor = SignalServiceAddress(uuid: nil, phoneNumber: nil)
+        }
 
         sentAtTimestamp = try container.decode(UInt64.self, forKey: .sentAtTimestamp)
         receivedAtTimestamp = try container.decode(UInt64.self, forKey: .receivedAtTimestamp)
@@ -106,14 +109,18 @@ public final class OWSReaction: NSObject, SDSCodableModel, NSSecureCoding {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try id.map { try container.encode($0, forKey: .id) }
-        try container.encode(recordType, forKey: .recordType)
+        try container.encode(Self.recordType, forKey: .recordType)
         try container.encode(uniqueId, forKey: .uniqueId)
 
         try container.encode(uniqueMessageId, forKey: .uniqueMessageId)
         try container.encode(emoji, forKey: .emoji)
 
-        try reactor.uuid.map { try container.encode($0, forKey: .reactorUUID) }
-        try reactor.phoneNumber.map { try container.encode($0, forKey: .reactorE164) }
+        // If we have a ServiceId, ignore the phone number.
+        if let reactorServiceId = reactor.serviceId {
+            try container.encode(reactorServiceId.uuidValue, forKey: .reactorUUID)
+        } else if let reactorPhoneNumber = reactor.phoneNumber {
+            try container.encode(reactorPhoneNumber, forKey: .reactorE164)
+        }
 
         try container.encode(sentAtTimestamp, forKey: .sentAtTimestamp)
         try container.encode(receivedAtTimestamp, forKey: .receivedAtTimestamp)
@@ -131,8 +138,12 @@ public final class OWSReaction: NSObject, SDSCodableModel, NSSecureCoding {
         coder.encode(uniqueMessageId, forKey: CodingKeys.uniqueMessageId.rawValue)
         coder.encode(emoji, forKey: CodingKeys.emoji.rawValue)
 
-        reactor.uuid.map { coder.encode($0, forKey: CodingKeys.reactorUUID.rawValue) }
-        reactor.phoneNumber.map { coder.encode($0, forKey: CodingKeys.reactorE164.rawValue) }
+        // If we have a ServiceId, ignore the phone number.
+        if let reactorServiceId = reactor.serviceId {
+            coder.encode(reactorServiceId.uuidValue, forKey: CodingKeys.reactorUUID.rawValue)
+        } else if let reactorPhoneNumber = reactor.phoneNumber {
+            coder.encode(reactorPhoneNumber, forKey: CodingKeys.reactorE164.rawValue)
+        }
 
         coder.encode(NSNumber(value: sentAtTimestamp), forKey: CodingKeys.sentAtTimestamp.rawValue)
         coder.encode(NSNumber(value: receivedAtTimestamp), forKey: CodingKeys.receivedAtTimestamp.rawValue)
@@ -160,9 +171,14 @@ public final class OWSReaction: NSObject, SDSCodableModel, NSSecureCoding {
         }
         self.emoji = emoji
 
-        let reactorUuid = coder.decodeObject(of: NSUUID.self, forKey: CodingKeys.reactorUUID.rawValue) as UUID?
-        let reactorE164 = coder.decodeObject(of: NSString.self, forKey: CodingKeys.reactorE164.rawValue) as String?
-        self.reactor = SignalServiceAddress(uuid: reactorUuid, phoneNumber: reactorE164)
+        // If we have a ServiceId, ignore the phone number.
+        if let reactorServiceId = coder.decodeObject(of: NSUUID.self, forKey: CodingKeys.reactorUUID.rawValue) {
+            reactor = SignalServiceAddress(ServiceId(reactorServiceId as UUID))
+        } else if let reactorPhoneNumber = coder.decodeObject(of: NSString.self, forKey: CodingKeys.reactorE164.rawValue) {
+            reactor = SignalServiceAddress(phoneNumber: reactorPhoneNumber as String)
+        } else {
+            reactor = SignalServiceAddress(uuid: nil, phoneNumber: nil)
+        }
 
         guard let sentAtTimestamp = coder.decodeObject(of: NSNumber.self, forKey: CodingKeys.sentAtTimestamp.rawValue)?.uint64Value else {
             owsFailDebug("Missing sentAtTimestamp")

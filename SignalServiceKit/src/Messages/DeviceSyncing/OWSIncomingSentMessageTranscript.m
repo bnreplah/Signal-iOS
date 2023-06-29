@@ -35,11 +35,16 @@ NS_ASSUME_NONNULL_BEGIN
         return self;
     }
 
-    if (sentProto.message == nil) {
+    BOOL isEdit = NO;
+    if (sentProto.message != nil) {
+        _dataMessage = sentProto.message;
+    } else if (sentProto.editMessage.dataMessage != nil) {
+        _dataMessage = sentProto.editMessage.dataMessage;
+        isEdit = YES;
+    } else {
         OWSFailDebug(@"Missing message.");
         return nil;
     }
-    _dataMessage = sentProto.message;
 
     if (sentProto.timestamp < 1) {
         OWSFailDebug(@"Sent missing timestamp.");
@@ -56,25 +61,8 @@ NS_ASSUME_NONNULL_BEGIN
     _dataMessageTimestamp = _dataMessage.timestamp;
     _disappearingMessageToken = [DisappearingMessageToken tokenForProtoExpireTimer:_dataMessage.expireTimer];
 
-    SSKProtoGroupContext *_Nullable groupContextV1 = _dataMessage.group;
     SSKProtoGroupContextV2 *_Nullable groupContextV2 = _dataMessage.groupV2;
-    if (groupContextV1 != nil) {
-        if (groupContextV2 != nil) {
-            OWSFailDebug(@"Transcript has both v1 and v2 group contexts.");
-            return nil;
-        }
-
-        _groupId = groupContextV1.id;
-        if (_groupId.length < 1) {
-            OWSFailDebug(@"Missing groupId.");
-            return nil;
-        }
-        if (![GroupManager isValidGroupId:_groupId groupsVersion:GroupsVersionV1]) {
-            OWSFailDebug(@"Invalid groupId.");
-            return nil;
-        }
-        _isGroupUpdate = (groupContextV1.hasType && groupContextV1.unwrappedType == SSKProtoGroupContextTypeUpdate);
-    } else if (groupContextV2 != nil) {
+    if (groupContextV2 != nil) {
         NSData *_Nullable masterKey = groupContextV2.masterKey;
         if (masterKey.length < 1) {
             OWSFailDebug(@"Missing masterKey.");
@@ -98,6 +86,9 @@ NS_ASSUME_NONNULL_BEGIN
         }
     } else if (sentProto.destinationAddress) {
         _recipientAddress = sentProto.destinationAddress;
+    } else {
+        OWSFailDebug(@"Neither a group ID nor recipient address found!");
+        return nil;
     }
 
     if (_groupId != nil) {
@@ -116,7 +107,10 @@ NS_ASSUME_NONNULL_BEGIN
         _requiredProtocolVersion = @(_dataMessage.requiredProtocolVersion);
     }
 
-    if (self.isRecipientUpdate) {
+    // There were scenarios where isRecipientUpdate would be true for edit sync
+    // messages, but would be missing the groupId. isRecipientUpdate has no effect
+    // on edit messages, so can be safely ignored here to avoid an unnecessary failure.
+    if (!isEdit && self.isRecipientUpdate) {
         // Fetch, don't create.  We don't want recipient updates to resurrect messages or threads.
         if (_groupId != nil) {
             _thread = [TSGroupThread fetchWithGroupId:_groupId transaction:transaction];
@@ -130,37 +124,7 @@ NS_ASSUME_NONNULL_BEGIN
             TSGroupThread *_Nullable groupThread = [TSGroupThread fetchWithGroupId:_groupId transaction:transaction];
             _thread = groupThread;
 
-            if (groupContextV1 != nil) {
-                SignalServiceAddress *_Nullable localAddress
-                    = OWSIncomingSentMessageTranscript.tsAccountManager.localAddress;
-                if (localAddress == nil) {
-                    OWSFailDebug(@"Missing localAddress.");
-                    return nil;
-                }
-
-                if (_thread == nil) {
-                    NSArray<SignalServiceAddress *> *members = @[ localAddress ];
-                    NSError *_Nullable groupError;
-                    _thread = [GroupManager remoteUpsertExistingGroupV1WithGroupId:_groupId
-                                                                              name:groupContextV1.name
-                                                                        avatarData:nil
-                                                                           members:members
-                                                          disappearingMessageToken:self.disappearingMessageToken
-                                                          groupUpdateSourceAddress:localAddress
-                                                                 infoMessagePolicy:InfoMessagePolicyAlways
-                                                                       transaction:transaction
-                                                                             error:&groupError]
-                                  .groupThread;
-                    if (groupError != nil || _thread == nil) {
-                        OWSFailDebug(@"Could not create group: %@", groupError);
-                        return nil;
-                    }
-                }
-                if (!_thread.isGroupV1Thread) {
-                    OWSFailDebug(@"Invalid thread for v1 group.");
-                    return nil;
-                }
-            } else if (groupContextV2 != nil) {
+            if (groupContextV2 != nil) {
                 if (groupThread == nil) {
                     // GroupsV2MessageProcessor should have already created the v2 group
                     // by now.
@@ -240,10 +204,11 @@ NS_ASSUME_NONNULL_BEGIN
     }
 
     if (sentProto.unidentifiedStatus.count > 0) {
-        NSMutableArray<SignalServiceAddress *> *nonUdRecipientAddresses = [NSMutableArray new];
-        NSMutableArray<SignalServiceAddress *> *udRecipientAddresses = [NSMutableArray new];
+        NSMutableArray<ServiceIdObjC *> *nonUdRecipients = [NSMutableArray new];
+        NSMutableArray<ServiceIdObjC *> *udRecipients = [NSMutableArray new];
         for (SSKProtoSyncMessageSentUnidentifiedDeliveryStatus *statusProto in sentProto.unidentifiedStatus) {
-            if (!statusProto.hasValidDestination) {
+            ServiceIdObjC *serviceId = [[ServiceIdObjC alloc] initWithUuidString:statusProto.destinationUuid];
+            if (serviceId == nil) {
                 OWSFailDebug(@"Delivery status proto is missing destination.");
                 continue;
             }
@@ -251,15 +216,14 @@ NS_ASSUME_NONNULL_BEGIN
                 OWSFailDebug(@"Delivery status proto is missing value.");
                 continue;
             }
-            SignalServiceAddress *recipientAddress = statusProto.destinationAddress;
             if (statusProto.unidentified) {
-                [udRecipientAddresses addObject:recipientAddress];
+                [udRecipients addObject:serviceId];
             } else {
-                [nonUdRecipientAddresses addObject:recipientAddress];
+                [nonUdRecipients addObject:serviceId];
             }
         }
-        _nonUdRecipientAddresses = [nonUdRecipientAddresses copy];
-        _udRecipientAddresses = [udRecipientAddresses copy];
+        _nonUdRecipients = [nonUdRecipients copy];
+        _udRecipients = [udRecipients copy];
     }
 
     return self;
@@ -267,11 +231,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSArray<SSKProtoAttachmentPointer *> *)attachmentPointerProtos
 {
-    if (self.isGroupUpdate && self.dataMessage.group.avatar) {
-        return @[ self.dataMessage.group.avatar ];
-    } else {
-        return self.dataMessage.attachments;
-    }
+    return self.dataMessage.attachments;
 }
 
 @end

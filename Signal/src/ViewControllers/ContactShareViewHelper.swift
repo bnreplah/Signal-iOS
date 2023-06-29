@@ -4,25 +4,21 @@
 //
 
 import ContactsUI
-import Foundation
 import MessageUI
 import SignalMessaging
 import SignalServiceKit
+import SignalUI
 
-@objc
 public protocol ContactShareViewHelperDelegate: AnyObject {
     func didCreateOrEditContact()
 }
 
 // MARK: -
 
-@objc
 public class ContactShareViewHelper: NSObject, CNContactViewControllerDelegate {
 
-    @objc
     weak var delegate: ContactShareViewHelperDelegate?
 
-    @objc
     public required override init() {
         AssertIsOnMainThread()
 
@@ -31,21 +27,18 @@ public class ContactShareViewHelper: NSObject, CNContactViewControllerDelegate {
 
     // MARK: Actions
 
-    @objc
     public func sendMessage(contactShare: ContactShareViewModel, fromViewController: UIViewController) {
         Logger.info("")
 
         presentThreadAndPeform(action: .compose, contactShare: contactShare, fromViewController: fromViewController)
     }
 
-    @objc
     public func audioCall(contactShare: ContactShareViewModel, fromViewController: UIViewController) {
         Logger.info("")
 
         presentThreadAndPeform(action: .audioCall, contactShare: contactShare, fromViewController: fromViewController)
     }
 
-    @objc
     public func videoCall(contactShare: ContactShareViewModel, fromViewController: UIViewController) {
         Logger.info("")
 
@@ -62,18 +55,17 @@ public class ContactShareViewHelper: NSObject, CNContactViewControllerDelegate {
         }
         guard phoneNumbers.count > 1 else {
             let address = SignalServiceAddress(phoneNumber: phoneNumbers.first!)
-            SignalApp.shared().presentConversation(for: address, action: action, animated: true)
+            SignalApp.shared.presentConversationForAddress(address, action: action, animated: true)
             return
         }
 
         showPhoneNumberPicker(phoneNumbers: phoneNumbers, fromViewController: fromViewController, completion: { phoneNumber in
-            SignalApp.shared().presentConversation(for: SignalServiceAddress(phoneNumber: phoneNumber), action: action, animated: true)
+            SignalApp.shared.presentConversationForAddress(SignalServiceAddress(phoneNumber: phoneNumber), action: action, animated: true)
         })
     }
 
     private var inviteFlow: InviteFlow?
 
-    @objc
     public func showInviteContact(contactShare: ContactShareViewModel, fromViewController: UIViewController) {
         Logger.info("")
 
@@ -93,18 +85,17 @@ public class ContactShareViewHelper: NSObject, CNContactViewControllerDelegate {
         inviteFlow.sendSMSTo(phoneNumbers: phoneNumbers)
     }
 
-    @objc
     func showAddToContacts(contactShare: ContactShareViewModel, fromViewController: UIViewController) {
         Logger.info("")
 
         let actionSheet = ActionSheetController(title: nil, message: nil)
 
-        actionSheet.addAction(ActionSheetAction(title: NSLocalizedString("CONVERSATION_SETTINGS_NEW_CONTACT",
+        actionSheet.addAction(ActionSheetAction(title: OWSLocalizedString("CONVERSATION_SETTINGS_NEW_CONTACT",
                                                                      comment: "Label for 'new contact' button in conversation settings view."),
                                             style: .default) { _ in
                                                 self.didPressCreateNewContact(contactShare: contactShare, fromViewController: fromViewController)
         })
-        actionSheet.addAction(ActionSheetAction(title: NSLocalizedString("CONVERSATION_SETTINGS_ADD_TO_EXISTING_CONTACT",
+        actionSheet.addAction(ActionSheetAction(title: OWSLocalizedString("CONVERSATION_SETTINGS_ADD_TO_EXISTING_CONTACT",
                                                                      comment: "Label for 'new contact' button in conversation settings view."),
                                             style: .default) { _ in
                                                 self.didPressAddToExistingContact(contactShare: contactShare, fromViewController: fromViewController)
@@ -181,7 +172,6 @@ public class ContactShareViewHelper: NSObject, CNContactViewControllerDelegate {
 
     // MARK: - CNContactViewControllerDelegate
 
-    @objc
     public func contactViewController(_ viewController: CNContactViewController, didCompleteWith contact: CNContact?) {
         Logger.info("")
 
@@ -194,7 +184,7 @@ public class ContactShareViewHelper: NSObject, CNContactViewControllerDelegate {
     }
 
     @objc
-    public func didFinishEditingContact() {
+    private func didFinishEditingContact() {
         Logger.info("")
 
         guard let delegate = delegate else {

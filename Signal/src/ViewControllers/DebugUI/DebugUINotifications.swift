@@ -3,21 +3,17 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import SignalServiceKit
 import SignalMessaging
+import SignalUI
 
-#if DEBUG
+#if USE_DEBUG_UI
 
-class DebugUINotifications: DebugUIPage {
+class DebugUINotifications: DebugUIPage, Dependencies {
 
-    // MARK: Overrides
+    let name = "Notifications"
 
-    override func name() -> String {
-        return "Notifications"
-    }
-
-    override func section(thread: TSThread?) -> OWSTableSection? {
+    func section(thread: TSThread?) -> OWSTableSection? {
         guard let thread = thread else {
             owsFailDebug("Notifications must specify thread.")
             return nil
@@ -205,7 +201,7 @@ class DebugUINotifications: DebugUIPage {
             let recipients: Set<SignalRecipient> = self.databaseStorage.read { transaction in
                 let allRecipients = SignalRecipient.anyFetchAll(transaction: transaction)
                 let activeRecipients = allRecipients.filter { recipient in
-                    guard recipient.devices.count > 0 else {
+                    guard recipient.isRegistered else {
                         return false
                     }
 

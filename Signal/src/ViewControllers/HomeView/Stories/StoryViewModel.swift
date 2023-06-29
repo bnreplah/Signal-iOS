@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import SignalServiceKit
+import SignalUI
 
 struct StoryViewModel: Dependencies {
     let context: StoryContext
@@ -45,7 +45,7 @@ struct StoryViewModel: Dependencies {
 
         self.latestMessage = latestMessage
         self.context = latestMessage.context
-        self.hasReplies = InteractionFinder.hasReplies(for: sortedFilteredMessages, transaction: transaction)
+        self.hasReplies = sortedFilteredMessages.contains(where: \.hasReplies)
 
         latestMessageName = StoryUtil.authorDisplayName(
             for: latestMessage,

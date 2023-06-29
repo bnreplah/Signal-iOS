@@ -5,6 +5,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class ChatServiceAuth;
 @class DeviceMessage;
 @class ECKeyPair;
 @class OWSDevice;
@@ -32,21 +33,21 @@ typedef NS_ENUM(uint8_t, OWSIdentity);
 
 + (TSRequest *)acknowledgeMessageDeliveryRequestWithServerGuid:(NSString *)serverGuid;
 
-+ (TSRequest *)deleteDeviceRequestWithDevice:(OWSDevice *)device;
-
 + (TSRequest *)getDevicesRequest;
 
 + (TSRequest *)getMessagesRequest;
 
 + (TSRequest *)getUnversionedProfileRequestWithAddress:(SignalServiceAddress *)address
                                            udAccessKey:(nullable SMKUDAccessKey *)udAccessKey
-    NS_SWIFT_NAME(getUnversionedProfileRequest(address:udAccessKey:));
+                                                  auth:(ChatServiceAuth *)auth
+    NS_SWIFT_NAME(getUnversionedProfileRequest(address:udAccessKey:auth:));
 
 + (TSRequest *)getVersionedProfileRequestWithServiceId:(ServiceIdObjC *)serviceId
                                      profileKeyVersion:(nullable NSString *)profileKeyVersion
                                      credentialRequest:(nullable NSData *)credentialRequest
                                            udAccessKey:(nullable SMKUDAccessKey *)udAccessKey
-    NS_SWIFT_NAME(getVersionedProfileRequest(serviceId:profileKeyVersion:credentialRequest:udAccessKey:));
+                                                  auth:(ChatServiceAuth *)auth
+    NS_SWIFT_NAME(getVersionedProfileRequest(serviceId:profileKeyVersion:credentialRequest:udAccessKey:auth:));
 
 + (TSRequest *)turnServerInfoRequest;
 
@@ -60,8 +61,6 @@ typedef NS_ENUM(uint8_t, OWSIdentity);
 
 + (TSRequest *)registerForPushRequestWithPushIdentifier:(NSString *)identifier
                                          voipIdentifier:(nullable NSString *)voipId;
-
-+ (TSRequest *)accountWhoAmIRequest;
 
 + (TSRequest *)unregisterAccountRequest;
 
@@ -87,28 +86,14 @@ typedef NS_ENUM(uint8_t, OWSIdentity);
                                                         isStory:(BOOL)isStory
     NS_SWIFT_NAME(submitMultiRecipientMessageRequest(ciphertext:compositeUDAccessKey:timestamp:isOnline:isUrgent:isStory:));
 
-+ (TSRequest *)verifyPrimaryDeviceRequestWithVerificationCode:(NSString *)verificationCode
-                                                  phoneNumber:(NSString *)phoneNumber
-                                                      authKey:(NSString *)authKey
-                                                          pin:(nullable NSString *)pin
-                                    checkForAvailableTransfer:(BOOL)checkForAvailableTransfer
-    NS_SWIFT_NAME(verifyPrimaryDeviceRequest(verificationCode:phoneNumber:authKey:pin:checkForAvailableTransfer:));
-
-+ (TSRequest *)verifySecondaryDeviceRequestWithVerificationCode:(NSString *)verificationCode
-                                                    phoneNumber:(NSString *)phoneNumber
-                                                        authKey:(NSString *)authKey
-                                            encryptedDeviceName:(NSData *)encryptedDeviceName
-    NS_SWIFT_NAME(verifySecondaryDeviceRequest(verificationCode:phoneNumber:authKey:encryptedDeviceName:));
-
 + (TSRequest *)currencyConversionRequest NS_SWIFT_NAME(currencyConversionRequest());
 
 #pragma mark - Attributes and Capabilities
 
-+ (TSRequest *)updatePrimaryDeviceAttributesRequest;
++ (TSRequest *)updateSecondaryDeviceCapabilitiesRequestWithHasBackedUpMasterKey:(BOOL)hasBackedUpMasterKey;
 
-+ (TSRequest *)updateSecondaryDeviceCapabilitiesRequest;
-
-+ (NSDictionary<NSString *, NSNumber *> *)deviceCapabilitiesForLocalDevice;
++ (NSDictionary<NSString *, NSNumber *> *)deviceCapabilitiesForLocalDeviceWithHasBackedUpMasterKey:
+    (BOOL)hasBackedUpMasterKey;
 
 #pragma mark - Prekeys
 
@@ -117,16 +102,11 @@ typedef NS_ENUM(uint8_t, OWSIdentity);
 + (TSRequest *)currentSignedPreKeyRequest;
 
 + (TSRequest *)recipientPreKeyRequestWithServiceId:(ServiceIdObjC *)serviceId
-                                          deviceId:(NSString *)deviceId
+                                          deviceId:(uint32_t)deviceId
                                        udAccessKey:(nullable SMKUDAccessKey *)udAccessKey;
 
 + (TSRequest *)registerSignedPrekeyRequestForIdentity:(OWSIdentity)identity
                                          signedPreKey:(SignedPreKeyRecord *)signedPreKey;
-
-+ (TSRequest *)registerPrekeysRequestForIdentity:(OWSIdentity)identity
-                                     prekeyArray:(NSArray *)prekeys
-                                     identityKey:(NSData *)identityKeyPublic
-                                    signedPreKey:(SignedPreKeyRecord *)signedPreKey;
 
 #pragma mark - Storage Service
 
@@ -135,8 +115,8 @@ typedef NS_ENUM(uint8_t, OWSIdentity);
 #pragma mark - Remote Attestation
 
 + (TSRequest *)remoteAttestationAuthRequestForKeyBackup;
-+ (TSRequest *)remoteAttestationAuthRequestForContactDiscovery;
 + (TSRequest *)remoteAttestationAuthRequestForCDSI;
++ (TSRequest *)remoteAttestationAuthRequestForSVR2;
 
 #pragma mark - KBS
 
@@ -171,7 +151,8 @@ typedef NS_ENUM(uint8_t, OWSIdentity);
                                    paymentAddress:(nullable ProfileValue *)paymentAddress
                                   visibleBadgeIds:(NSArray<NSString *> *)visibleBadgeIds
                                           version:(NSString *)version
-                                       commitment:(NSData *)commitment;
+                                       commitment:(NSData *)commitment
+                                             auth:(ChatServiceAuth *)auth;
 
 #pragma mark - Remote Config
 
@@ -195,9 +176,6 @@ typedef NS_ENUM(uint8_t, OWSIdentity);
                                                   returnUrl:(NSURL *)returnUrl
                                                   cancelUrl:(NSURL *)cancelUrl
     NS_SWIFT_NAME(subscriptionCreatePaypalPaymentMethodRequest(subscriberId:returnUrl:cancelUrl:));
-+ (TSRequest *)subscriptionSetDefaultPaymentMethodRequest:(NSString *)base64SubscriberID
-                                                processor:(NSString *)processor
-                                                paymentID:(NSString *)paymentID;
 + (TSRequest *)subscriptionSetSubscriptionLevelRequest:(NSString *)base64SubscriberID level:(NSString *)level currency:(NSString *)currency idempotencyKey:(NSString *)idempotencyKey;
 + (TSRequest *)subscriptionReceiptCredentialsRequest:(NSString *)base64SubscriberID
                                              request:(NSString *)base64ReceiptCredentialRequest;

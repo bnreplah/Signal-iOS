@@ -3,12 +3,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
-import PassKit
 import Lottie
-import SignalUI
-import SignalServiceKit
+import PassKit
 import SignalMessaging
+import SignalServiceKit
+import SignalUI
 
 class DonateViewController: OWSViewController, OWSNavigationChildController {
     private static func canMakeNewDonations(
@@ -246,13 +245,16 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
             )
         }
 
+        let badgesSnapshot = BadgeThanksSheet.currentProfileBadgesSnapshot()
+
         let vc = CreditOrDebitCardDonationViewController(
             donationAmount: amount,
             donationMode: cardDonationMode
         ) { [weak self] in
             self?.didCompleteDonation(
                 badge: badge,
-                thanksSheetType: donateMode.forBadgeThanksSheet
+                thanksSheetType: donateMode.forBadgeThanksSheet,
+                oldBadgesSnapshot: badgesSnapshot
             )
         }
         navigationController.pushViewController(vc, animated: true)
@@ -331,12 +333,12 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
 
         switch oneTime.paymentRequest {
         case .noAmountSelected:
-            showError(NSLocalizedString(
+            showError(OWSLocalizedString(
                 "DONATE_SCREEN_ERROR_NO_AMOUNT_SELECTED",
                 comment: "If the user tries to donate to Signal but no amount is selected, this error message is shown."
             ))
         case let .amountIsTooSmall(minimumAmount):
-            let format = NSLocalizedString(
+            let format = OWSLocalizedString(
                 "DONATE_SCREEN_ERROR_SELECT_A_LARGER_AMOUNT_FORMAT",
                 comment: "If the user tries to donate to Signal but they've entered an amount that's too small, this error message is shown. Embeds {{currency string}}, such as \"$5\"."
             )
@@ -377,10 +379,11 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
 
         switch monthly.lastReceiptRedemptionFailure {
         case .none:
+            let badgesSnapshot = BadgeThanksSheet.currentProfileBadgesSnapshot()
             DonationViewsUtil.wrapPromiseInProgressView(
                 from: self,
                 promise: firstly(on: DispatchQueue.sharedUserInitiated) {
-                    SubscriptionManager.updateSubscriptionLevel(
+                    SubscriptionManagerImpl.updateSubscriptionLevel(
                         for: subscriberID,
                         to: selectedSubscriptionLevel,
                         currencyCode: monthly.selectedCurrencyCode
@@ -397,7 +400,8 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
             ).done(on: DispatchQueue.main) {
                 self.didCompleteDonation(
                     badge: selectedSubscriptionLevel.badge,
-                    thanksSheetType: .subscription
+                    thanksSheetType: .subscription,
+                    oldBadgesSnapshot: badgesSnapshot
                 )
             }.catch(on: DispatchQueue.main) { [weak self] error in
                 self?.didFailDonation(
@@ -423,18 +427,18 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
         }
 
         let currencyString = DonationUtilities.format(money: monthlyPaymentRequest.amount)
-        let title = NSLocalizedString(
+        let title = OWSLocalizedString(
             "SUSTAINER_VIEW_UPDATE_SUBSCRIPTION_CONFIRMATION_TITLE",
             comment: "Update Subscription? Action sheet title"
         )
         let message = String(
-            format: NSLocalizedString(
+            format: OWSLocalizedString(
                 "SUSTAINER_VIEW_UPDATE_SUBSCRIPTION_CONFIRMATION_MESSAGE",
                 comment: "Update Subscription? Action sheet message, embeds {{Price}}"
             ),
             currencyString
         )
-        let notNow = NSLocalizedString(
+        let notNow = OWSLocalizedString(
             "SUSTAINER_VIEW_SUBSCRIPTION_CONFIRMATION_NOT_NOW",
             comment: "Sustainer view Not Now Action sheet button"
         )
@@ -457,19 +461,19 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
     }
 
     private func didTapToCancelSubscription() {
-        let title = NSLocalizedString(
+        let title = OWSLocalizedString(
             "SUSTAINER_VIEW_CANCEL_SUBSCRIPTION_CONFIRMATION_TITLE",
             comment: "Confirm Cancellation? Action sheet title"
         )
-        let message = NSLocalizedString(
+        let message = OWSLocalizedString(
             "SUSTAINER_VIEW_CANCEL_SUBSCRIPTION_CONFIRMATION_MESSAGE",
             comment: "Confirm Cancellation? Action sheet message"
         )
-        let confirm = NSLocalizedString(
+        let confirm = OWSLocalizedString(
             "SUSTAINER_VIEW_CANCEL_SUBSCRIPTION_CONFIRMATION_CONFIRM",
             comment: "Confirm Cancellation? Action sheet confirm button"
         )
-        let notNow = NSLocalizedString(
+        let notNow = OWSLocalizedString(
             "SUSTAINER_VIEW_SUBSCRIPTION_CONFIRMATION_NOT_NOW",
             comment: "Sustainer view Not Now Action sheet button"
         )
@@ -496,13 +500,13 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
 
         ModalActivityIndicatorViewController.present(fromViewController: self, canCancel: false) { modal in
             firstly {
-                SubscriptionManager.cancelSubscription(for: subscriberID)
+                SubscriptionManagerImpl.cancelSubscription(for: subscriberID)
             }.done(on: DispatchQueue.main) { [weak self] in
                 modal.dismiss { [weak self] in
                     guard let self = self else { return }
                     self.onFinished(.monthlySubscriptionCancelled(
                         donateSheet: self,
-                        toastText: NSLocalizedString(
+                        toastText: OWSLocalizedString(
                             "SUSTAINER_VIEW_SUBSCRIPTION_CANCELLED",
                             comment: "Toast indicating that the subscription has been cancelled"
                         )
@@ -517,11 +521,16 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
 
     internal func didCompleteDonation(
         badge: ProfileBadge,
-        thanksSheetType: BadgeThanksSheet.BadgeType
+        thanksSheetType: BadgeThanksSheet.BadgeType,
+        oldBadgesSnapshot: ProfileBadgesSnapshot
     ) {
         onFinished(.completedDonation(
             donateSheet: self,
-            badgeThanksSheet: BadgeThanksSheet(badge: badge, type: thanksSheetType)
+            badgeThanksSheet: BadgeThanksSheet(
+                newBadge: badge,
+                newBadgeType: thanksSheetType,
+                oldBadgesSnapshot: oldBadgesSnapshot
+            )
         ))
     }
 
@@ -569,7 +578,7 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
     /// Requests one-time and monthly badges and preset amounts from the
     /// service, prepares badge assets, and loads local state as appropriate.
     private func loadStateWithSneakyTransaction(currentState: State) -> Guarantee<State> {
-        typealias DonationConfiguration = SubscriptionManager.DonationConfiguration
+        typealias DonationConfiguration = SubscriptionManagerImpl.DonationConfiguration
 
         let (
             subscriberID,
@@ -578,16 +587,16 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
             lastReceiptRedemptionFailure
         ) = databaseStorage.read {
             (
-                SubscriptionManager.getSubscriberID(transaction: $0),
-                SubscriptionManager.getSubscriberCurrencyCode(transaction: $0),
-                SubscriptionManager.getMostRecentSubscriptionPaymentMethod(transaction: $0),
-                SubscriptionManager.lastReceiptRedemptionFailed(transaction: $0)
+                SubscriptionManagerImpl.getSubscriberID(transaction: $0),
+                SubscriptionManagerImpl.getSubscriberCurrencyCode(transaction: $0),
+                SubscriptionManagerImpl.getMostRecentSubscriptionPaymentMethod(transaction: $0),
+                SubscriptionManagerImpl.lastReceiptRedemptionFailed(transaction: $0)
             )
         }
 
         // Start fetching the donation configuration.
         let fetchDonationConfigPromise: Promise<DonationConfiguration> = firstly {
-            SubscriptionManager.fetchDonationConfiguration()
+            SubscriptionManagerImpl.fetchDonationConfiguration()
         }.then(on: DispatchQueue.sharedUserInitiated) { donationConfiguration -> Promise<DonationConfiguration> in
             let boostBadge = donationConfiguration.boost.badge
             let subscriptionBadges = donationConfiguration.subscription.levels.map { $0.badge }
@@ -679,7 +688,7 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
 
         databaseStorage.read { [weak self] transaction in
             self?.avatarView.update(transaction) { config in
-                guard let address = tsAccountManager.localAddress(with: transaction) else {
+                guard let address = self?.tsAccountManager.localAddress(with: transaction) else {
                     return
                 }
                 config.dataSource = .address(address)
@@ -787,12 +796,7 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
     // MARK: - Loading spinner
 
     private func loadingSpinnerView() -> UIView {
-        let result: UIActivityIndicatorView
-        if #available(iOS 13, *) {
-            result = UIActivityIndicatorView(style: .medium)
-        } else {
-            result = UIActivityIndicatorView(style: .gray)
-        }
+        let result = UIActivityIndicatorView(style: .medium)
         result.startAnimating()
         return result
     }
@@ -846,7 +850,7 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
     private lazy var donateModePickerView: UISegmentedControl = {
         let picker = UISegmentedControl()
         picker.insertSegment(
-            withTitle: NSLocalizedString(
+            withTitle: OWSLocalizedString(
                 "DONATE_SCREEN_ONE_TIME_CHOICE",
                 comment: "On the donation screen, you can choose between one-time and monthly donations. This is the text on the picker for one-time donations."
             ),
@@ -854,7 +858,7 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
             animated: false
         )
         picker.insertSegment(
-            withTitle: NSLocalizedString(
+            withTitle: OWSLocalizedString(
                 "DONATE_SCREEN_MONTHLY_CHOICE",
                 comment: "On the donation screen, you can choose between one-time and monthly donations. This is the text on the picker for one-time donations."
             ),
@@ -893,7 +897,7 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
 
         let field = OneTimeDonationCustomAmountTextField(currencyCode: currencyCode)
 
-        field.placeholder = NSLocalizedString(
+        field.placeholder = OWSLocalizedString(
             "BOOST_VIEW_CUSTOM_AMOUNT_PLACEHOLDER",
             comment: "Default text for the custom amount field of the boost view."
         )
@@ -905,7 +909,7 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
 
         field.layer.cornerRadius = Self.cornerRadius
         field.layer.borderWidth = DonationViewsUtil.bubbleBorderWidth
-        field.font = .ows_dynamicTypeBodyClamped
+        field.font = .dynamicTypeBodyClamped
 
         let tap = UITapGestureRecognizer(
             target: self,
@@ -924,7 +928,7 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
         button.dimsWhenDisabled = true
         button.layer.cornerRadius = 8
         button.backgroundColor = .ows_accentBlue
-        button.titleLabel?.font = UIFont.ows_dynamicTypeBody.ows_semibold
+        button.titleLabel?.font = UIFont.dynamicTypeBody.semibold()
         button.autoSetDimension(.height, toSize: 48, relation: .greaterThanOrEqual)
         return button
     }()
@@ -984,7 +988,7 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
                 )
                 button.setTitle(
                     title: DonationUtilities.format(money: amount),
-                    font: .ows_regularFont(withSize: UIDevice.current.isIPhone5OrShorter ? 18 : 20),
+                    font: .regularFont(ofSize: UIDevice.current.isIPhone5OrShorter ? 18 : 20),
                     titleColor: Theme.primaryTextColor
                 )
                 button.autoSetDimension(.height, toSize: 52, relation: .greaterThanOrEqual)
@@ -1135,7 +1139,7 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
             currentSubscription.active
         {
             if Self.canMakeNewDonations(forDonateMode: .monthly) {
-                let updateTitle = NSLocalizedString(
+                let updateTitle = OWSLocalizedString(
                     "DONATE_SCREEN_UPDATE_MONTHLY_SUBSCRIPTION_BUTTON",
                     comment: "On the donation screen, if you already have a subscription, you'll see a button to update your subscription. This is the text on that button."
                 )
@@ -1143,7 +1147,7 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
                     self?.didTapToUpdateMonthlyDonation()
                 }
                 updateButton.backgroundColor = .ows_accentBlue
-                updateButton.titleLabel?.font = UIFont.ows_dynamicTypeBody.ows_semibold
+                updateButton.titleLabel?.font = UIFont.dynamicTypeBody.semibold()
                 updateButton.isEnabled = {
                     if currentSubscription.amount.currencyCode != monthly.selectedCurrencyCode {
                         return true
@@ -1158,7 +1162,7 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
                 buttons.append(updateButton)
             }
 
-            let cancelTitle = NSLocalizedString(
+            let cancelTitle = OWSLocalizedString(
                 "SUSTAINER_VIEW_CANCEL_SUBSCRIPTION",
                 comment: "Sustainer view Cancel Subscription button title"
             )
@@ -1174,7 +1178,7 @@ class DonateViewController: OWSViewController, OWSNavigationChildController {
             }
             continueButton.layer.cornerRadius = 8
             continueButton.backgroundColor = .ows_accentBlue
-            continueButton.titleLabel?.font = UIFont.ows_dynamicTypeBody.ows_semibold
+            continueButton.titleLabel?.font = UIFont.dynamicTypeBody.semibold()
 
             buttons.append(continueButton)
         }

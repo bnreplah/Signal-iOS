@@ -16,6 +16,8 @@ extension DonateViewController {
     ) {
         Logger.info("[Donations] Starting one-time PayPal donation")
 
+        let badgesSnapshot = BadgeThanksSheet.currentProfileBadgesSnapshot()
+
         firstly(on: DispatchQueue.main) { [weak self] () -> Promise<URL> in
             guard let self else { throw OWSAssertionError("[Donations] Missing self!") }
 
@@ -29,16 +31,10 @@ extension DonateViewController {
             guard let self else { throw OWSAssertionError("[Donations] Missing self!") }
 
             Logger.info("[Donations] Presenting PayPal web UI for user approval of one-time donation")
-            if #available(iOS 13, *) {
-                return Paypal.presentExpectingApprovalParams(
-                    approvalUrl: approvalUrl,
-                    withPresentationContext: self
-                )
-            } else {
-                return Paypal.presentExpectingApprovalParams(
-                    approvalUrl: approvalUrl
-                )
-            }
+            return Paypal.presentExpectingApprovalParams(
+                approvalUrl: approvalUrl,
+                withPresentationContext: self
+            )
         }.then(on: DispatchQueue.main) { [weak self] approvalParams -> Promise<Void> in
             guard let self else { return .value(()) }
 
@@ -54,7 +50,7 @@ extension DonateViewController {
             guard let self else { return }
 
             Logger.info("[Donations] One-time PayPal donation finished")
-            self.didCompleteDonation(badge: badge, thanksSheetType: .boost)
+            self.didCompleteDonation(badge: badge, thanksSheetType: .boost, oldBadgesSnapshot: badgesSnapshot)
         }.catch(on: DispatchQueue.main) { [weak self] error in
             guard let self else { return }
 
@@ -82,7 +78,7 @@ extension DonateViewController {
                 approvalParams: approvalParams
             )
         }.then(on: DispatchQueue.main) { (paymentIntentId: String) -> Promise<Void> in
-            SubscriptionManager.createAndRedeemBoostReceipt(
+            SubscriptionManagerImpl.createAndRedeemBoostReceipt(
                 for: paymentIntentId,
                 withPaymentProcessor: .braintree,
                 amount: amount

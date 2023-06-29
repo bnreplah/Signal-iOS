@@ -32,10 +32,10 @@ class StoriesViewController: OWSViewController, StoryListDataSourceDelegate {
     private lazy var emptyStateLabel: UILabel = {
         let label = UILabel()
         label.textColor = Theme.secondaryTextAndIconColor
-        label.font = .ows_dynamicTypeBody
+        label.font = .dynamicTypeBody
         label.numberOfLines = 0
         label.textAlignment = .center
-        label.text = NSLocalizedString("STORIES_NO_RECENT_MESSAGES", comment: "Indicates that there are no recent stories to render")
+        label.text = OWSLocalizedString("STORIES_NO_RECENT_MESSAGES", comment: "Indicates that there are no recent stories to render")
         label.isHidden = true
         label.isUserInteractionEnabled = false
         tableView.backgroundView = label
@@ -105,7 +105,7 @@ class StoriesViewController: OWSViewController, StoryListDataSourceDelegate {
         searchBarBackdropView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
         searchBarBackdropView.autoPinEdge(.bottom, to: .top, of: searchBarContainer)
 
-        title = NSLocalizedString("STORIES_TITLE", comment: "Title for the stories view.")
+        title = OWSLocalizedString("STORIES_TITLE", comment: "Title for the stories view.")
 
         tableView.register(MyStoryCell.self, forCellReuseIdentifier: MyStoryCell.reuseIdentifier)
         tableView.register(StoryCell.self, forCellReuseIdentifier: StoryCell.reuseIdentifier)
@@ -278,22 +278,22 @@ class StoriesViewController: OWSViewController, StoryListDataSourceDelegate {
     }
 
     @objc
-    func profileDidChange() { updateNavigationBar() }
+    private func profileDidChange() { updateNavigationBar() }
 
     private func updateNavigationBar() {
         let contextButton = ContextMenuButton()
         contextButton.showsContextMenuAsPrimaryAction = true
         contextButton.contextMenu = .init([
             .init(
-                title: NSLocalizedString("STORY_PRIVACY_TITLE", comment: "Title for the story privacy settings view"),
-                image: Theme.iconImage(.settingsPrivacy),
+                title: OWSLocalizedString("STORY_PRIVACY_TITLE", comment: "Title for the story privacy settings view"),
+                image: Theme.iconImage(.contextMenuPrivacy),
                 handler: { [weak self] _ in
                     self?.showPrivacySettings()
                 }
             ),
             .init(
                 title: CommonStrings.openSettingsButton,
-                image: Theme.isDarkThemeEnabled ? UIImage(named: "settings-solid-24")?.tintedImage(color: .white) : UIImage(named: "settings-outline-24"),
+                image: Theme.iconImage(.contextMenuSettings),
                 handler: { [weak self] _ in
                     self?.showAppSettings()
                 }
@@ -315,15 +315,15 @@ class StoriesViewController: OWSViewController, StoryListDataSourceDelegate {
 
         navigationItem.leftBarButtonItem = .init(customView: contextButton)
 
-        let cameraButton = UIBarButtonItem(image: Theme.iconImage(.cameraButton), style: .plain, target: self, action: #selector(showCameraView))
-        cameraButton.accessibilityLabel = NSLocalizedString("CAMERA_BUTTON_LABEL", comment: "Accessibility label for camera button.")
-        cameraButton.accessibilityHint = NSLocalizedString("CAMERA_BUTTON_HINT", comment: "Accessibility hint describing what you can do with the camera button")
+        let cameraButton = UIBarButtonItem(image: Theme.iconImage(.buttonCamera), style: .plain, target: self, action: #selector(showCameraView))
+        cameraButton.accessibilityLabel = OWSLocalizedString("CAMERA_BUTTON_LABEL", comment: "Accessibility label for camera button.")
+        cameraButton.accessibilityHint = OWSLocalizedString("CAMERA_BUTTON_HINT", comment: "Accessibility hint describing what you can do with the camera button")
 
         navigationItem.rightBarButtonItems = [cameraButton]
     }
 
     @objc
-    func showCameraView() {
+    private func showCameraView() {
         AssertIsOnMainThread()
 
         // Dismiss any message actions if they're presented
@@ -535,7 +535,6 @@ extension StoriesViewController: UITableViewDelegate {
         }
     }
 
-    @available(iOS 13, *)
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         guard let model = model(for: indexPath) else {
             return nil

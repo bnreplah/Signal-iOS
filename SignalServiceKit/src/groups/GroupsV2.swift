@@ -33,6 +33,14 @@ public enum GroupsV2Error: Error {
     case newMemberMissingAnnouncementOnlyCapability
     case localUserBlockedFromJoining
 
+    /// We tried to apply an incremental group change proto but failed due to
+    /// an incompatible revision in the proto.
+    ///
+    /// Note that group change protos can only be applied if they are a
+    /// continuous incremental update, i.e. our local revision is N and the
+    /// proto represents revision N+1.
+    case groupChangeProtoForIncompatibleRevision
+
     /// We hit a 400 while making a service request, but believe it may be
     /// recoverable.
     case serviceRequestHitRecoverable400
@@ -137,8 +145,6 @@ public protocol GroupsV2Swift: GroupsV2 {
 
     func groupInviteLink(forGroupModelV2 groupModelV2: TSGroupModelV2) throws -> URL
 
-    func isPossibleGroupInviteLink(_ url: URL) -> Bool
-
     func parseGroupInviteLink(_ url: URL) -> GroupInviteLinkInfo?
 
     func cachedGroupInviteLinkPreview(groupSecretParamsData: Data) -> GroupInviteLinkPreview?
@@ -166,8 +172,6 @@ public protocol GroupsV2Swift: GroupsV2 {
 
     func fetchGroupExternalCredentials(groupModel: TSGroupModelV2) throws -> Promise<GroupsProtoGroupExternalCredential>
 
-    func updateAlreadyMigratedGroupIfNecessary(v2GroupId: Data) -> Promise<Void>
-
     func groupRecordPendingStorageServiceRestore(
         masterKeyData: Data,
         transaction: SDSAnyReadTransaction
@@ -175,11 +179,36 @@ public protocol GroupsV2Swift: GroupsV2 {
 
     func restoreGroupFromStorageServiceIfNecessary(
         groupRecord: StorageServiceProtoGroupV2Record,
+        account: AuthedAccount,
         transaction: SDSAnyWriteTransaction
     )
 }
 
 // MARK: -
+
+/// Represents a constructed group change, ready to be sent to the service.
+public struct GroupsV2BuiltGroupChange {
+    /// Represents what we should do with regards to messages updating the other
+    /// members of the group about this change, if it successfully applied on
+    /// the service.
+    public enum GroupUpdateMessageBehavior {
+        /// Send a group update message to all other group members.
+        case sendUpdateToOtherGroupMembers
+        /// Do not send any group update messages.
+        case sendNothing
+    }
+
+    public init(
+        proto: GroupsProtoGroupChangeActions,
+        groupUpdateMessageBehavior: GroupUpdateMessageBehavior
+    ) {
+        self.proto = proto
+        self.groupUpdateMessageBehavior = groupUpdateMessageBehavior
+    }
+
+    public let proto: GroupsProtoGroupChangeActions
+    public let groupUpdateMessageBehavior: GroupUpdateMessageBehavior
+}
 
 public protocol GroupsV2OutgoingChanges: AnyObject {
     var groupId: Data { get }
@@ -212,7 +241,7 @@ public protocol GroupsV2OutgoingChanges: AnyObject {
 
     func addInvitedMember(_ uuid: UUID, role: TSGroupMemberRole)
 
-    func promoteInvitedMember(_ uuid: UUID)
+    func setLocalShouldAcceptInvite()
 
     func setShouldLeaveGroupDeclineInvite()
 
@@ -230,7 +259,7 @@ public protocol GroupsV2OutgoingChanges: AnyObject {
         currentGroupModel: TSGroupModelV2,
         currentDisappearingMessageToken: DisappearingMessageToken,
         forceRefreshProfileKeyCredentials: Bool
-    ) -> Promise<GroupsProtoGroupChangeActions>
+    ) -> Promise<GroupsV2BuiltGroupChange>
 }
 
 // MARK: -
@@ -649,7 +678,11 @@ public class MockGroupsV2: NSObject, GroupsV2Swift, GroupsV2 {
         return nil
     }
 
-    public func restoreGroupFromStorageServiceIfNecessary(groupRecord: StorageServiceProtoGroupV2Record, transaction: SDSAnyWriteTransaction) {
+    public func restoreGroupFromStorageServiceIfNecessary(
+        groupRecord: StorageServiceProtoGroupV2Record,
+        account: AuthedAccount,
+        transaction: SDSAnyWriteTransaction
+    ) {
         owsFail("Not implemented.")
     }
 
@@ -662,10 +695,6 @@ public class MockGroupsV2: NSObject, GroupsV2Swift, GroupsV2 {
     }
 
     public func groupInviteLink(forGroupModelV2 groupModelV2: TSGroupModelV2) throws -> URL {
-        owsFail("Not implemented.")
-    }
-
-    public func isPossibleGroupInviteLink(_ url: URL) -> Bool {
         owsFail("Not implemented.")
     }
 
@@ -713,10 +742,6 @@ public class MockGroupsV2: NSObject, GroupsV2Swift, GroupsV2 {
     }
 
     public func fetchGroupExternalCredentials(groupModel: TSGroupModelV2) throws -> Promise<GroupsProtoGroupExternalCredential> {
-        owsFail("Not implemented")
-    }
-
-    public func updateAlreadyMigratedGroupIfNecessary(v2GroupId: Data) -> Promise<Void> {
         owsFail("Not implemented")
     }
 }

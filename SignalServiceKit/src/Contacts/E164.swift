@@ -8,11 +8,17 @@ import Foundation
 public struct E164: Equatable, Hashable, Codable, CustomDebugStringConvertible {
     public let stringValue: String
 
-    init?(_ stringValue: String?) {
+    public init?(_ stringValue: String?) {
         guard let stringValue, stringValue.isStructurallyValidE164 else {
             return nil
         }
         self.stringValue = stringValue
+    }
+
+    public static func expectNilOrValid(stringValue: String?) -> E164? {
+        let result = E164(stringValue)
+        owsAssertDebug(stringValue == nil || result != nil, "Couldn't parse an E164 that should be valid")
+        return result
     }
 
     public var uint64Value: UInt64 {
@@ -26,7 +32,16 @@ public struct E164: Equatable, Hashable, Codable, CustomDebugStringConvertible {
     }
 
     public init(from decoder: Decoder) throws {
-        self.stringValue = try decoder.singleValueContainer().decode(String.self)
+        let stringValue = try decoder.singleValueContainer().decode(String.self)
+
+        guard let selfValue = E164(stringValue) else {
+            throw DecodingError.dataCorrupted(DecodingError.Context(
+                codingPath: [],
+                debugDescription: "Failed to construct E164 from underlying string!")
+            )
+        }
+
+        self = selfValue
     }
 
     public var debugDescription: String { "<E164 \(stringValue)>" }
@@ -36,12 +51,12 @@ public struct E164: Equatable, Hashable, Codable, CustomDebugStringConvertible {
 public class E164ObjC: NSObject, NSCopying {
     public let wrappedValue: E164
 
-    init(_ wrappedValue: E164) {
+    public init(_ wrappedValue: E164) {
         self.wrappedValue = wrappedValue
     }
 
     @objc
-    init?(_ stringValue: String?) {
+    public init?(_ stringValue: String?) {
         guard let stringValue, let wrappedValue = E164(stringValue) else {
             return nil
         }

@@ -125,6 +125,7 @@ CREATE
             ,"isGroupStoryReply" BOOLEAN DEFAULT 0
             ,"storyReactionEmoji" TEXT
             ,"giftBadge" BLOB
+            ,"editState" INTEGER DEFAULT 0
         )
 ;
 
@@ -386,6 +387,7 @@ CREATE
             ,"profileBadgeInfo" BLOB
             ,"isStoriesCapable" BOOLEAN NOT NULL DEFAULT 0
             ,"canReceiveGiftBadges" BOOLEAN NOT NULL DEFAULT 0
+            ,"isPniCapable" BOOLEAN NOT NULL DEFAULT 0
         )
 ;
 
@@ -670,14 +672,6 @@ CREATE
 CREATE
     UNIQUE INDEX "index_signal_recipients_on_recipientUUID"
         ON "model_SignalRecipient"("recipientUUID"
-)
-;
-
-CREATE
-    UNIQUE INDEX "index_interactions_on_threadId_read_and_id"
-        ON "model_TSInteraction"("uniqueThreadId"
-    ,"read"
-    ,"id"
 )
 ;
 
@@ -1183,38 +1177,6 @@ CREATE
 ;
 
 CREATE
-    TRIGGER MSLRecipient_deliveryReceiptCleanup AFTER DELETE
-                ON MessageSendLog_Recipient WHEN 0 = (
-                SELECT
-                        COUNT( * )
-                    FROM
-                        MessageSendLog_Recipient
-                    WHERE
-                        payloadId = old.payloadId
-            ) BEGIN DELETE
-                FROM
-                    MessageSendLog_Payload
-                WHERE
-                    payloadId = old.payloadId
-                    AND sendComplete = TRUE
-;
-
-END
-;
-
-CREATE
-    TRIGGER MSLMessage_payloadCleanup AFTER DELETE
-                ON MessageSendLog_Message BEGIN DELETE
-                FROM
-                    MessageSendLog_Payload
-                WHERE
-                    payloadId = old.payloadId
-;
-
-END
-;
-
-CREATE
     INDEX "MSLPayload_sentTimestampIndex"
         ON "MessageSendLog_Payload"("sentTimestamp"
 )
@@ -1253,6 +1215,7 @@ CREATE
             ,"direction" INTEGER NOT NULL
             ,"manifest" BLOB NOT NULL
             ,"attachment" BLOB NOT NULL
+            ,"replyCount" INTEGER NOT NULL DEFAULT 0
         )
 ;
 
@@ -1300,12 +1263,14 @@ WHERE
 ;
 
 CREATE
-    INDEX index_model_TSInteraction_UnreadCount
-        ON model_TSInteraction (
-        READ
-        ,isGroupStoryReply
-        ,uniqueThreadId
-        ,recordType
+    INDEX "index_model_TSInteraction_UnreadMessages"
+        ON "model_TSInteraction" (
+        "read"
+        ,"uniqueThreadId"
+        ,"id"
+        ,"isGroupStoryReply"
+        ,"editState"
+        ,"recordType"
     )
 ;
 
@@ -1447,4 +1412,45 @@ CREATE
             "aci" BLOB PRIMARY KEY NOT NULL
             ,"username" TEXT NOT NULL
         )
+;
+
+CREATE
+    INDEX "index_attachments_toMarkAsFailed"
+        ON "model_TSAttachment" (
+        "recordType"
+        ,"state"
+    )
+WHERE
+    "recordType" = 3
+    AND "state" IN (
+        0
+        ,1
+    )
+;
+
+CREATE
+    TABLE
+        IF NOT EXISTS "EditRecord" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT
+            ,"latestRevisionId" INTEGER NOT NULL REFERENCES "model_TSInteraction"("id"
+        )
+            ON DELETE
+                RESTRICT
+            ,"pastRevisionId" INTEGER NOT NULL REFERENCES "model_TSInteraction"("id"
+        )
+            ON DELETE
+                RESTRICT
+)
+;
+
+CREATE
+    INDEX "index_edit_record_on_latest_revision_id"
+        ON "EditRecord"("latestRevisionId"
+)
+;
+
+CREATE
+    INDEX "index_edit_record_on_past_revision_id"
+        ON "EditRecord"("pastRevisionId"
+)
 ;

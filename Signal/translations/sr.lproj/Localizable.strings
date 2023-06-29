@@ -28,7 +28,43 @@
 /* Accessibility label for a voice memo. */
 "ACCESSIBILITY_LABEL_VOICE_MEMO" = "Гласовна порука";
 
-/* Label for 'audio call' button in contact view. */
+/* Users can request a report of their account data. Before they get their account export, they are warned to only share account data with trustworthy sources. This is the button on that warning, and tapping it lets users continue. */
+"ACCOUNT_DATA_REPORT_CONFIRM_EXPORT_CONFIRM_BUTTON" = "Извези извештај";
+
+/* Users can request a report of their account data. Before they get their account export, they are warned to only share account data with trustworthy sources. This is the message on that warning. */
+"ACCOUNT_DATA_REPORT_CONFIRM_EXPORT_MESSAGE" = "Делите податке са свог налога на Signal-у само са људима или апликацијама којима верујете.";
+
+/* Users can request a report of their account data. If this request fails (probably because of a network connection problem), they will see an error sheet. This is the message on that error. */
+"ACCOUNT_DATA_REPORT_ERROR_MESSAGE" = "Проверите да ли сте повезани и пробајте поново.";
+
+/* Users can request a report of their account data. If this request fails (probably because of a network connection problem), they will see an error sheet. This is the title on that error. */
+"ACCOUNT_DATA_REPORT_ERROR_TITLE" = "Нисмо успели да генеришемо извештај";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the subtitle on the button that switches to JSON mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_JSON_SUBTITLE" = "Машински читљив фајл";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the title on the button that switches to JSON mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_JSON_TITLE" = "Извези као JSON";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the subtitle on the button that switches to plain text mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_TXT_SUBTITLE" = "Текстуални фајл који се лако чита";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the title on the button that switches to plain text mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_TXT_TITLE" = "Извези као TXT";
+
+/* Users can request a report of their account data. Users tap this button to export their data. */
+"ACCOUNT_DATA_REPORT_EXPORT_REPORT_BUTTON" = "Извези извештај";
+
+/* Users can request a report of their account data. This text appears at the bottom of this screen, offering more information. */
+"ACCOUNT_DATA_REPORT_FOOTER" = "Извештај се генерише само у тренутку извоза и Signal га не чува на вашем уређају.";
+
+/* Users can request a report of their account data. This is the subtitle on the screen where they do this, giving them more information. */
+"ACCOUNT_DATA_REPORT_SUBTITLE" = "Преузмите и извезите извештај са подацима са вашег налога на Signal-у. Овај извештај не обухвата поруке нити медијске садржаје.";
+
+/* Users can request a report of their account data. This is the title on the screen where they do this. */
+"ACCOUNT_DATA_REPORT_TITLE" = "Подаци са налога";
+
+/* Label for 'voice call' button in contact view. */
 "ACTION_AUDIO_CALL" = "Signal позив";
 
 /* Label for 'invite' button in contact view. */
@@ -86,13 +122,13 @@
 "ALERT_ACTION_ACKNOWLEDGE" = "У реду";
 
 /* Format string for delivery issue sheet message. Embeds {{ sender name }}. */
-"ALERT_DELIVERY_ISSUE_MESSAGE_FORMAT" = "Порука, налепница, реакција, потврда о читању или медиј од %1$@ није вам достављен.";
+"ALERT_DELIVERY_ISSUE_MESSAGE_FORMAT" = "Порука, налепница, реакција, потврда о читању или садржај који шаље %1$@ није вам достављен у овом ћаскању.";
 
 /* Title for delivery issue sheet */
 "ALERT_DELIVERY_ISSUE_TITLE" = "Проблем у испоруци";
 
 /* Format string for delivery issue sheet message where the original thread is unknown. Embeds {{ sender name }}. */
-"ALERT_DELIVERY_ISSUE_UNKNOWN_THREAD_MESSAGE_FORMAT" = "Порука, налепница, реакција, потврда о читању или медиј од %1$@ није могло да се испоручи. Можда су то покушали да вам пошаљу директно или у групи.";
+"ALERT_DELIVERY_ISSUE_UNKNOWN_THREAD_MESSAGE_FORMAT" = "Порука, налепница, реакција, потврда о читању или садржај који шаље %1$@ није вам достављен у овом ћаскању. Овај корисник је можда покушао да вам пошаље директно или у групи.";
 
 /* The label for the 'discard' button in alerts and action sheets. */
 "ALERT_DISCARD_BUTTON" = "Одбаци";
@@ -115,8 +151,35 @@
 /* Label for button to learn more about message requests. */
 "ALERT_UNKNOWN_THREAD_WARNING_LEARN_MORE" = "O захтевима за разговор";
 
+/* Audio file type in All Meda file type picker. */
+"ALL_MEDIA_FILE_TYPE_AUDIO" = "Звучни запис";
+
+/* Media (i.e., graphical) file type in All Meda file type picker. */
+"ALL_MEDIA_FILE_TYPE_MEDIA" = "Медиј";
+
+/* Menu option to limit All Media view to displaying only GIFs */
+"ALL_MEDIA_FILTER_GIFS" = "GIF-ови";
+
+/* Menu option to limit All Media view to displaying only photos */
+"ALL_MEDIA_FILTER_PHOTOS" = "Слике";
+
+/* Menu option to limit All Media view to displaying only videos */
+"ALL_MEDIA_FILTER_VIDEOS" = "Видео снимци";
+
+/* Menu option to show All Media items in a grid of square thumbnails */
+"ALL_MEDIA_GRID_MODE" = "Мрежа";
+
+/* Menu option to show All Media items in a single-column list */
+"ALL_MEDIA_LIST_MODE" = "Листа";
+
 /* Label shown over thumbnails of GIFs in the All Media view */
 "ALL_MEDIA_THUMBNAIL_LABEL_GIF" = "GIF";
+
+/* Label shown by thumbnails of images in the All Media view */
+"ALL_MEDIA_THUMBNAIL_LABEL_IMAGE" = "Слика";
+
+/* Label shown by thumbnails of videos in the All Media view */
+"ALL_MEDIA_THUMBNAIL_LABEL_VIDEO" = "Видео запис";
 
 /* Title for the view of all your signal connections */
 "ALL_SIGNAL_CONNECTIONS_TITLE" = "Све везе";
@@ -130,11 +193,14 @@
 /* Default message for the 'app launch failed' alert. */
 "APP_LAUNCH_FAILURE_ALERT_MESSAGE" = "Signal не може да се покрене. Молимо вас да пошаљете извештај грешака на support@signal.org како бисмо отклонили квар.";
 
-/* Title for the 'app launch failed' alert. */
-"APP_LAUNCH_FAILURE_ALERT_TITLE" = "Грешка";
-
 /* Button to try launching the app even though the last launch failed */
 "APP_LAUNCH_FAILURE_CONTINUE" = "Уместо тога отворите Signal";
+
+/* Message for an error indicating that the app couldn't launch because some unexpected error happened with the user's registration status. */
+"APP_LAUNCH_FAILURE_CORRUPT_REGISTRATION_MESSAGE" = "Молимо вас да пошаљете извештај о грешкама на support@signal.org како бисмо отклонили проблем.";
+
+/* Title for an error indicating that the app couldn't launch because some unexpected error happened with the user's registration status. */
+"APP_LAUNCH_FAILURE_CORRUPT_REGISTRATION_TITLE" = "Нисмо успели да отворимо Signal";
 
 /* Error indicating that the app could not launch because the database could not be loaded. */
 "APP_LAUNCH_FAILURE_COULD_NOT_LOAD_DATABASE" = "Неуспешно учитавање базе података";
@@ -311,7 +377,7 @@
 "ATTACHMENT_KEYBOARD_CONTACT" = "Контакт";
 
 /* A button to select a file from the Attachment Keyboard */
-"ATTACHMENT_KEYBOARD_FILE" = "Fajl";
+"ATTACHMENT_KEYBOARD_FILE" = "Фајл";
 
 /* A button to select a GIF from the Attachment Keyboard */
 "ATTACHMENT_KEYBOARD_GIF" = "GIF";
@@ -329,7 +395,7 @@
 "ATTACHMENT_KEYBOARD_NO_PHOTOS" = "Одавде ћете моћи слати фотографије које сте недавно фотографисали.";
 
 /* A button to select a payment from the Attachment Keyboard */
-"ATTACHMENT_KEYBOARD_PAYMENT" = "Уплата";
+"ATTACHMENT_KEYBOARD_PAYMENT" = "Плаћање";
 
 /* Accessibility label for attaching photos */
 "ATTACHMENT_LABEL" = "Прилог";
@@ -371,7 +437,7 @@
 "AUDIO_ACTIVITY_PLAYBACK_NAME_AUDIO_MESSAGE" = "Звучна порука";
 
 /* Accessibility label for placing an audio call */
-"AUDIO_CALL_LABEL" = "Аудио позив";
+"AUDIO_CALL_LABEL" = "Гласовни позив";
 
 /* action sheet button title to enable built in speaker during a call */
 "AUDIO_ROUTE_BUILT_IN_SPEAKER" = "Звучник";
@@ -416,7 +482,7 @@
 "BADGE_EXPIRED_BOOST_BODY" = "Ваша значка подршке је истекла и више није видљива на вашем профилу.\n\nИ даље можете да користите Signal, али да бисте подржали технологију која је направљена за вас, размотрите опцију да постанете месечни донатор.";
 
 /* String explaining to the user that their boost badge has expired while they are a current subscription sustainer on the badge expiry sheet. */
-"BADGE_EXPIRED_BOOST_CURRENT_SUSTAINER_BODY" = "Ваша значка подршке је истекла и више није видљива на вашем профилу.\n\nМожете поново активирати значку подршке на још 30 дана ако дате једнократну донацију.";
+"BADGE_EXPIRED_BOOST_CURRENT_SUSTAINER_BODY" = "Значка подршке вам је истекла и више није видљива на вашем профилу.\n\nМожете поново активирати значку подршке на још 30 дана ако дате једнократну донацију.";
 
 /* Title for boost on the badge expiration sheet. */
 "BADGE_EXPIRED_BOOST_TITLE" = "Значка је истекла";
@@ -434,7 +500,7 @@
 "BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_CHARGE_FAILURE_BODY_FORMAT" = "Периодична месечна донација је отказана. Значка донације %1$@ више није видљива на вашем профилу.\n\nДа бисте наставили да подржавате Signal и да бисте поново активирали значку, ажурирајте податке о плаћању и поново донирајте.";
 
 /* Body of the sheet shown when your subscription is canceled due to inactivity */
-"BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_INACTIVITY_BODY_FORMAT" = "Ваша периодична месечна донација је аутоматски отказана јер сте предуго били неактивни. Значка „%1$@“ више није видљива на вашем профилу.\n\nЈош увек можете да користите Signal, али да бисте подржали апликацију и поново активирали значку, донирајте сада.";
+"BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_INACTIVITY_BODY_FORMAT" = "Ваша периодична месечна донација је аутоматски отказана јер сте предуго били неактивни. Значка %1$@ више није видљива на вашем профилу.\n\nЈош увек можете да користите Signal, али да бисте подржали апликацију и поново активирали значку, донирајте сада.";
 
 /* When you make a donation to Signal, you will receive a badge. A thank-you sheet appears when this happens. This is the body text on that sheet. */
 "BADGE_THANKS_BODY" = "Добили сте значку донатора од Signal-а! Прикажите је на профилу да истакнете своју подршку.";
@@ -548,7 +614,7 @@
 "BUTTON_EDIT" = "Уреди";
 
 /* Label for the 'mute' button. */
-"BUTTON_MUTE" = "Искључи обавештења";
+"BUTTON_MUTE" = "Искључи обавеш.";
 
 /* Label for the 'next' button. */
 "BUTTON_NEXT" = "Даље";
@@ -581,7 +647,7 @@
 "BUTTON_SUBMIT" = "Пошаљи";
 
 /* Label for the 'unmute' button. */
-"BUTTON_UNMUTE" = "Укључи обавештења";
+"BUTTON_UNMUTE" = "Укључи обавеш.";
 
 /* Label for the 'view' button. */
 "BUTTON_VIEW" = "Приказ";
@@ -593,19 +659,19 @@
 "CALL_AGAIN_BUTTON_TITLE" = "Позови поново";
 
 /* notification body */
-"CALL_AUDIO_INCOMING_NOTIFICATION_BODY" = "📞 Долазни аудио позив…";
+"CALL_AUDIO_INCOMING_NOTIFICATION_BODY" = "📞 Долазни гласовни позив…";
 
 /* notification body for a missed call in the last 24 hours. Embeds {{time}}, e.g. '3:30 PM'. */
-"CALL_AUDIO_MISSED_24_HOURS_NOTIFICATION_BODY_FORMAT" = "📞 Пропуштен аудио позив у %1$@";
+"CALL_AUDIO_MISSED_24_HOURS_NOTIFICATION_BODY_FORMAT" = "📞 Пропуштени гласовни позив у %1$@";
 
 /* notification body for a call that was just missed */
-"CALL_AUDIO_MISSED_NOTIFICATION_BODY" = "📞 Пропуштен позив";
+"CALL_AUDIO_MISSED_NOTIFICATION_BODY" = "📞 Пропуштени гласовни позив";
 
 /* notification body for a missed call from more than a week ago. Embeds {{short date}}, e.g. '6/28'. */
-"CALL_AUDIO_MISSED_PAST_NOTIFICATION_BODY_FORMAT" = "📞 Пропуштен аудио позив у %1$@";
+"CALL_AUDIO_MISSED_PAST_NOTIFICATION_BODY_FORMAT" = "📞 Пропуштени гласовни позив у %1$@";
 
 /* notification body for a missed call from the last week. Embeds {{weekday}}, e.g. 'Monday'. */
-"CALL_AUDIO_MISSED_WEEK_NOTIFICATION_BODY_FORMAT" = "📞 Пропуштен аудио позив у %1$@";
+"CALL_AUDIO_MISSED_WEEK_NOTIFICATION_BODY_FORMAT" = "📞 Пропуштени гласовни позив у %1$@";
 
 /* Alert message when calling and permissions for microphone are missing */
 "CALL_AUDIO_PERMISSION_MESSAGE" = "Како бисте могли вршити позиве и снимати гласовне поруке, дозволите Signal-у коришћење микрофона у iOS апликацији за подешавања.";
@@ -689,7 +755,7 @@
 "CALL_VIEW_SWITCH_CAMERA_DIRECTION" = "Промени смер камере";
 
 /* Accessibility label to switch to audio only */
-"CALL_VIEW_SWITCH_TO_AUDIO_LABEL" = "Пређи на звучни позив";
+"CALL_VIEW_SWITCH_TO_AUDIO_LABEL" = "Пређи на гласовни позив";
 
 /* Accessibility label to switch to video call */
 "CALL_VIEW_SWITCH_TO_VIDEO_LABEL" = "Пређи на видео позив";
@@ -866,7 +932,7 @@
 "CHAT_COLOR_SETTINGS_DELETE_ALERT_TITLE" = "Обрисати боју";
 
 /* Title for the chat color settings view. */
-"CHAT_COLOR_SETTINGS_TITLE" = "Боја преписке";
+"CHAT_COLOR_SETTINGS_TITLE" = "Боја ћаскања";
 
 /* Title for the 'edit chat color confirm alert' in the chat color settings view. */
 "CHAT_COLOR_SETTINGS_UPDATE_ALERT_ALERT_TITLE" = "Променити боју";
@@ -884,7 +950,7 @@
 "COMPARE_SAFETY_NUMBER_ACTION" = "Упореди са оставом";
 
 /* Accessibility hint describing what you can do with the compose button */
-"COMPOSE_BUTTON_HINT" = "Изаберите или пронађите Signal корисника како бисте започели разговор.";
+"COMPOSE_BUTTON_HINT" = "Изаберите или потражите корисника Signal-а како бисте започели ћаскање.";
 
 /* Accessibility label from compose button. */
 "COMPOSE_BUTTON_LABEL" = "Напиши поруку";
@@ -905,7 +971,7 @@
 "COMPOSE_SCREEN_MISSING_CONTACTS_PERMISSION" = "Да бисте видели ко од ваших контаката користи Signal, у iOS апликацији за подешавања дозволите Signal-у приступ телефонском именику.";
 
 /* Configure reactions title text */
-"CONFIGURE_REACTIONS" = "Подесити реакције";
+"CONFIGURE_REACTIONS" = "Прилагодите реакције";
 
 /* No comment provided by engineer. */
 "CONFIRM_DELETE_DATA_TEXT" = "Ресетовањем апликације се бришу све поруке. Апликација ће бити затворена при завршетку поступка.";
@@ -1142,10 +1208,10 @@
 "CONVERSATION_DELETE_CONFIRMATION_ALERT_MESSAGE" = "Ћаскање ће бити избрисано са овог уређаја.";
 
 /* Title for the 'conversation delete confirmation' alert. */
-"CONVERSATION_DELETE_CONFIRMATION_ALERT_TITLE" = "Избришите преписку?";
+"CONVERSATION_DELETE_CONFIRMATION_ALERT_TITLE" = "Желите ли да избришете ћаскање?";
 
 /* Title for the 'conversation mute confirmation' alert. */
-"CONVERSATION_MUTE_CONFIRMATION_ALERT_TITLE" = "Искључи обавештења за ћаскање на одређено време…";
+"CONVERSATION_MUTE_CONFIRMATION_ALERT_TITLE" = "Искључи обавештења за ово ћаскање на одређено време…";
 
 /* 1 day */
 "CONVERSATION_MUTE_CONFIRMATION_OPTION_1D" = "1 дан";
@@ -1169,7 +1235,7 @@
 "CONVERSATION_PICKER_SECTION_GROUPS" = "Групе";
 
 /* table section header for section containing recent conversations */
-"CONVERSATION_PICKER_SECTION_RECENTS" = "Скорашњи разговори";
+"CONVERSATION_PICKER_SECTION_RECENTS" = "Скорашња ћаскања";
 
 /* table section header for section containing contacts */
 "CONVERSATION_PICKER_SECTION_SIGNAL_CONTACTS" = "Особе";
@@ -1184,7 +1250,7 @@
 "CONVERSATION_SEARCH_NO_RESULTS" = "Нема резултата";
 
 /* title for conversation settings screen */
-"CONVERSATION_SETTINGS" = "Поставке ћаскања";
+"CONVERSATION_SETTINGS" = "Подешавања ћаскања";
 
 /* Label for 'add members' button in conversation settings view. */
 "CONVERSATION_SETTINGS_ADD_MEMBERS" = "Додај чланове";
@@ -1274,7 +1340,7 @@
 "CONVERSATION_SETTINGS_MESSAGE_BUTTON" = "порука";
 
 /* Title for the mute action sheet */
-"CONVERSATION_SETTINGS_MUTE_ACTION_SHEET_TITLE" = "Искључи обавештења за ћаскање на одређено време…";
+"CONVERSATION_SETTINGS_MUTE_ACTION_SHEET_TITLE" = "Искључи обавештења за ово ћаскање на одређено време…";
 
 /* Label for button to mute a thread forever. */
 "CONVERSATION_SETTINGS_MUTE_ALWAYS_ACTION" = "Увек";
@@ -1397,13 +1463,13 @@
 "COUNTRYCODE_SELECT_TITLE" = "Изаберите позивни број државе";
 
 /* Body text for an interactive in-app prompt to set up a Signal username. */
-"CREATE_USERNAME_MEGAPHONE_BODY" = "Usernames let others message you without needing your phone number.";
+"CREATE_USERNAME_MEGAPHONE_BODY" = "Корисничка имена омогућавају другима да вам шаљу поруке без потребе за вашим бројем телефона.";
 
 /* Title for a button in an interactive in-app prompt to set up a Signal username, which will start a create-username flow. */
-"CREATE_USERNAME_MEGAPHONE_SET_UP_BUTTON_TITLE" = "Set Up";
+"CREATE_USERNAME_MEGAPHONE_SET_UP_BUTTON_TITLE" = "Подесите";
 
 /* Title for an interactive in-app prompt to set up a Signal username. */
-"CREATE_USERNAME_MEGAPHONE_TITLE" = "Set up your Signal username";
+"CREATE_USERNAME_MEGAPHONE_TITLE" = "Подесите корисничко име за Signal";
 
 /* Credit/debit card donation error for decline failures where the card has expired. */
 "CREDIT_OR_DEBIT_CARD_DONATION_ERROR_EXPIRED_CARD" = "Картица вам је истекла. Проверите да ли су подаци на картици тачни и пробајте поново.";
@@ -1598,7 +1664,7 @@
 "DELETE_ACCOUNT_CONFIRMATION_WRONG_NUMBER" = "Унет телефонски број се не подудара са вашим налогом.";
 
 /* action sheet body */
-"DELETE_ALL_MESSAGES_IN_CONVERSATION_ALERT_BODY" = "Избриши све поруке у ћаскање?";
+"DELETE_ALL_MESSAGES_IN_CONVERSATION_ALERT_BODY" = "Желите ли да избришете све поруке у ћаскању?";
 
 /* button text */
 "DELETE_ALL_MESSAGES_IN_CONVERSATION_BUTTON" = "Избриши све поруке";
@@ -1610,7 +1676,10 @@
 "DEREGISTRATION_REREGISTER_WITH_SAME_PHONE_NUMBER" = "Поново региструј овај број телефона.";
 
 /* Label warning the user that they have been de-registered. */
-"DEREGISTRATION_WARNING" = "Уређај више није повезан. Могуће је да је ваш број телефона регистрован на Signal на другом уређају. Кликните овде како бисте поновили регистрацију.";
+"DEREGISTRATION_WARNING" = "Овај уређај више није регистрован. Могуће је да је ваш број телефона регистрован на Signal-у на другом уређају.";
+
+/* If the user has been deregistered, they'll see a warning. This is This is the call to action on that warning. */
+"DEREGISTRATION_WARNING_ACTION_TITLE" = "Поново региструјте уређај";
 
 /* {{Short Date}} when device last communicated with Signal Server. */
 "DEVICE_LAST_ACTIVE_AT_LABEL" = "Последња активност %1$@";
@@ -1620,6 +1689,12 @@
 
 /* Alert title that can occur when viewing device manager. */
 "DEVICE_LIST_UPDATE_FAILED_TITLE" = "Грешка при ажурирању листе уређаја.";
+
+/* A label for this device in the device list. */
+"DEVICE_NAME_THIS_DEVICE" = "Овај уређај";
+
+/* A label for an unnamed device in the device list. */
+"DEVICE_NAME_UNNAMED_DEVICE" = "Неименовани уређај";
 
 /* The stop action of the dialog asking the user if they want to cancel a device transfer */
 "DEVICE_TRANSFER_CANCEL_CONFIRMATION_ACTION" = "Заустави пренос";
@@ -1727,7 +1802,7 @@
 "DISAPPEARING_MESSAGES" = "Нестајуће поруке";
 
 /* Info Message when added to a group which has enabled disappearing messages. Embeds {{time amount}} before messages disappear. See the *_TIME_AMOUNT strings for context. */
-"DISAPPEARING_MESSAGES_CONFIGURATION_GROUP_EXISTING_FORMAT" = "Поруке у овој преписци ће нестати након %1$@.";
+"DISAPPEARING_MESSAGES_CONFIGURATION_GROUP_EXISTING_FORMAT" = "Поруке у овом ћаскању ће нестати након %1$@.";
 
 /* Disappearing message option to define a custom time */
 "DISAPPEARING_MESSAGES_CUSTOM_TIME" = "Прилагодити време";
@@ -1736,7 +1811,7 @@
 "DISAPPEARING_MESSAGES_DAYS" = "дан(а)";
 
 /* subheading in conversation settings */
-"DISAPPEARING_MESSAGES_DESCRIPTION" = "Када је омогућено, послате и примљене поруке у овој преписци ће нестати након што буду приказане.";
+"DISAPPEARING_MESSAGES_DESCRIPTION" = "Када је омогућено, нове поруке послате и примљене у овом ћаскању ће нестати након што буду приказане.";
 
 /* Accessibility hint that contains current timeout information */
 "DISAPPEARING_MESSAGES_HINT" = "Поруке сада нестају након %1$@";
@@ -1919,7 +1994,7 @@
 "DONATION_ON_BEHALF_OF_A_FRIEND_REPLY" = "Донација";
 
 /* You sent a donation to a friend. This is the title of that message in the chat. Embeds {{short contact name}}. */
-"DONATION_ON_BEHALF_OF_A_FRIEND_SENT_TITLE_FORMAT" = "Донација за пријатеља (%1$@)";
+"DONATION_ON_BEHALF_OF_A_FRIEND_SENT_TITLE_FORMAT" = "Донација у име корисника (%1$@)";
 
 /* When you donate on behalf of a friend, a thank-you sheet will appear. This is the text on that sheet. Embeds {{recipient name}}. */
 "DONATION_ON_BEHALF_OF_A_FRIEND_THANKS_BODY_FORMAT" = "Дали сте донацију Signal-у у име корисника (%1$@). Имаће могућност да прикаже подршку на свом профилу.";
@@ -2053,11 +2128,14 @@
 /* The alert title if user tries to exit update group view without saving changes. */
 "EDIT_GROUP_VIEW_UNSAVED_CHANGES_TITLE" = "Несачуване измене";
 
+/* Label for Edit History modal */
+"EDIT_HISTORY_LABEL" = "Историја измена";
+
 /* Short name for edit menu item to copy contents of media message. */
 "EDIT_ITEM_COPY_ACTION" = "Копирај";
 
 /* body of email sent to contacts when inviting to install Signal. Embeds {{link to install Signal}} and {{link to the Signal home page}} */
-"EMAIL_INVITE_BODY" = "Здраво,\n\nУ последње време користим Signal за заштиту приватности разговора на мом iPhone-у. Волео/ла бих да ми се придружиш, па да будемо сигурни да нам нико не може прислушкивати позиве и читати поруке.\n\nSignal је доступан за iPhone и Android. Преузми га овде: %1$@\n\nSignal је сличан твојој постојећој апликацији за дописивање. Можемо слати фотографије и видео записе, звати и ћаскати у групама. Најбоље је што је потпуно приватно, па нико сем нас не може читати поруке, укључујући и творце Signal-а.\n\nО људима иза Signal-а, Open Whisper Systems-у можеш више прочитати на: %2$@";
+"EMAIL_INVITE_BODY" = "Ћао!\n\nУ последње време користим Signal да би ми ћаскања на iPhone-у била приватна. Било би супер да га и ти инсталираш, па да будемо сигурни да само ти и ја можемо да читамо наше поруке и слушамо наше позиве.\n\nSignal је доступан за iPhone и Android. Преузми га овде: %1$@\n\nSignal ради слично као твоја постојећа апликација за дописивање. Можемо да шаљемо слике и видео снимке, зовемо људе и ћаскамо у групама. Најбоље је што нико осим нас не може ништа да види, укључујући креаторе Signal-а.\n\nО људима који су створили Signal, Open Whisper Systems, можеш више прочитати на: %2$@";
 
 /* subject of email sent to contacts when inviting to install Signal */
 "EMAIL_INVITE_SUBJECT" = "Пређимо на Signal";
@@ -2082,6 +2160,9 @@
 
 /* The name for the emoji category 'Objects' */
 "EMOJI_CATEGORY_OBJECTS_NAME" = "Ствари";
+
+/* The name for the emoji section for emojis already used on the message */
+"EMOJI_CATEGORY_ON_MESSAGE_NAME" = "Ова порука";
 
 /* The name for the emoji category 'Recents' */
 "EMOJI_CATEGORY_RECENTS_NAME" = "Недавно";
@@ -2195,7 +2276,7 @@
 "ERROR_MESSAGE_NON_BLOCKING_IDENTITY_CHANGE_FORMAT" = "Ваш сигурносни број са %1$@ је промењен.";
 
 /* Text notifying the user that their secure session has been reset */
-"ERROR_MESSAGE_SESSION_REFRESH" = "Чет сесија је освежена";
+"ERROR_MESSAGE_SESSION_REFRESH" = "Сесија ћаскања је освежена";
 
 /* No comment provided by engineer. */
 "ERROR_MESSAGE_UNKNOWN_ERROR" = "Дошло је до непознате грешке.";
@@ -2224,11 +2305,23 @@
 /* Format string for 'unregistered user' error. Embeds {{the unregistered user's name or signal id}}. */
 "ERROR_UNREGISTERED_USER_FORMAT" = "Нерегистрован корисник: %1$@";
 
+/* Button to exit change number, shown in context menu. */
+"EXIT_CHANGE_NUMBER" = "Изађи из промене броја";
+
+/* Button to exit re-registration, shown in context menu. */
+"EXIT_REREGISTRATION" = "Изађи из регистрације";
+
 /* Label notifying the user that the app has expired. */
-"EXPIRATION_ERROR" = "Ваша верзија Signal-а је истекла. Пипните да ажурирате на најновију верзију.";
+"EXPIRATION_ERROR" = "Ова верзија Signal-а је истекла. Ажурирајте апликацију да бисте слали и примали поруке.";
+
+/* If the user's app is too old, they'll be shown a warning asking them to upgrade. This is the text on the warning, and tapping it will open the App Store page for Signal. */
+"EXPIRATION_WARNING_ACTION_TITLE" = "Ажурирајте сада";
+
+/* Label warning the user that the app will expire soon. Embeds {{date}}. */
+"EXPIRATION_WARNING_SOON" = "Ова верзија Signal-а истиче на дан %1$@. Ажурирајте апликацију да бисте наставили да се дописујете.";
 
 /* Label warning the user that the app will expire today. */
-"EXPIRATION_WARNING_TODAY" = "Ваша верзија Signal-а истиче данас. Кликните овде да ажурирате на најновију верзију.";
+"EXPIRATION_WARNING_TODAY" = "Ова верзија Signal-а истиче данас. Ажурирајте апликацију да бисте наставили да се дописујете.";
 
 /* action sheet header when re-sending message which failed because of too many attempts */
 "FAILED_SENDING_BECAUSE_RATE_LIMIT" = "Дошло је до превише грешака са овим контактом. Покушајте поново касније.";
@@ -2285,7 +2378,10 @@
 "FORWARD_MESSAGE_TITLE" = "Проследи ка";
 
 /* Label indicating media gallery is empty */
-"GALLERY_TILES_EMPTY_GALLERY" = "Нема медија у овој преписци.";
+"GALLERY_TILES_EMPTY_GALLERY" = "Нема медијског садржаја у овом ћаскању.";
+
+/* Label indicating media gallery with audio filter is empty */
+"GALLERY_TILES_EMPTY_GALLERY_AUDIO" = "Нема аудио садржаја у овом ћаскању.";
 
 /* Label indicating loading is in progress */
 "GALLERY_TILES_LOADING_MORE_RECENT_LABEL" = "Учитавамо новије садржаје…";
@@ -2800,6 +2896,9 @@
 /* Message indicating that the local user was removed from the group by an unknown user. */
 "GROUP_LOCAL_USER_REMOVED_BY_UNKNOWN_USER" = "Уклоњени сте из групе.";
 
+/* Message indicating that the local user's request to join the group was approved. */
+"GROUP_LOCAL_USER_REQUEST_APPROVED" = "Ваш захтев за придруживање групи је одобрен.";
+
 /* Message indicating that the local user's request to join the group was approved by another user. Embeds {{ %@ the name of the user who approved the request }}. */
 "GROUP_LOCAL_USER_REQUEST_APPROVED_BY_REMOTE_USER_FORMAT" = "%1$@ је прихватио/ла Ваш захтев за придруживање групи.";
 
@@ -2884,9 +2983,6 @@
 /* Message indicating that a remote user's invite was revoked by the local user. Embeds {{remote user name}}. */
 "GROUP_REMOTE_USER_INVITE_REVOKED_BY_LOCAL_USER_FORMAT" = "Позивница за групу је опозвана за %1$@.";
 
-/* Message indicating that a single remote user was invited to the group. Embeds {{remote user name}}. */
-"GROUP_REMOTE_USER_INVITED_1_FORMAT" = "%1$@ је позван/а у групу.";
-
 /* Message indicating that a remote user was invited to the group by the local user. Embeds {{remote user name}}. */
 "GROUP_REMOTE_USER_INVITED_BY_LOCAL_USER_FORMAT" = "Позвали сте %1$@ у групу.";
 
@@ -2917,7 +3013,7 @@
 /* Message indicating that a remote user's request to join the group was rejected by the local user. Embeds {{requesting user name}}. */
 "GROUP_REMOTE_USER_REQUEST_REJECTED_BY_LOCAL_USER_FORMAT" = "Одбили сте захтев од %1$@ за придруживање групи.";
 
-/* Message indicating that a remote user's request to join the group was rejected by another user. Embeds {{ %1$@ requesting user name, %2$@ approving user name }}. */
+/* Message indicating that a remote user's request to join the group was rejected by another user. Embeds {{ %1$@ requesting user name, %2$@ rejecting user name }}. */
 "GROUP_REMOTE_USER_REQUEST_REJECTED_BY_REMOTE_USER_FORMAT" = "%2$@ је одбио/ла захтев од %1$@ за придруживање групи.";
 
 /* Message indicating that a remote user's request to join the group was rejected. Embeds {{requesting user name}}. */
@@ -2954,7 +3050,7 @@
 "GROUP_STORY_SETTINGS_DELETE_CONFIRMATION_FORMAT" = "Желите ли сигурно да уклоните групу „%1$@“?";
 
 /* Section footer for the 'viewers' section on the 'group story settings' view. Embeds {{ group name }} */
-"GROUP_STORY_SETTINGS_WHO_CAN_VIEW_THIS_FOOTER_FORMAT" = "Чланови групе „%1$@“ могу да виде ову причу и одговоре на њу. Можете да измените чланове овог ћаскања у групи.";
+"GROUP_STORY_SETTINGS_WHO_CAN_VIEW_THIS_FOOTER_FORMAT" = "Чланови групног ћаскања „%1$@“ могу да виде ову причу и одговоре на њу. Можете да измените чланове овог ћаскања у групи.";
 
 /* Section header for the 'viewers' section on the 'group story settings' view */
 "GROUP_STORY_SETTINGS_WHO_CAN_VIEW_THIS_HEADER" = "Ко може да види ову причу";
@@ -3025,12 +3121,6 @@
 /* Message indicating that the group was migrated. */
 "GROUP_WAS_MIGRATED" = "Ова група је ажурирана у нову групу";
 
-/* Message indicating that the local user was dropped while migrating the group. */
-"GROUP_WAS_MIGRATED_USERS_DROPPED_LOCAL_USER" = "Не можете да будете додати у нову групу и уклоњени сте из групе.";
-
-/* Message indicating that the local user was invited while migrating the group. */
-"GROUP_WAS_MIGRATED_USERS_INVITED_LOCAL_USER" = "Није било могуће додати Вас у нову групу, већ сте позвани да се придружите";
-
 /* Message indicating that the local user left the group. */
 "GROUP_YOU_LEFT" = "Напустили сте групу.";
 
@@ -3076,128 +3166,8 @@
 /* Label for 'invite friends to group' button. */
 "GROUPS_INVITE_FRIENDS_BUTTON" = "Позивница пријатељима";
 
-/* Body text for the first section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_1_BODY" = "Старе групе су групе које нису компатибилне са функцијама Нове групе, као што су администратори и описнија ажурирања група.";
-
-/* Title for the first section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_1_TITLE" = "Шта су старе групе?";
-
-/* Body text for the second section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_2_BODY" = "Старе групе још увек не могу да се надограде на Нове групе, али можете да направите нову групу са истим члановима ако су на најновијој верзији Signal-а.\n\nSignal ће у будућности понудити начин за надоградњу Старе Групе.";
-
-/* Title for the second section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_2_TITLE" = "Могу ли могу да надоградим стару групу?";
-
-/* Body text for the third section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_3_BODY" = "Да би креирали нову групу, сви чланови би требало да се ажурирају на најновију верзију Signal-а.";
-
-/* Title for the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_TITLE" = "Наслеђе против нових група";
-
-/* Format for indicator that a group cannot be used until it is migrated. Embeds {{ a \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_BLOCKING_MIGRATION_FORMAT" = "Надоградите ову групу да бисте активирали нове функције попут @помињања и администратора. Чланови који нису поделили своје име или слику у овој групи биће позвани да се придруже. %1$@.";
-
-/* Title for the 'can't upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_ALERT_TITLE" = "Није могуће надоградити на нову групу";
-
-/* Text indicating that a legacy group can't be upgraded because it has too many members. Embeds {{ The maximum number of members allowed in a group. }}. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_ALERT_TOO_MANY_MEMBERS_FORMAT" = "Ова група не може да се надогради на нову групу јер је превелика. Максимална величина групе је %1$@.";
-
-/* Explanation of group migration for groups that can't yet be migrated in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_YET_1" = "Када сви тренутни чланови групе користе верзију Signal-а која се може придружити новој групи, ова група ће се надоградити.";
-
-/* Explanation of group migration for groups that can't yet be migrated in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_YET_2" = "Целокупна историја порука и медијски садржаји од пре надоградње биће сачувани.";
-
-/* Brief explanation of legacy groups. Embeds {{ a \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_FORMAT" = "Ово је застарела група. Функције попут администратора групе доступне су само за нове групе. %1$@";
-
-/* Indicates that a legacy group can't be upgraded because some members can't be migrated. Embeds {{ an \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_MEMBERS_CANT_BE_MIGRATED_FORMAT" = "Ова стара група још увек није спремна за надоградњу у нову групу. %1$@.";
-
-/* Indicates that a legacy group can't be upgraded because it has too many members. Embeds {{ an \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_TOO_MANY_MEMBERS_FORMAT" = "Ова Стара Група не може да се надогради на нову групу јер је превелика. %1$@.";
-
-/* Explanation of legacy groups. Embeds {{ an \"upgrade\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_WITH_UPGRADE_OFFER_FORMAT" = "Ово је Стара Група. Да бисте приступили новим функцијама попут @помињања и администратора, %1$@.";
-
 /* Label indicating a legacy group. */
 "GROUPS_LEGACY_GROUP_INDICATOR" = "Застарела група";
-
-/* Indicates that the local user needs to accept an invitation to rejoin the group after a group migration. */
-"GROUPS_LEGACY_GROUP_LOCAL_USER_INVITED" = "Мораћете да прихватите позивницу да бисте се поново придружили овој групи. Нећете примати нове групне поруке док не прихватите.";
-
-/* Title for the 'migrated group' alert view. */
-"GROUPS_LEGACY_GROUP_MIGRATED_GROUP_ALERT_TITLE" = "Шта су нове групе?";
-
-/* Explanation of group migration for a migrated group in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_MIGRATED_GROUP_DESCRIPTION" = "Целокупна историја порука и медијски садржаји од пре надоградње су сачувани.";
-
-/* Explanation of new groups in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_NEW_GROUP_DESCRIPTION" = "Нове групе имају функције попут @помињања и администратора групе и подржаваће више функција у будућности.";
-
-/* Title for the 'new groups' alert view. */
-"GROUPS_LEGACY_GROUP_NEW_GROUPS_ALERT_TITLE" = "Нове групе";
-
-/* Label for the 'add members' button in the 're-add dropped group members' alert view. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_ADD_MEMBERS_BUTTON" = "Додај чланове";
-
-/* Title for the 're-add dropped group members' alert view. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_ALERT_TITLE_1" = "Додај члана?";
-
-/* Title for the 're-add dropped group members' alert view. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_ALERT_TITLE_N" = "Додај чланове?";
-
-/* Label for the 'add members' button in the 're-add dropped groups members' banner. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_BUTTON" = "Додај чланове";
-
-/* Explanation of 're-adding dropped group member' in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_DESCRIPTION_1" = "Члан није могао аутоматски да се дода у нову групу када је надограђена:";
-
-/* Explanation of 're-adding dropped group member' in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_DESCRIPTION_N" = "Ови чланови нису могли аутоматски да се додају у нову групу када је надограђена:";
-
-/* Body text for the second section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_2_BODY" = "Целокупна историја порука и медијски садржаји од пре надоградње су сачувани.";
-
-/* Body text for the 'dropped member' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_DROPPED_MEMBERS_1" = "Овај члан је уклоњен из групе и неће моћи да се придружи групи док не изврши надоградњу:";
-
-/* Body text for the 'dropped members' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_DROPPED_MEMBERS_N" = "Ови чланови су уклоњени из групе и неће моћи да се поново придруже док не изврше надоградњу:";
-
-/* Body text for the 'invites member' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_INVITED_MEMBERS_1" = "Овај члан ће морати да прихвати позивницу да би се поново придружио овој групи и неће примати групне поруке док не прихвати:";
-
-/* Body text for the 'invites members' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_INVITED_MEMBERS_N" = "Ови чланови ће морати да прихвате позивницу да би се поново придружили овој групи и неће примати групне поруке док не прихвате:";
-
-/* Body text for the 'possibly dropped member' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_POSSIBLY_DROPPED_MEMBERS_1" = "Овај члан не може да се придруже новим групама и биће уклоњен из групе:";
-
-/* Body text for the 'possibly dropped members' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_POSSIBLY_DROPPED_MEMBERS_N" = "Ови чланови не могу да се придруже новим групама и биће уклоњени из групе:";
-
-/* Title for the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_TITLE" = "Надоградите у нову групу";
-
-/* Label for the 'upgrade this group' button in the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_BUTTON" = "Надогради ову групу";
-
-/* Message for error alert indicating the group update failed. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_FAILED_ERROR_MESSAGE" = "Тренутно није могуће надоградити ову групу на нову групу.";
-
-/* Message for error alert indicating the group update failed due to network connectivity. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_FAILED_ERROR_MESSAGE_NETWORK" = "Није могуће надоградити ову групу на нову групу јер нисте повезани на Интернет. Покушајте поново касније.";
-
-/* Title for error alert indicating the group update failed. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_FAILED_ERROR_TITLE" = "Надоградња није успела";
-
-/* Message indicating the group update succeeded. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_SUCCEEDED" = "Надограђено на Нову Групу.";
-
-/* An \"upgrade\" link for upgrading legacy groups to new groups. */
-"GROUPS_LEGACY_GROUP_UPGRADE_LINK" = "надогради ову групу";
 
 /* Message for the 'replace group admin' alert. */
 "GROUPS_REPLACE_ADMIN_ALERT_MESSAGE" = "Изаберите новог администратора пре напуштања групе.";
@@ -3227,7 +3197,7 @@
 "HELP_SUPPORT_CENTER" = "Центар за подршку";
 
 /* Label for 'archived conversations' button. */
-"HOME_VIEW_ARCHIVED_CONVERSATIONS" = "Архивиране преписке";
+"HOME_VIEW_ARCHIVED_CONVERSATIONS" = "Архивирана ћаскања";
 
 /* Table cell subtitle label for a conversation the user has blocked. */
 "HOME_VIEW_BLOCKED_CONVERSATION" = "Блокирано";
@@ -3248,7 +3218,7 @@
 "HOME_VIEW_FIRST_CONVERSATION_OFFER_3_CONTACTS_FORMAT" = "Неки контакти из вашег именика већ користе Signal, укључујући %1$@, %2$@ и %3$@";
 
 /* A label offering to start a new conversation with your contacts, if you have no Signal contacts. */
-"HOME_VIEW_FIRST_CONVERSATION_OFFER_NO_CONTACTS" = "Овде започните ваше прво ћаскање.";
+"HOME_VIEW_FIRST_CONVERSATION_OFFER_NO_CONTACTS" = "Овде започните са прво ћаскање.";
 
 /* Table cell subtitle label for a group the user has been added to. {Embeds inviter name} */
 "HOME_VIEW_MESSAGE_REQUEST_ADDED_TO_GROUP_FORMAT" = "%1$@ вас је додао/ла у групу";
@@ -3263,7 +3233,7 @@
 "HOME_VIEW_TITLE_ARCHIVE" = "Архива";
 
 /* Title for the 'Select Chats' option in the ChatList. */
-"HOME_VIEW_TITLE_SELECT_CHATS" = "Одабрати ћаскања";
+"HOME_VIEW_TITLE_SELECT_CHATS" = "Изаберите ћаскања";
 
 /* Title 'Read All' button in the toolbar of the ChatList if multi-section is active. */
 "HOME_VIEW_TOOLBAR_READ_ALL" = "Читај све";
@@ -3311,7 +3281,7 @@
 "IN_CALL_RINGING" = "Звони…";
 
 /* Call setup status label */
-"IN_CALL_RINGING_AUDIO" = "Аудио позив…";
+"IN_CALL_RINGING_AUDIO" = "Гласовни позив…";
 
 /* Call setup status label */
 "IN_CALL_RINGING_VIDEO" = "Видео позив…";
@@ -3326,7 +3296,7 @@
 "INBOX_VIEW_ARCHIVE_MODE_MUTED_CHATS_REMINDER" = "Ћаскања са искљученим обавештењима која су архивирана остаће архивирана када стигне нова порука.";
 
 /* Label reminding the user that they are in archive mode, and that chats are unarchived when they receive a new message. */
-"INBOX_VIEW_ARCHIVE_MODE_REMINDER" = "Arhivirana ćaskanja će se premestiti u prijemno sanduče kada stigne nova poruka.";
+"INBOX_VIEW_ARCHIVE_MODE_REMINDER" = "Архивирана ћаскања ће се преместити у пријемно сандуче када стигне нова порука.";
 
 /* Message shown in the conversation list when the inbox is empty. */
 "INBOX_VIEW_EMPTY_INBOX" = "Још нема ћаскања.\nЗапочните слањем поруке пријатељу.";
@@ -3401,7 +3371,7 @@
 "KEY_COMMAND_ATTACHMENTS" = "Прикажи прилоге";
 
 /* A keyboard command to open the current conversation's settings. */
-"KEY_COMMAND_CONVERSATION_INFO" = "Иди у поставке ћаскања";
+"KEY_COMMAND_CONVERSATION_INFO" = "Иди на информације о ћаскању";
 
 /* A keyboard command to focus the current conversation's input field. */
 "KEY_COMMAND_FOCUS_COMPOSER" = "Фокусирај се на унос";
@@ -3416,10 +3386,10 @@
 "KEY_COMMAND_NEW_MESSAGE" = "Нова порука";
 
 /* A keyboard command to jump to the next conversation in the list. */
-"KEY_COMMAND_NEXT_CONVERSATION" = "Иди у следеће ћаскање";
+"KEY_COMMAND_NEXT_CONVERSATION" = "Иди на следеће ћаскање";
 
 /* A keyboard command to jump to the previous conversation in the list. */
-"KEY_COMMAND_PREVIOUS_CONVERSATION" = "Иди у претходно ћаскање";
+"KEY_COMMAND_PREVIOUS_CONVERSATION" = "Иди на претходно ћаскање";
 
 /* A keyboard command to begin a search on the conversation list. */
 "KEY_COMMAND_SEARCH" = "Претрага";
@@ -3431,7 +3401,7 @@
 "KEY_COMMAND_STICKERS" = "Прикажи налепнице";
 
 /* A keyboard command to unarchive the current conversation. */
-"KEY_COMMAND_UNARCHIVE" = "Одархивирај ћаскање";
+"KEY_COMMAND_UNARCHIVE" = "Деархивирај ћаскање";
 
 /* Label for the 'learn more' button. */
 "LEARN_MORE" = "Сазнајте више";
@@ -3445,6 +3415,21 @@
 /* Error indicating that a group could not be left. */
 "LEAVE_GROUP_FAILED" = "Дошло је до грешке при напуштању групе.";
 
+/* Text in a sheet explaining details about 'Legacy Groups'. */
+"LEGACY_GROUP_UNSUPPORTED_LEARN_MORE_BODY" = "„Застареле групе“ су групе које не подржавају функције као што су @помињања и администратори. Већина застарелих група је аутоматски или ручно надограђена на „нове групе“. Због дужег периода неактивности, ова група се више не може надоградити.\n\nДа бисте наставили са овим ћаскањем, морате да направите нову групу.";
+
+/* Title for a sheet explaining details about 'Legacy Groups'. */
+"LEGACY_GROUP_UNSUPPORTED_LEARN_MORE_TITLE" = "Застареле групе";
+
+/* Message explaining that this group can no longer be used because it is unsupported. Embeds a {{ learn more link }}. */
+"LEGACY_GROUP_UNSUPPORTED_MESSAGE" = "Ово је застарела група која више није подржана. Да бисте наставили са овим ћаскањем, направите нову групу. %1$@";
+
+/* Text in a sheet explaining details about 'New Groups'. */
+"LEGACY_GROUP_WHAT_ARE_NEW_GROUPS_BODY" = "Нове групе имају функције попут @помињања и администратора групе и подржаваће више функција у будућности.\n\nЦелокупна историја порука и медијски садржаји од пре надоградње су сачувани.";
+
+/* Title for a sheet explaining details about 'New Groups'. */
+"LEGACY_GROUP_WHAT_ARE_NEW_GROUPS_TITLE" = "Шта су нове групе?";
+
 /* report an invalid linking code */
 "LINK_DEVICE_INVALID_CODE_BODY" = "Овај QR кôд није исправан. Проверите да ли скенирате QR код приказан на уређају који желите да повежете.";
 
@@ -3452,7 +3437,7 @@
 "LINK_DEVICE_INVALID_CODE_TITLE" = "Повезивање уређаја није успело";
 
 /* confirm the users intent to link a new device */
-"LINK_DEVICE_PERMISSION_ALERT_BODY" = "Овај уређај ће имати приступ вашем именику, групама, препискама и моћи ће да шаље поруке у ваше име.";
+"LINK_DEVICE_PERMISSION_ALERT_BODY" = "Овај уређај ће имати приступ вашем именику, групама, ћаскањима и моћи ће да шаље поруке у ваше име.";
 
 /* confirm the users intent to link a new device */
 "LINK_DEVICE_PERMISSION_ALERT_TITLE" = "Повежи уређај?";
@@ -3553,11 +3538,20 @@
 /* Shown in place of message input text in media editor when 'View Once' is on. */
 "MEDIA_EDITOR_TEXT_FIELD_VIEW_ONCE_MEDIA" = "Једнократни садржај";
 
+/* Explanatory text displayed when deleting N items in All Media screen. */
+"MEDIA_GALLERY_DELETE_MEDIA_BODY" = "This will permanently delete the selected files. Any message text associated with these items will also be deleted.";
+
 /* Format for the 'more items' indicator for media galleries. Embeds {{the number of additional items}}. */
 "MEDIA_GALLERY_MORE_ITEMS_FORMAT" = "+%1$@";
 
 /* Section header in media gallery collection view */
 "MEDIA_GALLERY_THIS_MONTH_HEADER" = "Овог месеца";
+
+/* Text explaining that the user will forward all media from a message. */
+"MEDIA_PAGE_FORWARD_MEDIA_CONFIRM_MESSAGE" = "Сав медијски садржај у овој поруци биће прослеђен.";
+
+/* Context menu item in media viewer. Refers to deleting currently displayed photo/video. */
+"MEDIA_VIEWER_DELETE_MEDIA_ACTION" = "Избриши";
 
 /* button title to snooze a megaphone */
 "MEGAPHONE_REMIND_LATER" = "Подсети ме касније";
@@ -3572,7 +3566,7 @@
 "MESSAGE_ACTION_DELETE_FOR_EVERYONE" = "Избриши за све чланове";
 
 /* A one-time confirmation that you want to delete for everyone */
-"MESSAGE_ACTION_DELETE_FOR_EVERYONE_CONFIRMATION" = "Ова порука ће бити избрисана за све из ћаскања ако користе најновију верзију апликације Signal. Моћи ће да виде да сте избрисали поруку.";
+"MESSAGE_ACTION_DELETE_FOR_EVERYONE_CONFIRMATION" = "Ова порука ће бити избрисана свима у ћаскању ако користе најновију верзију Signal-а. Моћи ће да виде да сте избрисали поруку.";
 
 /* The title for the action sheet asking who the user wants to delete the message for. */
 "MESSAGE_ACTION_DELETE_FOR_TITLE" = "За кога желите да избришете ову поруку?";
@@ -3654,6 +3648,9 @@
 
 /* Toast indicating that the user has copied the sent timestamp. */
 "MESSAGE_DETAIL_VIEW_DID_COPY_SENT_TIMESTAMP" = "Врме слања је копирано";
+
+/* Title for the 'edit history' section on the 'message details' view. */
+"MESSAGE_DETAILS_EDIT_HISTORY_TITLE" = "Видите историју измена";
 
 /* Title for the 'sent from' section on the 'message details' view. */
 "MESSAGE_DETAILS_VIEW_SENT_FROM_TITLE" = "Послао";
@@ -3737,10 +3734,10 @@
 "MESSAGE_REQUEST_DELETE_CONVERSATION_ACTION" = "Избриши";
 
 /* Action sheet message to confirm deleting a conversation via a message request. */
-"MESSAGE_REQUEST_DELETE_CONVERSATION_MESSAGE" = "Преписка ће бити избрисана са ваших свих уређаја.";
+"MESSAGE_REQUEST_DELETE_CONVERSATION_MESSAGE" = "Ћаскање ће бити избрисано са свих ваших уређаја.";
 
 /* Action sheet title to confirm deleting a conversation via a message request. */
-"MESSAGE_REQUEST_DELETE_CONVERSATION_TITLE" = "Избришите преписку?";
+"MESSAGE_REQUEST_DELETE_CONVERSATION_TITLE" = "Желите ли да избришете ћаскање?";
 
 /* Action sheet action to confirm deleting a group via a message request. */
 "MESSAGE_REQUEST_LEAVE_AND_DELETE_GROUP_ACTION" = "Избриши и напусти";
@@ -3797,10 +3794,10 @@
 "MESSAGE_REQUEST_VIEW_DELETE_BUTTON" = "Избриши";
 
 /* A prompt notifying that the user must share their profile with this conversation. Embeds {{contact name}}. */
-"MESSAGE_REQUEST_VIEW_EXISTING_CONTACT_PROMPT_FORMAT" = "Наставити разговор са %1$@ и поделите своје име и фоторафију са њима?";
+"MESSAGE_REQUEST_VIEW_EXISTING_CONTACT_PROMPT_FORMAT" = "Желите ли да ви и %1$@ наставите ћаскање и да поделите своје име и фотографију са том особом?";
 
 /* A prompt notifying that the user must share their profile with this group. */
-"MESSAGE_REQUEST_VIEW_EXISTING_GROUP_PROMPT" = "Наставити ћаскање са овом групом и поделите своје име и фотографију са њеним члановима?";
+"MESSAGE_REQUEST_VIEW_EXISTING_GROUP_PROMPT" = "Желите ли да наставите ћаскање са овом групом и поделите своје име и фотографију са њеним члановима?";
 
 /* A prompt asking if the user wants to accept a conversation invite. Embeds {{contact name}}. */
 "MESSAGE_REQUEST_VIEW_NEW_CONTACT_PROMPT_FORMAT" = "Да ли дозвољавате да вам %1$@ шаље поруке и да види ваше име и слику? Неће знати да сте прочитали поруке док не прихватите.";
@@ -3828,6 +3825,9 @@
 
 /* message status while message is downloading. */
 "MESSAGE_STATUS_DOWNLOADING" = "Преузима се";
+
+/* status meesage for edited messages */
+"MESSAGE_STATUS_EDITED" = "измењено";
 
 /* status message for failed messages */
 "MESSAGE_STATUS_FAILED" = "Слање није успело.";
@@ -4067,7 +4067,10 @@
 "NO_OTHER_GROUPS_IN_COMMON" = "Нема других заједничких група";
 
 /* Label for 1:1 conversation with yourself. */
-"NOTE_TO_SELF" = "Моје белешке";
+"NOTE_TO_SELF" = "Моја белешка";
+
+/* Body for a notification representing a message request. */
+"NOTIFICATION_BODY_INCOMING_MESSAGE_REQUEST" = "Захтев за ћаскање";
 
 /* Lock screen notification text presented after user powers on their device without unlocking. Embeds {{device model}} (either 'iPad' or 'iPhone') */
 "NOTIFICATION_BODY_PHONE_LOCKED_FORMAT" = "Могуће је да сте примили поруке док се %1$@ рестартовао.";
@@ -4140,6 +4143,9 @@
 
 /* Label indicating that the 2fa pin is invalid in the 'onboarding 2fa' view. */
 "ONBOARDING_2FA_INVALID_PIN" = "Нетачан PIN";
+
+/* Label indicating that the 2fa pin is invalid in the 'onboarding 2fa' view, and you only have one more attempt */
+"ONBOARDING_2FA_INVALID_PIN_LAST_ATTEMPT" = "Неисправан PIN. Преостао вам је још 1 покушај.";
 
 /* Label for the 'skip and create new pin' button when reglock is disabled during onboarding. */
 "ONBOARDING_2FA_SKIP_AND_CREATE_NEW_PIN" = "Прескочи и направи нови PIN";
@@ -4222,6 +4228,9 @@
 /* Title of the 'onboarding pin attempts exhausted' view when reglock is disabled. */
 "ONBOARDING_PIN_ATTEMPTS_EXHAUSTED_TITLE" = "Нетачан PIN";
 
+/* Explanation of the 'onboarding pin attempts exhausted' view when it is unknown if reglock is enabled. */
+"ONBOARDING_PIN_ATTEMPTS_EXHAUSTED_WITH_UNKNOWN_REGLOCK_EXPLANATION" = "Искористили сте све покушаје за унос PIN-а, али још увек можете да пробате да приступите Signal-у верификовањем броја телефона. Зарад ваше безбедности и приватности, налог ће бити враћен, али информације са налога и подешавања неће бити враћени.";
+
 /* Title of the 'onboarding PIN' view. */
 "ONBOARDING_PIN_EXPLANATION" = "Унесите PIN вашег налога. Овај није исти као и ваш SMS верификациони кôд.";
 
@@ -4255,6 +4264,18 @@
 /* Label for a progress spinner currently validating code */
 "ONBOARDING_VERIFICATION_CODE_VALIDATION_PROGRESS_LABEL" = "Потврда шифре је у току…";
 
+/* First bullet point for the explainer sheet for registering via verification code. */
+"ONBOARDING_VERIFICATION_HELP_BULLET_1" = "Проверите да ли је телефонска мрежа доступна и да ли имате могућност примања SMS порука и позива";
+
+/* Second bullet point for the explainer sheet for registering via verification code. */
+"ONBOARDING_VERIFICATION_HELP_BULLET_2" = "Проверите да ли можете да примите телефонски позив на број";
+
+/* Third bullet point for the explainer sheet for registering via verification code. */
+"ONBOARDING_VERIFICATION_HELP_BULLET_3" = "Проверите да ли сте исправно унели број телефона";
+
+/* Label for a button to get help entering a verification code when registering. */
+"ONBOARDING_VERIFICATION_HELP_LINK" = "Имате проблема са регистрацијом?";
+
 /* Label indicating that the verification code is incorrect in the 'onboarding verification' view. */
 "ONBOARDING_VERIFICATION_INVALID_CODE" = "Унет је нетачан кôд";
 
@@ -4272,6 +4293,21 @@
 
 /* Button text which opens the settings app */
 "OPEN_SETTINGS_BUTTON" = "Подешавања";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're on unsupported version. Some users can upgrade their device to a newer version of iOS to continue using Signal. If that's the case, they'll be shown this text. */
+"OS_EXPIRED_AND_CAN_UPGRADE_OS" = "Signal више не ради на овом уређају. Да бисте поново користили Signal, ажурирајте уређај на новију верзију iOS-а.";
+
+/* Signal doesn't support old devices. If that's the case, they'll be shown this action, and tapping it will open information about Signal's minimum supported operating systems. */
+"OS_EXPIRED_AND_DEVICE_IS_STUCK" = "Signal више не ради на овом уређају. Да бисте поново користили Signal, пређите на новији уређај.";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're on an old version. Some users can upgrade their device to a newer version of iOS to continue using Signal. If that's the case, they'll be shown this action, and tapping it will open device update instructions. */
+"OS_SOON_TO_EXPIRE_ACTION_TITLE" = "Ажурирајте сада";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're an old version that will soon lose support. Some users can upgrade their device to a newer version of iOS to continue using Signal. If that's the case, they'll be shown this text. Embeds {{expiration date}}. */
+"OS_SOON_TO_EXPIRE_AND_CAN_UPGRADE_OS_FORMAT" = "Signal ускоро више неће подржавати верзију iOS-а на вашем уређају. Да бисте наставили да користите Signal, ажурирајте уређај на новију верзију iOS-а до %1$@.";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're on an old version that will soon lose support. This is the text on that warning when users can't upgrade iOS without getting a new device. Embeds {{expiration date}}. */
+"OS_SOON_TO_EXPIRE_AND_DEVICE_WILL_BE_STUCK_FORMAT" = "Signal ускоро више неће подржавати верзију iOS-а на вашем уређају. Да бисте наставили да користите Signal, пређите на новији уређај до %1$@.";
 
 /* Info Message when another user disabled disappearing messages. Embeds {{name of other user}}. */
 "OTHER_DISABLED_DISAPPEARING_MESSAGES_CONFIGURATION" = "%1$@ је искључио/ла нестајуће поруке.";
@@ -4649,22 +4685,16 @@
 "PHONE_NUMBER_DISCOVERABILITY_EVERYBODY" = "Било ко";
 
 /* A user friendly description of the 'everybody' phone number discoverability mode. */
-"PHONE_NUMBER_DISCOVERABILITY_EVERYBODY_DESCRIPTION" = "Anyone who has your phone number in their contacts will see you as a contact on Signal. Others will be able to reach you with your phone number when they start a new chat or group.";
+"PHONE_NUMBER_DISCOVERABILITY_EVERYBODY_DESCRIPTION" = "Свако ко има ваш број телефона у својим контактима ће вас видети као контакт на Signal-у. Остали ће моћи да вас добију преко вашег број телефона када започну ново ћаскање или креирају групу.";
 
 /* A user friendly name for the 'nobody' phone number discoverability mode. */
 "PHONE_NUMBER_DISCOVERABILITY_NOBODY" = "никога";
 
 /* A user friendly description of the 'nobody' phone number discoverability mode. */
-"PHONE_NUMBER_DISCOVERABILITY_NOBODY_DESCRIPTION" = "Nobody on Signal will be able to reach you with your phone number.";
+"PHONE_NUMBER_DISCOVERABILITY_NOBODY_DESCRIPTION" = "Нико у Signal-у неће моћи да вас добије преко вашег броја телефона.";
 
 /* A format for a label showing an example phone number. Embeds {{the example phone number}}. */
 "PHONE_NUMBER_EXAMPLE_FORMAT" = "Пример: %1$@";
-
-/* A user friendly name for the 'contacts only' phone number sharing mode. */
-"PHONE_NUMBER_SHARING_CONTACTS_ONLY" = "Моји контакти";
-
-/* A user friendly description of the 'contacts only' phone number sharing mode. */
-"PHONE_NUMBER_SHARING_CONTACTS_ONLY_DESCRIPTION" = "Само ваши контакти ће видети ваш број телефона на Signal-у.";
 
 /* A user friendly name for the 'everybody' phone number sharing mode. */
 "PHONE_NUMBER_SHARING_EVERYBODY" = "Било ко";
@@ -4772,7 +4802,13 @@
 "PIN_CREATION_EXPLANATION" = "Употребом PIN-а се подаци које Signal складишти енкриптују, тако да им само ви можете приступити. Ваш налог, подешавања и контакти ће бити враћени када реинсталирате Signal. За отварање апликације неће вам требати PIN.";
 
 /* Learn more action on the pin creation view */
-"PIN_CREATION_LEARN_MORE" = "Сазнајте више о PIN-овима";
+"PIN_CREATION_LEARN_MORE" = "Више о PIN-овима";
+
+/* Users can create PINs to restore their account data later. They can learn more about this on a sheet. This is the text on that sheet. */
+"PIN_CREATION_LEARN_MORE_TEXT" = "PIN-ови чувају ваше информације шифрованим у Signal-у, тако да само ви можете да им приступите. Ваш профил, подешавања и контакти ће бити враћени када поново инсталирате апликацију.";
+
+/* Users can create PINs to restore their account data later. They can learn more about this on a sheet. This is the title on that sheet. */
+"PIN_CREATION_LEARN_MORE_TITLE" = "О Signal PIN-овима";
 
 /* Label indicating that the attempted PIN does not match the first PIN */
 "PIN_CREATION_MISMATCH_ERROR" = "PIN-ови се не подударају. Покушајте поново.";
@@ -4820,13 +4856,16 @@
 "PIN_CREATION_WEAK_ERROR" = "Унесите компликованији PIN";
 
 /* If your attempted PIN is too weak, you'll see an error message. This is the text on the error dialog. */
-"PIN_CREATION_WEAK_ERROR_MESSAGE" = "PINs keep your information stored with Signal encrypted so only you can access it. Choose a stronger PIN to protect your account.";
+"PIN_CREATION_WEAK_ERROR_MESSAGE" = "PIN-ови чувају ваше информације шифрованим у Signal-у, тако да само ви можете да им приступите. Изаберите јачи PIN да бисте заштитили налог.";
 
 /* Error body indicating that the attempt to disable a PIN failed. */
 "PIN_DISABLE_ERROR_MESSAGE" = "Ваш PIN није могао бити онемогућен. Обавестићемо вас поново касније.";
 
 /* Error title indicating that the attempt to disable a PIN failed. */
 "PIN_DISABLE_ERROR_TITLE" = "Неуспешно онемогућавање PIN-а";
+
+/* If the user is re-registering, they need to enter their PIN to restore all their data. In some cases, they can skip this entry and lose some data. This text is shown on a button that lets them begin to do this. */
+"PIN_ENTER_EXISTING_SKIP" = "Прескочи PIN";
 
 /* Error title indicating that the attempt to recreate a PIN failed. */
 "PIN_RECREATION_ERROR_TITLE" = "Додавање PIN-а неуспешно";
@@ -4871,7 +4910,7 @@
 "PIN_REMINDER_TOO_SHORT_ERROR" = "PIN  мора садржати бар 4 цифре.";
 
 /* An explanation that you have already pinned the maximum number of conversations. */
-"PINNED_CONVERSATION_LIMIT" = "Могуће је закачити највише 4 ћаскања.";
+"PINNED_CONVERSATION_LIMIT" = "Можете да закачите највише 4 ћаскања.";
 
 /* The title for pinned conversation section on the conversation list */
 "PINNED_SECTION_TITLE" = "Закачено";
@@ -4897,7 +4936,7 @@
 /* Badge indicating that the user is verified. */
 "PRIVACY_IDENTITY_IS_VERIFIED_BADGE" = "Оверен/на";
 
-/* Label indicating that the user is verified. Embeds {{the user's name or phone number}}. */
+/* Label indicating that the user is verified. Embeds  user's name or phone number}}. */
 "PRIVACY_IDENTITY_IS_VERIFIED_FORMAT" = "%1$@ је оверен/на.";
 
 /* Button that shows the 'scan with camera' view. */
@@ -4910,7 +4949,7 @@
 "PRIVACY_VERIFICATION_FAILED_I_HAVE_WRONG_KEY_FOR_THEM" = "Ово не личи на ваш сигурносни број са %1$@. Да ли оверавате добар контакт?";
 
 /* Alert body */
-"PRIVACY_VERIFICATION_FAILED_MISMATCHED_SAFETY_NUMBERS_IN_CLIPBOARD" = "Број у вашој остави се не подудара са сигурносним бројем за ову преписку.";
+"PRIVACY_VERIFICATION_FAILED_MISMATCHED_SAFETY_NUMBERS_IN_CLIPBOARD" = "Број у међумеморији се не подудара са сигурносним бројем за ово ћаскање.";
 
 /* Alert body for user error */
 "PRIVACY_VERIFICATION_FAILED_NO_SAFETY_NUMBERS_IN_CLIPBOARD" = "Signal није успео да пронађе сигурносни број у вашој остави. Да ли сте га добро копирали?";
@@ -4970,7 +5009,7 @@
 "PROFILE_BIO_VIEW_DEFAULT_BIO_ENCRYPTED" = "Шифровано";
 
 /* The 'free to chat' default bio in the profile bio view. */
-"PROFILE_BIO_VIEW_DEFAULT_BIO_FREE_TO_CHAT" = "Доступан за ћаскање";
+"PROFILE_BIO_VIEW_DEFAULT_BIO_FREE_TO_CHAT" = "Можемо да ћаскамо";
 
 /* The 'Speak Freely' default bio in the profile bio view. */
 "PROFILE_BIO_VIEW_DEFAULT_BIO_SPEAK_FREELY" = "Говорите слободно";
@@ -5002,8 +5041,14 @@
 /* Placeholder when the user doesn't have a 'name' defined for profile settings screen. */
 "PROFILE_SETTINGS_NAME_PLACEHOLDER" = "Име";
 
+/* Title for a menu action allowing users to edit their existing username. */
+"PROFILE_SETTINGS_USERNAME_EDIT_USERNAME_ACTION" = "Измените корисничко име";
+
 /* A placeholder value shown in the profile settings screen on a tappable item leading to a username selection flow, for when the user doesn't have a username. */
 "PROFILE_SETTINGS_USERNAME_PLACEHOLDER" = "Корисничко име";
+
+/* Title for a menu action allowing users to view their username link QR code. */
+"PROFILE_SETTINGS_USERNAME_VIEW_QR_CODE_ACTION" = "Отвори QR код";
 
 /* Error message shown when user tries to update profile with a family name that is too long. */
 "PROFILE_VIEW_ERROR_FAMILY_NAME_TOO_LONG" = "Ваше презиме је предугачко.";
@@ -5024,7 +5069,7 @@
 "PROFILE_VIEW_NO_CONNECTION" = "Профил може бити измењен само када сте повезани на интернет.";
 
 /* Description of the user profile. */
-"PROFILE_VIEW_PROFILE_DESCRIPTION" = "Ваш профил је потпуно енкриптован. Биће видљив вашим контактима када започнете или прихватите ново ћаскање.";
+"PROFILE_VIEW_PROFILE_DESCRIPTION" = "Ваш профил је потпуно шифрован. Ваш профил и измене у њему моћи ће да виде ваши контакти када започнете или прихватите нова ћаскања.";
 
 /* Button to save the profile view in the profile view. */
 "PROFILE_VIEW_SAVE_BUTTON" = "Сачувај";
@@ -5072,10 +5117,10 @@
 "QUOTED_REPLY_ORIGINAL_MESSAGE_REMOTELY_SOURCED" = "Оригинална порука није пронађена.";
 
 /* Header label that appears above quoted messages when the quoted content was includes a reaction to your own story. */
-"QUOTED_REPLY_REACTION_TO_OWN_STORY" = "Реаговано на причу";
+"QUOTED_REPLY_REACTION_TO_OWN_STORY" = "Реаговао/ла је на вашу причу";
 
 /* Header label that appears above quoted messages when the quoted content was includes a reaction to a story. Embeds {{ story author name }} */
-"QUOTED_REPLY_REACTION_TO_STORY_FORMAT" = "Реаговано на причу од %1$@";
+"QUOTED_REPLY_REACTION_TO_STORY_FORMAT" = "Реаговао/ла је на причу корисника (%1$@)";
 
 /* Message header when you are quoting a story. Embeds {{ story author name }} */
 "QUOTED_REPLY_STORY_AUTHOR_INDICATOR_FORMAT" = "%1$@ · Прича";
@@ -5102,40 +5147,40 @@
 "REACTION_DETAIL_ALL_FORMAT" = "Све · %1$@";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_BODY_FORMAT" = "Реакција %1$@ на вашу поруку";
+"REACTION_INCOMING_NOTIFICATION_BODY_FORMAT" = "Реаговао/ла је %1$@ на вашу поруку";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_ALBUM_BODY_FORMAT" = "Реакција %1$@ на ваш албум";
+"REACTION_INCOMING_NOTIFICATION_TO_ALBUM_BODY_FORMAT" = "Реаговао/ла је %1$@ на ваш албум";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_AUDIO_BODY_FORMAT" = "Реакција %1$@ на ваш звучни запис";
+"REACTION_INCOMING_NOTIFICATION_TO_AUDIO_BODY_FORMAT" = "Реаговао/ла је %1$@ на ваш аудио";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_CONTACT_SHARE_BODY_FORMAT" = "Реакција %1$@ на ваш подељени контакт";
+"REACTION_INCOMING_NOTIFICATION_TO_CONTACT_SHARE_BODY_FORMAT" = "Реаговао/ла је %1$@ на ваш подељени контакт";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_FILE_BODY_FORMAT" = "Dobili ste reakciju %1$@ na vaš fajl";
+"REACTION_INCOMING_NOTIFICATION_TO_FILE_BODY_FORMAT" = "Реаговао/ла је %1$@ на ваш фајл";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_GIF_BODY_FORMAT" = "Реакција %1$@ на ваш GIF";
+"REACTION_INCOMING_NOTIFICATION_TO_GIF_BODY_FORMAT" = "Реаговао/ла је %1$@ на ваш GIF";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_PHOTO_BODY_FORMAT" = "Реакција %1$@ на вашу слику";
+"REACTION_INCOMING_NOTIFICATION_TO_PHOTO_BODY_FORMAT" = "Реаговао/ла је %1$@ на вашу фотографију";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_STICKER_MESSAGE_BODY_FORMAT" = "Реакција %1$@ на вашу налепницу";
+"REACTION_INCOMING_NOTIFICATION_TO_STICKER_MESSAGE_BODY_FORMAT" = "Реаговао/ла је %1$@ на вашу налепницу";
 
 /* notification body. Embeds {{reaction emoji}} and {{body text}} */
-"REACTION_INCOMING_NOTIFICATION_TO_TEXT_MESSAGE_BODY_FORMAT" = "Реакција %1$@ на : „%2$@”";
+"REACTION_INCOMING_NOTIFICATION_TO_TEXT_MESSAGE_BODY_FORMAT" = "Реаговао/ла је %1$@ на: „%2$@“";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_VIDEO_BODY_FORMAT" = "Реакција %1$@ на ваш видео запис";
+"REACTION_INCOMING_NOTIFICATION_TO_VIDEO_BODY_FORMAT" = "Реаговао/ла је %1$@ на ваш видео";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_VIEW_ONCE_MESSAGE_BODY_FORMAT" = "Реакција %1$@ на ваш једнократни медиј";
+"REACTION_INCOMING_NOTIFICATION_TO_VIEW_ONCE_MESSAGE_BODY_FORMAT" = "Реаговао/ла је %1$@ на ваш једнократни садржај";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_VOICE_MESSAGE_BODY_FORMAT" = "Реакција %1$@ на вашу гласовну поруку";
+"REACTION_INCOMING_NOTIFICATION_TO_VOICE_MESSAGE_BODY_FORMAT" = "Реаговао/ла је %1$@ на вашу гласовну поруку";
 
 /* Pressing this button marks a thread as read */
 "READ_ACTION" = "Прочитано";
@@ -5164,8 +5209,11 @@
 /* Alert body for a forgotten SVR (V2) PIN */
 "REGISTER_2FA_FORGOT_SVR_PIN_ALERT_MESSAGE" = "Ваш PIN је кôд од 4 или више цифре или алфанумеричка карактера који сте раније направили. Ако се не сећате вашег PIN-а, мораћете сачекати 7 дана за поновну регистрацију налогa.";
 
-/* Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock */
-"REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_ALERT_MESSAGE" = "Ваш PIN је кôд од 4 или више цифре или алфанумеричка карактера који сте раније направили. Ако се не сећате вашег PIN-а, можете направити нови. Регистрација новог налогa је дозвољена, али ћете изгубити нека подешавања као што су личне информације профила.";
+/* Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock and they cannot necessarily create a new PIN */
+"REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_ALERT_MESSAGE" = "Ваш PIN је шифра од {0} или више цифара коју сте креирали и која може бити нумеричка или алфанумеричка. Ако се не сећате PIN-а, моћи ћете да региструјете и користите свој налог, али ћете изгубити нека сачувана подешавања као што су личне информације.";
+
+/* Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock and they can create a new PIN */
+"REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_AND_CAN_CREATE_NEW_PIN_ALERT_MESSAGE" = "Ваш PIN је шифра од 4 или више цифара коју сте креирали и која може бити нумеричка или алфанумеричка. Ако се не сећате PIN-а, можете направити нови. Моћи ћете да региструјете и користите свој налог, али ћете изгубити нека сачувана подешавања као што су личне информације.";
 
 /* Alert body for a forgotten V1 PIN */
 "REGISTER_2FA_FORGOT_V1_PIN_ALERT_MESSAGE" = "Ваш PIN је кôд од 4 или више цифре који сте раније направили. Ако се не сећате вашег PIN-а, мораћете сачекати 7 дана за поновну регистрацију налогa.";
@@ -5179,6 +5227,9 @@
 /* No comment provided by engineer. */
 "REGISTER_CONTACTS_WELCOME" = "Добродошли!";
 
+/* Body of action sheet shown when rate-limited during registration. */
+"REGISTER_RATE_LIMITING_ALERT" = "Имали сте превише покушаја. Сачекајте неколико минута пре него што пробате поново.";
+
 /* action sheet body */
 "REGISTER_RATE_LIMITING_BODY" = "Имали сте превише учесталих покушаја. Молимо вас да сачекате један минут пре наредног покушаја.";
 
@@ -5188,17 +5239,26 @@
 /* Title of alert shown when push tokens sync job fails. */
 "REGISTRATION_BODY" = "Грешка при поновној пријави на сервис за обавештења.";
 
+/* During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the action button on that alert. */
+"REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_ACTION" = "Ажурирај";
+
+/* During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the description text on that alert. */
+"REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_DESCRIPTION" = "Да бисте наставили са регистрацијом, ажурирајте Signal на најновију верзију.";
+
+/* During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the title on that alert. */
+"REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_TITLE" = "Неопходно је ажурирање апликације";
+
 /* During registration, users may be shown a CAPTCHA to verify that they're human. This text is shown above the CAPTCHA. */
-"REGISTRATION_CAPTCHA_TITLE" = "We need to verify that you’re human";
+"REGISTRATION_CAPTCHA_TITLE" = "Морамо да потврдимо да сте човек.";
 
 /* Label for the country code field */
 "REGISTRATION_DEFAULT_COUNTRY_NAME" = "Позивни број државе";
 
 /* If a user is installing Signal on a new phone, they may be asked whether they want to transfer their account from their old device. This is a description on the screen that asks them this question. */
-"REGISTRATION_DEVICE_TRANSFER_CHOICE_EXPLANATION" = "Continuing will disable Signal on other devices currently registered with the same phone number.";
+"REGISTRATION_DEVICE_TRANSFER_CHOICE_EXPLANATION" = "Ако наставите, деактивираћете Signal на другим уређајима који су тренутно регистровани са истим бројем телефона.";
 
 /* If a user is installing Signal on a new phone, they may be asked whether they want to transfer their account from their old device. This is the title on the screen that asks them this question. */
-"REGISTRATION_DEVICE_TRANSFER_CHOICE_TITLE" = "Transfer Account & Messages";
+"REGISTRATION_DEVICE_TRANSFER_CHOICE_TITLE" = "Пренесите налог и поруке";
 
 /* Placeholder text for the phone number textfield */
 "REGISTRATION_ENTERNUMBER_DEFAULT_TEXT" = "Унесите број";
@@ -5215,59 +5275,98 @@
 /* Alert title for network failure during registration */
 "REGISTRATION_ERROR_NETWORK_FAILURE_ALERT_TITLE" = "Провера везе";
 
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This is the description on that screen, explaining what's going on. Embeds {{ duration }}, such as \"7 days\". */
+"REGISTRATION_LOCK_TIMEOUT_DESCRIPTION_FORMAT" = "Ваш налог је закључан ради заштите ваше приватности и безбедности. Број дана неактивности након ког више нећете моћи да региструјете овај број телефона без PIN-а је %1$@. Сав садржај ће бити избрисан.";
+
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This button appears on that screen. Tapping it will tell the user more information. */
+"REGISTRATION_LOCK_TIMEOUT_LEARN_MORE_BUTTON" = "Сазнајте више о закључаним налозима";
+
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This button appears on that screen. Tapping it will bump the user back, earlier in registration, so they can register with a different phone number. */
+"REGISTRATION_LOCK_TIMEOUT_RESET_PHONE_NUMBER_BUTTON" = "Користите други број";
+
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This is the title of that screen. */
+"REGISTRATION_LOCK_TIMEOUT_TITLE" = "Налог је закључан";
+
+/* A network error occurred during registration, and an error is shown to the user. This is the body on that error sheet. */
+"REGISTRATION_NETWORK_ERROR_BODY" = "Да бисте наставили, проверите интернет везу на телефону и пробајте поново.";
+
+/* A network error occurred during registration, and an error is shown to the user. This is the title on that error sheet. */
+"REGISTRATION_NETWORK_ERROR_TITLE" = "Проверите везу";
+
 /* No comment provided by engineer. */
 "REGISTRATION_NON_VALID_NUMBER" = "Формат овог броја телефона није подржан. Молимо вас да контактирате подршку.";
 
 /* During registration, users are asked to enter their phone number. This is the subtitle on that screen, which gives users some instructions. */
-"REGISTRATION_PHONE_NUMBER_SUBTITLE" = "Enter your phone number to get started.";
+"REGISTRATION_PHONE_NUMBER_SUBTITLE" = "За почетак, унесите свој број телефона.";
 
 /* During registration, users are asked to enter their phone number. This is the title on that screen. */
-"REGISTRATION_PHONE_NUMBER_TITLE" = "Your Phone Number";
+"REGISTRATION_PHONE_NUMBER_TITLE" = "Ваш број телефона";
+
+/* Message for confirmation alert when requesting a voice code during phone number registration. */
+"REGISTRATION_PHONE_NUMBER_VOICE_CODE_ALERT_MESSAGE" = "Примићете позив за верфикацију овог броја. Да ли је тачан ваш број телефона изнад?";
 
 /* Label for the phone number textfield */
 "REGISTRATION_PHONENUMBER_BUTTON" = "Број телефона";
 
 /* During registration, users are asked to create a PIN code. They'll be taken to a screen to confirm their PIN, much like confirming a password. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_CONFIRM_SUBTITLE" = "Re-enter the PIN you just created.";
+"REGISTRATION_PIN_CONFIRM_SUBTITLE" = "Поново унесите PIN који сте управо креирали.";
 
 /* During registration, users are asked to create a PIN code. They'll be taken to a screen to confirm their PIN, much like confirming a password. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_CONFIRM_TITLE" = "Confirm your PIN";
+"REGISTRATION_PIN_CONFIRM_TITLE" = "Потврдите PIN";
 
 /* During registration, users are asked to create a PIN code. This is the subtitle on the screen where this happens. A \"learn more\" link will be added to the end of this string. */
-"REGISTRATION_PIN_CREATE_SUBTITLE" = "PINs can help you restore your account and keep your info encrypted with Signal.";
+"REGISTRATION_PIN_CREATE_SUBTITLE" = "PIN-ови вам омогућавају да повратите налог и чувају ваше информације шифрованим у Signal-у.";
 
 /* During registration, users are asked to create a PIN code. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_CREATE_TITLE" = "Create your PIN";
+"REGISTRATION_PIN_CREATE_TITLE" = "Креирајте PIN";
 
 /* During re-registration, users may be asked to re-enter their PIN code. This is the subtitle on the screen where this happens. A \"learn more\" link will be added to the end of this string. */
-"REGISTRATION_PIN_ENTER_EXISTING_SUBTITLE" = "PINs can help you restore your account and keep your info encrypted with Signal.";
+"REGISTRATION_PIN_ENTER_EXISTING_SUBTITLE" = "PIN-ови вам омогућавају да повратите налог и чувају ваше информације шифрованим у Signal-у.";
 
 /* During re-registration, users may be asked to re-enter their PIN code. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_ENTER_EXISTING_TITLE" = "Enter your PIN";
+"REGISTRATION_PIN_ENTER_EXISTING_TITLE" = "Унесите PIN";
 
 /* During registration, users set up their profile. Users input a family name. This is the placeholder for that field. */
-"REGISTRATION_PROFILE_SETUP_FAMILY_NAME_FIELD_PLACEHOLDER" = "Last Name";
+"REGISTRATION_PROFILE_SETUP_FAMILY_NAME_FIELD_PLACEHOLDER" = "Презиме";
+
+/* During registration, users can choose who can see their phone number. */
+"REGISTRATION_PROFILE_SETUP_FIND_MY_NUMBER_TITLE" = "Ко може да ме пронађе по броју телефона?";
 
 /* During registration, users set up their profile. Users input a given name. This is the placeholder for that field. */
-"REGISTRATION_PROFILE_SETUP_GIVEN_NAME_FIELD_PLACEHOLDER" = "First Name";
+"REGISTRATION_PROFILE_SETUP_GIVEN_NAME_FIELD_PLACEHOLDER" = "Име";
 
 /* During registration, users set up their profile. They can learn more about the privacy of their profile by clicking a \"learn more\" button. This is the message on a sheet that appears when they do that. */
-"REGISTRATION_PROFILE_SETUP_MORE_INFO_DETAILS" = "Your name, photo and changes to it will be visible to your contacts and when you start or accept new chats.";
+"REGISTRATION_PROFILE_SETUP_MORE_INFO_DETAILS" = "Ваше име, фотографију и промене у профилу моћи ће да виде ваши контакти и људи са којима започнете ћаскање или прихватите нова ћаскања.";
 
 /* During registration, users set up their profile. They can learn more about the privacy of their profile by clicking a \"learn more\" button. This is the title on a sheet that appears when they do that. */
-"REGISTRATION_PROFILE_SETUP_MORE_INFO_TITLE" = "About Profile Privacy";
+"REGISTRATION_PROFILE_SETUP_MORE_INFO_TITLE" = "О приватности профила";
 
 /* During registration, users set up their profile. This is the subtitle on the screen where this is done. It tells users about the privacy of their profile. A \"learn more\" link will be added to the end of this string. */
-"REGISTRATION_PROFILE_SETUP_SUBTITLE" = "Profiles are visible to people you message, contacts, and groups.";
+"REGISTRATION_PROFILE_SETUP_SUBTITLE" = "Профили су видљиви људима којима шаљете поруке, контактима и групама.";
 
 /* During registration, users set up their profile. This is the title on the screen where this is done. */
-"REGISTRATION_PROFILE_SETUP_TITLE" = "Set up your profile";
+"REGISTRATION_PROFILE_SETUP_TITLE" = "Подесите профил";
+
+/* Error shown if an SMS/call service provider is permanently unable to send a verification code to the provided number. */
+"REGISTRATION_PROVIDER_FAILURE_MESSAGE_PERMANENT" = "Signal није успео да SMS-ом пошаље шифру на ваш број због спољне грешке.";
+
+/* Error shown if an SMS/call service provider is temporarily unable to send a verification code to the provided number. */
+"REGISTRATION_PROVIDER_FAILURE_MESSAGE_TRANSIENT" = "Signal није успео да SMS-ом пошаље шифру у овом тренутку због спољне грешке. Пробајте поново касније.";
 
 /* No comment provided by engineer. */
 "REGISTRATION_RESTRICTED_MESSAGE" = "Морате се регистровати пре слања порука.";
 
+/* Alert shown when running out of attempts at submitting a verification code. */
+"REGISTRATION_SUBMIT_CODE_ATTEMPTS_EXHAUSTED_ALERT" = "Превише пута сте покушали да унесете шифру. Пошаљите шифру поново и пробајте поново.";
+
+/* Alert shown when submitting a verification code too many times. Embeds {{ duration }}, such as \"5:00\" */
+"REGISTRATION_SUBMIT_CODE_RATE_LIMIT_ALERT_FORMAT" = "Превише пута сте покушали да унесете шифру. Пробајте поново за %1$@";
+
 /* Error message indicating that device transfer from another device might be possible. */
 "REGISTRATION_TRANSFER_AVAILABLE_DESCRIPTION" = "Постојао је рачун који је претходно регистрован у овом броју који је доступан за пренос.";
+
+/* During registration and re-registration, users may have to enter a code to verify ownership of their phone number. If they enter an invalid code, they will see this error message. */
+"REGISTRATION_VERIFICATION_ERROR_INVALID_VERIFICATION_CODE" = "Шифра коју сте унели није важећа. Пошаљите шифру поново и пробајте поново.";
 
 /* Alert view title */
 "REGISTRATION_VERIFICATION_FAILED_TITLE" = "Потврда није успела";
@@ -5317,6 +5416,12 @@
 /* No comment provided by engineer. */
 "REREGISTER_FOR_PUSH" = "Поновите пријаву сервиса за обавештења";
 
+/* If the user is re-registering, they may need to enter their PIN to restore all their data. If they enter the incorrect PIN, they will be shown a warning. In some cases (such as for this string), the user has the option to skip PIN entry and will lose some data. Embeds {{ number of attempts }}, such as \"3 attempts\". */
+"REREGISTER_INVALID_PIN_WARNING_SKIPPABLE_FORMAT" = "%1$@. Ако искористите све покушаје, мораћете да креирате нови PIN. Можете да региструјете и користите свој налог, али изгубићете нека сачувана подешавања као што су ваши подаци на профилу.";
+
+/* If the user is re-registering, they may need to enter their PIN to restore all their data. If they enter the incorrect PIN, they will be shown a warning. Embeds {{ number of attempts }}, such as \"3 attempts\". */
+"REREGISTER_INVALID_PIN_WARNING_UNSKIPPABLE_FORMAT" = "%1$@. Ако искористите све покушаје, ваш налог ће бити закључан 7 дана. Након 7 дана неактивности моћи ћете поново да се региструјете без PIN-а. Сав садржај ће бити избрисан.";
+
 /* Configure reactions reset button text */
 "RESET" = "Ресетуј";
 
@@ -5343,6 +5448,9 @@
 
 /* Title for the 'safety number confirmation' view */
 "SAFETY_NUMBER_CONFIRMATION_TITLE" = "Промене сигурносног броја";
+
+/* Text explaining that the given contact has had their safety number verified. */
+"SAFETY_NUMBER_CONFIRMATION_VERIFIED" = "Верификовано";
 
 /* View safety number action for the 'safety number confirmation' view */
 "SAFETY_NUMBER_CONFIRMATION_VIEW_ACTION" = "Више";
@@ -5513,10 +5621,10 @@
 "SENT_MEDIA_QUALITY_STANDARD" = "Стандардно";
 
 /* Description for the session refresh alert */
-"SESSION_REFRESH_ALERT_MESSAGE" = "Signal користи потпуно шифровање и можда ће понекад морати да освежи Вашу сесију ћаскања. Ово не утиче на безбедност вашег ћаскања, али можда сте пропустили поруку овог контакта и можете да затражите да је поново пошаље.";
+"SESSION_REFRESH_ALERT_MESSAGE" = "Signal користи потпуно шифровање и можда ће понекад морати да освежи вашу сесију ћаскања. То не утиче на безбедност ћаскања, али може се десити да пропустите поруку од овог контакта, па можете затражити да вам је поново пошаље.";
 
 /* Title for the session refresh alert */
-"SESSION_REFRESH_ALERT_TITLE" = "Чет сесија је освежена";
+"SESSION_REFRESH_ALERT_TITLE" = "Сесија ћаскања је освежена";
 
 /* Title for the wallpaper choose from photos option */
 "SET_WALLPAPER_CHOOSE_PHOTO" = "Одабери из фотографије";
@@ -5529,6 +5637,9 @@
 
 /* Title for the 'account' link in settings. */
 "SETTINGS_ACCOUNT" = "Налог";
+
+/* Label for button in settings to get your account data report */
+"SETTINGS_ACCOUNT_DATA_REPORT_BUTTON" = "Подаци са налога";
 
 /* Title for the 'add to block list' view. */
 "SETTINGS_ADD_TO_BLOCK_LIST_TITLE" = "Блокирај";
@@ -5638,7 +5749,7 @@
 /* Title for the 'old phone number' section in the 'change phone number' settings. */
 "SETTINGS_CHANGE_PHONE_NUMBER_OLD_PHONE_NUMBER_SECTION_TITLE" = "Ваш стари број";
 
-/* Label for the 'country code' row in the 'change phone number' settings. */
+/* Label for the 'phone number' row in the 'change phone number' settings. */
 "SETTINGS_CHANGE_PHONE_NUMBER_PHONE_NUMBER_FIELD" = "Број телефона";
 
 /* Format for the 'change phone number' progress view. Embeds: {{ the user's new phone number }}. */
@@ -5657,7 +5768,7 @@
 "SETTINGS_CHATS" = "Ћаскања";
 
 /* No comment provided by engineer. */
-"SETTINGS_CLEAR_HISTORY" = "Очисти историју чета";
+"SETTINGS_CLEAR_HISTORY" = "Избриши историју ћаскања";
 
 /* Footer for the 'about' help section */
 "SETTINGS_COPYRIGHT" = "Ауторско право Signal Messenger\nЛиценцирано под бројем AGPLv3";
@@ -5723,7 +5834,7 @@
 "SETTINGS_DISAPPEARING_MESSAGES" = "Нестајуће поруке";
 
 /* Explanation for the 'disappearing messages' privacy settings. */
-"SETTINGS_DISAPPEARING_MESSAGES_FOOTER" = "Подесите подразумевани тајмер нестајања поруке за све нове преписке које сте започели.";
+"SETTINGS_DISAPPEARING_MESSAGES_FOOTER" = "Подесите подразумевани тајмер за нестајуће поруке у свим новим ћаскањима која започнете.";
 
 /* Title for the 'donate to signal' link in settings. */
 "SETTINGS_DONATE" = "Донирајте Signal-у";
@@ -5744,7 +5855,7 @@
 "SETTINGS_KEEP_MUTED_ARCHIVED_DESCRIPTION" = "Ћаскања са искљученим обавештењима која су архивирана остаће архивирана када стигне нова порука.";
 
 /* When a chat is archived and receives a new message, it is unarchived. Turning this switch on disables this feature if the chat in question is also muted. This string is a brief label for a switch paired with a longer description underneath, in the Chats settings. */
-"SETTINGS_KEEP_MUTED_ARCHIVED_LABEL" = "Остави ћаскања са искљученим обавештењима архивирана";
+"SETTINGS_KEEP_MUTED_ARCHIVED_LABEL" = "Остави ћаскања са искљученим обавештењима у архиви";
 
 /* No comment provided by engineer. */
 "SETTINGS_LEGAL_TERMS_CELL" = "Услови коришћења и правила о приватности";
@@ -5870,10 +5981,10 @@
 "SETTINGS_PAYMENTS_DEACTIVATE_TITLE" = "Деактивирати уплате";
 
 /* Explanation of the 'deactivate payments with balance' process in the 'deactivate payments' settings. */
-"SETTINGS_PAYMENTS_DEACTIVATE_WITH_BALANCE_EXPLANATION" = "Препоручује се да преносите средства на другу адресу новчаника пре деактивирања плаћања. Ако одлучите да не преносите своја средства сада, они ће остати у вашем новчанику везаном за Signal ако поново активирате уплате.";
+"SETTINGS_PAYMENTS_DEACTIVATE_WITH_BALANCE_EXPLANATION" = "Препоручујемо вам да пренесете средства на другу адресу новчаника пре деактивирања плаћања. Ако не пренесете средства сада, остаће у вашем новчанику повезаном за Signal ако поново активирате плаћања.";
 
 /* Description for the 'deactivate payments confirmation' UI in the payment settings. */
-"SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_DESCRIPTION" = "Ваш салдо ће остати у вашем новчанику везаном за Signal ако поново активирате уплате.";
+"SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_DESCRIPTION" = "Ваша средства ће остати у вашем новчанику повезаном за Signal ако поново активирате плаћања.";
 
 /* Title for the 'deactivate payments confirmation' UI in the payment settings. */
 "SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_TITLE" = "Деактивирање без преноса података?";
@@ -5960,7 +6071,7 @@
 "SETTINGS_PAYMENTS_OPT_IN_MESSAGE" = "Користите Signal за слање и примање MobileCoin, нова дигитална валута фокусирана на приватност. Активирајте за почетак.";
 
 /* Label for 'activate' button in the 'payments opt-in' view in the app settings. */
-"SETTINGS_PAYMENTS_OPT_IN_REACTIVATE_BUTTON" = "Поново активирати уплате";
+"SETTINGS_PAYMENTS_OPT_IN_REACTIVATE_BUTTON" = "Поново активирајте плаћања";
 
 /* Title for the 'payments opt-in' view in the app settings. */
 "SETTINGS_PAYMENTS_OPT_IN_TITLE" = "Увођење уплате (Beta)";
@@ -5987,7 +6098,7 @@
 "SETTINGS_PAYMENTS_PAYMENT_ADD_MONEY" = "Додај средства";
 
 /* Label for the 'MobileCoin block index' in the payment details view in the app settings. */
-"SETTINGS_PAYMENTS_PAYMENT_DETAILS_BLOCK_INDEX" = "Блокирај број";
+"SETTINGS_PAYMENTS_PAYMENT_DETAILS_BLOCK_INDEX" = "Број блока";
 
 /* Label for the 'MobileCoin network fee' in the payment details view in the app settings. */
 "SETTINGS_PAYMENTS_PAYMENT_DETAILS_FEE" = "Мрежна накнада";
@@ -6278,16 +6389,16 @@
 "SETTINGS_PAYMENTS_WALLET_ADDRESS_LABEL" = "Адреса Вашег новчаника";
 
 /* The title for the phone number discoverability setting section. */
-"SETTINGS_PHONE_NUMBER_DISCOVERABILITY_TITLE" = "Who Can Find Me By Number";
+"SETTINGS_PHONE_NUMBER_DISCOVERABILITY_TITLE" = "Ко може да ме пронађе преко мог броја телефона";
 
 /* Description label for Phone Number Privacy */
-"SETTINGS_PHONE_NUMBER_PRIVACY_DESCRIPTION_LABEL" = "Choose who can see your phone number and who can contact you on Signal with it.";
+"SETTINGS_PHONE_NUMBER_PRIVACY_DESCRIPTION_LABEL" = "Одаберите ко може да види ваш број телефона и ко може да вам се обрати на Signal-у помоћу њега.";
 
 /* The title for phone number privacy settings. */
-"SETTINGS_PHONE_NUMBER_PRIVACY_TITLE" = "Phone Number";
+"SETTINGS_PHONE_NUMBER_PRIVACY_TITLE" = "Број телефона";
 
 /* The title for the phone number sharing setting section. */
-"SETTINGS_PHONE_NUMBER_SHARING_TITLE" = "Who Can See My Number";
+"SETTINGS_PHONE_NUMBER_SHARING_TITLE" = "Ко може да види мој број";
 
 /* The button text for the dialog asking user to confirm their PIN to disable reminders */
 "SETTINGS_PIN_REMINDER_DISABLE_CONFIRMATION_ACTION" = "Искључи подсетнике";
@@ -6392,10 +6503,10 @@
 "SETTINGS_SHARING_SUGGESTIONS" = "Поделити контакт са iOS";
 
 /* Footer for setting for enabling & disabling contact sharing with iOS. */
-"SETTINGS_SHARING_SUGGESTIONS_FOOTER" = "Дозволи iOS да приступи контактима Signal-а  и разговора за функције као што су предлоге за дељење.";
+"SETTINGS_SHARING_SUGGESTIONS_FOOTER" = "Дозволи iOS-у приступ контактима и ћаскањима на Signal-у код функција као што су предлози за дељење.";
 
 /* Footer for setting for enabling & disabling contact and notification sharing with iOS. */
-"SETTINGS_SHARING_SUGGESTIONS_NOTIFICATIONS_FOOTER" = "Дозволи iOS да приступи контактима Signal-а и разговора за функције као што су предлоге за дељење и нотификације.";
+"SETTINGS_SHARING_SUGGESTIONS_NOTIFICATIONS_FOOTER" = "Дозволи iOS-у приступ контактима и ћаскањима на Signal-у код функција као што су предлози за дељење и обавештења.";
 
 /* Label for the 'enable registration lock' switch of the privacy settings. */
 "SETTINGS_TWO_FACTOR_AUTH_SWITCH_LABEL" = "Закључавање регистрације";
@@ -6467,7 +6578,7 @@
 "SHOW_SAFETY_NUMBER_ACTION" = "Прикажи сигурносни број";
 
 /* notification action */
-"SHOW_THREAD_BUTTON_TITLE" = "Прикажи преписку";
+"SHOW_THREAD_BUTTON_TITLE" = "Прикажи ћаскање";
 
 /* body sent to contacts when inviting to Install Signal */
 "SMS_INVITE_BODY" = "Pozivam te da instaliraš Signal! U nastavku je link:";
@@ -6605,13 +6716,13 @@
 "STORIES_NO_VIEWS_YET" = "Без прегледа";
 
 /* Section footer for the 'replies & reactions' section in stories settings */
-"STORIES_REPLIES_AND_REACTIONS_FOOTER" = "Dozvolite ljudima koji mogu da vide vašu priču da reaguju i odgovore na nju.";
+"STORIES_REPLIES_AND_REACTIONS_FOOTER" = "Дозволите људима који могу да виде вашу причу да реагују и одговоре на њу.";
 
 /* Section header for the 'replies & reactions' section in stories settings */
-"STORIES_REPLIES_AND_REACTIONS_HEADER" = "Odgovori i reakcije";
+"STORIES_REPLIES_AND_REACTIONS_HEADER" = "Одговори и реакције";
 
 /* Toggle text for the 'replies & reactions' switch in stories settings */
-"STORIES_REPLIES_AND_REACTIONS_TOGGLE" = "Dozvolite odgovore i reakcije";
+"STORIES_REPLIES_AND_REACTIONS_TOGGLE" = "Активирај одговоре и реакције";
 
 /* Title text for the 'replies' tab on the stories views & replies sheet */
 "STORIES_REPLIES_TAB" = "Одговора";
@@ -6719,19 +6830,19 @@
 "STORY_PRIVACY_TITLE" = "Privatnost priča";
 
 /* inbox and notification text for a reaction to a story authored by the local user. Embeds {{reaction emoji}} */
-"STORY_REACTION_LOCAL_AUTHOR_PREVIEW_FORMAT" = "Reacted %1$@ to your story";
+"STORY_REACTION_LOCAL_AUTHOR_PREVIEW_FORMAT" = "Реаговао/ла је %1$@ на вашу причу";
 
 /* quote text for a reaction to a story. Embeds {{reaction emoji}} */
-"STORY_REACTION_QUOTE_FORMAT" = "Reacted %1$@ to a story";
+"STORY_REACTION_QUOTE_FORMAT" = "Реаговао/ла је %1$@ на причу";
 
 /* inbox and notification text for a reaction to a story authored by another user. Embeds {{ %1$@ reaction emoji, %2$@ story author name }} */
-"STORY_REACTION_REMOTE_AUTHOR_PREVIEW_FORMAT" = "Reacted %1$@ to %2$@’s story";
+"STORY_REACTION_REMOTE_AUTHOR_PREVIEW_FORMAT" = "Реаговао/ла је %1$@ на причу корисника (%2$@)";
 
 /* Button for replying to a story with no existing replies. */
 "STORY_REPLY_BUTTON" = "Одговори";
 
 /* Text indicating a story has been reacted to */
-"STORY_REPLY_REACTION" = "Реаговано на причу";
+"STORY_REPLY_REACTION" = "Реаговао/ла је на причу";
 
 /* header text for replying to private story. Embeds {{author name}} */
 "STORY_REPLY_TEXT_FIELD_HEADER_FORMAT" = "Пошаљите приватан одговор кориснику (%1$@)";
@@ -6961,6 +7072,36 @@
 /* Tap to Replace Emoji string for reaction configuration */
 "TAP_REPLACE_EMOJI" = "Пипните за промену емоџиа";
 
+/* Option in selected text edit menu to make text bold */
+"TEXT_MENU_BOLD" = "Podebljano";
+
+/* Option in selected text edit menu to clear all text formatting in the selected text range */
+"TEXT_MENU_CLEAR_FORMATTING" = "Clear Formatting";
+
+/* Option in selected text edit menu to view text formatting options */
+"TEXT_MENU_FORMAT" = "Формат";
+
+/* Option in selected text edit menu to make text italic */
+"TEXT_MENU_ITALIC" = "Курзив";
+
+/* Option in selected text edit menu to look up word definitions */
+"TEXT_MENU_LOOK_UP" = "Потражи";
+
+/* Option in selected text edit menu to make text monospace */
+"TEXT_MENU_MONOSPACE" = "Једноразредно";
+
+/* Option in selected text edit menu to replace text with suggestions */
+"TEXT_MENU_REPLACE" = "Замени";
+
+/* Option in selected text edit menu to share selected text */
+"TEXT_MENU_SHARE" = "Поделите";
+
+/* Option in selected text edit menu to make text spoiler */
+"TEXT_MENU_SPOILER" = "Замаскирано";
+
+/* Option in selected text edit menu to make text strikethrough */
+"TEXT_MENU_STRIKETHROUGH" = "Прецртано";
+
 /* text indicating the message was remotely deleted */
 "THIS_MESSAGE_WAS_DELETED" = "Ова порука је избрисана.";
 
@@ -6968,7 +7109,7 @@
 "THREAD_DETAILS_MORE_MUTUAL_GROUP" = "Члан %1$@, %2$@ и још %3$lu група";
 
 /* Subtitle appearing at the top of the users 'note to self' conversation */
-"THREAD_DETAILS_NOTE_TO_SELF_EXPLANATION" = "Можете додати личне белешке у ово ћаскања. Ако имате повезане уређаје на налог, нове белешке ће бити синхронизоване.";
+"THREAD_DETAILS_NOTE_TO_SELF_EXPLANATION" = "Можете додати личне белешке у ово ћаскање. Ако на налогу имате повезане уређаје, нове белешке ће бити синхронизоване.";
 
 /* A string indicating a mutual group the user shares with this contact. Embeds {{mutual group name}} */
 "THREAD_DETAILS_ONE_MUTUAL_GROUP" = "Члан %1$@";
@@ -7082,13 +7223,13 @@
 "UNLINK_CONFIRMATION_ALERT_TITLE" = "Прекините везу са „%1$@”?";
 
 /* Label warning the user that they have been unlinked from their primary device. */
-"UNLINKED_WARNING" = "Уређај више није повезан. Поново повежите Signal са вашим телефоном да наставите са дописивањем.";
+"UNLINKED_WARNING" = "Овај уређај више није повезан. Поново повежите Signal са телефоном да наставите да се дописујете.";
+
+/* If this device has become unlinked from their primary device, they'll see a warning. This is the call to action on that warning. */
+"UNLINKED_WARNING_ACTION_TITLE" = "Поново повежите уређај";
 
 /* Alert title when unlinking device fails */
 "UNLINKING_FAILED_ALERT_TITLE" = "Signal није успео да прекине везу са вашим уређајем.";
-
-/* Label text in device manager for a device with no name */
-"UNNAMED_DEVICE" = "Уређај без назива";
 
 /* Pressing this button un-pins a thread */
 "UNPIN_ACTION" = "Одкачити";
@@ -7098,6 +7239,9 @@
 
 /* Pressing this button marks a thread as unread */
 "UNREAD_ACTION" = "Непрочитано";
+
+/* Label warning the user that the validation of their username has failed. */
+"UNREGISTERED_USERNAME_WARNING" = "Нешто није у реду са вашим корисничким именом – више није повезано са вашим налогом. Можете покушати поново да га подесите или да изаберете ново.";
 
 /* No comment provided by engineer. */
 "UNSUPPORTED_ATTACHMENT" = "Примили сте неподржану врсту прилога.";
@@ -7138,6 +7282,21 @@
 /* Description of username link */
 "USERNAME_LINK_DESCRIPTION" = "Свако корисничко име има јединствени линк који можете да поделите са пријатељима да би могли да ћаскају са вама";
 
+/* Title for a button to pick the color of your username link QR code. Lowercase styling is intentional. */
+"USERNAME_LINK_QR_CODE_VIEW_COLOR_BUTTON" = "Боја";
+
+/* Text for a label explaining what the username link and QR code give others access to. */
+"USERNAME_LINK_QR_CODE_VIEW_DISCLAIMER_LABEL" = "Делите свој QR код и линк само са људима којима верујете. Ако их поделите са другима, они ће моћи да виде ваше корисничко име и започну ћаскање са вама.";
+
+/* Title for a button that allows users to reset their username link and QR code. */
+"USERNAME_LINK_QR_CODE_VIEW_RESET_BUTTON_TITLE" = "Ресетуј";
+
+/* Title for a button to share your username link QR code. Lowercase styling is intentional. */
+"USERNAME_LINK_QR_CODE_VIEW_SHARE_BUTTON" = "Поделите";
+
+/* A title for a view that allows you to view and interact with a QR code for your username link. */
+"USERNAME_LINK_QR_CODE_VIEW_TITLE_CODE" = "Код";
+
 /* A message indicating that username lookup failed. */
 "USERNAME_LOOKUP_ERROR_MESSAGE" = "Грешка при тражењу корисничког имена. Покушајте поново касније.";
 
@@ -7153,8 +7312,8 @@
 /* Title for an action sheet indicating that the given username is not associated with a registered Signal account. */
 "USERNAME_LOOKUP_NOT_FOUND_TITLE" = "Корисник није пронађен";
 
-/* A prefix appended to all usernames when displayed */
-"USERNAME_PREFIX" = "@";
+/* An error message shown when the user has typed a username that starts with a digit, which is invalid. */
+"USERNAME_SELECTION_CANNOT_START_WITH_DIGIT_ERROR_MESSAGE" = "Корисничко име не може започети бројем.";
 
 /* The title of an action sheet button that will delete a user's username. */
 "USERNAME_SELECTION_DELETE_USERNAME_ACTION_TITLE" = "Избриши корисничко име";
@@ -7265,7 +7424,7 @@
 "WALLPAPER_PREVIEW_INCOMING_MESSAGE_PRESET" = "Превуците да бисте прегледали још позадина.";
 
 /* The outgoing bubble text when setting a wallpaper for all chats. */
-"WALLPAPER_PREVIEW_OUTGOING_MESSAGE_ALL_CHATS" = "Поставити позадину за све четове.";
+"WALLPAPER_PREVIEW_OUTGOING_MESSAGE_ALL_CHATS" = "Подесите позадину за сва ћаскања.";
 
 /* The outgoing bubble text when setting a wallpaper for specific chat. Embeds {{chat name}} */
 "WALLPAPER_PREVIEW_OUTGOING_MESSAGE_FORMAT" = "Поставити позадину за %1$@.";
@@ -7274,16 +7433,16 @@
 "WALLPAPER_PREVIEW_TITLE" = "Преглед";
 
 /* Clear chat color action in wallpaper settings view. */
-"WALLPAPER_SETTINGS_CLEAR_CHAT_COLOR" = "Обриши боју ћаскања";
+"WALLPAPER_SETTINGS_CLEAR_CHAT_COLOR" = "Избриши боју ћаскања";
 
 /* Confirmation dialog when clearing the chat color for a specific chat. */
-"WALLPAPER_SETTINGS_CLEAR_CHAT_COLOR_CHAT_CONFIRMATION" = "Обриши боју ћаскања за ово ћаскање?";
+"WALLPAPER_SETTINGS_CLEAR_CHAT_COLOR_CHAT_CONFIRMATION" = "Желите ли да избришете боју ћаскања за ово ћаскање?";
 
 /* Clear wallpaper action in wallpaper settings view. */
 "WALLPAPER_SETTINGS_CLEAR_WALLPAPER" = "Уклони позадину";
 
 /* Confirmation dialog when clearing the wallpaper for a specific chat. */
-"WALLPAPER_SETTINGS_CLEAR_WALLPAPER_CHAT_CONFIRMATION" = "Уклонити позадину за овај чет?";
+"WALLPAPER_SETTINGS_CLEAR_WALLPAPER_CHAT_CONFIRMATION" = "Желите ли да уклоните позадину за ово ћаскање?";
 
 /* Dim wallpaper action in wallpaper settings view. */
 "WALLPAPER_SETTINGS_DIM_WALLPAPER" = "Тамна тема затамњује позадину";
@@ -7301,13 +7460,13 @@
 "WALLPAPER_SETTINGS_RESET_ALL_WALLPAPERS" = "Рисетуј све позадине";
 
 /* Message of confirmation dialog when resetting the global wallpaper settings. */
-"WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_MESSAGE" = "Да ли желите да надјачате све боје за ћаскање?";
+"WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_MESSAGE" = "Желите ли да замените све боје ћаскања?";
 
 /* Title of confirmation dialog when resetting the global wallpaper settings. */
-"WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_TITLE" = "Рисетовати боје ћаскања";
+"WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_TITLE" = "Ресетуј боје ћаскања";
 
 /* Reset conversation chat color action in wallpaper settings view. */
-"WALLPAPER_SETTINGS_RESET_CONVERSATION_CHAT_COLOR" = "Рисетовати боје ћаскања";
+"WALLPAPER_SETTINGS_RESET_CONVERSATION_CHAT_COLOR" = "Ресетуј боју ћаскања";
 
 /* Reset conversation wallpaper action in wallpaper settings view. */
 "WALLPAPER_SETTINGS_RESET_CONVERSATION_WALLPAPER" = "Рисетовати позадину";
@@ -7316,7 +7475,7 @@
 "WALLPAPER_SETTINGS_RESET_DEFAULT_CHAT_COLOR" = "Рисетовати подразумеване боје";
 
 /* Reset global chat colors action in wallpaper settings view. */
-"WALLPAPER_SETTINGS_RESET_DEFAULT_CHAT_COLORS" = "Рисетовати боје ћаскања";
+"WALLPAPER_SETTINGS_RESET_DEFAULT_CHAT_COLORS" = "Ресетуј боје ћаскања";
 
 /* Label for 'reset default wallpaper' action in the global wallpaper settings. */
 "WALLPAPER_SETTINGS_RESET_DEFAULT_WALLPAPER" = "Рисетовати подразумевану позадину";
@@ -7331,7 +7490,7 @@
 "WALLPAPER_SETTINGS_RESET_WALLPAPERS_CONFIRMATION_TITLE" = "Рисетовати позадину";
 
 /* Set chat color action in color and wallpaper settings view. */
-"WALLPAPER_SETTINGS_SET_CHAT_COLOR" = "Боја преписке";
+"WALLPAPER_SETTINGS_SET_CHAT_COLOR" = "Боја ћаскања";
 
 /* Set wallpaper action in wallpaper settings view. */
 "WALLPAPER_SETTINGS_SET_WALLPAPER" = "Поставити позадину";

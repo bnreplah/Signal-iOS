@@ -162,6 +162,10 @@ public final class AtomicValue<T> {
             return newValue
         }
     }
+
+    public func update<Result>(block: (inout T) throws -> Result) rethrows -> Result {
+        try lock.perform { try block(&self.value) }
+    }
 }
 
 // MARK: - 
@@ -333,6 +337,12 @@ public class AtomicArray<T> {
 
     public func pushTail(_ value: T) {
         append(value)
+    }
+
+    public func pushHead(_ value: T) {
+        lock.perform {
+            self.values.insert(value, at: 0)
+        }
     }
 
     public var count: Int {

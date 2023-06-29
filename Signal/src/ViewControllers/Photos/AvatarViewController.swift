@@ -9,7 +9,7 @@ import SignalUI
 import UIKit
 
 class AvatarViewController: UIViewController, InteractivelyDismissableViewController {
-    private var interactiveDismissal: MediaInteractiveDismiss?
+    private lazy var interactiveDismissal = MediaInteractiveDismiss(targetViewController: self)
     let avatarImage: UIImage
 
     var maxAvatarPointSize: CGSize {
@@ -97,17 +97,12 @@ class AvatarViewController: UIViewController, InteractivelyDismissableViewContro
         // Use UINavigationBar so that close button X on the left has a standard position in all cases.
         let navigationBar = UINavigationBar()
         navigationBar.tintColor = Theme.darkThemeNavbarIconColor
-        if #available(iOS 13, *) {
-            let appearance = UINavigationBarAppearance()
-            appearance.configureWithTransparentBackground()
-            navigationBar.standardAppearance = appearance
-            navigationBar.compactAppearance = appearance
-            navigationBar.scrollEdgeAppearance = appearance
-            navigationBar.overrideUserInterfaceStyle = .dark
-        } else {
-            navigationBar.barTintColor = .clear
-            navigationBar.isTranslucent = false
-        }
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        navigationBar.standardAppearance = appearance
+        navigationBar.compactAppearance = appearance
+        navigationBar.scrollEdgeAppearance = appearance
+        navigationBar.overrideUserInterfaceStyle = .dark
         view.addSubview(navigationBar)
         navigationBar.autoPinWidthToSuperview()
         navigationBarTopLayoutConstraint = navigationBar.autoPinEdge(toSuperviewEdge: .top)
@@ -115,15 +110,14 @@ class AvatarViewController: UIViewController, InteractivelyDismissableViewContro
 
         let navigationItem = UINavigationItem(title: "")
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(imageLiteralResourceName: "x-24"),
+            image: Theme.iconImage(.buttonX),
             style: .plain,
             target: self,
             action: #selector(didTapClose),
             accessibilityIdentifier: "close")
         navigationBar.setItems([navigationItem], animated: false)
 
-        interactiveDismissal = MediaInteractiveDismiss(targetViewController: self)
-        interactiveDismissal?.addGestureRecognizer(to: view)
+        interactiveDismissal.addGestureRecognizer(to: view)
     }
 
     override func viewSafeAreaInsetsDidChange() {
@@ -135,7 +129,7 @@ class AvatarViewController: UIViewController, InteractivelyDismissableViewContro
             // the workaround is to detect exactly safe area of 59 points and decrease it.
             var topInset = view.safeAreaInsets.top
             if topInset == 59 {
-                topInset -= 5 + CGHairlineWidth()
+                topInset -= 5 + .hairlineWidth
             }
             navigationBarTopLayoutConstraint.constant = topInset
         }
@@ -157,7 +151,11 @@ class AvatarViewController: UIViewController, InteractivelyDismissableViewContro
 
 extension AvatarViewController: MediaPresentationContextProvider {
     func mediaPresentationContext(item: Media, in coordinateSpace: UICoordinateSpace) -> MediaPresentationContext? {
-        return MediaPresentationContext(mediaView: circleView, presentationFrame: circleView.frame, cornerRadius: circleView.layer.cornerRadius)
+        return MediaPresentationContext(
+            mediaView: circleView,
+            presentationFrame: circleView.frame,
+            mediaViewShape: .circle
+        )
     }
 
     func snapshotOverlayView(in coordinateSpace: UICoordinateSpace) -> (UIView, CGRect)? {
@@ -170,7 +168,6 @@ extension AvatarViewController: UIViewControllerTransitioningDelegate {
         forPresented presented: UIViewController,
         presenting: UIViewController,
         source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-
         return MediaZoomAnimationController(image: avatarImage)
     }
 
@@ -179,18 +176,17 @@ extension AvatarViewController: UIViewControllerTransitioningDelegate {
             image: avatarImage,
             interactionController: interactiveDismissal
         )
-        interactiveDismissal?.interactiveDismissDelegate = animationController
+        interactiveDismissal.interactiveDismissDelegate = animationController
         return animationController
     }
 
     public func interactionControllerForDismissal(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
         guard
-            let animator = animator as? MediaDismissAnimationController,
-            let interactionController = animator.interactionController,
-            interactionController.interactionInProgress
+            let animationController = animator as? MediaDismissAnimationController,
+            animationController.interactionController.interactionInProgress
         else {
             return nil
         }
-        return interactionController
+        return animationController.interactionController
     }
 }

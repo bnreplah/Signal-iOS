@@ -174,7 +174,7 @@ class StoryContextViewController: OWSViewController {
     private lazy var zoomPinchGestureRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(handlePinchZoom))
     private lazy var zoomPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePinchZoom))
 
-    private lazy var closeButton = OWSButton(imageName: "x-24", tintColor: .ows_white)
+    private lazy var closeButton = OWSButton(imageName: Theme.iconName(.buttonX), tintColor: .ows_white)
 
     private lazy var mediaViewContainer = UIView()
 
@@ -246,7 +246,7 @@ class StoryContextViewController: OWSViewController {
 
         applyConstraints()
 
-        let spinner = UIActivityIndicatorView(style: .white)
+        let spinner = UIActivityIndicatorView(style: .medium)
         view.addSubview(spinner)
         spinner.autoCenterInSuperview()
         spinner.startAnimating()
@@ -317,18 +317,26 @@ class StoryContextViewController: OWSViewController {
     }
 
     private func buildStoryItem(for message: StoryMessage, transaction: SDSAnyReadTransaction) -> StoryItem? {
-        let replyCount = InteractionFinder.countReplies(for: message, transaction: transaction)
+        let replyCount = message.replyCount
 
         switch message.attachment {
-        case .file(let attachmentId):
-            guard let attachment = TSAttachment.anyFetch(uniqueId: attachmentId, transaction: transaction) else {
+        case .file(let file):
+            guard let attachment = TSAttachment.anyFetch(uniqueId: file.attachmentId, transaction: transaction) else {
                 owsFailDebug("Missing attachment for StoryMessage with timestamp \(message.timestamp)")
                 return nil
             }
             if let attachment = attachment as? TSAttachmentPointer {
-                return .init(message: message, numberOfReplies: replyCount, attachment: .pointer(attachment))
+                return StoryItem(
+                    message: message,
+                    numberOfReplies: replyCount,
+                    attachment: .pointer(attachment, captionStyles: file.captionStyles)
+                )
             } else if let attachment = attachment as? TSAttachmentStream {
-                return .init(message: message, numberOfReplies: replyCount, attachment: .stream(attachment))
+                return StoryItem(
+                    message: message,
+                    numberOfReplies: replyCount,
+                    attachment: .stream(attachment, captionStyles: file.captionStyles)
+                )
             } else {
                 owsFailDebug("Unexpected attachment type \(type(of: attachment))")
                 return nil
@@ -381,10 +389,10 @@ class StoryContextViewController: OWSViewController {
             sendingSpinner.play()
 
             let sendingLabel = UILabel()
-            sendingLabel.font = .ows_dynamicTypeBody
+            sendingLabel.font = .dynamicTypeBody
             sendingLabel.textColor = Theme.darkThemePrimaryColor
             sendingLabel.textAlignment = .center
-            sendingLabel.text = NSLocalizedString("STORY_SENDING", comment: "Text indicating that the story is currently sending")
+            sendingLabel.text = OWSLocalizedString("STORY_SENDING", comment: "Text indicating that the story is currently sending")
             sendingLabel.setContentHuggingHigh()
 
             let leadingSpacer = UIView.hStretchingSpacer()
@@ -405,17 +413,17 @@ class StoryContextViewController: OWSViewController {
 
             let failedIcon = UIImageView()
             failedIcon.contentMode = .scaleAspectFit
-            failedIcon.setTemplateImageName("error-20", tintColor: .ows_accentRed)
+            failedIcon.setTemplateImageName("error-circle-20", tintColor: .ows_accentRed)
             failedIcon.autoSetDimension(.width, toSize: 20)
             sendingIndicatorStackView.addArrangedSubview(failedIcon)
 
             let failedLabel = UILabel()
-            failedLabel.font = .ows_dynamicTypeBody
+            failedLabel.font = .dynamicTypeBody
             failedLabel.textColor = Theme.darkThemePrimaryColor
             failedLabel.textAlignment = .center
             failedLabel.text = currentItem.message.hasSentToAnyRecipients
-                ? NSLocalizedString("STORY_SEND_PARTIALLY_FAILED_TAP_FOR_DETAILS", comment: "Text indicating that the story send has partially failed")
-                : NSLocalizedString("STORY_SEND_FAILED_TAP_FOR_DETAILS", comment: "Text indicating that the story send has failed")
+                ? OWSLocalizedString("STORY_SEND_PARTIALLY_FAILED_TAP_FOR_DETAILS", comment: "Text indicating that the story send has partially failed")
+                : OWSLocalizedString("STORY_SEND_FAILED_TAP_FOR_DETAILS", comment: "Text indicating that the story send has failed")
             failedLabel.setContentHuggingHigh()
             sendingIndicatorStackView.addArrangedSubview(failedLabel)
 
@@ -464,28 +472,28 @@ class StoryContextViewController: OWSViewController {
             case .incoming:
                 if case .groupId = context {
                     if currentItem.numberOfReplies == 0 {
-                        leadingIcon = #imageLiteral(resourceName: "reply-outline-20")
-                        repliesAndViewsButtonText = NSLocalizedString(
+                        leadingIcon = UIImage(imageLiteralResourceName: "reply-20")
+                        repliesAndViewsButtonText = OWSLocalizedString(
                             "STORY_REPLY_TO_GROUP_BUTTON",
                             comment: "Button for replying to a group story with no existing replies.")
                     } else {
-                        trailingIcon = CurrentAppContext().isRTL ? #imageLiteral(resourceName: "chevron-left-20") : #imageLiteral(resourceName: "chevron-right-20")
-                        let format = NSLocalizedString(
+                        trailingIcon = UIImage(imageLiteralResourceName: "chevron-right-20")
+                        let format = OWSLocalizedString(
                             "STORY_REPLIES_COUNT_%d",
                             tableName: "PluralAware",
                             comment: "Button for replying to a story with N existing replies.")
                         repliesAndViewsButtonText = String.localizedStringWithFormat(format, currentItem.numberOfReplies)
                     }
                 } else {
-                    leadingIcon = #imageLiteral(resourceName: "reply-outline-20")
-                    repliesAndViewsButtonText = NSLocalizedString(
+                    leadingIcon = UIImage(imageLiteralResourceName: "reply-20")
+                    repliesAndViewsButtonText = OWSLocalizedString(
                         "STORY_REPLY_BUTTON",
                         comment: "Button for replying to a story with no existing replies.")
                 }
             case .outgoing:
                 var textSegments = [String]()
                 if StoryManager.areViewReceiptsEnabled {
-                    let format = NSLocalizedString(
+                    let format = OWSLocalizedString(
                         "STORY_VIEWS_COUNT_%d",
                         tableName: "PluralAware",
                         comment: "Button for viewing the views for a story sent to a private list"
@@ -495,7 +503,7 @@ class StoryContextViewController: OWSViewController {
                     )
                 }
                 if case .groupId = context, StoryManager.areViewReceiptsEnabled || currentItem.numberOfReplies > 0 {
-                    let format = NSLocalizedString(
+                    let format = OWSLocalizedString(
                         "STORY_REPLIES_COUNT_%d",
                         tableName: "PluralAware",
                         comment: "Button for replying to a story with N existing replies."
@@ -505,12 +513,12 @@ class StoryContextViewController: OWSViewController {
                     )
                 }
                 if textSegments.isEmpty {
-                    repliesAndViewsButtonText = NSLocalizedString(
+                    repliesAndViewsButtonText = OWSLocalizedString(
                         "STORY_VIEWS_OFF",
                         comment: "Text indicating that the user has views turned off"
                     )
                 } else {
-                    trailingIcon = CurrentAppContext().isRTL ? #imageLiteral(resourceName: "chevron-left-20") : #imageLiteral(resourceName: "chevron-right-20")
+                    trailingIcon = UIImage(imageLiteralResourceName: "chevron-right-20")
                     repliesAndViewsButtonText = textSegments.joined(separator: "  ")
                 }
             }
@@ -1007,9 +1015,9 @@ extension StoryContextViewController: StoryItemMediaViewDelegate {
         }
         let attachment: StoryThumbnailView.Attachment
         switch item.attachment {
-        case .pointer(let pointer):
+        case .pointer(let pointer, _):
             attachment = .file(pointer)
-        case .stream(let stream):
+        case .stream(let stream, _):
             attachment = .file(stream)
         case .text(let textAttachment):
             attachment = .text(textAttachment)

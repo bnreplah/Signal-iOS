@@ -88,7 +88,8 @@ public class OutgoingStoryMessage: TSOutgoingMessage {
             authorUuid: tsAccountManager.localUuid!,
             groupId: (thread as? TSGroupThread)?.groupId,
             manifest: storyManifest,
-            attachment: attachment
+            attachment: attachment,
+            replyCount: 0
         )
         storyMessage.anyInsert(transaction: transaction)
 
@@ -181,14 +182,18 @@ public class OutgoingStoryMessage: TSOutgoingMessage {
         }
 
         switch storyMessage.attachment {
-        case .file(let attachmentId):
-            guard let attachmentProto = TSAttachmentStream.buildProto(forAttachmentId: attachmentId, transaction: transaction) else {
+        case .file(let file):
+            guard let attachmentProto = TSAttachmentStream.buildProto(forAttachmentId: file.attachmentId, transaction: transaction) else {
                 owsFailDebug("Missing attachment for outgoing story message")
                 return nil
             }
             builder.setFileAttachment(attachmentProto)
+            builder.setBodyRanges(file.captionProtoBodyRanges())
         case .text(let attachment):
-            guard let attachmentProto = try? attachment.buildProto(transaction: transaction) else {
+            guard let attachmentProto = try? attachment.buildProto(
+                bodyRangeHandler: builder.setBodyRanges(_:),
+                transaction: transaction
+            ) else {
                 owsFailDebug("Missing attachment for outgoing story message")
                 return nil
             }

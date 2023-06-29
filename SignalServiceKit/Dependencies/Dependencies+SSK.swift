@@ -169,14 +169,6 @@ public extension NSObject {
         SSKEnvironment.shared.socketManagerRef
     }
 
-    final var stickerManager: StickerManager {
-        SSKEnvironment.shared.stickerManagerRef
-    }
-
-    static var stickerManager: StickerManager {
-        SSKEnvironment.shared.stickerManagerRef
-    }
-
     final var storageCoordinator: StorageCoordinator {
         SSKEnvironment.shared.storageCoordinatorRef
     }
@@ -225,11 +217,11 @@ public extension NSObject {
         SSKEnvironment.shared.contactsManagerRef
     }
 
-    final var storageServiceManager: StorageServiceManagerProtocol {
+    final var storageServiceManagerObjc: StorageServiceManagerObjc {
         SSKEnvironment.shared.storageServiceManagerRef
     }
 
-    static var storageServiceManager: StorageServiceManagerProtocol {
+    static var storageServiceManagerObjc: StorageServiceManagerObjc {
         SSKEnvironment.shared.storageServiceManagerRef
     }
 
@@ -249,11 +241,11 @@ public extension NSObject {
         SSKEnvironment.shared.messageProcessorRef
     }
 
-    final var remoteConfigManager: RemoteConfigManager {
+    final var remoteConfigManagerObjc: RemoteConfigManagerObjc {
         SSKEnvironment.shared.remoteConfigManagerRef
     }
 
-    static var remoteConfigManager: RemoteConfigManager {
+    static var remoteConfigManagerObjc: RemoteConfigManagerObjc {
         SSKEnvironment.shared.remoteConfigManagerRef
     }
 
@@ -275,18 +267,12 @@ public extension NSObject {
         SSKEnvironment.shared.signalProtocolStoreRef(for: identity)
     }
 
-    final var appExpiry: AppExpiry {
-        SSKEnvironment.shared.appExpiryRef
-    }
-
-    static var appExpiry: AppExpiry {
-        SSKEnvironment.shared.appExpiryRef
-    }
-
+    @nonobjc
     final var signalService: OWSSignalServiceProtocol {
         SSKEnvironment.shared.signalServiceRef
     }
 
+    @nonobjc
     static var signalService: OWSSignalServiceProtocol {
         SSKEnvironment.shared.signalServiceRef
     }
@@ -337,14 +323,6 @@ public extension NSObject {
 
     static var messageDecrypter: OWSMessageDecrypter {
         SSKEnvironment.shared.messageDecrypterRef
-    }
-
-    final var deviceManager: OWSDeviceManager {
-        .shared()
-    }
-
-    static var deviceManager: OWSDeviceManager {
-        .shared()
     }
 
     final var outgoingReceiptManager: OWSOutgoingReceiptManager {
@@ -421,14 +399,6 @@ public extension NSObject {
         SSKEnvironment.shared.paymentsEventsRef
     }
 
-    final var mobileCoinHelper: MobileCoinHelper {
-        SSKEnvironment.shared.mobileCoinHelperRef
-    }
-
-    static var mobileCoinHelper: MobileCoinHelper {
-        SSKEnvironment.shared.mobileCoinHelperRef
-    }
-
     final var spamChallengeResolver: SpamChallengeResolver {
         SSKEnvironment.shared.spamChallengeResolverRef
     }
@@ -445,14 +415,6 @@ public extension NSObject {
         SSKEnvironment.shared.senderKeyStoreRef
     }
 
-    final var appVersion: AppVersion {
-        AppVersion.shared()
-    }
-
-    static var appVersion: AppVersion {
-        AppVersion.shared()
-    }
-
     final var phoneNumberUtil: PhoneNumberUtil {
         SSKEnvironment.shared.phoneNumberUtilRef
     }
@@ -461,30 +423,30 @@ public extension NSObject {
         SSKEnvironment.shared.phoneNumberUtilRef
     }
 
-    var changePhoneNumber: ChangePhoneNumber {
-        SSKEnvironment.shared.changePhoneNumberRef
+    var legacyChangePhoneNumber: LegacyChangePhoneNumber {
+        SSKEnvironment.shared.legacyChangePhoneNumberRef
     }
 
-    static var changePhoneNumber: ChangePhoneNumber {
-        SSKEnvironment.shared.changePhoneNumberRef
+    static var legacyChangePhoneNumber: LegacyChangePhoneNumber {
+        SSKEnvironment.shared.legacyChangePhoneNumberRef
     }
 
-    var subscriptionManager: SubscriptionManagerProtocol {
+    var subscriptionManager: SubscriptionManager {
         SSKEnvironment.shared.subscriptionManagerRef
     }
 
-    static var subscriptionManager: SubscriptionManagerProtocol {
+    static var subscriptionManager: SubscriptionManager {
         SSKEnvironment.shared.subscriptionManagerRef
     }
 
     @nonobjc
     var systemStoryManager: SystemStoryManagerProtocol {
-        SSKEnvironment.shared.systemStoryManagerRef as! SystemStoryManagerProtocol
+        SSKEnvironment.shared.systemStoryManagerRef
     }
 
     @nonobjc
     static var systemStoryManager: SystemStoryManagerProtocol {
-        SSKEnvironment.shared.systemStoryManagerRef as! SystemStoryManagerProtocol
+        SSKEnvironment.shared.systemStoryManagerRef
     }
 
     var sskJobQueues: SSKJobQueues {
@@ -497,12 +459,31 @@ public extension NSObject {
 
     @nonobjc
     var contactDiscoveryManager: ContactDiscoveryManager {
-        SSKEnvironment.shared.contactDiscoveryManagerRef as! ContactDiscoveryManager
+        SSKEnvironment.shared.contactDiscoveryManagerRef
     }
 
     @nonobjc
     static var contactDiscoveryManager: ContactDiscoveryManager {
-        SSKEnvironment.shared.contactDiscoveryManagerRef as! ContactDiscoveryManager
+        SSKEnvironment.shared.contactDiscoveryManagerRef
+    }
+}
+
+public extension NSObject {
+
+    final var storageServiceManager: StorageServiceManager {
+        SSKEnvironment.shared.storageServiceManagerRef
+    }
+
+    static var storageServiceManager: StorageServiceManager {
+        SSKEnvironment.shared.storageServiceManagerRef
+    }
+
+    final var remoteConfigManager: RemoteConfigManager {
+        SSKEnvironment.shared.remoteConfigManagerRef
+    }
+
+    static var remoteConfigManager: RemoteConfigManager {
+        SSKEnvironment.shared.remoteConfigManagerRef
     }
 }
 
@@ -664,14 +645,6 @@ public extension Dependencies {
         SSKEnvironment.shared.socketManagerRef
     }
 
-    var stickerManager: StickerManager {
-        SSKEnvironment.shared.stickerManagerRef
-    }
-
-    static var stickerManager: StickerManager {
-        SSKEnvironment.shared.stickerManagerRef
-    }
-
     var storageCoordinator: StorageCoordinator {
         SSKEnvironment.shared.storageCoordinatorRef
     }
@@ -720,11 +693,11 @@ public extension Dependencies {
         SSKEnvironment.shared.contactsManagerRef
     }
 
-    var storageServiceManager: StorageServiceManagerProtocol {
+    var storageServiceManager: StorageServiceManager {
         SSKEnvironment.shared.storageServiceManagerRef
     }
 
-    static var storageServiceManager: StorageServiceManagerProtocol {
+    static var storageServiceManager: StorageServiceManager {
         SSKEnvironment.shared.storageServiceManagerRef
     }
 
@@ -766,14 +739,6 @@ public extension Dependencies {
 
     static func signalProtocolStore(for identity: OWSIdentity) -> SignalProtocolStore {
         SSKEnvironment.shared.signalProtocolStoreRef(for: identity)
-    }
-
-    var appExpiry: AppExpiry {
-        SSKEnvironment.shared.appExpiryRef
-    }
-
-    static var appExpiry: AppExpiry {
-        SSKEnvironment.shared.appExpiryRef
     }
 
     var signalService: OWSSignalServiceProtocol {
@@ -830,14 +795,6 @@ public extension Dependencies {
 
     static var messageDecrypter: OWSMessageDecrypter {
         SSKEnvironment.shared.messageDecrypterRef
-    }
-
-    var deviceManager: OWSDeviceManager {
-        .shared()
-    }
-
-    static var deviceManager: OWSDeviceManager {
-        .shared()
     }
 
     var outgoingReceiptManager: OWSOutgoingReceiptManager {
@@ -938,14 +895,6 @@ public extension Dependencies {
         SSKEnvironment.shared.senderKeyStoreRef
     }
 
-    var appVersion: AppVersion {
-        AppVersion.shared()
-    }
-
-    static var appVersion: AppVersion {
-        AppVersion.shared()
-    }
-
     var phoneNumberUtil: PhoneNumberUtil {
         SSKEnvironment.shared.phoneNumberUtilRef
     }
@@ -955,35 +904,35 @@ public extension Dependencies {
     }
 
     var webSocketFactory: WebSocketFactory {
-        SSKEnvironment.shared.webSocketFactoryRef as! WebSocketFactory
+        SSKEnvironment.shared.webSocketFactoryRef
     }
 
     static var webSocketFactory: WebSocketFactory {
-        SSKEnvironment.shared.webSocketFactoryRef as! WebSocketFactory
+        SSKEnvironment.shared.webSocketFactoryRef
     }
 
-    var changePhoneNumber: ChangePhoneNumber {
-        SSKEnvironment.shared.changePhoneNumberRef
+    var legacyChangePhoneNumber: LegacyChangePhoneNumber {
+        SSKEnvironment.shared.legacyChangePhoneNumberRef
     }
 
-    static var changePhoneNumber: ChangePhoneNumber {
-        SSKEnvironment.shared.changePhoneNumberRef
+    static var legacyChangePhoneNumber: LegacyChangePhoneNumber {
+        SSKEnvironment.shared.legacyChangePhoneNumberRef
     }
 
-    var subscriptionManager: SubscriptionManagerProtocol {
+    var subscriptionManager: SubscriptionManager {
         SSKEnvironment.shared.subscriptionManagerRef
     }
 
-    static var subscriptionManager: SubscriptionManagerProtocol {
+    static var subscriptionManager: SubscriptionManager {
         SSKEnvironment.shared.subscriptionManagerRef
     }
 
     var systemStoryManager: SystemStoryManagerProtocol {
-        SSKEnvironment.shared.systemStoryManagerRef as! SystemStoryManagerProtocol
+        SSKEnvironment.shared.systemStoryManagerRef
     }
 
     static var systemStoryManager: SystemStoryManagerProtocol {
-        SSKEnvironment.shared.systemStoryManagerRef as! SystemStoryManagerProtocol
+        SSKEnvironment.shared.systemStoryManagerRef
     }
 
     var sskJobQueues: SSKJobQueues {
@@ -995,11 +944,11 @@ public extension Dependencies {
     }
 
     var contactDiscoveryManager: ContactDiscoveryManager {
-        SSKEnvironment.shared.contactDiscoveryManagerRef as! ContactDiscoveryManager
+        SSKEnvironment.shared.contactDiscoveryManagerRef
     }
 
     static var contactDiscoveryManager: ContactDiscoveryManager {
-        SSKEnvironment.shared.contactDiscoveryManagerRef as! ContactDiscoveryManager
+        SSKEnvironment.shared.contactDiscoveryManagerRef
     }
 }
 
@@ -1008,19 +957,19 @@ public extension Dependencies {
 public extension NSObject {
 
     final var groupsV2Swift: GroupsV2Swift {
-        SSKEnvironment.shared.groupsV2Ref as! GroupsV2Swift
+        SSKEnvironment.shared.groupsV2Ref
     }
 
     static var groupsV2Swift: GroupsV2Swift {
-        SSKEnvironment.shared.groupsV2Ref as! GroupsV2Swift
+        SSKEnvironment.shared.groupsV2Ref
     }
 
     final var groupV2Updates: GroupV2UpdatesSwift {
-        SSKEnvironment.shared.groupV2UpdatesRef as! GroupV2UpdatesSwift
+        SSKEnvironment.shared.groupV2UpdatesRef
     }
 
     static var groupV2Updates: GroupV2UpdatesSwift {
-        SSKEnvironment.shared.groupV2UpdatesRef as! GroupV2UpdatesSwift
+        SSKEnvironment.shared.groupV2UpdatesRef
     }
 
     final var serviceClient: SignalServiceClient {
@@ -1032,27 +981,27 @@ public extension NSObject {
     }
 
     final var paymentsHelperSwift: PaymentsHelperSwift {
-        SSKEnvironment.shared.paymentsHelperRef as! PaymentsHelperSwift
+        SSKEnvironment.shared.paymentsHelperRef
     }
 
     static var paymentsHelperSwift: PaymentsHelperSwift {
-        SSKEnvironment.shared.paymentsHelperRef as! PaymentsHelperSwift
+        SSKEnvironment.shared.paymentsHelperRef
     }
 
     final var paymentsCurrenciesSwift: PaymentsCurrenciesSwift {
-        SSKEnvironment.shared.paymentsCurrenciesRef as! PaymentsCurrenciesSwift
+        SSKEnvironment.shared.paymentsCurrenciesRef
     }
 
     static var paymentsCurrenciesSwift: PaymentsCurrenciesSwift {
-        SSKEnvironment.shared.paymentsCurrenciesRef as! PaymentsCurrenciesSwift
+        SSKEnvironment.shared.paymentsCurrenciesRef
     }
 
     var versionedProfilesSwift: VersionedProfilesSwift {
-        versionedProfiles as! VersionedProfilesSwift
+        SSKEnvironment.shared.versionedProfilesRef
     }
 
     static var versionedProfilesSwift: VersionedProfilesSwift {
-        versionedProfiles as! VersionedProfilesSwift
+        SSKEnvironment.shared.versionedProfilesRef
     }
 }
 
@@ -1061,19 +1010,19 @@ public extension NSObject {
 public extension Dependencies {
 
     var groupsV2Swift: GroupsV2Swift {
-        SSKEnvironment.shared.groupsV2Ref as! GroupsV2Swift
+        SSKEnvironment.shared.groupsV2Ref
     }
 
     static var groupsV2Swift: GroupsV2Swift {
-        SSKEnvironment.shared.groupsV2Ref as! GroupsV2Swift
+        SSKEnvironment.shared.groupsV2Ref
     }
 
     var groupV2Updates: GroupV2UpdatesSwift {
-        SSKEnvironment.shared.groupV2UpdatesRef as! GroupV2UpdatesSwift
+        SSKEnvironment.shared.groupV2UpdatesRef
     }
 
     static var groupV2Updates: GroupV2UpdatesSwift {
-        SSKEnvironment.shared.groupV2UpdatesRef as! GroupV2UpdatesSwift
+        SSKEnvironment.shared.groupV2UpdatesRef
     }
 
     var serviceClient: SignalServiceClient {
@@ -1085,27 +1034,27 @@ public extension Dependencies {
     }
 
     var paymentsHelperSwift: PaymentsHelperSwift {
-        SSKEnvironment.shared.paymentsHelperRef as! PaymentsHelperSwift
+        SSKEnvironment.shared.paymentsHelperRef
     }
 
     static var paymentsHelperSwift: PaymentsHelperSwift {
-        SSKEnvironment.shared.paymentsHelperRef as! PaymentsHelperSwift
+        SSKEnvironment.shared.paymentsHelperRef
     }
 
     var paymentsCurrenciesSwift: PaymentsCurrenciesSwift {
-        SSKEnvironment.shared.paymentsCurrenciesRef as! PaymentsCurrenciesSwift
+        SSKEnvironment.shared.paymentsCurrenciesRef
     }
 
     static var paymentsCurrenciesSwift: PaymentsCurrenciesSwift {
-        SSKEnvironment.shared.paymentsCurrenciesRef as! PaymentsCurrenciesSwift
+        SSKEnvironment.shared.paymentsCurrenciesRef
     }
 
     var versionedProfilesSwift: VersionedProfilesSwift {
-        versionedProfiles as! VersionedProfilesSwift
+        SSKEnvironment.shared.versionedProfilesRef
     }
 
     static var versionedProfilesSwift: VersionedProfilesSwift {
-        versionedProfiles as! VersionedProfilesSwift
+        SSKEnvironment.shared.versionedProfilesRef
     }
 }
 
@@ -1151,15 +1100,6 @@ public extension OWSReceiptManager {
 public extension TSAccountManager {
     static var shared: TSAccountManager {
         SSKEnvironment.shared.tsAccountManagerRef
-    }
-}
-
-// MARK: -
-
-@objc
-public extension AppExpiry {
-    static var shared: AppExpiry {
-        SSKEnvironment.shared.appExpiryRef
     }
 }
 

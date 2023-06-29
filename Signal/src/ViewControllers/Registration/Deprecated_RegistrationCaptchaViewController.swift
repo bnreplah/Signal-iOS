@@ -3,10 +3,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
-import UIKit
+import SignalCoreKit
+import SignalUI
 
-@objc
 protocol Deprecated_RegistrationCaptchaViewController: AnyObject {
 
     var viewModel: Deprecated_RegistrationCaptchaViewModel { get }
@@ -17,7 +16,6 @@ protocol Deprecated_RegistrationCaptchaViewController: AnyObject {
 
 // MARK: -
 
-@objc
 class Deprecated_RegistrationCaptchaViewModel: NSObject {
     weak var viewController: Deprecated_RegistrationCaptchaViewController?
 
@@ -31,7 +29,7 @@ class Deprecated_RegistrationCaptchaViewModel: NSObject {
         let primaryView = vc.primaryView
         primaryView.backgroundColor = Theme.backgroundColor
 
-        let titleLabel = vc.createTitleLabel(text: NSLocalizedString("ONBOARDING_CAPTCHA_TITLE",
+        let titleLabel = vc.createTitleLabel(text: OWSLocalizedString("ONBOARDING_CAPTCHA_TITLE",
                                                                      comment: "Title of the 'onboarding Captcha' view."))
         titleLabel.accessibilityIdentifier = "captcha." + "titleLabel"
 

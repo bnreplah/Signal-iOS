@@ -227,15 +227,13 @@ public class LinkPreviewView: ManualStackViewWithLayer {
     }
 
     static var defaultActivityIndicatorStyle: UIActivityIndicatorView.Style {
-        Theme.isDarkThemeEnabled
-            ? .white
-            : .gray
+        .medium
     }
 
     // MARK: Events
 
     @objc
-    func wasTapped(sender: UIGestureRecognizer) {
+    private func wasTapped(sender: UIGestureRecognizer) {
         guard sender.state == .recognized else {
             return
         }
@@ -334,7 +332,7 @@ extension LinkPreviewViewAdapter {
             return nil
         }
         return CVLabelConfig(text: text,
-                             font: UIFont.ows_dynamicTypeSubheadline.ows_semibold,
+                             font: UIFont.dynamicTypeSubheadline.semibold(),
                              textColor: Theme.primaryTextColor,
                              numberOfLines: LinkPreviewView.sentTitleLineCount,
                              lineBreakMode: .byTruncatingTail)
@@ -352,7 +350,7 @@ extension LinkPreviewViewAdapter {
     func sentDescriptionLabelConfig(state: LinkPreviewState) -> CVLabelConfig? {
         guard let text = state.previewDescription else { return nil }
         return CVLabelConfig(text: text,
-                             font: UIFont.ows_dynamicTypeSubheadline,
+                             font: UIFont.dynamicTypeSubheadline,
                              textColor: Theme.primaryTextColor,
                              numberOfLines: LinkPreviewView.sentDescriptionLineCount,
                              lineBreakMode: .byTruncatingTail)
@@ -375,7 +373,7 @@ extension LinkPreviewViewAdapter {
             labelText.append(" ⋅ \(LinkPreviewView.dateFormatter.string(from: date))")
         }
         return CVLabelConfig(text: labelText,
-                             font: UIFont.ows_dynamicTypeCaption1,
+                             font: UIFont.dynamicTypeCaption1,
                              textColor: Theme.secondaryTextAndIconColor,
                              lineBreakMode: .byTruncatingTail)
     }
@@ -477,7 +475,7 @@ private class LinkPreviewViewAdapterDraft: LinkPreviewViewAdapter {
             return nil
         }
         return CVLabelConfig(text: text,
-                             font: .ows_dynamicTypeBody,
+                             font: .dynamicTypeBody,
                              textColor: Theme.primaryTextColor,
                              lineBreakMode: .byTruncatingTail)
     }
@@ -487,7 +485,7 @@ private class LinkPreviewViewAdapterDraft: LinkPreviewViewAdapter {
             return nil
         }
         return CVLabelConfig(text: text,
-                             font: .ows_dynamicTypeSubheadline,
+                             font: .dynamicTypeSubheadline,
                              textColor: Theme.isDarkThemeEnabled ? .ows_gray05 : .ows_gray90,
                              lineBreakMode: .byTruncatingTail)
     }
@@ -501,7 +499,7 @@ private class LinkPreviewViewAdapterDraft: LinkPreviewViewAdapter {
             text.append(" ⋅ \(LinkPreviewView.dateFormatter.string(from: date))")
         }
         return CVLabelConfig(text: text,
-                             font: .ows_dynamicTypeCaption1,
+                             font: .dynamicTypeCaption1,
                              textColor: Theme.secondaryTextAndIconColor,
                              lineBreakMode: .byTruncatingTail)
     }
@@ -577,8 +575,7 @@ private class LinkPreviewViewAdapterDraft: LinkPreviewViewAdapter {
         }
         cancelButton.accessibilityLabel = MessageStrings.removePreviewButtonLabel
         linkPreviewView.cancelButton = cancelButton
-        cancelButton.setTemplateImageName("compose-cancel",
-                                          tintColor: Theme.secondaryTextAndIconColor)
+        cancelButton.setTemplateImageName("x-20", tintColor: Theme.secondaryTextAndIconColor)
         let cancelSize = self.cancelSize
         let cancelContainer = ManualLayoutView(name: "cancelContainer")
         cancelContainer.addSubview(cancelButton) { view in
@@ -1378,7 +1375,7 @@ public extension ManualLayoutView {
                                   layoutMargins: UIEdgeInsets = .zero) {
         addSubview(subview) { view in
             var subviewFrame = view.bounds.inset(by: layoutMargins)
-            subviewFrame.size.height = CGHairlineWidth()
+            subviewFrame.size.height = .hairlineWidth
             subviewFrame.y = view.bounds.height - (subviewFrame.height +
                                                     layoutMargins.bottom)
             subview.frame = subviewFrame

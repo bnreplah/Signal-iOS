@@ -4,9 +4,8 @@
 //
 
 import SignalMessaging
-import UIKit
+import SignalUI
 
-@objc
 public class Deprecated_RegistrationPhoneNumberDiscoverabilityViewController: Deprecated_OnboardingBaseViewController {
 
     static let hInset: CGFloat = UIDevice.current.isPlusSizePhone ? 20 : 16
@@ -47,7 +46,7 @@ public class Deprecated_RegistrationPhoneNumberDiscoverabilityViewController: De
 
         view.backgroundColor = Theme.backgroundColor
 
-        let titleLabel = self.createTitleLabel(text: NSLocalizedString(
+        let titleLabel = self.createTitleLabel(text: OWSLocalizedString(
             "ONBOARDING_PHONE_NUMBER_DISCOVERABILITY_TITLE",
             comment: "Title of the 'onboarding phone number discoverability' view."
         ))
@@ -64,7 +63,7 @@ public class Deprecated_RegistrationPhoneNumberDiscoverabilityViewController: De
             PhoneNumber.bestEffortLocalizedPhoneNumber(withE164: e164PhoneNumber)
                 .replacingOccurrences(of: " ", with: "\u{00a0}")
 
-        let explanationTextFormat = NSLocalizedString(
+        let explanationTextFormat = OWSLocalizedString(
             "ONBOARDING_PHONE_NUMBER_DISCOVERABILITY_EXPLANATION_FORMAT",
             comment: "Explanation of the 'onboarding phone number discoverability' view. Embeds {user phone number}"
         )
@@ -86,7 +85,7 @@ public class Deprecated_RegistrationPhoneNumberDiscoverabilityViewController: De
             self?.isDiscoverableByPhoneNumber = false
         }
 
-        selectionDescriptionLabel.font = .ows_dynamicTypeCaption1Clamped
+        selectionDescriptionLabel.font = .dynamicTypeCaption1Clamped
         selectionDescriptionLabel.textColor = .ows_gray45
         selectionDescriptionLabel.numberOfLines = 0
         selectionDescriptionLabel.lineBreakMode = .byWordWrapping
@@ -144,6 +143,7 @@ public class Deprecated_RegistrationPhoneNumberDiscoverabilityViewController: De
             TSAccountManager.shared.setIsDiscoverableByPhoneNumber(
                 self.isDiscoverableByPhoneNumber,
                 updateStorageService: true,
+                authedAccount: .implicit(),
                 transaction: transaction
             )
         }
@@ -176,11 +176,11 @@ private class ButtonRow: UIButton {
 
         let titleLabel = UILabel()
         titleLabel.textColor = Theme.primaryTextColor
-        titleLabel.font = .ows_dynamicTypeBodyClamped
+        titleLabel.font = .dynamicTypeBodyClamped
         titleLabel.text = title
 
         selectedImageView.isHidden = true
-        selectedImageView.setTemplateImageName(Theme.iconName(.accessoryCheckmark), tintColor: Theme.primaryIconColor)
+        selectedImageView.setTemplateImage(Theme.iconImage(.checkmark), tintColor: Theme.primaryIconColor)
         selectedImageView.contentMode = .scaleAspectFit
         selectedImageView.autoSetDimension(.width, toSize: 24)
 
@@ -201,9 +201,9 @@ private class ButtonRow: UIButton {
         stackView.autoSetDimension(.height, toSize: 44, relation: .greaterThanOrEqual)
 
         let divider = UIView()
-        divider.backgroundColor = Theme.middleGrayColor
+        divider.backgroundColor = .ows_middleGray
         addSubview(divider)
-        divider.autoSetDimension(.height, toSize: CGHairlineWidth())
+        divider.autoSetDimension(.height, toSize: .hairlineWidth)
         divider.autoPinEdge(toSuperviewEdge: .trailing)
         divider.autoPinEdge(toSuperviewEdge: .bottom)
         divider.autoPinEdge(toSuperviewEdge: .leading, withInset: Self.hInset)
@@ -214,7 +214,7 @@ private class ButtonRow: UIButton {
     }
 
     @objc
-    func didTap() {
+    private func didTap() {
         handler?(self)
     }
 }

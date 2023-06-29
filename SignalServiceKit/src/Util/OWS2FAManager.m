@@ -6,7 +6,6 @@
 #import "OWS2FAManager.h"
 #import "AppReadiness.h"
 #import "HTTPUtils.h"
-#import "SSKEnvironment.h"
 #import "TSAccountManager.h"
 #import <SignalServiceKit/SignalServiceKit-Swift.h>
 
@@ -86,15 +85,15 @@ const NSUInteger kLegacyTruncated2FAv1PinLength = 16;
     return [OWS2FAManager.keyValueStore getString:kOWS2FAManager_PinCode transaction:transaction];
 }
 
-- (void)setPinCode:(nullable NSString *)pin transaction:(SDSAnyWriteTransaction *)transaction
+- (void)setPinCode:(NSString *)pin transaction:(SDSAnyWriteTransaction *)transaction
 {
     if (pin.length == 0) {
-        [OWS2FAManager.keyValueStore removeValueForKey:kOWS2FAManager_PinCode transaction:transaction];
+        [self clearLocalPinCodeWithTransaction:transaction];
         return;
     }
 
-    if (self.hasBackedUpMasterKey) {
-        pin = [KeyBackupServiceObjcBridge normalizePin:pin];
+    if ([self hasBackedUpMasterKeyWithTransaction:transaction]) {
+        pin = [SVRUtil normalizePin:pin];
     } else {
         // Convert the pin to arabic numerals, we never want to
         // operate with pins in other numbering systems.
@@ -106,8 +105,12 @@ const NSUInteger kLegacyTruncated2FAv1PinLength = 16;
 
 - (OWS2FAMode)mode
 {
+    __block bool hasBackedUpMasterKey;
+    [self.databaseStorage readWithBlock:^(SDSAnyReadTransaction *transaction) {
+        hasBackedUpMasterKey = [self hasBackedUpMasterKeyWithTransaction:transaction];
+    }];
     // Identify what version of 2FA we're using
-    if (self.hasBackedUpMasterKey) {
+    if (hasBackedUpMasterKey) {
         return OWS2FAMode_V2;
     } else if (self.pinCode != nil) {
         return OWS2FAMode_V1;
@@ -264,7 +267,7 @@ const NSUInteger kLegacyTruncated2FAv1PinLength = 16;
         return NO;
     }
 
-    if (!self.hasBackedUpMasterKey) {
+    if (![self hasBackedUpMasterKeyWithTransaction:transaction]) {
         return NO;
     }
 
@@ -325,7 +328,7 @@ const NSUInteger kLegacyTruncated2FAv1PinLength = 16;
     switch (self.mode) {
     case OWS2FAMode_V2:
         if (pinToMatch.length > 0) {
-            result([pinToMatch isEqualToString:[KeyBackupServiceObjcBridge normalizePin:pin]]);
+            result([pinToMatch isEqualToString:[SVRUtil normalizePin:pin]]);
         } else {
             [self verifyKBSPin:pin
                  resultHandler:^(BOOL isValid) {

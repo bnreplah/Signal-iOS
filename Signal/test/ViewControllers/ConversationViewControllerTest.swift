@@ -3,10 +3,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
+import XCTest
+
 @testable import Signal
 
-class ConverstationViewControllerTest: SignalBaseTest {
+class ConversationViewControllerTest: SignalBaseTest {
 
     func testCVCBottomViewType() {
         XCTAssertEqual(CVCBottomViewType.none, CVCBottomViewType.none)

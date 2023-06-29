@@ -462,7 +462,6 @@ public class OWSLinkPreviewManager: NSObject, Dependencies, LinkPreviewManager {
     // MARK: - Private, Constants
 
     private static let maxFetchedContentSize = 2 * 1024 * 1024
-    private static let allowedMIMETypes: Set = [OWSMimeTypeImagePng, OWSMimeTypeImageJpeg]
 
     // MARK: - Preview Thumbnails
 
@@ -639,7 +638,19 @@ public class OWSLinkPreviewManager: NSObject, Dependencies, LinkPreviewManager {
 
 extension URL {
     private static let schemeAllowSet: Set = ["https"]
-    private static let tldRejectSet: Set = ["onion", "i2p"]
+    private static let domainRejectSet: Set = [
+        "example.com",
+        "example.org",
+        "example.net"
+    ]
+    private static let tldRejectSet: Set = [
+        "example",
+        "i2p",
+        "invalid",
+        "localhost",
+        "onion",
+        "test"
+    ]
     private static let urlDelimeters: Set<Character> = Set(":/?#[]@")
 
     /// Helper method that validates:
@@ -649,14 +660,21 @@ extension URL {
         // Technically, a TLD separator can be something other than a period (e.g. https://一二三。中国)
         // But it looks like NSURL/NSDataDetector won't even parse that. So we'll require periods for now
         let hostnameComponents = hostname.split(separator: ".")
-        guard hostnameComponents.count >= 2, let tld = hostnameComponents.last?.lowercased() else {
+        guard
+            hostnameComponents.count >= 2,
+            let tld = hostnameComponents.last?.lowercased(),
+            let domain = hostnameComponents.dropLast().last?.lowercased()
+        else {
             return false
         }
         let isValidTLD = !Self.tldRejectSet.contains(tld)
+        let isValidDomain = !Self.domainRejectSet.contains(
+            [domain, tld].joined(separator: ".")
+        )
         let isAllASCII = hostname.allSatisfy { $0.isASCII }
         let isAllNonASCII = hostname.allSatisfy { !$0.isASCII || $0 == "." }
 
-        return isValidTLD && (isAllASCII || isAllNonASCII)
+        return isValidTLD && isValidDomain && (isAllASCII || isAllNonASCII)
     }
 
     /// - Parameter sourceString: The raw string that this URL was parsed from

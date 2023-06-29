@@ -15,7 +15,6 @@
 #import "OWSRecipientIdentity.h"
 #import "OWSVerificationStateChangeMessage.h"
 #import "OWSVerificationStateSyncMessage.h"
-#import "SSKEnvironment.h"
 #import "TSAccountManager.h"
 #import "TSContactThread.h"
 #import "TSErrorMessage.h"
@@ -79,7 +78,6 @@ NSNotificationName const kNSNotificationNameIdentityStateDidChange = @"kNSNotifi
     OWSSingletonAssert();
 
     [self observeNotifications];
-    AppReadinessRunNowOrWhenAppDidBecomeReadyAsync(^{ [self checkForPniIdentity]; });
 
     return self;
 }
@@ -92,14 +90,9 @@ NSNotificationName const kNSNotificationNameIdentityStateDidChange = @"kNSNotifi
                                                object:nil];
 }
 
-- (ECKeyPair *)generateNewIdentityKeyForIdentity:(OWSIdentity)identity
+- (ECKeyPair *)generateNewIdentityKeyPair
 {
-    __block ECKeyPair *newKeyPair;
-    DatabaseStorageWrite(self.databaseStorage, ^(SDSAnyWriteTransaction *transaction) {
-        newKeyPair = [Curve25519 generateKeyPair];
-        [self storeIdentityKeyPair:newKeyPair forIdentity:identity transaction:transaction];
-    });
-    return newKeyPair;
+    return [Curve25519 generateKeyPair];
 }
 
 - (void)storeIdentityKeyPair:(nullable ECKeyPair *)keyPair
@@ -224,7 +217,7 @@ NSNotificationName const kNSNotificationNameIdentityStateDidChange = @"kNSNotifi
         [self fireIdentityStateChangeNotificationAfterTransaction:transaction];
 
         // Identity key was created, schedule a social graph backup
-        [self.storageServiceManager recordPendingUpdatesWithUpdatedAccountIds:@[ accountId ]];
+        [self.storageServiceManagerObjc recordPendingUpdatesWithUpdatedAccountIds:@[ accountId ]];
 
         return NO;
     }
@@ -269,7 +262,7 @@ NSNotificationName const kNSNotificationNameIdentityStateDidChange = @"kNSNotifi
         [self fireIdentityStateChangeNotificationAfterTransaction:transaction];
 
         // Identity key was changed, schedule a social graph backup
-        [self.storageServiceManager recordPendingUpdatesWithUpdatedAccountIds:@[ accountId ]];
+        [self.storageServiceManagerObjc recordPendingUpdatesWithUpdatedAccountIds:@[ accountId ]];
 
         return YES;
     }
@@ -329,10 +322,10 @@ NSNotificationName const kNSNotificationNameIdentityStateDidChange = @"kNSNotifi
     [recipientIdentity updateWithVerificationState:verificationState transaction:transaction];
 
     if (isUserInitiatedChange) {
-        [self saveChangeMessagesForAddress:address
-                         verificationState:verificationState
-                             isLocalChange:YES
-                               transaction:transaction];
+        [self saveChangeMessagesWithAddress:address
+                          verificationState:verificationState
+                              isLocalChange:YES
+                                transaction:transaction];
         [self enqueueSyncMessageForVerificationStateForAddress:address transaction:transaction];
     } else {
         // Cancel any pending verification state sync messages for this recipient.
@@ -340,18 +333,9 @@ NSNotificationName const kNSNotificationNameIdentityStateDidChange = @"kNSNotifi
     }
 
     // Verification state has changed, schedule a social graph backup
-    [self.storageServiceManager recordPendingUpdatesWithUpdatedAccountIds:@[ accountId ]];
+    [self.storageServiceManagerObjc recordPendingUpdatesWithUpdatedAccountIds:@[ accountId ]];
 
     [self fireIdentityStateChangeNotificationAfterTransaction:transaction];
-}
-
-- (BOOL)groupContainsUnverifiedMember:(NSString *)threadUniqueID
-{
-    __block BOOL result = NO;
-    [self.databaseStorage readWithBlock:^(SDSAnyReadTransaction *_Nonnull transaction) {
-        result = [self groupContainsUnverifiedMember:threadUniqueID transaction:transaction];
-    }];
-    return result;
 }
 
 - (NSArray<SignalServiceAddress *> *)noLongerVerifiedAddressesInGroup:(NSString *)groupThreadID
@@ -833,217 +817,23 @@ NSNotificationName const kNSNotificationNameIdentityStateDidChange = @"kNSNotifi
     [self.queuedVerificationStateSyncMessagesKeyValueStore setObject:nil key:accountId transaction:transaction];
 }
 
-- (BOOL)processIncomingVerifiedProto:(SSKProtoVerified *)verified
-                         transaction:(SDSAnyWriteTransaction *)transaction
-                               error:(NSError **)error
+#pragma mark - Tests
+
+#if TESTABLE_BUILD
+- (ECKeyPair *)generateAndPersistNewIdentityKeyForIdentity:(OWSIdentity)identity
 {
-    return [SCKExceptionWrapper
-        tryBlock:^{
-            [self throws_processIncomingVerifiedProto:verified transaction:transaction];
-        }
-           error:error];
+    __block ECKeyPair *newKeyPair;
+    DatabaseStorageWrite(self.databaseStorage, ^(SDSAnyWriteTransaction *transaction) {
+        newKeyPair = [self generateNewIdentityKeyPair];
+        [self storeIdentityKeyPair:newKeyPair forIdentity:identity transaction:transaction];
+    });
+    return newKeyPair;
 }
-
-- (void)throws_processIncomingVerifiedProto:(SSKProtoVerified *)verified
-                                transaction:(SDSAnyWriteTransaction *)transaction
-{
-    OWSAssertDebug(verified);
-    OWSAssertDebug(transaction);
-
-    SignalServiceAddress *address = verified.destinationAddress;
-    if (!address.isValid) {
-        OWSFailDebug(@"Verification state sync message missing address.");
-        return;
-    }
-    NSData *rawIdentityKey = verified.identityKey;
-    if (rawIdentityKey.length != kIdentityKeyLength) {
-        OWSFailDebug(@"Verification state sync message for recipient: %@ with malformed identityKey: %@",
-            address,
-            rawIdentityKey);
-        return;
-    }
-    NSData *identityKey = [rawIdentityKey throws_removeKeyType];
-
-    if (!verified.hasState) {
-        OWSFailDebug(@"Verification state sync message missing state.");
-        return;
-    }
-    switch (verified.unwrappedState) {
-        case SSKProtoVerifiedStateDefault:
-            [self tryToApplyVerificationStateFromSyncMessage:OWSVerificationStateDefault
-                                                     address:address
-                                                 identityKey:identityKey
-                                         overwriteOnConflict:NO
-                                                 transaction:transaction];
-            break;
-        case SSKProtoVerifiedStateVerified:
-            [self tryToApplyVerificationStateFromSyncMessage:OWSVerificationStateVerified
-                                                     address:address
-                                                 identityKey:identityKey
-                                         overwriteOnConflict:YES
-                                                 transaction:transaction];
-            break;
-        case SSKProtoVerifiedStateUnverified:
-            OWSFailDebug(@"Verification state sync message for address: %@ has unexpected value: %@.",
-                address,
-                OWSVerificationStateToString(OWSVerificationStateNoLongerVerified));
-            return;
-    }
-}
-
-- (void)tryToApplyVerificationStateFromSyncMessage:(OWSVerificationState)verificationState
-                                           address:(SignalServiceAddress *)address
-                                       identityKey:(NSData *)identityKey
-                               overwriteOnConflict:(BOOL)overwriteOnConflict
-                                       transaction:(SDSAnyWriteTransaction *)transaction
-{
-    OWSAssertDebug(address.isValid);
-    OWSAssertDebug(transaction);
-
-    if (!address.isValid) {
-        OWSFailDebug(@"Verification state sync message missing recipientId.");
-        return;
-    }
-
-    if (identityKey.length != kStoredIdentityKeyLength) {
-        OWSFailDebug(@"Verification state sync message missing identityKey: %@", address);
-        return;
-    }
-
-    NSString *accountId = [self ensureAccountIdForAddress:address transaction:transaction];
-    OWSRecipientIdentity *_Nullable recipientIdentity = [OWSRecipientIdentity anyFetchWithUniqueId:accountId
-                                                                                       transaction:transaction];
-    if (!recipientIdentity) {
-        // There's no existing recipient identity for this recipient.
-        // We should probably create one.
-        
-        if (verificationState == OWSVerificationStateDefault) {
-            // There's no point in creating a new recipient identity just to
-            // set its verification state to default.
-            return;
-        }
-        
-        // Ensure a remote identity exists for this key. We may be learning about
-        // it for the first time.
-        [self saveRemoteIdentity:identityKey address:address transaction:transaction];
-
-        recipientIdentity = [OWSRecipientIdentity anyFetchWithUniqueId:accountId transaction:transaction];
-
-        if (recipientIdentity == nil) {
-            OWSFailDebug(@"Missing expected identity: %@", address);
-            return;
-        }
-
-        if (![recipientIdentity.accountId isEqualToString:accountId]) {
-            OWSFailDebug(@"recipientIdentity has unexpected accountId: %@", address);
-            return;
-        }
-
-        if (![recipientIdentity.identityKey isEqualToData:identityKey]) {
-            OWSFailDebug(@"recipientIdentity has unexpected identityKey: %@", address);
-            return;
-        }
-        
-        if (recipientIdentity.verificationState == verificationState) {
-            return;
-        }
-
-        OWSLogInfo(@"setVerificationState: %@ (%@ -> %@)",
-            address,
-            OWSVerificationStateToString(recipientIdentity.verificationState),
-            OWSVerificationStateToString(verificationState));
-
-        [recipientIdentity updateWithVerificationState:verificationState transaction:transaction];
-
-        // No need to call [saveChangeMessagesForAddress:..] since this is
-        // a new recipient.
-    } else {
-        // There's an existing recipient identity for this recipient.
-        // We should update it.
-        if (![recipientIdentity.accountId isEqualToString:accountId]) {
-            OWSFailDebug(@"recipientIdentity has unexpected accountId: %@", address);
-            return;
-        }
-
-        if (![recipientIdentity.identityKey isEqualToData:identityKey]) {
-            // The conflict case where we receive a verification sync message
-            // whose identity key disagrees with the local identity key for
-            // this recipient.
-            if (!overwriteOnConflict) {
-                OWSLogWarn(@"recipientIdentity has non-matching identityKey: %@", address);
-                return;
-            }
-
-            OWSLogWarn(@"recipientIdentity has non-matching identityKey; overwriting: %@", address);
-            [self saveRemoteIdentity:identityKey address:address transaction:transaction];
-
-            recipientIdentity = [OWSRecipientIdentity anyFetchWithUniqueId:accountId transaction:transaction];
-
-            if (recipientIdentity == nil) {
-                OWSFailDebug(@"Missing expected identity: %@", address);
-                return;
-            }
-
-            if (![recipientIdentity.accountId isEqualToString:accountId]) {
-                OWSFailDebug(@"recipientIdentity has unexpected accountId: %@", address);
-                return;
-            }
-
-            if (![recipientIdentity.identityKey isEqualToData:identityKey]) {
-                OWSFailDebug(@"recipientIdentity has unexpected identityKey: %@", address);
-                return;
-            }
-        }
-        
-        if (recipientIdentity.verificationState == verificationState) {
-            return;
-        }
-
-        [recipientIdentity updateWithVerificationState:verificationState transaction:transaction];
-
-        [self saveChangeMessagesForAddress:address
-                         verificationState:verificationState
-                             isLocalChange:NO
-                               transaction:transaction];
-    }
-}
-
-// We only want to create change messages in response to user activity,
-// on any of their devices.
-- (void)saveChangeMessagesForAddress:(SignalServiceAddress *)address
-                   verificationState:(OWSVerificationState)verificationState
-                       isLocalChange:(BOOL)isLocalChange
-                         transaction:(SDSAnyWriteTransaction *)transaction
-{
-    OWSAssertDebug(address.isValid);
-    OWSAssertDebug(transaction);
-
-    NSMutableArray<TSMessage *> *messages = [NSMutableArray new];
-
-    TSContactThread *contactThread = [TSContactThread getOrCreateThreadWithContactAddress:address
-                                                                              transaction:transaction];
-    OWSAssertDebug(contactThread);
-    [messages addObject:[[OWSVerificationStateChangeMessage alloc] initWithThread:contactThread
-                                                                 recipientAddress:address
-                                                                verificationState:verificationState
-                                                                    isLocalChange:isLocalChange]];
-
-    for (TSGroupThread *groupThread in [TSGroupThread groupThreadsWithAddress:address transaction:transaction]) {
-        [messages addObject:[[OWSVerificationStateChangeMessage alloc] initWithThread:groupThread
-                                                                     recipientAddress:address
-                                                                    verificationState:verificationState
-                                                                        isLocalChange:isLocalChange]];
-    }
-
-    // MJK TODO - why not save in-line, vs storing in an array and saving the array?
-    for (TSMessage *message in messages) {
-        [message anyInsertWithTransaction:transaction];
-    }
-}
+#endif
 
 #pragma mark - Debug
 
-#if DEBUG
+#if USE_DEBUG_UI
 - (void)clearIdentityState:(SDSAnyWriteTransaction *)transaction
 {
     OWSAssertDebug(transaction);

@@ -7,7 +7,7 @@ import SignalMessaging
 import SignalUI
 import UIKit
 
-public enum PhotoGridItemType {
+enum PhotoGridItemType {
     case photo
     case animated
     case video(Promise<TimeInterval>)
@@ -27,56 +27,71 @@ public enum PhotoGridItemType {
             }
         }
     }
+
+    var formattedType: String {
+        switch self {
+        case .animated:
+            return OWSLocalizedString(
+                "ALL_MEDIA_THUMBNAIL_LABEL_GIF",
+                comment: "Label shown over thumbnails of GIFs in the All Media view")
+        case .photo:
+            return OWSLocalizedString(
+                "ALL_MEDIA_THUMBNAIL_LABEL_IMAGE",
+                comment: "Label shown by thumbnails of images in the All Media view")
+        case .video:
+            return OWSLocalizedString(
+                "ALL_MEDIA_THUMBNAIL_LABEL_VIDEO",
+                comment: "Label shown by thumbnails of videos in the All Media view")
+        }
+    }
 }
 
-public protocol PhotoGridItem: AnyObject {
+public struct MediaMetadata {
+    var sender: String
+    var abbreviatedSender: String
+    var filename: String?
+    var byteSize: Int
+    var creationDate: Date?
+}
+
+protocol PhotoGridItem: AnyObject {
     var type: PhotoGridItemType { get }
+    var isFavorite: Bool { get }
     func asyncThumbnail(completion: @escaping (UIImage?) -> Void) -> UIImage?
-    var creationDate: Date? { get }
+    var mediaMetadata: MediaMetadata? { get }
 }
 
-public class PhotoGridViewCell: UICollectionViewCell {
+class PhotoGridViewCell: UICollectionViewCell {
 
     static let reuseIdentifier = "PhotoGridViewCell"
 
     public let imageView: UIImageView
 
-    private var contentTypeBadgeView: UIImageView?
+    // Contains icon and shadow.
+    private var isFavoriteBadge: UIView?
+
     private var durationLabel: UILabel?
     private var durationLabelBackground: UIView?
-    private let outlineBadgeView: UIView
-    private let selectedBadgeView: UIView
+    private let selectionButton = SelectionButton()
 
     private let highlightedMaskView: UIView
     private let selectedMaskView: UIView
 
-    var item: PhotoGridItem?
+    private(set) var photoGridItem: PhotoGridItem?
 
-    private static let selectedBadgeImage = UIImage(named: "media-composer-checkmark")
     public var loadingColor = Theme.washColor
 
-    private lazy var todayTimeFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = .current
-        formatter.dateStyle = .none
-        formatter.timeStyle = .short
-        return formatter
-    }()
+    var allowsMultipleSelection = false {
+        didSet {
+            updateSelectionState()
+        }
+    }
 
-    private lazy var thisYearDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = .current
-        formatter.setLocalizedDateFormatFromTemplate("MMMMd")
-        return formatter
-    }()
-
-    private lazy var longDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = .current
-        formatter.dateStyle = .long
-        formatter.timeStyle = .none
-        return formatter
-    }()
+    public override var isHighlighted: Bool {
+        didSet {
+            highlightedMaskView.isHidden = !isHighlighted
+        }
+    }
 
     override public var isSelected: Bool {
         didSet {
@@ -84,53 +99,54 @@ public class PhotoGridViewCell: UICollectionViewCell {
         }
     }
 
-    public var allowsMultipleSelection: Bool = false {
+    private var isFavorite: Bool = false {
         didSet {
-            updateSelectionState()
-        }
-    }
+            guard isFavorite else {
+                isFavoriteBadge?.isHidden = true
+                return
+            }
+            let badgeIconView: UIView
+            if let isFavoriteBadge {
+                badgeIconView = isFavoriteBadge
+            } else {
+                badgeIconView = UIView.container()
+                badgeIconView.clipsToBounds = false
 
-    private func updateSelectionState() {
-        if isSelected {
-            outlineBadgeView.isHidden = false
-            selectedBadgeView.isHidden = false
-            selectedMaskView.isHidden = false
-        } else if allowsMultipleSelection {
-            outlineBadgeView.isHidden = false
-            selectedBadgeView.isHidden = true
-            selectedMaskView.isHidden = true
-        } else {
-            outlineBadgeView.isHidden = true
-            selectedBadgeView.isHidden = true
-            selectedMaskView.isHidden = true
-        }
-    }
+                let badgeShadow = GradientView(colors: [ .ows_blackAlpha40, .ows_blackAlpha40, .clear ])
+                badgeShadow.gradientLayer.type = .radial
+                badgeShadow.gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.5)
+                badgeShadow.gradientLayer.endPoint = CGPoint(x: 1, y: 1)
+                badgeIconView.addSubview(badgeShadow)
 
-    override public var isHighlighted: Bool {
-        didSet {
-            self.highlightedMaskView.isHidden = !self.isHighlighted
+                let badgeIcon = UIImageView(image: UIImage(imageLiteralResourceName: "heart-fill-compact"))
+                badgeIcon.tintColor = .white
+                badgeIconView.addSubview(badgeIcon)
+
+                badgeShadow.autoPinEdge(.top, to: .top, of: badgeIcon, withOffset: -20)
+                badgeShadow.autoPinEdge(.trailing, to: .trailing, of: badgeIcon, withOffset: 20)
+                badgeShadow.centerXAnchor.constraint(equalTo: badgeIconView.leadingAnchor).isActive = true
+                badgeShadow.centerYAnchor.constraint(equalTo: badgeIconView.bottomAnchor).isActive = true
+
+                badgeIcon.autoSetDimensions(to: .square(14))
+                badgeIcon.autoPinEdge(toSuperviewEdge: .leading, withInset: 6)
+                badgeIcon.autoPinEdge(toSuperviewEdge: .top)
+                badgeIcon.autoPinEdge(toSuperviewEdge: .trailing)
+                badgeIcon.autoPinEdge(toSuperviewEdge: .bottom, withInset: 5)
+
+                contentView.addSubview(badgeIconView)
+                badgeIconView.autoPinEdge(toSuperviewEdge: .leading)
+                badgeIconView.autoPinEdge(toSuperviewEdge: .bottom)
+
+                isFavoriteBadge = badgeIconView
+            }
+            badgeIconView.isHidden = false
+            contentView.bringSubviewToFront(badgeIconView)
         }
     }
 
     override init(frame: CGRect) {
-        let selectionBadgeSize: CGFloat = 22
-
         imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-
-        selectedBadgeView = CircleView(diameter: selectionBadgeSize)
-        selectedBadgeView.backgroundColor = .ows_accentBlue
-        selectedBadgeView.isHidden = true
-        let checkmarkImageView = UIImageView(image: PhotoGridViewCell.selectedBadgeImage)
-        checkmarkImageView.tintColor = .white
-        selectedBadgeView.addSubview(checkmarkImageView)
-        checkmarkImageView.autoCenterInSuperview()
-
-        outlineBadgeView = CircleView()
-        outlineBadgeView.backgroundColor = .clear
-        outlineBadgeView.layer.borderWidth = 1.5
-        outlineBadgeView.layer.borderColor = UIColor.ows_white.cgColor
-        selectedBadgeView.isHidden = true
 
         highlightedMaskView = UIView()
         highlightedMaskView.alpha = 0.2
@@ -149,20 +165,14 @@ public class PhotoGridViewCell: UICollectionViewCell {
         contentView.addSubview(imageView)
         contentView.addSubview(highlightedMaskView)
         contentView.addSubview(selectedMaskView)
-        contentView.addSubview(selectedBadgeView)
-        contentView.addSubview(outlineBadgeView)
+        contentView.addSubview(selectionButton)
 
         imageView.autoPinEdgesToSuperviewEdges()
         highlightedMaskView.autoPinEdgesToSuperviewEdges()
         selectedMaskView.autoPinEdgesToSuperviewEdges()
 
-        outlineBadgeView.autoSetDimensions(to: CGSize(square: selectionBadgeSize))
-        outlineBadgeView.autoPinEdge(toSuperviewEdge: .trailing, withInset: 6)
-        outlineBadgeView.autoPinEdge(toSuperviewEdge: .top, withInset: 6)
-
-        selectedBadgeView.autoSetDimensions(to: CGSize(square: selectionBadgeSize))
-        selectedBadgeView.autoAlignAxis(.vertical, toSameAxisOf: outlineBadgeView)
-        selectedBadgeView.autoAlignAxis(.horizontal, toSameAxisOf: outlineBadgeView)
+        selectionButton.autoPinEdge(toSuperviewEdge: .trailing, withInset: 5)
+        selectionButton.autoPinEdge(toSuperviewEdge: .top, withInset: 5)
     }
 
     @available(*, unavailable, message: "Unimplemented")
@@ -170,12 +180,18 @@ public class PhotoGridViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    private func updateSelectionState() {
+        selectedMaskView.isHidden = !isSelected
+        selectionButton.isSelected = isSelected
+        selectionButton.allowsMultipleSelection = allowsMultipleSelection
+    }
+
     public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
         if let durationLabel = durationLabel,
            previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
-            durationLabel.font = PhotoGridViewCell.durationLabelFont()
+            durationLabel.font = Self.durationLabelFont()
         }
     }
 
@@ -189,7 +205,7 @@ public class PhotoGridViewCell: UICollectionViewCell {
 
     private static func durationLabelFont() -> UIFont {
         let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .caption1)
-        return UIFont.ows_semiboldFont(withSize: max(12, fontDescriptor.pointSize))
+        return UIFont.semiboldFont(ofSize: max(12, fontDescriptor.pointSize))
     }
 
     private func setMedia(itemType: PhotoGridItemType) {
@@ -198,19 +214,16 @@ public class PhotoGridViewCell: UICollectionViewCell {
         case .video(let promisedDuration):
             updateVideoDurationWhenPromiseFulfilled(promisedDuration)
         case .animated:
-            setCaption(
-                OWSLocalizedString(
-                    "ALL_MEDIA_THUMBNAIL_LABEL_GIF",
-                    comment: "Label shown over thumbnails of GIFs in the All Media view"))
+            setCaption(itemType.formattedType)
         case .photo:
             break
         }
     }
 
     private func updateVideoDurationWhenPromiseFulfilled(_ promisedDuration: Promise<TimeInterval>) {
-        let originalItem = item
+        let originalItem = photoGridItem
         promisedDuration.observe { [weak self] result in
-            guard let self, self.item === originalItem, case .success(let duration) = result else {
+            guard let self, self.photoGridItem === originalItem, case .success(let duration) = result else {
                 return
             }
             self.setCaption(OWSFormat.localizedDurationString(from: duration))
@@ -226,7 +239,7 @@ public class PhotoGridViewCell: UICollectionViewCell {
         if durationLabel == nil {
             let durationLabel = UILabel()
             durationLabel.textColor = .white
-            durationLabel.font = PhotoGridViewCell.durationLabelFont()
+            durationLabel.font = Self.durationLabelFont()
             durationLabel.layer.shadowColor = UIColor.ows_blackAlpha20.cgColor
             durationLabel.layer.shadowOffset = CGSize(width: -1, height: -1)
             durationLabel.layer.shadowOpacity = 1
@@ -254,7 +267,7 @@ public class PhotoGridViewCell: UICollectionViewCell {
         }
         if durationLabelBackground.superview == nil {
             contentView.insertSubview(durationLabelBackground, belowSubview: durationLabel)
-            durationLabelBackground.topAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
+            durationLabelBackground.topAnchor.constraint(equalTo: centerYAnchor).isActive = true
             durationLabelBackground.autoPinEdge(toSuperviewEdge: .leading)
             durationLabelBackground.autoPinEdge(toSuperviewEdge: .trailing)
             durationLabelBackground.autoPinEdge(toSuperviewEdge: .bottom)
@@ -264,6 +277,10 @@ public class PhotoGridViewCell: UICollectionViewCell {
         durationLabelBackground.isHidden = false
         durationLabel.text = caption
         durationLabel.sizeToFit()
+
+        if let isFavoriteBadge {
+            contentView.bringSubviewToFront(isFavoriteBadge)
+        }
     }
 
     private func setUpAccessibility(item: PhotoGridItem?) {
@@ -272,7 +289,7 @@ public class PhotoGridViewCell: UICollectionViewCell {
         if let item {
             self.accessibilityLabel = [
                 item.type.localizedString,
-                formattedDateString(for: item.creationDate)
+                MediaTileDateFormatter.formattedDateString(for: item.mediaMetadata?.creationDate)
             ]
                 .compactMap { $0 }
                 .joined(separator: ", ")
@@ -282,14 +299,14 @@ public class PhotoGridViewCell: UICollectionViewCell {
     }
 
     public func makePlaceholder() {
-        self.item = nil
-        self.image = nil
+        photoGridItem = nil
+        image = nil
         setMedia(itemType: .photo)
         setUpAccessibility(item: nil)
     }
 
-    public func configure(item: PhotoGridItem) {
-        self.item = item
+    func configure(item: PhotoGridItem) {
+        photoGridItem = item
 
         // PHCachingImageManager returns multiple progressively better
         // thumbnails in the async block. We want to avoid calling
@@ -297,9 +314,9 @@ public class PhotoGridViewCell: UICollectionViewCell {
         // last time it was called will be momentarily replaced by a progression of lower
         // quality images.
         image = item.asyncThumbnail { [weak self] image in
-            guard let self = self else { return }
+            guard let self else { return }
 
-            guard let currentItem = self.item else {
+            guard let currentItem = self.photoGridItem else {
                 return
             }
 
@@ -313,38 +330,36 @@ public class PhotoGridViewCell: UICollectionViewCell {
             self.image = image
         }
 
+        isFavorite = item.isFavorite
         setMedia(itemType: item.type)
+        isFavorite = item.isFavorite
         setUpAccessibility(item: item)
     }
 
     override public func prepareForReuse() {
         super.prepareForReuse()
 
-        item = nil
+        photoGridItem = nil
         imageView.image = nil
-        contentTypeBadgeView?.isHidden = true
+        isFavoriteBadge?.isHidden = true
         durationLabel?.isHidden = true
         durationLabelBackground?.isHidden = true
         highlightedMaskView.isHidden = true
         selectedMaskView.isHidden = true
-        selectedBadgeView.isHidden = true
-        outlineBadgeView.isHidden = true
+        selectionButton.reset()
     }
 
-    private func formattedDateString(for date: Date?) -> String? {
-        guard let date = date else { return nil }
-
-        let dateIsThisYear = DateUtil.dateIsThisYear(date)
-        let dateIsToday = DateUtil.dateIsToday(date)
-
-        if dateIsToday {
-            return todayTimeFormatter.string(from: date)
+    func mediaPresentationContext(collectionView: UICollectionView, in coordinateSpace: UICoordinateSpace) -> MediaPresentationContext? {
+        guard let mediaSuperview = imageView.superview else {
+            owsFailDebug("mediaSuperview was unexpectedly nil")
+            return nil
         }
-
-        if dateIsThisYear {
-            return thisYearDateFormatter.string(from: date)
-        }
-
-        return longDateFormatter.string(from: date)
+        let presentationFrame = coordinateSpace.convert(imageView.frame, from: mediaSuperview)
+        let clippingAreaInsets = UIEdgeInsets(top: collectionView.adjustedContentInset.top, leading: 0, bottom: 0, trailing: 0)
+        return MediaPresentationContext(
+            mediaView: imageView,
+            presentationFrame: presentationFrame,
+            clippingAreaInsets: clippingAreaInsets
+        )
     }
 }

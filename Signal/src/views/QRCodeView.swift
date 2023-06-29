@@ -3,7 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
+import SignalCoreKit
+import SignalUI
 
 class QRCodeView: UIView {
 
@@ -62,7 +63,7 @@ class QRCodeView: UIView {
     lazy var placeholderView: UIView = {
         let placeholder = UIView()
 
-        let activityIndicator = UIActivityIndicatorView(style: .whiteLarge)
+        let activityIndicator = UIActivityIndicatorView(style: .large)
         placeholder.addSubview(activityIndicator)
         activityIndicator.color = Theme.lightThemePrimaryColor
         activityIndicator.autoCenterInSuperview()

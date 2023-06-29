@@ -3,14 +3,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import SignalMessaging
 import SignalServiceKit
 
-@objc
-public class NotificationActionHandler: NSObject {
+public class NotificationActionHandler: Dependencies {
 
-    @objc
     class func handleNotificationResponse( _ response: UNNotificationResponse, completionHandler: @escaping () -> Void) {
         AssertIsOnMainThread()
         firstly {
@@ -154,7 +151,8 @@ public class NotificationActionHandler: NSObject {
                     } else {
                         // We only use the thread's DM timer for normal messages & 1:1 story
                         // replies -- group story replies last for the lifetime of the story.
-                        builder.expiresInSeconds = thread.disappearingMessagesDuration(with: transaction)
+                        let dmConfigurationStore = DependenciesBridge.shared.disappearingMessagesConfigurationStore
+                        builder.expiresInSeconds = dmConfigurationStore.durationSeconds(for: thread, tx: transaction.asV2Read)
                     }
 
                     let message = TSOutgoingMessage(outgoingMessageWithBuilder: builder, transaction: transaction)
@@ -188,7 +186,7 @@ public class NotificationActionHandler: NSObject {
         // If this happens when the app is not visible we skip the animation so the thread
         // can be visible to the user immediately upon opening the app, rather than having to watch
         // it animate in from the homescreen.
-        signalApp.presentConversationAndScrollToFirstUnreadMessage(
+        SignalApp.shared.presentConversationAndScrollToFirstUnreadMessage(
             forThreadId: notificationMessage.thread.uniqueId,
             animated: UIApplication.shared.applicationState == .active
         )
@@ -242,11 +240,11 @@ public class NotificationActionHandler: NSObject {
             return firstly(on: DispatchQueue.global()) { () -> Promise<Void> in
                 self.databaseStorage.write { transaction in
                     ReactionManager.localUserReacted(
-                        to: incomingMessage,
+                        to: incomingMessage.uniqueId,
                         emoji: "👍",
                         isRemoving: false,
                         isHighPriority: true,
-                        transaction: transaction
+                        tx: transaction
                     )
                 }
             }.recover(on: DispatchQueue.global()) { error -> Promise<Void> in
@@ -267,7 +265,7 @@ public class NotificationActionHandler: NSObject {
             let currentCall = Self.callService.currentCall
 
             if currentCall?.thread.uniqueId == thread.uniqueId {
-                OWSWindowManager.shared.returnToCallView()
+                WindowManager.shared.returnToCallView()
             } else if let thread = thread as? TSGroupThread, currentCall == nil {
                 GroupCallViewController.presentLobby(thread: thread)
             } else {
@@ -280,7 +278,7 @@ public class NotificationActionHandler: NSObject {
 
     private class func submitDebugLogs() -> Promise<Void> {
         Promise { future in
-            DebugLogs.submitLogs(withSupportTag: nil) {
+            DebugLogs.submitLogsWithSupportTag(nil) {
                 future.resolve()
             }
         }
@@ -294,6 +292,7 @@ public class NotificationActionHandler: NSObject {
                     future.resolve()
                     return
                 }
+                Logger.info("Reregistering from deregistered notification")
                 RegistrationUtils.reregister(fromViewController: viewController)
                 future.resolve()
             }

@@ -3,10 +3,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
 import SignalMessaging
+import SignalUI
 
-class ChatColorViewController: OWSTableViewController2 {
+class ChatColorViewController: OWSTableViewController2, Dependencies {
 
     fileprivate let thread: TSThread?
 
@@ -56,7 +56,7 @@ class ChatColorViewController: OWSTableViewController2 {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(themeDidChangeNotification),
-            name: .ThemeDidChange,
+            name: .themeDidChange,
             object: nil
         )
     }
@@ -113,7 +113,7 @@ class ChatColorViewController: OWSTableViewController2 {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = NSLocalizedString("CHAT_COLOR_SETTINGS_TITLE", comment: "Title for the chat color settings view.")
+        title = OWSLocalizedString("CHAT_COLOR_SETTINGS_TITLE", comment: "Title for the chat color settings view.")
 
         updateTableContents()
     }
@@ -167,7 +167,7 @@ class ChatColorViewController: OWSTableViewController2 {
 
             return cell
         } actionBlock: {})
-        contents.addSection(previewSection)
+        contents.add(previewSection)
 
         let colorsSection = OWSTableSection()
         colorsSection.customHeaderHeight = 14
@@ -182,7 +182,7 @@ class ChatColorViewController: OWSTableViewController2 {
             chatColorPicker.autoPinEdgesToSuperviewMargins()
             return cell
         } actionBlock: {})
-        contents.addSection(colorsSection)
+        contents.add(colorsSection)
 
         self.contents = contents
     }
@@ -190,11 +190,11 @@ class ChatColorViewController: OWSTableViewController2 {
     func buildMockConversationModel() -> MockConversationView.MockModel {
         MockConversationView.MockModel(items: [
             .date,
-            .incoming(text: NSLocalizedString(
+            .incoming(text: OWSLocalizedString(
                 "CHAT_COLOR_INCOMING_MESSAGE",
                 comment: "The incoming bubble text when setting a chat color."
             )),
-            .outgoing(text: NSLocalizedString(
+            .outgoing(text: OWSLocalizedString(
                 "CHAT_COLOR_OUTGOING_MESSAGE",
                 comment: "The outgoing bubble text when setting a chat color."
             ))
@@ -248,8 +248,8 @@ class ChatColorViewController: OWSTableViewController2 {
         let customColorVC = CustomColorViewController(thread: thread,
                                                       valueMode: valueMode) { [weak self] (value: ChatColor) in
             guard let self = self else { return }
-            Self.databaseStorage.write { transaction in
-                Self.chatColors.upsertCustomValue(value, transaction: transaction)
+            self.databaseStorage.write { transaction in
+                self.chatColors.upsertCustomValue(value, transaction: transaction)
             }
             self.setNewValue(value)
         }
@@ -259,8 +259,8 @@ class ChatColorViewController: OWSTableViewController2 {
     private func showDeleteUI(_ value: ChatColor) {
 
         func deleteValue() {
-            Self.databaseStorage.write { transaction in
-                Self.chatColors.deleteCustomValue(value, transaction: transaction)
+            databaseStorage.write { transaction in
+                chatColors.deleteCustomValue(value, transaction: transaction)
             }
         }
 
@@ -273,11 +273,11 @@ class ChatColorViewController: OWSTableViewController2 {
         }
 
         let message: String
-        let messageFormat = NSLocalizedString("CHAT_COLOR_SETTINGS_DELETE_ALERT_MESSAGE_%d", tableName: "PluralAware",
+        let messageFormat = OWSLocalizedString("CHAT_COLOR_SETTINGS_DELETE_ALERT_MESSAGE_%d", tableName: "PluralAware",
                                               comment: "Message for the 'delete chat color confirm alert' in the chat color settings view. Embeds: {{ the number of conversations that use this chat color }}.")
         message = String.localizedStringWithFormat(messageFormat, usageCount)
         let actionSheet = ActionSheetController(
-            title: NSLocalizedString("CHAT_COLOR_SETTINGS_DELETE_ALERT_TITLE",
+            title: OWSLocalizedString("CHAT_COLOR_SETTINGS_DELETE_ALERT_TITLE",
                                      comment: "Title for the 'delete chat color confirm alert' in the chat color settings view."),
             message: message
         )
@@ -297,8 +297,8 @@ class ChatColorViewController: OWSTableViewController2 {
         let newValue = ChatColor(id: ChatColor.randomId,
                                  setting: oldValue.setting,
                                  isBuiltIn: false)
-        Self.databaseStorage.write { transaction in
-            Self.chatColors.upsertCustomValue(newValue, transaction: transaction)
+        databaseStorage.write { transaction in
+            chatColors.upsertCustomValue(newValue, transaction: transaction)
         }
     }
 
@@ -328,9 +328,6 @@ class ChatColorViewController: OWSTableViewController2 {
     }
 
     // TODO: Use new context menus when they are available.
-    //       Until we do, hide the trailing icons.
-    private let showTrailingIcons = false
-
     fileprivate func didLongPressOption(option: Option) {
         switch option {
         case .auto, .builtInValue, .addNewOption:
@@ -343,19 +340,13 @@ class ChatColorViewController: OWSTableViewController2 {
             ) { [weak self] _ in
                 self?.showCustomColorView(valueMode: .editExisting(value: value))
             }
-            if showTrailingIcons {
-                editAction.trailingIcon = .compose24
-            }
             actionSheet.addAction(editAction)
 
             let duplicateAction = ActionSheetAction(
-                title: NSLocalizedString("BUTTON_DUPLICATE",
+                title: OWSLocalizedString("BUTTON_DUPLICATE",
                                          comment: "Label for the 'duplicate' button.")
             ) { [weak self] _ in
                 self?.duplicateValue(value)
-            }
-            if showTrailingIcons {
-                duplicateAction.trailingIcon = .copy24
             }
             actionSheet.addAction(duplicateAction)
 
@@ -363,9 +354,6 @@ class ChatColorViewController: OWSTableViewController2 {
                 title: CommonStrings.deleteButton
             ) { [weak self] _ in
                 self?.showDeleteUI(value)
-            }
-            if showTrailingIcons {
-                deleteAction.trailingIcon = .trash24
             }
             actionSheet.addAction(deleteAction)
 
@@ -476,7 +464,7 @@ private class ChatColorPicker: UIView {
                     let view = ColorOrGradientSwatchView(setting: value.setting, shapeMode: .circle)
 
                     let label = UILabel()
-                    label.text = NSLocalizedString("CHAT_COLOR_SETTINGS_AUTO",
+                    label.text = OWSLocalizedString("CHAT_COLOR_SETTINGS_AUTO",
                                                    comment: "Label for the 'automatic chat color' option in the chat color settings view.")
                     label.textColor = .ows_white
                     label.font = UIFont.systemFont(ofSize: 13)
@@ -496,7 +484,8 @@ private class ChatColorPicker: UIView {
 
                     let isSelected = currentValue.selected == value
 
-                    let editIconView = UIImageView.withTemplateImageName("compose-solid-24", tintColor: .ows_white)
+                    let editIconView = UIImageView(image: UIImage(imageLiteralResourceName: "edit-fill"))
+                    editIconView.tintColor = .white
                     view.addSubview(editIconView)
                     editIconView.autoSetDimensions(to: .square(24))
                     editIconView.autoCenterInSuperview()
@@ -506,7 +495,7 @@ private class ChatColorPicker: UIView {
                     let view = OWSLayerView.circleView()
                     view.backgroundColor = Theme.washColor
 
-                    let imageView = UIImageView.withTemplateImageName("plus-24", tintColor: Theme.primaryIconColor)
+                    let imageView = UIImageView.withTemplateImageName("plus-bold", tintColor: Theme.primaryIconColor)
                     view.addSubview(imageView)
                     imageView.autoSetDimensions(to: .square(24))
                     imageView.autoCenterInSuperview()
@@ -711,9 +700,9 @@ private class ChatColorTooltip: TooltipView {
 
     public override func bubbleContentView() -> UIView {
         let label = UILabel()
-        label.text = NSLocalizedString("CHAT_COLORS_AUTO_TOOLTIP",
+        label.text = OWSLocalizedString("CHAT_COLORS_AUTO_TOOLTIP",
                                        comment: "Tooltip highlighting the auto chat color option.")
-        label.font = .ows_dynamicTypeSubheadline
+        label.font = .dynamicTypeSubheadline
         label.textColor = .ows_white
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping

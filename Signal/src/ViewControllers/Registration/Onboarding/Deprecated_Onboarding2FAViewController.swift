@@ -4,13 +4,12 @@
 //
 
 import SignalMessaging
-import UIKit
+import SignalUI
 
 #if targetEnvironment(simulator)
 import GameController
 #endif
 
-@objc
 public class Deprecated_Onboarding2FAViewController: Deprecated_OnboardingBaseViewController {
 
     // When the users attempts remaining falls below this number,
@@ -47,14 +46,14 @@ public class Deprecated_Onboarding2FAViewController: Deprecated_OnboardingBaseVi
     }
 
     private let isUsingKBS: Bool
-    private var pinType: KBS.PinType = .numeric {
+    private var pinType: SVR.PinType = .numeric {
         didSet {
             updatePinType()
         }
     }
 
     private var hasPendingRestoration: Bool {
-        context.db.read { context.keyBackupService.hasPendingRestoration(transaction: $0) }
+        context.db.read { LegacyKbsStateManager.shared.hasPendingRestoration(transaction: $0) }
     }
 
     private let context: ViewControllerContext
@@ -77,12 +76,12 @@ public class Deprecated_Onboarding2FAViewController: Deprecated_OnboardingBaseVi
 
         view.backgroundColor = Theme.backgroundColor
 
-        let titleText = NSLocalizedString("ONBOARDING_PIN_TITLE", comment: "Title of the 'onboarding PIN' view.")
-        let explanationText = NSLocalizedString("ONBOARDING_PIN_EXPLANATION", comment: "Title of the 'onboarding PIN' view.")
+        let titleText = OWSLocalizedString("ONBOARDING_PIN_TITLE", comment: "Title of the 'onboarding PIN' view.")
+        let explanationText = OWSLocalizedString("ONBOARDING_PIN_EXPLANATION", comment: "Title of the 'onboarding PIN' view.")
 
         let titleLabel = self.createTitleLabel(text: titleText)
         let explanationLabel = self.createExplanationLabel(explanationText: explanationText)
-        explanationLabel.font = UIFont.ows_dynamicTypeSubheadlineClamped
+        explanationLabel.font = UIFont.dynamicTypeSubheadlineClamped
         explanationLabel.accessibilityIdentifier = "onboarding.2fa." + "explanationLabel"
 
         pinTextField.delegate = self
@@ -90,7 +89,7 @@ public class Deprecated_Onboarding2FAViewController: Deprecated_OnboardingBaseVi
         pinTextField.isSecureTextEntry = true
         pinTextField.textColor = Theme.primaryTextColor
         pinTextField.textAlignment = .center
-        pinTextField.font = .ows_dynamicTypeBodyClamped
+        pinTextField.font = .dynamicTypeBodyClamped
         pinTextField.isSecureTextEntry = true
         pinTextField.defaultTextAttributes.updateValue(5, forKey: .kern)
         pinTextField.keyboardAppearance = Theme.keyboardAppearance
@@ -101,12 +100,12 @@ public class Deprecated_Onboarding2FAViewController: Deprecated_OnboardingBaseVi
 
         validationWarningLabel.textColor = .ows_accentRed
         validationWarningLabel.textAlignment = .center
-        validationWarningLabel.font = UIFont.ows_dynamicTypeCaption1Clamped
+        validationWarningLabel.font = UIFont.dynamicTypeCaption1Clamped
         validationWarningLabel.accessibilityIdentifier = "onboarding.2fa.validationWarningLabel"
         validationWarningLabel.numberOfLines = 0
         validationWarningLabel.setCompressionResistanceHigh()
 
-        self.needHelpLink = self.linkButton(title: NSLocalizedString("ONBOARDING_2FA_FORGOT_PIN_LINK",
+        self.needHelpLink = self.linkButton(title: OWSLocalizedString("ONBOARDING_2FA_FORGOT_PIN_LINK",
                                                                      comment: "Label for the 'forgot 2FA PIN' link in the 'onboarding 2FA' view."),
                                             selector: #selector(needHelpLinkWasTapped))
         needHelpLink.accessibilityIdentifier = "onboarding.2fa." + "forgotPinLink"
@@ -123,7 +122,7 @@ public class Deprecated_Onboarding2FAViewController: Deprecated_OnboardingBaseVi
         pinStack.autoSetDimension(.width, toSize: 227)
         pinStack.setContentHuggingVerticalHigh()
 
-        let pinTypeTitle = NSLocalizedString(
+        let pinTypeTitle = OWSLocalizedString(
             "ONBOARDING_2FA_FORGOT_PIN_LINK",
             comment: "Label for the 'forgot 2FA PIN' link in the 'onboarding 2FA' view.")
         pinTypeToggle = self.linkButton(title: pinTypeTitle, selector: #selector(togglePinType))
@@ -177,9 +176,9 @@ public class Deprecated_Onboarding2FAViewController: Deprecated_OnboardingBaseVi
     // MARK: - Events
 
     @objc
-    func needHelpLinkWasTapped() {
+    private func needHelpLinkWasTapped() {
         Logger.info("")
-        let title = NSLocalizedString("REGISTER_2FA_FORGOT_PIN_ALERT_TITLE",
+        let title = OWSLocalizedString("REGISTER_2FA_FORGOT_PIN_ALERT_TITLE",
                                       comment: "Alert title explaining what happens if you forget your 'two-factor auth pin'.")
 
         let message: String
@@ -187,22 +186,22 @@ public class Deprecated_Onboarding2FAViewController: Deprecated_OnboardingBaseVi
         var additionalActions = [ActionSheetAction]()
         if isUsingKBS {
             if hasPendingRestoration {
-                message = NSLocalizedString("REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_ALERT_MESSAGE",
-                                            comment: "Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock")
+                message = OWSLocalizedString("REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_ALERT_MESSAGE",
+                                            comment: "Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock and they cannot necessarily create a new PIN")
                 emailSupportFilter = "Signal PIN - iOS (V2 PIN without RegLock)"
 
                 let createNewPinAction = ActionSheetAction(
-                    title: NSLocalizedString("ONBOARDING_2FA_CREATE_NEW_PIN",
+                    title: OWSLocalizedString("ONBOARDING_2FA_CREATE_NEW_PIN",
                                              comment: "Label for the 'create new pin' button when reglock is disabled during onboarding.")
                 ) { [weak self] _ in
                     let actionSheet = ActionSheetController(
-                        title: NSLocalizedString("ONBOARDING_2FA_SKIP_PIN_ENTRY_TITLE",
+                        title: OWSLocalizedString("ONBOARDING_2FA_SKIP_PIN_ENTRY_TITLE",
                                                  comment: "Title for the skip pin entry action sheet during onboarding."),
-                        message: NSLocalizedString("ONBOARDING_2FA_SKIP_PIN_ENTRY_MESSAGE",
+                        message: OWSLocalizedString("ONBOARDING_2FA_SKIP_PIN_ENTRY_MESSAGE",
                                                    comment: "Explanation for the skip pin entry action sheet during onboarding.")
                     )
                     let skipAndCreateNew = ActionSheetAction(
-                        title: NSLocalizedString("ONBOARDING_2FA_SKIP_AND_CREATE_NEW_PIN",
+                        title: OWSLocalizedString("ONBOARDING_2FA_SKIP_AND_CREATE_NEW_PIN",
                                                  comment: "Label for the 'skip and create new pin' button when reglock is disabled during onboarding."),
                         style: .destructive
                     ) { [weak self] _ in
@@ -214,12 +213,12 @@ public class Deprecated_Onboarding2FAViewController: Deprecated_OnboardingBaseVi
                 }
                 additionalActions.append(createNewPinAction)
             } else {
-                message = NSLocalizedString("REGISTER_2FA_FORGOT_SVR_PIN_ALERT_MESSAGE",
+                message = OWSLocalizedString("REGISTER_2FA_FORGOT_SVR_PIN_ALERT_MESSAGE",
                                             comment: "Alert body for a forgotten SVR (V2) PIN")
                 emailSupportFilter = "Signal PIN - iOS (V2 PIN)"
             }
         } else {
-            message = NSLocalizedString("REGISTER_2FA_FORGOT_V1_PIN_ALERT_MESSAGE",
+            message = OWSLocalizedString("REGISTER_2FA_FORGOT_V1_PIN_ALERT_MESSAGE",
                                         comment: "Alert body for a forgotten V1 PIN")
             emailSupportFilter = "Signal PIN - iOS (V1 PIN)"
         }
@@ -228,7 +227,7 @@ public class Deprecated_Onboarding2FAViewController: Deprecated_OnboardingBaseVi
     }
 
     @objc
-    func nextPressed() {
+    private func nextPressed() {
         Logger.info("")
 
         tryToVerify()
@@ -256,7 +255,7 @@ public class Deprecated_Onboarding2FAViewController: Deprecated_OnboardingBaseVi
         pinTextField.resignFirstResponder()
 
         let progressView = AnimatedProgressView(
-            loadingText: NSLocalizedString("REGISTER_2FA_PIN_PROGRESS",
+            loadingText: OWSLocalizedString("REGISTER_2FA_PIN_PROGRESS",
                                            comment: "Indicates the work we are doing while verifying the user's pin")
         )
         view.addSubview(progressView)
@@ -293,6 +292,9 @@ public class Deprecated_Onboarding2FAViewController: Deprecated_OnboardingBaseVi
 
         onboardingController.submitVerification(fromViewController: self, completion: { (outcome) in
             switch outcome {
+            case .invalidPhoneNumber:
+                owsFailDebug("Invalid phone number in 2FA view.")
+                animateProgressFail()
             case .invalid2FAPin:
                 // In the past, we used to truncate pins. To support legacy users,
                 // also attempt the truncated version of the pin if the original
@@ -369,7 +371,7 @@ public class Deprecated_Onboarding2FAViewController: Deprecated_OnboardingBaseVi
         databaseStorage.write { transaction in
             // Clear any pending restoration before moving on. At this point we've either
             // successfully restored the user's PIN or the user chose to re-create their PIN.
-            self.context.keyBackupService.clearPendingRestoration(transaction: transaction.asV2Write)
+            LegacyKbsStateManager.shared.clearPendingRestoration(transaction: transaction.asV2Write)
 
             // If we were successful, also mark the user as having a PIN
             // They're a returning user, so we can skip the welcome banner
@@ -391,11 +393,11 @@ public class Deprecated_Onboarding2FAViewController: Deprecated_OnboardingBaseVi
 
         switch attemptState {
         case .exhausted:
-            validationWarningLabel.text = NSLocalizedString("ONBOARDING_2FA_ATTEMPTS_EXHAUSTED",
+            validationWarningLabel.text = OWSLocalizedString("ONBOARDING_2FA_ATTEMPTS_EXHAUSTED",
                                                             comment: "Label indicating that the 2fa pin is exhausted in the 'onboarding 2fa' view.")
         case .invalid(let remainingAttempts):
             guard let remaining = remainingAttempts, remaining <= 5 else {
-                validationWarningLabel.text = NSLocalizedString("ONBOARDING_2FA_INVALID_PIN",
+                validationWarningLabel.text = OWSLocalizedString("ONBOARDING_2FA_INVALID_PIN",
                                                                 comment: "Label indicating that the 2fa pin is invalid in the 'onboarding 2fa' view.")
                 break
             }
@@ -403,19 +405,19 @@ public class Deprecated_Onboarding2FAViewController: Deprecated_OnboardingBaseVi
             // If there are less than the threshold attempts remaining, also show an alert with more detail.
             if remaining < attemptsAlertThreshold {
                 let formatMessage = hasPendingRestoration
-                        ? NSLocalizedString("REGISTER_2FA_INVALID_PIN_ALERT_MESSAGE_%d", tableName: "PluralAware",
+                        ? OWSLocalizedString("REGISTER_2FA_INVALID_PIN_ALERT_MESSAGE_%d", tableName: "PluralAware",
                                             comment: "Alert message explaining what happens if you get your pin wrong and have one or more attempts remaining 'two-factor auth pin' with reglock disabled.")
-                        : NSLocalizedString("REGISTER_2FA_INVALID_PIN_ALERT_MESSAGE_REGLOCK_%d", tableName: "PluralAware",
+                        : OWSLocalizedString("REGISTER_2FA_INVALID_PIN_ALERT_MESSAGE_REGLOCK_%d", tableName: "PluralAware",
                                             comment: "Alert message explaining what happens if you get your pin wrong and have one or more attempts remaining 'two-factor auth pin' with reglock enabled.")
 
                 OWSActionSheets.showActionSheet(
-                    title: NSLocalizedString("REGISTER_2FA_INVALID_PIN_ALERT_TITLE",
+                    title: OWSLocalizedString("REGISTER_2FA_INVALID_PIN_ALERT_TITLE",
                                              comment: "Alert title explaining what happens if you forget your 'two-factor auth pin'."),
                     message: String.localizedStringWithFormat(formatMessage, remaining)
                 )
             }
 
-            let formatMessage = NSLocalizedString("ONBOARDING_2FA_INVALID_PIN_%d", tableName: "PluralAware",
+            let formatMessage = OWSLocalizedString("ONBOARDING_2FA_INVALID_PIN_%d", tableName: "PluralAware",
                                                   comment: "Label indicating that the 2fa pin is invalid with a retry count in the 'onboarding 2fa' view.")
 
             validationWarningLabel.text = String.localizedStringWithFormat(formatMessage, remaining)
@@ -435,7 +437,7 @@ public class Deprecated_Onboarding2FAViewController: Deprecated_OnboardingBaseVi
 
         switch pinType {
         case .numeric:
-            pinTypeToggle.setTitle(title: NSLocalizedString("ONBOARDING_2FA_ENTER_ALPHANUMERIC",
+            pinTypeToggle.setTitle(title: OWSLocalizedString("ONBOARDING_2FA_ENTER_ALPHANUMERIC",
                                                             comment: "Button asking if the user would like to enter an alphanumeric PIN"))
             #if targetEnvironment(simulator)
             // Let enter on a physical keyboard go through if one exists;
@@ -449,7 +451,7 @@ public class Deprecated_Onboarding2FAViewController: Deprecated_OnboardingBaseVi
             #endif
             pinTextField.keyboardType = .asciiCapableNumberPad
         case .alphanumeric:
-            pinTypeToggle.setTitle(title: NSLocalizedString("ONBOARDING_2FA_ENTER_NUMERIC",
+            pinTypeToggle.setTitle(title: OWSLocalizedString("ONBOARDING_2FA_ENTER_NUMERIC",
                                                             comment: "Button asking if the user would like to enter an numeric PIN"))
             pinTextField.keyboardType = .default
         }
@@ -458,7 +460,7 @@ public class Deprecated_Onboarding2FAViewController: Deprecated_OnboardingBaseVi
     }
 
     @objc
-    func togglePinType() {
+    private func togglePinType() {
         guard isUsingKBS else {
             return owsFailDebug("unexpectedly tried to toggle PIN type when not using KBS")
         }
@@ -478,7 +480,7 @@ extension Deprecated_Onboarding2FAViewController: UITextFieldDelegate {
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let hasPendingChanges: Bool
         if pinType == .numeric {
-            ViewControllerUtils.ows2FAPINTextField(textField, shouldChangeCharactersIn: range, replacementString: string)
+            TextFieldFormatting.ows2FAPINTextField(textField, changeCharactersIn: range, replacementString: string)
             hasPendingChanges = false
         } else {
             hasPendingChanges = true

@@ -3,14 +3,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
-import UIKit
 import SignalMessaging
+import SignalUI
 
-@objc
-public protocol QuotedMessageViewDelegate {
+public protocol QuotedMessageViewDelegate: AnyObject {
 
-    func didTapQuotedReply(_ quotedReply: OWSQuotedReplyModel,
+    func didTapQuotedReply(_ quotedReply: QuotedReplyModel,
                            failedThumbnailDownloadAttachmentPointer attachmentPointer: TSAttachmentPointer)
 
     func didCancelQuotedReply()
@@ -18,19 +16,32 @@ public protocol QuotedMessageViewDelegate {
 
 // MARK: -
 
-// TODO: Remove OWSQuotedMessageView.
 public class QuotedMessageView: ManualStackViewWithLayer {
 
     public struct State: Equatable {
-        let quotedReplyModel: OWSQuotedReplyModel
+        let quotedReplyModel: QuotedReplyModel
         let displayableQuotedText: DisplayableText?
         let conversationStyle: ConversationStyle
         let isOutgoing: Bool
         let isForPreview: Bool
         let quotedAuthorName: String
+
+        var quotedInteractionIdentifier: InteractionSnapshotIdentifier {
+            return InteractionSnapshotIdentifier(
+                timestamp: quotedReplyModel.timestamp,
+                authorUuid: quotedReplyModel.authorAddress.uuidString
+            )
+        }
     }
 
-    private var state: State?
+    private var stopObservingSpoilerReveal: (() -> Void)?
+
+    private var state: State? {
+        didSet {
+            stopObservingSpoilerReveal?()
+            self.stopObservingSpoilerReveal = nil
+        }
+    }
 
     private weak var delegate: QuotedMessageViewDelegate?
 
@@ -53,11 +64,13 @@ public class QuotedMessageView: ManualStackViewWithLayer {
     private let chatColorView = CVColorOrGradientView()
     private let tintView = ManualLayoutViewWithLayer(name: "tintView")
 
-    static func stateForConversation(quotedReplyModel: OWSQuotedReplyModel,
-                                     displayableQuotedText: DisplayableText?,
-                                     conversationStyle: ConversationStyle,
-                                     isOutgoing: Bool,
-                                     transaction: SDSAnyReadTransaction) -> State {
+    static func stateForConversation(
+        quotedReplyModel: QuotedReplyModel,
+        displayableQuotedText: DisplayableText?,
+        conversationStyle: ConversationStyle,
+        isOutgoing: Bool,
+        transaction: SDSAnyReadTransaction
+    ) -> State {
 
         let quotedAuthorName = contactsManager.displayName(for: quotedReplyModel.authorAddress,
                                                            transaction: transaction)
@@ -70,9 +83,12 @@ public class QuotedMessageView: ManualStackViewWithLayer {
                      quotedAuthorName: quotedAuthorName)
     }
 
-    static func stateForPreview(quotedReplyModel: OWSQuotedReplyModel,
-                                conversationStyle: ConversationStyle,
-                                transaction: SDSAnyReadTransaction) -> State {
+    static func stateForPreview(
+        quotedReplyModel: QuotedReplyModel,
+        conversationStyle: ConversationStyle,
+        revealedSpoilerIdsSnapshot: Set<StyleIdType>,
+        transaction: SDSAnyReadTransaction
+    ) -> State {
 
         let quotedAuthorName = contactsManager.displayName(for: quotedReplyModel.authorAddress,
                                                            transaction: transaction)
@@ -80,9 +96,15 @@ public class QuotedMessageView: ManualStackViewWithLayer {
         var displayableQuotedText: DisplayableText?
         if let body = quotedReplyModel.body, !body.isEmpty {
             let messageBody = MessageBody(text: body, ranges: quotedReplyModel.bodyRanges ?? .empty)
-            displayableQuotedText = DisplayableText.displayableText(withMessageBody: messageBody,
-                                                                    mentionStyle: .quotedReply,
-                                                                    transaction: transaction)
+            displayableQuotedText = DisplayableText.displayableText(
+                withMessageBody: messageBody,
+                displayConfig: HydratedMessageBody.DisplayConfiguration(
+                    mention: .quotedReply,
+                    style: .quotedReply(revealedSpoilerIds: revealedSpoilerIdsSnapshot),
+                    searchRanges: nil
+                ),
+                transaction: transaction
+            )
         }
 
         return State(quotedReplyModel: quotedReplyModel,
@@ -99,8 +121,9 @@ public class QuotedMessageView: ManualStackViewWithLayer {
     // * Measure this view _without_ creating its views.
     private struct Configurator {
         let state: State
+        let revealedSpoilerIds: Set<StyleIdType>
 
-        var quotedReplyModel: OWSQuotedReplyModel { state.quotedReplyModel }
+        var quotedReplyModel: QuotedReplyModel { state.quotedReplyModel }
         var displayableQuotedText: DisplayableText? { state.displayableQuotedText }
         var conversationStyle: ConversationStyle { state.conversationStyle }
         var isOutgoing: Bool { state.isOutgoing }
@@ -109,12 +132,12 @@ public class QuotedMessageView: ManualStackViewWithLayer {
         var quotedAuthorName: String { state.quotedAuthorName }
 
         let stripeThickness: CGFloat = 4
-        var quotedAuthorFont: UIFont { UIFont.ows_dynamicTypeSubheadlineClamped.ows_semibold }
+        var quotedAuthorFont: UIFont { UIFont.dynamicTypeSubheadlineClamped.semibold() }
         var quotedAuthorColor: UIColor { conversationStyle.quotedReplyAuthorColor() }
         var quotedTextColor: UIColor { conversationStyle.quotedReplyTextColor() }
-        var quotedTextFont: UIFont { UIFont.ows_dynamicTypeBody2 }
+        var quotedTextFont: UIFont { UIFont.dynamicTypeBody2 }
         var fileTypeTextColor: UIColor { conversationStyle.quotedReplyAttachmentColor() }
-        var fileTypeFont: UIFont { quotedTextFont.ows_italic }
+        var fileTypeFont: UIFont { quotedTextFont.italic() }
         var filenameTextColor: UIColor { conversationStyle.quotedReplyAttachmentColor() }
         var filenameFont: UIFont { quotedTextFont }
         var quotedAuthorHeight: CGFloat { quotedAuthorFont.lineHeight }
@@ -227,7 +250,7 @@ public class QuotedMessageView: ManualStackViewWithLayer {
 
             let text: String
             if quotedReplyModel.isStory {
-                let format = NSLocalizedString("QUOTED_REPLY_STORY_AUTHOR_INDICATOR_FORMAT",
+                let format = OWSLocalizedString("QUOTED_REPLY_STORY_AUTHOR_INDICATOR_FORMAT",
                                                comment: "Message header when you are quoting a story. Embeds {{ story author name }}")
                 text = String(format: format, authorName)
             } else {
@@ -261,7 +284,23 @@ public class QuotedMessageView: ManualStackViewWithLayer {
                     .font: quotedTextFont,
                     .foregroundColor: quotedTextColor
                 ])
-                attributedText = mutableText
+                attributedText = RecoveredHydratedMessageBody.recover(from: mutableText).reapplyAttributes(
+                    config: HydratedMessageBody.DisplayConfiguration(
+                        mention: MentionDisplayConfiguration(
+                            font: quotedTextFont,
+                            foregroundColor: .fixed(quotedTextColor),
+                            backgroundColor: nil
+                        ),
+                        style: StyleDisplayConfiguration(
+                            baseFont: quotedTextFont,
+                            textColor: .fixed(quotedTextColor),
+                            revealAllIds: false,
+                            revealedIds: revealedSpoilerIds
+                        ),
+                        searchRanges: nil
+                    ),
+                    isDarkThemeEnabled: Theme.isDarkThemeEnabled
+                )
                 textAlignment = displayableQuotedText.displayTextNaturalAlignment
             } else if let fileTypeForSnippet = self.fileTypeForSnippet {
                 attributedText = NSAttributedString(string: fileTypeForSnippet,
@@ -277,7 +316,7 @@ public class QuotedMessageView: ManualStackViewWithLayer {
                                                     ])
             } else if self.quotedReplyModel.isGiftBadge {
                 attributedText = NSAttributedString(
-                    string: NSLocalizedString(
+                    string: OWSLocalizedString(
                         "DONATION_ON_BEHALF_OF_A_FRIEND_REPLY",
                         comment: "Shown when you're replying to a donation message."
                     ),
@@ -285,7 +324,7 @@ public class QuotedMessageView: ManualStackViewWithLayer {
                     attributes: [.font: self.fileTypeFont, .foregroundColor: self.fileTypeTextColor]
                 )
             } else {
-                let string = NSLocalizedString("QUOTED_REPLY_TYPE_ATTACHMENT",
+                let string = OWSLocalizedString("QUOTED_REPLY_TYPE_ATTACHMENT",
                                                comment: "Indicates this message is a quoted reply to an attachment of unknown type.")
                 attributedText = NSAttributedString(string: string,
                                                     attributes: [
@@ -303,26 +342,28 @@ public class QuotedMessageView: ManualStackViewWithLayer {
         }
 
         var quoteContentSourceLabelConfig: CVLabelConfig {
-            let text = NSLocalizedString("QUOTED_REPLY_CONTENT_FROM_REMOTE_SOURCE",
+            let text = OWSLocalizedString("QUOTED_REPLY_CONTENT_FROM_REMOTE_SOURCE",
                                          comment: "Footer label that appears below quoted messages when the quoted content was not derived locally. When the local user doesn't have a copy of the message being quoted, e.g. if it had since been deleted, we instead show the content specified by the sender.")
             return CVLabelConfig(text: text,
-                                 font: UIFont.ows_dynamicTypeFootnote,
-                                 textColor: Theme.lightThemePrimaryColor)
+                                 font: UIFont.dynamicTypeFootnote,
+                                 textColor: Theme.lightThemePrimaryColor,
+                                 numberOfLines: 0,
+                                 lineBreakMode: .byWordWrapping)
         }
 
         var quoteReactionHeaderLabelConfig: CVLabelConfig {
             let text: String
             if quotedReplyModel.authorAddress.isLocalAddress {
-                text = NSLocalizedString("QUOTED_REPLY_REACTION_TO_OWN_STORY",
+                text = OWSLocalizedString("QUOTED_REPLY_REACTION_TO_OWN_STORY",
                                          comment: "Header label that appears above quoted messages when the quoted content was includes a reaction to your own story.")
             } else {
-                let formatText = NSLocalizedString("QUOTED_REPLY_REACTION_TO_STORY_FORMAT",
+                let formatText = OWSLocalizedString("QUOTED_REPLY_REACTION_TO_STORY_FORMAT",
                                                    comment: "Header label that appears above quoted messages when the quoted content was includes a reaction to a story. Embeds {{ story author name }}")
                 text = String(format: formatText, quotedAuthorName)
             }
 
             return CVLabelConfig(text: text,
-                                 font: UIFont.ows_dynamicTypeFootnote,
+                                 font: UIFont.dynamicTypeFootnote,
                                  textColor: conversationStyle.bubbleSecondaryTextColor(isIncoming: isIncoming))
         }
 
@@ -339,21 +380,21 @@ public class QuotedMessageView: ManualStackViewWithLayer {
             }
 
             if MIMETypeUtil.isAudio(contentType) {
-                return NSLocalizedString("QUOTED_REPLY_TYPE_AUDIO",
+                return OWSLocalizedString("QUOTED_REPLY_TYPE_AUDIO",
                                          comment: "Indicates this message is a quoted reply to an audio file.")
             } else if MIMETypeUtil.isVideo(contentType) {
-                return NSLocalizedString("QUOTED_REPLY_TYPE_VIDEO",
+                return OWSLocalizedString("QUOTED_REPLY_TYPE_VIDEO",
                                          comment: "Indicates this message is a quoted reply to a video file.")
             } else if MIMETypeUtil.isAnimated(contentType) {
                 if contentType.caseInsensitiveCompare(OWSMimeTypeImageGif) == .orderedSame {
-                    return NSLocalizedString("QUOTED_REPLY_TYPE_GIF",
+                    return OWSLocalizedString("QUOTED_REPLY_TYPE_GIF",
                                              comment: "Indicates this message is a quoted reply to animated GIF file.")
                 } else {
-                    return NSLocalizedString("QUOTED_REPLY_TYPE_IMAGE",
+                    return OWSLocalizedString("QUOTED_REPLY_TYPE_IMAGE",
                                              comment: "Indicates this message is a quoted reply to an image file.")
                 }
             } else if MIMETypeUtil.isImage(contentType) {
-                return NSLocalizedString("QUOTED_REPLY_TYPE_PHOTO",
+                return OWSLocalizedString("QUOTED_REPLY_TYPE_PHOTO",
                                          comment: "Indicates this message is a quoted reply to a photo file.")
             }
             return nil
@@ -407,15 +448,31 @@ public class QuotedMessageView: ManualStackViewWithLayer {
         return bubbleView
     }
 
-    public func configureForRendering(state: State,
-                                      delegate: QuotedMessageViewDelegate?,
-                                      componentDelegate: CVComponentDelegate,
-                                      sharpCorners: OWSDirectionalRectCorner,
-                                      cellMeasurement: CVCellMeasurement) {
+    public func configureForRendering(
+        state: State,
+        delegate: QuotedMessageViewDelegate?,
+        componentDelegate: CVComponentDelegate,
+        sharpCorners: OWSDirectionalRectCorner,
+        cellMeasurement: CVCellMeasurement
+    ) {
         self.state = state
         self.delegate = delegate
 
-        let configurator = Configurator(state: state)
+        let spoilerReveal = componentDelegate.spoilerReveal
+        let quotedInteractionIdentifier = state.quotedInteractionIdentifier
+        spoilerReveal.observeChanges(
+            for: quotedInteractionIdentifier,
+            observer: self
+        )
+        self.stopObservingSpoilerReveal = { [weak self, weak spoilerReveal] in
+            guard let self, let spoilerReveal else { return }
+            spoilerReveal.removeObserver(for: quotedInteractionIdentifier, observer: self)
+        }
+
+        let configurator = Configurator(
+            state: state,
+            revealedSpoilerIds: spoilerReveal.revealedSpoilerIds(interactionIdentifier: quotedInteractionIdentifier)
+        )
         let conversationStyle = configurator.conversationStyle
         let quotedReplyModel = configurator.quotedReplyModel
 
@@ -483,7 +540,7 @@ public class QuotedMessageView: ManualStackViewWithLayer {
                     wrapper.addSubviewToFillSuperviewEdges(overlayView)
 
                     let contentImageView = CVImageView()
-                    contentImageView.setTemplateImageName("play-solid-24", tintColor: .ows_white)
+                    contentImageView.setTemplateImageName("play-fill", tintColor: .ows_white)
                     contentImageView.setShadow(radius: 6, opacity: 0.24, offset: .zero, color: .ows_black)
                     wrapper.addSubviewToCenterOnSuperviewWithDesiredSize(contentImageView)
                 }
@@ -493,7 +550,7 @@ public class QuotedMessageView: ManualStackViewWithLayer {
                 wrapper.backgroundColor = configurator.highlightColor
 
                 // TODO: design review icon and color
-                quotedImageView.setTemplateImageName("btnRefresh--white", tintColor: .white)
+                quotedImageView.setTemplateImageName("refresh", tintColor: .white)
                 quotedImageView.contentMode = .scaleAspectFit
                 quotedImageView.clipsToBounds = false
                 let iconSize = CGSize.square(configurator.quotedAttachmentSize.width * 0.5)
@@ -602,8 +659,7 @@ public class QuotedMessageView: ManualStackViewWithLayer {
 
         if configurator.isForPreview {
             let cancelButton = UIButton(type: .custom)
-            let cancelIcon = UIImage(named: "compose-cancel")?.withRenderingMode(.alwaysTemplate)
-            cancelButton.setImage(cancelIcon, for: .normal)
+            cancelButton.setImage(UIImage(imageLiteralResourceName: "x-20"), for: .normal)
             cancelButton.imageView?.tintColor = Theme.secondaryTextAndIconColor
             cancelButton.addTarget(self, action: #selector(didTapCancel), for: .touchUpInside)
 
@@ -623,8 +679,7 @@ public class QuotedMessageView: ManualStackViewWithLayer {
         outerVStackSubviews.append(hStack)
 
         if quotedReplyModel.isRemotelySourced {
-            remotelySourcedContentIconView.setTemplateImageName("ic_broken_link",
-                                                                tintColor: Theme.lightThemePrimaryColor)
+            remotelySourcedContentIconView.setTemplateImageName("link-slash-compact", tintColor: Theme.lightThemePrimaryColor)
 
             let quoteContentSourceLabelConfig = configurator.quoteContentSourceLabelConfig
             quoteContentSourceLabelConfig.applyForRendering(label: quoteContentSourceLabel)
@@ -679,7 +734,10 @@ public class QuotedMessageView: ManualStackViewWithLayer {
                                maxWidth: CGFloat,
                                measurementBuilder: CVCellMeasurement.Builder) -> CGSize {
 
-        let configurator = Configurator(state: state)
+        let configurator = Configurator(
+            state: state,
+            revealedSpoilerIds: Set() /* spoilers don't change measured size, ok to ignore them */
+        )
 
         let outerStackConfig = configurator.outerStackConfig
         let hStackConfig = configurator.hStackConfig
@@ -852,5 +910,20 @@ public class QuotedMessageView: ManualStackViewWithLayer {
         chatColorView.removeFromSuperview()
         tintView.reset()
         tintView.removeFromSuperview()
+    }
+}
+
+extension QuotedMessageView: SpoilerRevealStateObserver {
+    public func didUpdateRevealedSpoilers(_ spoilerReveal: SpoilerRevealState) {
+        guard let state else {
+            return
+        }
+        let configurator = Configurator(
+            state: state,
+            revealedSpoilerIds: spoilerReveal.revealedSpoilerIds(interactionIdentifier: state.quotedInteractionIdentifier)
+        )
+        let quotedTextLabelConfig = configurator.quotedTextLabelConfig
+        // Note: measurement doesn't change when spoiler state changes.
+        quotedTextLabelConfig.applyForRendering(label: quotedTextLabel)
     }
 }

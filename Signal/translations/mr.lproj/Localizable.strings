@@ -28,7 +28,43 @@
 /* Accessibility label for a voice memo. */
 "ACCESSIBILITY_LABEL_VOICE_MEMO" = "व्हॉईस संदेश";
 
-/* Label for 'audio call' button in contact view. */
+/* Users can request a report of their account data. Before they get their account export, they are warned to only share account data with trustworthy sources. This is the button on that warning, and tapping it lets users continue. */
+"ACCOUNT_DATA_REPORT_CONFIRM_EXPORT_CONFIRM_BUTTON" = "रिपोर्ट एक्सपोर्ट करा";
+
+/* Users can request a report of their account data. Before they get their account export, they are warned to only share account data with trustworthy sources. This is the message on that warning. */
+"ACCOUNT_DATA_REPORT_CONFIRM_EXPORT_MESSAGE" = "आपण विश्वास करत असलेल्या लोकांसह फक्त आपला Signal डेटा अकाऊंट शेअर करा.";
+
+/* Users can request a report of their account data. If this request fails (probably because of a network connection problem), they will see an error sheet. This is the message on that error. */
+"ACCOUNT_DATA_REPORT_ERROR_MESSAGE" = "आपले कनेक्शन तपासा आणि पुन्हा प्रयत्न करा.";
+
+/* Users can request a report of their account data. If this request fails (probably because of a network connection problem), they will see an error sheet. This is the title on that error. */
+"ACCOUNT_DATA_REPORT_ERROR_TITLE" = "रिपोर्ट तयार करू शकत नाही";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the subtitle on the button that switches to JSON mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_JSON_SUBTITLE" = "मशिन-वाचण्यायोग्य फाईल";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the title on the button that switches to JSON mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_JSON_TITLE" = "JSON म्हणून एक्सपोर्ट करा";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the subtitle on the button that switches to plain text mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_TXT_SUBTITLE" = "वाचण्यास सोपी मजकूर फाईल";
+
+/* Users can request a report of their account data. They can choose to export it as plain text (TXT) or as JSON. This is the title on the button that switches to plain text mode. */
+"ACCOUNT_DATA_REPORT_EXPORT_AS_TXT_TITLE" = "TXT म्हणून एक्सपोर्ट करा";
+
+/* Users can request a report of their account data. Users tap this button to export their data. */
+"ACCOUNT_DATA_REPORT_EXPORT_REPORT_BUTTON" = "रिपोर्ट एक्सपोर्ट करा";
+
+/* Users can request a report of their account data. This text appears at the bottom of this screen, offering more information. */
+"ACCOUNT_DATA_REPORT_FOOTER" = "आपला रिपोर्ट फक्त एक्स्पोर्ट करण्याच्या वेळी तयार केला जाईल आणि तो Signal द्वारे आपल्या डिव्हाईसवर स्टोअर केला जाणार नाही.";
+
+/* Users can request a report of their account data. This is the subtitle on the screen where they do this, giving them more information. */
+"ACCOUNT_DATA_REPORT_SUBTITLE" = "आपला Signal अकाऊंट डेटा डाऊनलोड करा आणि रिपोर्ट एक्सपोर्ट करा. या रिपोर्ट मध्ये कोणतेही संदेश किंवा मिडीयाचा समावेश असणार नाही.";
+
+/* Users can request a report of their account data. This is the title on the screen where they do this. */
+"ACCOUNT_DATA_REPORT_TITLE" = "आपला अकाऊंट डेटा";
+
+/* Label for 'voice call' button in contact view. */
 "ACTION_AUDIO_CALL" = "Signal कॉल";
 
 /* Label for 'invite' button in contact view. */
@@ -115,8 +151,35 @@
 /* Label for button to learn more about message requests. */
 "ALERT_UNKNOWN_THREAD_WARNING_LEARN_MORE" = "संदेश विनंत्यांबद्दल";
 
+/* Audio file type in All Meda file type picker. */
+"ALL_MEDIA_FILE_TYPE_AUDIO" = "ऑडिओ";
+
+/* Media (i.e., graphical) file type in All Meda file type picker. */
+"ALL_MEDIA_FILE_TYPE_MEDIA" = "मीडिया";
+
+/* Menu option to limit All Media view to displaying only GIFs */
+"ALL_MEDIA_FILTER_GIFS" = "GIFs";
+
+/* Menu option to limit All Media view to displaying only photos */
+"ALL_MEDIA_FILTER_PHOTOS" = "फोटोज";
+
+/* Menu option to limit All Media view to displaying only videos */
+"ALL_MEDIA_FILTER_VIDEOS" = "व्हिडिओज";
+
+/* Menu option to show All Media items in a grid of square thumbnails */
+"ALL_MEDIA_GRID_MODE" = "ग्रीड";
+
+/* Menu option to show All Media items in a single-column list */
+"ALL_MEDIA_LIST_MODE" = "सूची";
+
 /* Label shown over thumbnails of GIFs in the All Media view */
 "ALL_MEDIA_THUMBNAIL_LABEL_GIF" = "GIF";
+
+/* Label shown by thumbnails of images in the All Media view */
+"ALL_MEDIA_THUMBNAIL_LABEL_IMAGE" = "चित्र";
+
+/* Label shown by thumbnails of videos in the All Media view */
+"ALL_MEDIA_THUMBNAIL_LABEL_VIDEO" = "व्हिडिओ";
 
 /* Title for the view of all your signal connections */
 "ALL_SIGNAL_CONNECTIONS_TITLE" = "सर्व कनेक्शन्स";
@@ -130,11 +193,14 @@
 /* Default message for the 'app launch failed' alert. */
 "APP_LAUNCH_FAILURE_ALERT_MESSAGE" = "Signal लाँच करू शकत नाही. कृपया support@signal.org वर डीबग लॉग पाठवा जेणेकरून आम्ही समस्येचे निराकरण करू शकू.";
 
-/* Title for the 'app launch failed' alert. */
-"APP_LAUNCH_FAILURE_ALERT_TITLE" = "त्रुटी";
-
 /* Button to try launching the app even though the last launch failed */
 "APP_LAUNCH_FAILURE_CONTINUE" = "त्याऐवजी Signal उघडा";
+
+/* Message for an error indicating that the app couldn't launch because some unexpected error happened with the user's registration status. */
+"APP_LAUNCH_FAILURE_CORRUPT_REGISTRATION_MESSAGE" = "आम्ही या समस्येला ट्रबलशूट करण्यासाठी कृपया support@signal.org ला डीबग लॉग पाठवा.";
+
+/* Title for an error indicating that the app couldn't launch because some unexpected error happened with the user's registration status. */
+"APP_LAUNCH_FAILURE_CORRUPT_REGISTRATION_TITLE" = "Signal उघडता आले नाही";
 
 /* Error indicating that the app could not launch because the database could not be loaded. */
 "APP_LAUNCH_FAILURE_COULD_NOT_LOAD_DATABASE" = "डेटाबेस लोड करू शकले नाही";
@@ -371,7 +437,7 @@
 "AUDIO_ACTIVITY_PLAYBACK_NAME_AUDIO_MESSAGE" = "ऑडिओ संदेश";
 
 /* Accessibility label for placing an audio call */
-"AUDIO_CALL_LABEL" = "ऑडिओ कॉल";
+"AUDIO_CALL_LABEL" = "व्हॉईस कॉल";
 
 /* action sheet button title to enable built in speaker during a call */
 "AUDIO_ROUTE_BUILT_IN_SPEAKER" = "स्पीकर";
@@ -431,7 +497,7 @@
 "BADGE_EXPIRED_SUBSCRIPTION_TITLE" = "मासिक देणगी रद्द करण्यात आली";
 
 /* String explaining to the user that their subscription badge has expired on the badge expiry sheet. Embeds {failure-specific sentence(s)}. */
-"BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_CHARGE_FAILURE_BODY_FORMAT" = "आपली आवर्ती मासिक देणगी रद्द करण्यात आली होती. %1$@ देणगी बॅज आपल्या प्रोफाईलवर यापुढे दृश्यमान असणार नाही.\n\nSignal ला सपोर्ट करणे पुढे सुरु ठेवण्यासाठी आणि आपल्या बँजला पुन्हा सक्रिय करण्यास, आपला पेमेंट्स तपशील अपडेट करा आणि पुन्हा देणगी द्या.";
+"BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_CHARGE_FAILURE_BODY_FORMAT" = "आपली आवर्ती मासिक देणगी रद्द करण्यात आली होती. %1$@ देणगी बॅज आपल्या प्रोफाईलवर यापुढे दृश्यमान असणार नाही.\n\nSignal ला सपोर्ट करणे पुढे सुरु ठेवण्यासाठी आणि आपल्या बॅजला पुन्हा सक्रिय करण्यास, आपला पेमेंट्स तपशील अपडेट करा आणि पुन्हा देणगी द्या.";
 
 /* Body of the sheet shown when your subscription is canceled due to inactivity */
 "BADGE_SUBSCRIPTION_EXPIRED_BECAUSE_OF_INACTIVITY_BODY_FORMAT" = "आपण दीर्घ काळासाठी असक्रिय असल्याकारणाने आपली आवर्ती मासिक देणगी आपोआप रद्द झाली होती. आपला %1$@ बॅज यापुढे आपल्या प्रोफाइलवर दृश्यमान राहणार नाही.\n\nआपण Signal ला वापरणे सुरु ठेवू शकता परंतु अ‍ॅपला सपोर्ट करण्यासाठी आणि आपला बॅज पुन्हा सक्रिय करण्यासाठी, आत्ता देणगी द्या.";
@@ -548,7 +614,7 @@
 "BUTTON_EDIT" = "संपादन";
 
 /* Label for the 'mute' button. */
-"BUTTON_MUTE" = "मूक करा";
+"BUTTON_MUTE" = "म्यूट करा";
 
 /* Label for the 'next' button. */
 "BUTTON_NEXT" = "पुढे";
@@ -593,19 +659,19 @@
 "CALL_AGAIN_BUTTON_TITLE" = "पुन्हा कॉल करा";
 
 /* notification body */
-"CALL_AUDIO_INCOMING_NOTIFICATION_BODY" = "📞 येणारा ऑडिओ कॉल…";
+"CALL_AUDIO_INCOMING_NOTIFICATION_BODY" = "📞 येणारा व्हॉईस कॉल…";
 
 /* notification body for a missed call in the last 24 hours. Embeds {{time}}, e.g. '3:30 PM'. */
-"CALL_AUDIO_MISSED_24_HOURS_NOTIFICATION_BODY_FORMAT" = "📞  %1$@ वाजता एक ऑडिओ मिस्ड कॉल";
+"CALL_AUDIO_MISSED_24_HOURS_NOTIFICATION_BODY_FORMAT" = "📞 %1$@वाजता चुकलेला व्हॉईस काॅल";
 
 /* notification body for a call that was just missed */
-"CALL_AUDIO_MISSED_NOTIFICATION_BODY" = "📞 सुटलेला ऑडिओ कॉल";
+"CALL_AUDIO_MISSED_NOTIFICATION_BODY" = "📞 चुकलेला व्हाईस कॉल";
 
 /* notification body for a missed call from more than a week ago. Embeds {{short date}}, e.g. '6/28'. */
-"CALL_AUDIO_MISSED_PAST_NOTIFICATION_BODY_FORMAT" = "📞  %1$@रोजी एक मिस्ड ऑडिओ कॉल";
+"CALL_AUDIO_MISSED_PAST_NOTIFICATION_BODY_FORMAT" = "📞 %1$@राेजी चुकलेला व्हॉईस काॅल";
 
 /* notification body for a missed call from the last week. Embeds {{weekday}}, e.g. 'Monday'. */
-"CALL_AUDIO_MISSED_WEEK_NOTIFICATION_BODY_FORMAT" = "📞  %1$@रोजी एक मिस्ड ऑडिओ कॉल";
+"CALL_AUDIO_MISSED_WEEK_NOTIFICATION_BODY_FORMAT" = "📞 %1$@राेजी चुकलेला व्हॉईस काॅल";
 
 /* Alert message when calling and permissions for microphone are missing */
 "CALL_AUDIO_PERMISSION_MESSAGE" = "Signal मध्ये कॉल करण्यासाठी आणि व्हॉईस रेकॉर्ड करण्यासाठी आपण iOS सेटिंग अॅप मध्ये मायक्रोफोन अॅक्सेस सक्षम करू शकता.";
@@ -689,7 +755,7 @@
 "CALL_VIEW_SWITCH_CAMERA_DIRECTION" = "कॅमेरा दिशा स्विच करा";
 
 /* Accessibility label to switch to audio only */
-"CALL_VIEW_SWITCH_TO_AUDIO_LABEL" = "ऑडिओ कॉलवर स्विच करा";
+"CALL_VIEW_SWITCH_TO_AUDIO_LABEL" = "व्हाईस कॉलला स्वीच व्हा";
 
 /* Accessibility label to switch to video call */
 "CALL_VIEW_SWITCH_TO_VIDEO_LABEL" = "व्हिडिओ कॉलवर स्विच करा";
@@ -842,10 +908,10 @@
 "CHANGE_PHONE_NUMBER_PIN_EXPLANATION" = "आपल्या नवीन फोन क्रमांकासाठीचा पिन (PIN) प्रविष्ट करा. हे आपल्या SMS सत्यापन कोडपेक्षा वेगळे आहे.";
 
 /* The incoming bubble text when setting a chat color. */
-"CHAT_COLOR_INCOMING_MESSAGE" = "चॅटच्या रंगाचे हे एक पुनरावलोकन आहे.";
+"CHAT_COLOR_INCOMING_MESSAGE" = "चॅटच्या रंगाचे हे पुनरावलोकन आहे.";
 
 /* The first incoming bubble text when setting a chat color. */
-"CHAT_COLOR_INCOMING_MESSAGE_1" = "चॅटच्या रंगाचे हे एक पुनरावलोकन आहे.";
+"CHAT_COLOR_INCOMING_MESSAGE_1" = "चॅटच्या रंगाचे हे पुनरावलोकन आहे.";
 
 /* The second incoming bubble text when setting a chat color. */
 "CHAT_COLOR_INCOMING_MESSAGE_2" = "अजून एक बबल";
@@ -875,7 +941,7 @@
 "CHAT_COLORS_AUTO_TOOLTIP" = "वॉलपेपरसोबत स्वयंचलितपणे रंग जुळवते";
 
 /* Title for the chat list's default mode. */
-"CHAT_LIST_TITLE_INBOX" = "चॅट";
+"CHAT_LIST_TITLE_INBOX" = "चॅट्स";
 
 /* Title for the color & wallpaper settings view. */
 "COLOR_AND_WALLPAPER_SETTINGS_TITLE" = "चॅट रंग आणि वॉलपेपर";
@@ -986,7 +1052,7 @@
 "CONTACT_FIELD_ORGANIZATION" = "संस्था";
 
 /* Body for contact permission action sheet */
-"CONTACT_PERMISSION_ACTION_SHEET_BODY" = "आपल्या चॅटमध्ये संपर्क नाव आणि फोटो पहाण्यासाठी:";
+"CONTACT_PERMISSION_ACTION_SHEET_BODY" = "आपल्या चॅटमध्ये संपर्क नावं आणि फोटोज पहाण्यासाठी:";
 
 /* First step for contact permission action sheet */
 "CONTACT_PERMISSION_ACTION_SHEET_STEP_ONE" = "खाली \"सेटिंग वर जा\" टॅप करा";
@@ -1004,7 +1070,7 @@
 "CONTACT_PERMISSION_REMINDER_MEGAPHONE_ACTION" = "चालू करा";
 
 /* Body for contact permission reminder megaphone */
-"CONTACT_PERMISSION_REMINDER_MEGAPHONE_BODY" = "आपल्या चॅटमध्ये संपर्क नाव आणि फोटो पहा.";
+"CONTACT_PERMISSION_REMINDER_MEGAPHONE_BODY" = "आपल्या चॅट्समध्ये संपर्क नावं आणि फोटोज पहा.";
 
 /* Title for contact permission reminder megaphone */
 "CONTACT_PERMISSION_REMINDER_MEGAPHONE_TITLE" = "संपर्क चालू करायचे?";
@@ -1139,10 +1205,10 @@
 "CONTEXT_MENU_STOP_SPEAKING_MESSAGE" = "थांबा";
 
 /* Message for the 'conversation delete confirmation' alert. */
-"CONVERSATION_DELETE_CONFIRMATION_ALERT_MESSAGE" = "हे चॅट ह्या डिव्हाइस वरून हटवले जाईल.";
+"CONVERSATION_DELETE_CONFIRMATION_ALERT_MESSAGE" = "हे चॅट या डिव्हाइस वरून हटवले जाईल.";
 
 /* Title for the 'conversation delete confirmation' alert. */
-"CONVERSATION_DELETE_CONFIRMATION_ALERT_TITLE" = "चॅट हटवायचे?";
+"CONVERSATION_DELETE_CONFIRMATION_ALERT_TITLE" = "चॅट हटवायचा?";
 
 /* Title for the 'conversation mute confirmation' alert. */
 "CONVERSATION_MUTE_CONFIRMATION_ALERT_TITLE" = "…साठी ही चॅट मूक करा";
@@ -1169,7 +1235,7 @@
 "CONVERSATION_PICKER_SECTION_GROUPS" = "गट";
 
 /* table section header for section containing recent conversations */
-"CONVERSATION_PICKER_SECTION_RECENTS" = "अलीकडील चॅट";
+"CONVERSATION_PICKER_SECTION_RECENTS" = "अलीकडील चॅट्स";
 
 /* table section header for section containing contacts */
 "CONVERSATION_PICKER_SECTION_SIGNAL_CONTACTS" = "लोक";
@@ -1184,7 +1250,7 @@
 "CONVERSATION_SEARCH_NO_RESULTS" = "काहीही जुळले नाही";
 
 /* title for conversation settings screen */
-"CONVERSATION_SETTINGS" = "चॅट सेटिंग";
+"CONVERSATION_SETTINGS" = "चॅट सेटिंग्ज";
 
 /* Label for 'add members' button in conversation settings view. */
 "CONVERSATION_SETTINGS_ADD_MEMBERS" = "सदस्ये जोडा";
@@ -1265,7 +1331,7 @@
 "CONVERSATION_SETTINGS_MENTION_MODE_NEVER" = "मूक केलेले असताना अधिसूचित करू नका";
 
 /* Title of the 'mention notification mode' action sheet. */
-"CONVERSATION_SETTINGS_MENTION_NOTIFICATION_MODE_ACTION_SHEET_TITLE" = "मूक केलेल्या चॅटमध्ये आपला उल्लेख केल्यानंतर अधिसूचना प्राप्त करायच्या?";
+"CONVERSATION_SETTINGS_MENTION_NOTIFICATION_MODE_ACTION_SHEET_TITLE" = "मूक केलेल्या चॅट्समध्ये आपला उल्लेख केल्यानंतर अधिसूचना प्राप्त करायच्या?";
 
 /* label for 'mentions' cell in conversation settings */
 "CONVERSATION_SETTINGS_MENTIONS_LABEL" = "उल्लेख";
@@ -1397,13 +1463,13 @@
 "COUNTRYCODE_SELECT_TITLE" = "देश कोड निवडा";
 
 /* Body text for an interactive in-app prompt to set up a Signal username. */
-"CREATE_USERNAME_MEGAPHONE_BODY" = "Usernames let others message you without needing your phone number.";
+"CREATE_USERNAME_MEGAPHONE_BODY" = "वापरकर्तानावे आपणाला आपल्या फोन नंबरशिवाय इतरांना संदेश करू देतात.";
 
 /* Title for a button in an interactive in-app prompt to set up a Signal username, which will start a create-username flow. */
-"CREATE_USERNAME_MEGAPHONE_SET_UP_BUTTON_TITLE" = "Set Up";
+"CREATE_USERNAME_MEGAPHONE_SET_UP_BUTTON_TITLE" = "सेट अप";
 
 /* Title for an interactive in-app prompt to set up a Signal username. */
-"CREATE_USERNAME_MEGAPHONE_TITLE" = "Set up your Signal username";
+"CREATE_USERNAME_MEGAPHONE_TITLE" = "आपले Signal वापरकर्तानाव सेटअप करा";
 
 /* Credit/debit card donation error for decline failures where the card has expired. */
 "CREDIT_OR_DEBIT_CARD_DONATION_ERROR_EXPIRED_CARD" = "आपले कार्ड कालबाह्य झाले आहे. आपला कार्ड तपशील बरोबर असल्याची पडताळणी करा आणि पुन्हा प्रयत्न करा.";
@@ -1610,7 +1676,10 @@
 "DEREGISTRATION_REREGISTER_WITH_SAME_PHONE_NUMBER" = "हा फोन नंबर पुन्हा-नोंदवा";
 
 /* Label warning the user that they have been de-registered. */
-"DEREGISTRATION_WARNING" = "डिव्हाईस नोंदणीकृत नाही. आपला फोन नंबर एका वेगळ्या डिव्हाईस सोबत Signal वर नोंदणीकृत असू शकतो. पुन्हा-नोंदणी करण्यासाठी टॅप करा.";
+"DEREGISTRATION_WARNING" = "हे डिव्हाइस यापुढे नोंदणीकृत राहणार नाही. असे होण्याचे कारण आपण आपला फोन नंबर Signal सह वेगळ्या डिव्हाइसवर नोंदणीकृत केला आहे.";
+
+/* If the user has been deregistered, they'll see a warning. This is This is the call to action on that warning. */
+"DEREGISTRATION_WARNING_ACTION_TITLE" = "डिव्हाईस चे पुन्हा नोंदणीकरण करा";
 
 /* {{Short Date}} when device last communicated with Signal Server. */
 "DEVICE_LAST_ACTIVE_AT_LABEL" = "%1$@ ला शेवटचा सक्रिय";
@@ -1620,6 +1689,12 @@
 
 /* Alert title that can occur when viewing device manager. */
 "DEVICE_LIST_UPDATE_FAILED_TITLE" = "डिव्हाईस यादी अद्यतनित करण्यात अयशस्वी.";
+
+/* A label for this device in the device list. */
+"DEVICE_NAME_THIS_DEVICE" = "हे डिव्हाइस";
+
+/* A label for an unnamed device in the device list. */
+"DEVICE_NAME_UNNAMED_DEVICE" = "अनामित डिव्हाईस";
 
 /* The stop action of the dialog asking the user if they want to cancel a device transfer */
 "DEVICE_TRANSFER_CANCEL_CONFIRMATION_ACTION" = "स्थानांतरण थांबवा";
@@ -1727,7 +1802,7 @@
 "DISAPPEARING_MESSAGES" = "हरवणारे संदेश";
 
 /* Info Message when added to a group which has enabled disappearing messages. Embeds {{time amount}} before messages disappear. See the *_TIME_AMOUNT strings for context. */
-"DISAPPEARING_MESSAGES_CONFIGURATION_GROUP_EXISTING_FORMAT" = "%1$@ नंतर या चॅटमधील संदेश हरवतील.";
+"DISAPPEARING_MESSAGES_CONFIGURATION_GROUP_EXISTING_FORMAT" = "%1$@ नंतर या चॅटमधील संदेश लुप्त होतील.";
 
 /* Disappearing message option to define a custom time */
 "DISAPPEARING_MESSAGES_CUSTOM_TIME" = "कस्टम वेळ";
@@ -1736,7 +1811,7 @@
 "DISAPPEARING_MESSAGES_DAYS" = "दिवस";
 
 /* subheading in conversation settings */
-"DISAPPEARING_MESSAGES_DESCRIPTION" = "सक्षम केल्यानंतर, या चॅट मधील पाठविलेले आणि प्राप्त झालेले नवीन संदेश पाहिल्यानंतर हरवतील.";
+"DISAPPEARING_MESSAGES_DESCRIPTION" = "सक्षम केल्यानंतर, या चॅट मधील पाठविलेले आणि प्राप्त झालेले नवीन संदेश पाहिल्यानंतर लुप्त होतील.";
 
 /* Accessibility hint that contains current timeout information */
 "DISAPPEARING_MESSAGES_HINT" = "सध्या %1$@ नंतर संदेश हरवतात.";
@@ -1862,7 +1937,7 @@
 "DONATION_ON_BEHALF_OF_A_FRIEND_CONFIRMATION_SCREEN_TITLE" = "देणगीची पुष्टी करा";
 
 /* When users make donations on a friend's behalf, a message is sent. This text tells senders that their message will disappear, if the conversation has disappearing messages enabled. Embeds {{duration}}, such as \"1 week\". */
-"DONATION_ON_BEHALF_OF_A_FRIEND_DISAPPEARING_MESSAGES_NOTICE_FORMAT" = "या चॅट साठी लुप्त होणारे संदेश चालू केले जातील. आपला देणगी संदेश %1$@ मध्ये लुप्त होईल.";
+"DONATION_ON_BEHALF_OF_A_FRIEND_DISAPPEARING_MESSAGES_NOTICE_FORMAT" = "या चॅट साठी लुप्त होणारे संदेश चालू केले आहेत. आपला देणगी संदेश %1$@ मध्ये लुप्त होईल.";
 
 /* Users can donate on a friend's behalf. If something goes wrong during this donation, such as a network error, this error message is shown. */
 "DONATION_ON_BEHALF_OF_A_FRIEND_GENERIC_SEND_ERROR_BODY" = "देणगी देऊ शकत नाही. आपले कनेक्शन तपासा आणि पुन्हा प्रयत्न करा.";
@@ -1919,7 +1994,7 @@
 "DONATION_ON_BEHALF_OF_A_FRIEND_REPLY" = "देणगी";
 
 /* You sent a donation to a friend. This is the title of that message in the chat. Embeds {{short contact name}}. */
-"DONATION_ON_BEHALF_OF_A_FRIEND_SENT_TITLE_FORMAT" = "%1$@ ला देणगी";
+"DONATION_ON_BEHALF_OF_A_FRIEND_SENT_TITLE_FORMAT" = "%1$@च्या वतीने देणगी";
 
 /* When you donate on behalf of a friend, a thank-you sheet will appear. This is the text on that sheet. Embeds {{recipient name}}. */
 "DONATION_ON_BEHALF_OF_A_FRIEND_THANKS_BODY_FORMAT" = "आपण %1$@ च्या वतीने Signal ला देणगी दिली आहे. त्यांना त्यांच्या प्रोफाईलवर त्यांचा सपोर्ट दाखवण्याचा पर्याय दिला जाईल.";
@@ -2053,11 +2128,14 @@
 /* The alert title if user tries to exit update group view without saving changes. */
 "EDIT_GROUP_VIEW_UNSAVED_CHANGES_TITLE" = "जतन न केलेले बदल";
 
+/* Label for Edit History modal */
+"EDIT_HISTORY_LABEL" = "संपादनाचा इतिहास";
+
 /* Short name for edit menu item to copy contents of media message. */
 "EDIT_ITEM_COPY_ACTION" = "कॉपी करा";
 
 /* body of email sent to contacts when inviting to install Signal. Embeds {{link to install Signal}} and {{link to the Signal home page}} */
-"EMAIL_INVITE_BODY" = "नमस्कार,\n\nसध्या मी माझ्या iPhone वरील चॅट खाजगी ठेवण्यासाठी Signal वापरत आहे. मला असे वाटते की आपणही याची स्थापना करावी, जेणेकरून आपले संदेश फक्त आपण वाचतो आहोत किंवा आपले कॉल फक्त आपण ऐकतो आहोत याची आपल्याला खात्री असेल.\n\nSignal iPhone आणि Android करिता उपलब्ध आहे. ते येथे मिळवा:%1$@\n\nSignal आपल्या आधीच्या संदेशन अॅप सारखे कार्य करते. आपण चित्रे आणि व्हिडिओ पाठवू शकतो, कॉल करू शकतो, आणि गट चॅट चालू करू शकतो. आणि सर्वोत्कृष्ट भाग हा की, कुणीही हे बघू शकत नाही, जे लोक Signal बनवतात ते सुद्धा नाही!\n\nआपण Open Whisper Systems, जे लोक Signal बनवतात त्यांच्याबद्दल अधिक वाचू शकता, येथे:%2$@";
+"EMAIL_INVITE_BODY" = "नमस्कार,\n\nसध्या मी माझ्या iPhone वरील चॅट खाजगी ठेवण्यासाठी Signal वापरत आहे. आपणही याला इन्स्टॉल करावे असे मला वाटते की , जेणेकरून आपले संदेश फक्त आपण वाचतो आहोत किंवा आपले कॉल फक्त आपण ऐकतो आहोत याची आपल्याला खात्री असेल.\n\nSignal iPhone आणि Android करिता उपलब्ध आहे. ते येथे मिळवा: %1$@\n\nSignal आपल्या विद्यमान संदेशन ॲप सारखे कार्य करते. आपण चित्रे आणि व्हिडिओ पाठवू शकतो, कॉल करू शकतो, आणि गट चॅट चालू करू शकतो. आणि सर्वोत्कृष्ट भाग हा की, कुणीही हे बघू शकत नाही, जे लोक Signal बनवतात ते सुद्धा नाही!\n\nआपण Open Whisper Systems, जे लोक Signal बनवतात त्यांच्याबद्दल अधिक वाचू शकता, येथे: %2$@";
 
 /* subject of email sent to contacts when inviting to install Signal */
 "EMAIL_INVITE_SUBJECT" = "Signal वर स्विच करूया";
@@ -2082,6 +2160,9 @@
 
 /* The name for the emoji category 'Objects' */
 "EMOJI_CATEGORY_OBJECTS_NAME" = "वस्तू";
+
+/* The name for the emoji section for emojis already used on the message */
+"EMOJI_CATEGORY_ON_MESSAGE_NAME" = "हा संदेश";
 
 /* The name for the emoji category 'Recents' */
 "EMOJI_CATEGORY_RECENTS_NAME" = "अलीकडील";
@@ -2195,7 +2276,7 @@
 "ERROR_MESSAGE_NON_BLOCKING_IDENTITY_CHANGE_FORMAT" = "%1$@सोबतचा आपला सुरक्षितता नंबर बदलला आहे.";
 
 /* Text notifying the user that their secure session has been reset */
-"ERROR_MESSAGE_SESSION_REFRESH" = "चॅट सत्र ताजेतवाने झाले";
+"ERROR_MESSAGE_SESSION_REFRESH" = "चॅट सत्र रिफ्रेश झाले";
 
 /* No comment provided by engineer. */
 "ERROR_MESSAGE_UNKNOWN_ERROR" = "एक अज्ञात त्रुटी आढळली.";
@@ -2224,11 +2305,23 @@
 /* Format string for 'unregistered user' error. Embeds {{the unregistered user's name or signal id}}. */
 "ERROR_UNREGISTERED_USER_FORMAT" = "नोंदणी नसलेला वापरकर्ता: %1$@";
 
+/* Button to exit change number, shown in context menu. */
+"EXIT_CHANGE_NUMBER" = "नंबर बदला मधून बाहेर पडा";
+
+/* Button to exit re-registration, shown in context menu. */
+"EXIT_REREGISTRATION" = "नोंदणीकरणामधून बाहेर पडा";
+
 /* Label notifying the user that the app has expired. */
-"EXPIRATION_ERROR" = "Signal ची आपली आवृत्ती कालबाह्य झाली आहे! सर्वात अलीकडील आवृत्तीवर अद्यतन करण्यासाठी टॅप करा.";
+"EXPIRATION_ERROR" = "Signal ची ही आवृत्ती कालबाह्य झाली आहे. संदेश पाठवण्यास आणि प्राप्त करण्यास अद्यतन करा.";
+
+/* If the user's app is too old, they'll be shown a warning asking them to upgrade. This is the text on the warning, and tapping it will open the App Store page for Signal. */
+"EXPIRATION_WARNING_ACTION_TITLE" = "आता अद्यतनित करा";
+
+/* Label warning the user that the app will expire soon. Embeds {{date}}. */
+"EXPIRATION_WARNING_SOON" = "Signal ची ही आवृत्ती %1$@ रोजी कालबाह्य होत आहे. संदेशन करणे सुरू करण्यासाठी अद्यतन करा.";
 
 /* Label warning the user that the app will expire today. */
-"EXPIRATION_WARNING_TODAY" = "Signal ची आपली आवृत्ती आज कालबाह्य होणार आहे. सर्वात अलीकडील आवृत्तीवर अद्यतन करण्यासाठी टॅप करा.";
+"EXPIRATION_WARNING_TODAY" = "Signal ची ही आवृत्ती आज कालबाह्य होईल. संदेशन करणे सुरू करण्यासाठी अद्यतन करा.";
 
 /* action sheet header when re-sending message which failed because of too many attempts */
 "FAILED_SENDING_BECAUSE_RATE_LIMIT" = "या संपर्कासोबत खूप सारे अपयश. कृपया नंतर पुन्हा प्रयत्न करा";
@@ -2286,6 +2379,9 @@
 
 /* Label indicating media gallery is empty */
 "GALLERY_TILES_EMPTY_GALLERY" = "आपल्याकडे या चॅटमध्ये कुठलीही मिडिया नाही.";
+
+/* Label indicating media gallery with audio filter is empty */
+"GALLERY_TILES_EMPTY_GALLERY_AUDIO" = "आपणाकडे या चॅटमध्ये कोणताही ऑडिओ नाही.";
 
 /* Label indicating loading is in progress */
 "GALLERY_TILES_LOADING_MORE_RECENT_LABEL" = "नवीन मिडिया लोड करत आहे…";
@@ -2800,6 +2896,9 @@
 /* Message indicating that the local user was removed from the group by an unknown user. */
 "GROUP_LOCAL_USER_REMOVED_BY_UNKNOWN_USER" = "आपणांस ग्रुपमधून काढून टाकले होते.";
 
+/* Message indicating that the local user's request to join the group was approved. */
+"GROUP_LOCAL_USER_REQUEST_APPROVED" = "गटात सामील हाेण्याची आपली विनंती मान्य झाली.";
+
 /* Message indicating that the local user's request to join the group was approved by another user. Embeds {{ %@ the name of the user who approved the request }}. */
 "GROUP_LOCAL_USER_REQUEST_APPROVED_BY_REMOTE_USER_FORMAT" = "%1$@ ने गटामध्ये सामील होण्याची आपली विनंती मान्य केली.";
 
@@ -2884,9 +2983,6 @@
 /* Message indicating that a remote user's invite was revoked by the local user. Embeds {{remote user name}}. */
 "GROUP_REMOTE_USER_INVITE_REVOKED_BY_LOCAL_USER_FORMAT" = "%1$@ करिता गटाचे निमंत्रण रद्द केले गेले.";
 
-/* Message indicating that a single remote user was invited to the group. Embeds {{remote user name}}. */
-"GROUP_REMOTE_USER_INVITED_1_FORMAT" = "%1$@ गटात आमंत्रित केले गेले होते.";
-
 /* Message indicating that a remote user was invited to the group by the local user. Embeds {{remote user name}}. */
 "GROUP_REMOTE_USER_INVITED_BY_LOCAL_USER_FORMAT" = "आपण %1$@ ला गटात आमंत्रित केले.";
 
@@ -2917,7 +3013,7 @@
 /* Message indicating that a remote user's request to join the group was rejected by the local user. Embeds {{requesting user name}}. */
 "GROUP_REMOTE_USER_REQUEST_REJECTED_BY_LOCAL_USER_FORMAT" = "%1$@ कडून गटात सामील होण्याची विनंतीला आपण नकार दिला.";
 
-/* Message indicating that a remote user's request to join the group was rejected by another user. Embeds {{ %1$@ requesting user name, %2$@ approving user name }}. */
+/* Message indicating that a remote user's request to join the group was rejected by another user. Embeds {{ %1$@ requesting user name, %2$@ rejecting user name }}. */
 "GROUP_REMOTE_USER_REQUEST_REJECTED_BY_REMOTE_USER_FORMAT" = "%1$@ कडून गटात सामील होण्याची विनंती %2$@ ने नाकारली.";
 
 /* Message indicating that a remote user's request to join the group was rejected. Embeds {{requesting user name}}. */
@@ -2954,7 +3050,7 @@
 "GROUP_STORY_SETTINGS_DELETE_CONFIRMATION_FORMAT" = "आपण खात्रीने “%1$@” ला काढून टाकू इच्छिता?";
 
 /* Section footer for the 'viewers' section on the 'group story settings' view. Embeds {{ group name }} */
-"GROUP_STORY_SETTINGS_WHO_CAN_VIEW_THIS_FOOTER_FORMAT" = "ग्रुप चॅट “%1$@” चे सदस्य ही स्टोरी पाहू आणि उत्तर देऊ शकतात. आपण या चॅटसाठी ग्रुपमध्ये सदस्यत्व अद्ययावत करू शकता.";
+"GROUP_STORY_SETTINGS_WHO_CAN_VIEW_THIS_FOOTER_FORMAT" = "गप चॅट “%1$@” चे सदस्य ही स्टोरी पाहू आणि उत्तर देऊ शकतात. आपण या चॅटसाठी गटामध्ये सदस्यत्व अद्ययावत करू शकता.";
 
 /* Section header for the 'viewers' section on the 'group story settings' view */
 "GROUP_STORY_SETTINGS_WHO_CAN_VIEW_THIS_HEADER" = "ही स्टोरी कोण पाहू शकते";
@@ -3025,12 +3121,6 @@
 /* Message indicating that the group was migrated. */
 "GROUP_WAS_MIGRATED" = "हा गट नवीन गटात श्रेणीसुधारित केले गेले होते.";
 
-/* Message indicating that the local user was dropped while migrating the group. */
-"GROUP_WAS_MIGRATED_USERS_DROPPED_LOCAL_USER" = "आपणांस नवीन ग्रुपमध्ये समाविष्ट केले जाऊ शकत नाही आणि आपणाला ग्रुपमधून काढून टाकले आहे.";
-
-/* Message indicating that the local user was invited while migrating the group. */
-"GROUP_WAS_MIGRATED_USERS_INVITED_LOCAL_USER" = "आपण नवीन गटात जोडला जाऊ शकला नाहीत आणि त्यात सामील होण्यासाठी आपणास आमंत्रित केले गेले आहे.";
-
 /* Message indicating that the local user left the group. */
 "GROUP_YOU_LEFT" = "आपण गट सोडला आहे.";
 
@@ -3076,128 +3166,8 @@
 /* Label for 'invite friends to group' button. */
 "GROUPS_INVITE_FRIENDS_BUTTON" = "मित्रांना आमंत्रित करा";
 
-/* Body text for the first section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_1_BODY" = "लीगेसी ग्रुप्स असे गट आहेत जे नवीन गट वैशिष्ट्यांमधील अ‍ॅडमिन आणि अधिक वर्णनात्मक गट अद्यतनांसह सुसंगत नाहीत.";
-
-/* Title for the first section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_1_TITLE" = "लेगसी गट काय आहेत?";
-
-/* Body text for the second section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_2_BODY" = "लेगसी गट अजूनतरी नवीन गटांमध्ये श्रेणीसुधारित केले जाऊ शकत नाही, पण ते Signal च्या नवीनतम आवृत्तीवर असल्यास आपण त्याच सदस्यांसोबत नवीन गट तयार करू शकता.\n\nभविष्यात Signal लेगसी गट श्रेणीसुधारित करण्यासाठी Signal मार्ग ऑफर करेल.";
-
-/* Title for the second section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_2_TITLE" = "काय मी लेगसी गटात श्रेणीसुधारणा करू शकतो?";
-
-/* Body text for the third section of the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_SECTION_3_BODY" = "नवीन गटात तयार करण्यासाठी, सर्व सदस्यांनी Signal च्या नवीनतम आवृत्तीवर अद्यतनित करायला हवे.";
-
-/* Title for the 'legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_ALERT_TITLE" = "लेगसी वि. नवीन गट";
-
-/* Format for indicator that a group cannot be used until it is migrated. Embeds {{ a \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_BLOCKING_MIGRATION_FORMAT" = "@उल्लेख आणि अॅडमिन सारखे नवीन वैशिष्ट्ये सक्रिय करण्यासाठी गट श्रेणीसुधारित करा. ज्या सदस्यांनी त्यांचे नाव किंवा फोटो या गटात शेअर केलेले नाही त्यांना सामील होण्याचे आमंत्रण दिले जाईल. %1$@.";
-
-/* Title for the 'can't upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_ALERT_TITLE" = "नवीन गटावर श्रेणीसुधारित केले जाऊ शकत नाही";
-
-/* Text indicating that a legacy group can't be upgraded because it has too many members. Embeds {{ The maximum number of members allowed in a group. }}. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_ALERT_TOO_MANY_MEMBERS_FORMAT" = "हा गट नवीन गटामध्ये श्रेणीसुधारित केला जाऊ शकत नाही कारण त्यात खूप सदस्य आहेत. श्रेणीसुधारित करण्यासाठी गटाचा कमाल आकार %1$@ आहे.";
-
-/* Explanation of group migration for groups that can't yet be migrated in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_YET_1" = "सर्व गट सदस्य नवीन गटात सामील होता येणारी आवृत्ती वापरत असतील तेव्हा, हा गट श्रेणीसुधारित केला जाईल.";
-
-/* Explanation of group migration for groups that can't yet be migrated in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_CANT_UPGRADE_YET_2" = "सर्व संदेश इतिहास आणि मिडिया श्रेणीसुधारणेपूर्वी ठेवले जातील.";
-
-/* Brief explanation of legacy groups. Embeds {{ a \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_FORMAT" = "हा एक लेगसी गट आहे. गट अॅडमिन सारखे वैशिष्ट्ये फक्त नवीन गटांसाठी उपलब्ध आहेत. %1$@";
-
-/* Indicates that a legacy group can't be upgraded because some members can't be migrated. Embeds {{ an \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_MEMBERS_CANT_BE_MIGRATED_FORMAT" = "हा लेगसी गट सध्या नवीन गटामध्ये श्रेणीसुधारित केला जाऊ शकण्यास तयार नाही. %1$@.";
-
-/* Indicates that a legacy group can't be upgraded because it has too many members. Embeds {{ an \"learn more\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_TOO_MANY_MEMBERS_FORMAT" = "हा लेगसी गट नवीन गटामध्ये श्रेणीसुधारित केला जाऊ शकत नाही कारण तो खूप मोठा आहे. %1$@.";
-
-/* Explanation of legacy groups. Embeds {{ an \"upgrade\" link. }}. */
-"GROUPS_LEGACY_GROUP_DESCRIPTION_WITH_UPGRADE_OFFER_FORMAT" = "हा एक लेगसी गट आहे. @उल्लेख आणि अॅडमिन सारखे वैशिष्ट्ये अॅक्सेस करण्यासाठी, %1$@.";
-
 /* Label indicating a legacy group. */
 "GROUPS_LEGACY_GROUP_INDICATOR" = "लेगसी गट";
-
-/* Indicates that the local user needs to accept an invitation to rejoin the group after a group migration. */
-"GROUPS_LEGACY_GROUP_LOCAL_USER_INVITED" = "या गटात पुन्हा सामील होण्यासाठी आपल्याला आमंत्रण स्वीकार करावे लागेल, आणि आपण स्वीकार करेपर्यंत आपल्याला गट संदेश प्राप्त होणार नाहीत.";
-
-/* Title for the 'migrated group' alert view. */
-"GROUPS_LEGACY_GROUP_MIGRATED_GROUP_ALERT_TITLE" = "नवीन गट काय आहेत?";
-
-/* Explanation of group migration for a migrated group in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_MIGRATED_GROUP_DESCRIPTION" = "सर्व संदेश इतिहास आणि मिडिया श्रेणीसुधारणेपूर्वी ठेवण्यात आले आहेत.";
-
-/* Explanation of new groups in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_NEW_GROUP_DESCRIPTION" = "नवीन गटांमध्ये @उल्लेख आणि गट अॅडमिन सारखे वैशिष्ट्ये आहेत, आणि भविष्यात आम्ही अधिक वैशिष्ट्यांना समर्थन देऊ.";
-
-/* Title for the 'new groups' alert view. */
-"GROUPS_LEGACY_GROUP_NEW_GROUPS_ALERT_TITLE" = "नवीन गट";
-
-/* Label for the 'add members' button in the 're-add dropped group members' alert view. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_ADD_MEMBERS_BUTTON" = "सदस्ये जोडा";
-
-/* Title for the 're-add dropped group members' alert view. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_ALERT_TITLE_1" = "सदस्य जोडयाचा?";
-
-/* Title for the 're-add dropped group members' alert view. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_ALERT_TITLE_N" = "सदस्य जोडयाचे?";
-
-/* Label for the 'add members' button in the 're-add dropped groups members' banner. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_BUTTON" = "सदस्ये जोडा";
-
-/* Explanation of 're-adding dropped group member' in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_DESCRIPTION_1" = "श्रेणीसुधारणा झाल्यानंतर हा सदस्य नवीन गटात स्वयंचलितपणे जोडणे शक्य झाले नाही:";
-
-/* Explanation of 're-adding dropped group member' in the 'legacy group' alert views. */
-"GROUPS_LEGACY_GROUP_RE_ADD_DROPPED_GROUP_MEMBERS_DESCRIPTION_N" = "श्रेणीसुधारणा झाल्यानंतर हे सदस्य नवीन गटात स्वयंचलितपणे जोडणे शक्य झाले नाही:";
-
-/* Body text for the second section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_2_BODY" = "सर्व संदेश इतिहास आणि मिडिया श्रेणीसुधारणेपूर्वी ठेवण्यात आले आहेत.";
-
-/* Body text for the 'dropped member' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_DROPPED_MEMBERS_1" = "या सदस्याला ग्रुपमधून काढून टाकले होते आणि त्याने श्रेणीसुधारणा करेपर्यंत तो ग्रुपमध्ये पुन्हा सामील होऊ शकत नाही:";
-
-/* Body text for the 'dropped members' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_DROPPED_MEMBERS_N" = "या सदस्यांना ग्रुपमधून काढून टाकले होते आणि त्यांनी श्रेणीसुधारणा करेपर्यंत ते ग्रुपमध्ये पुन्हा सामील होऊ शकत नाहीत:";
-
-/* Body text for the 'invites member' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_INVITED_MEMBERS_1" = "या गटात पुन्हा सामील होण्यासाठी या सदस्याला आमंत्रण स्वीकार करावे लागेल, आणि स्वीकार करेपर्यंत त्याला गट संदेश प्राप्त होणार नाहीत:";
-
-/* Body text for the 'invites members' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_INVITED_MEMBERS_N" = "या गटात पुन्हा सामील होण्यासाठी या सदस्यांना आमंत्रण स्वीकार करावे लागेल, आणि स्वीकार करेपर्यंत त्यांना गट संदेश प्राप्त होणार नाहीत:";
-
-/* Body text for the 'possibly dropped member' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_POSSIBLY_DROPPED_MEMBERS_1" = "हा सदस्य नवीन गटांमध्ये सामील होण्यास सक्षम नाही, आणि त्याला ग्रुपमधून काढून टाकले जाईल:";
-
-/* Body text for the 'possibly dropped members' section of the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_SECTION_POSSIBLY_DROPPED_MEMBERS_N" = "हे सदस्य नवीन गटांमध्ये सामील होण्यास सक्षम नाहीत, आणि त्यांना ग्रुपमधून काढून टाकले जाईल:";
-
-/* Title for the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_TITLE" = "नवीन गटात श्रेणीसुधारणा करा";
-
-/* Label for the 'upgrade this group' button in the 'upgrade legacy group' alert view. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_BUTTON" = "हा गट श्रेणीसुधारित करा";
-
-/* Message for error alert indicating the group update failed. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_FAILED_ERROR_MESSAGE" = "हा गट सध्या नवीन गटामध्ये श्रेणीसुधारित केला जाऊ शकला नाही.";
-
-/* Message for error alert indicating the group update failed due to network connectivity. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_FAILED_ERROR_MESSAGE_NETWORK" = "हा गट सध्या नवीन गटांमध्ये श्रेणीसुधारित केला जाऊ शकला नाही कारण आपण इंटरनेटसोबत कनेक्ट केलेले नाही आहात. नंतर पुन्हा प्रयत्न करा.";
-
-/* Title for error alert indicating the group update failed. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_FAILED_ERROR_TITLE" = "श्रेणीसुधारणा पूर्ण करू शकले नाही";
-
-/* Message indicating the group update succeeded. */
-"GROUPS_LEGACY_GROUP_UPGRADE_ALERT_UPGRADE_SUCCEEDED" = "नवीन गटावर श्रेणीसुधारित केले.";
-
-/* An \"upgrade\" link for upgrading legacy groups to new groups. */
-"GROUPS_LEGACY_GROUP_UPGRADE_LINK" = "हा गट श्रेणीसुधारित करा";
 
 /* Message for the 'replace group admin' alert. */
 "GROUPS_REPLACE_ADMIN_ALERT_MESSAGE" = "आपण जाण्यापूर्वी, या गटासाठी नवीन प्रशासक निवडा.";
@@ -3227,7 +3197,7 @@
 "HELP_SUPPORT_CENTER" = "समर्थन केंद्र";
 
 /* Label for 'archived conversations' button. */
-"HOME_VIEW_ARCHIVED_CONVERSATIONS" = "आर्काईव्ह केलेले चॅट";
+"HOME_VIEW_ARCHIVED_CONVERSATIONS" = "आर्काईव्ह केलेले चॅट्स";
 
 /* Table cell subtitle label for a conversation the user has blocked. */
 "HOME_VIEW_BLOCKED_CONVERSATION" = "अवरोधित केले";
@@ -3263,7 +3233,7 @@
 "HOME_VIEW_TITLE_ARCHIVE" = "आर्काइव्ह";
 
 /* Title for the 'Select Chats' option in the ChatList. */
-"HOME_VIEW_TITLE_SELECT_CHATS" = "चॅट निवडा";
+"HOME_VIEW_TITLE_SELECT_CHATS" = "चॅट्स निवडा";
 
 /* Title 'Read All' button in the toolbar of the ChatList if multi-section is active. */
 "HOME_VIEW_TOOLBAR_READ_ALL" = "सर्व वाचा";
@@ -3311,7 +3281,7 @@
 "IN_CALL_RINGING" = "रिंग होत आहे…";
 
 /* Call setup status label */
-"IN_CALL_RINGING_AUDIO" = "ऑडिओ कॉल…";
+"IN_CALL_RINGING_AUDIO" = "व्हॉईस कॉल…";
 
 /* Call setup status label */
 "IN_CALL_RINGING_VIDEO" = "व्हिडीओ कॉल…";
@@ -3323,7 +3293,7 @@
 "IN_CALL_TERMINATED" = "कॉल संपला.";
 
 /* Label reminding the user that they are in archive mode, and that muted chats remain archived when they receive a new message. */
-"INBOX_VIEW_ARCHIVE_MODE_MUTED_CHATS_REMINDER" = "नवीन संदेश येईल तेव्हा संग्रहित केलेले मूक चॅट्स हे संग्रहित केलेलेच राहतील.";
+"INBOX_VIEW_ARCHIVE_MODE_MUTED_CHATS_REMINDER" = "नवीन संदेश येईल तेव्हा संग्रहित केलेले मूक चॅट्स हे अर्काईव्ह केलेलेच राहतील.";
 
 /* Label reminding the user that they are in archive mode, and that chats are unarchived when they receive a new message. */
 "INBOX_VIEW_ARCHIVE_MODE_REMINDER" = "नवीन संदेश येईल तेव्हा आर्काईव्ह केलेले चॅट्स इनबॉक्समध्ये हलवले जातील.";
@@ -3445,6 +3415,21 @@
 /* Error indicating that a group could not be left. */
 "LEAVE_GROUP_FAILED" = "गट सोडताना एक त्रुटी आढळली.";
 
+/* Text in a sheet explaining details about 'Legacy Groups'. */
+"LEGACY_GROUP_UNSUPPORTED_LEARN_MORE_BODY" = "\"वारसा गट\" हे असे गट आहेत जे @mentions आणि अ‍ॅडमिन या सारख्या वैशिष्ट्यांना सपोर्ट करत नाहीत. बहुतांश लेगसी गट हे एकतर स्वयंचलितपणे किंवा हस्तचलितपणे \"नवीन गटां\" मध्ये अपग्रेड केले जातात. दीर्घकाळ असक्रियतेमुळे, हा गट यापुढे अपग्रेड केला जाणार नाही.\n\nहा चॅट पुढे सुरू ठेवण्यासाठी, आपणाला एक नवीन गट तयार करणे आवश्यक आहे.";
+
+/* Title for a sheet explaining details about 'Legacy Groups'. */
+"LEGACY_GROUP_UNSUPPORTED_LEARN_MORE_TITLE" = "वारसा गट";
+
+/* Message explaining that this group can no longer be used because it is unsupported. Embeds a {{ learn more link }}. */
+"LEGACY_GROUP_UNSUPPORTED_MESSAGE" = "हा एक वारसा गट आहे, आणि त्याला यापुढे सपोर्ट केला जाणार नाही. हे संभाषण पुढे सुरू ठेवण्यासाठी, एक नवीन गट तयार करा. %1$@";
+
+/* Text in a sheet explaining details about 'New Groups'. */
+"LEGACY_GROUP_WHAT_ARE_NEW_GROUPS_BODY" = "नवीन गटांमध्ये @उल्लेख आणि गट अॅडमिन सारखे वैशिष्ट्ये आहेत, आणि भविष्यात आम्ही अधिक वैशिष्ट्यांना समर्थन देऊ.\n\nसर्व संदेश इतिहास आणि मिडिया श्रेणीसुधारणेपूर्वी ठेवण्यात आले आहेत.";
+
+/* Title for a sheet explaining details about 'New Groups'. */
+"LEGACY_GROUP_WHAT_ARE_NEW_GROUPS_TITLE" = "नवीन गट काय आहेत?";
+
 /* report an invalid linking code */
 "LINK_DEVICE_INVALID_CODE_BODY" = "हा QR कोड वैध नाही. आपल्याला लिंक करावयाचा डिव्हाईस वर प्रदर्शित केलेला QR कोड आपण स्कॅन करत आहात याची कृपया खात्री करा.";
 
@@ -3452,7 +3437,7 @@
 "LINK_DEVICE_INVALID_CODE_TITLE" = "डिव्हाईस लिंक करणे अयशस्वी";
 
 /* confirm the users intent to link a new device */
-"LINK_DEVICE_PERMISSION_ALERT_BODY" = "हा डिव्हाईस आपले गट आणि संपर्क पाहू शकेल, आपले चॅट अॅक्सेस करू शकेल, आणि आपल्या नावाने संदेश पाठवू शकेल.";
+"LINK_DEVICE_PERMISSION_ALERT_BODY" = "हे डिव्हाईस आपले गट आणि संपर्क पाहू शकेल, आपले चॅट ॲक्सेस करू शकेल, आणि आपल्या नावाने संदेश पाठवू शकेल.";
 
 /* confirm the users intent to link a new device */
 "LINK_DEVICE_PERMISSION_ALERT_TITLE" = "हे डिव्हाईस लिंक करायचे?";
@@ -3553,11 +3538,20 @@
 /* Shown in place of message input text in media editor when 'View Once' is on. */
 "MEDIA_EDITOR_TEXT_FIELD_VIEW_ONCE_MEDIA" = "एकदा मिडिया पहा";
 
+/* Explanatory text displayed when deleting N items in All Media screen. */
+"MEDIA_GALLERY_DELETE_MEDIA_BODY" = "This will permanently delete the selected files. Any message text associated with these items will also be deleted.";
+
 /* Format for the 'more items' indicator for media galleries. Embeds {{the number of additional items}}. */
 "MEDIA_GALLERY_MORE_ITEMS_FORMAT" = "+%1$@";
 
 /* Section header in media gallery collection view */
 "MEDIA_GALLERY_THIS_MONTH_HEADER" = "हा महिना";
+
+/* Text explaining that the user will forward all media from a message. */
+"MEDIA_PAGE_FORWARD_MEDIA_CONFIRM_MESSAGE" = "या संदेशामधील सर्व मिडीया अग्रेषित केले जातील.";
+
+/* Context menu item in media viewer. Refers to deleting currently displayed photo/video. */
+"MEDIA_VIEWER_DELETE_MEDIA_ACTION" = "हटवा";
 
 /* button title to snooze a megaphone */
 "MEGAPHONE_REMIND_LATER" = "मला नंतर आठवण करून द्या";
@@ -3572,7 +3566,7 @@
 "MESSAGE_ACTION_DELETE_FOR_EVERYONE" = "सर्वांसाठी हटवा";
 
 /* A one-time confirmation that you want to delete for everyone */
-"MESSAGE_ACTION_DELETE_FOR_EVERYONE_CONFIRMATION" = "Signal च्या अलिकडील आवृत्तीवर असल्यास हा संदेश चॅटमधील प्रत्येकासाठी हटवला जाईल. आपण संदेश हटवला हे पाहण्यात ते सक्षम असतील.";
+"MESSAGE_ACTION_DELETE_FOR_EVERYONE_CONFIRMATION" = "Signal च्या अलिकडील आवृत्तीवर असल्यास हा संदेश चॅटमधील प्रत्येकासाठी हटवला जाईल. आपण संदेश हटवला हे पाहण्यात ते सक्षम हाेतील.";
 
 /* The title for the action sheet asking who the user wants to delete the message for. */
 "MESSAGE_ACTION_DELETE_FOR_TITLE" = "हा संदेश आपण कुणासाठी हटवू इच्छिता?";
@@ -3654,6 +3648,9 @@
 
 /* Toast indicating that the user has copied the sent timestamp. */
 "MESSAGE_DETAIL_VIEW_DID_COPY_SENT_TIMESTAMP" = "पाठवलेली वेळ कॉपी केली";
+
+/* Title for the 'edit history' section on the 'message details' view. */
+"MESSAGE_DETAILS_EDIT_HISTORY_TITLE" = "संपादन इतिहास पहा";
 
 /* Title for the 'sent from' section on the 'message details' view. */
 "MESSAGE_DETAILS_VIEW_SENT_FROM_TITLE" = "यांनी पाठवले";
@@ -3740,7 +3737,7 @@
 "MESSAGE_REQUEST_DELETE_CONVERSATION_MESSAGE" = "हा चॅट आपल्या सर्व डिव्हाइस वरून हटवला जाईल.";
 
 /* Action sheet title to confirm deleting a conversation via a message request. */
-"MESSAGE_REQUEST_DELETE_CONVERSATION_TITLE" = "चॅट हटवायचे?";
+"MESSAGE_REQUEST_DELETE_CONVERSATION_TITLE" = "चॅट हटवायचा?";
 
 /* Action sheet action to confirm deleting a group via a message request. */
 "MESSAGE_REQUEST_LEAVE_AND_DELETE_GROUP_ACTION" = "हटवा आणि सोडा";
@@ -3828,6 +3825,9 @@
 
 /* message status while message is downloading. */
 "MESSAGE_STATUS_DOWNLOADING" = "डाऊनलोड करत आहे";
+
+/* status meesage for edited messages */
+"MESSAGE_STATUS_EDITED" = "संपादित";
 
 /* status message for failed messages */
 "MESSAGE_STATUS_FAILED" = "पाठविणे अयशस्वी";
@@ -4067,7 +4067,10 @@
 "NO_OTHER_GROUPS_IN_COMMON" = "इतर कुठलेही गट समाईक नाहीत";
 
 /* Label for 1:1 conversation with yourself. */
-"NOTE_TO_SELF" = "स्वतःला संदेश";
+"NOTE_TO_SELF" = "स्वतःला नोंद";
+
+/* Body for a notification representing a message request. */
+"NOTIFICATION_BODY_INCOMING_MESSAGE_REQUEST" = "संदेश विनंती";
 
 /* Lock screen notification text presented after user powers on their device without unlocking. Embeds {{device model}} (either 'iPad' or 'iPhone') */
 "NOTIFICATION_BODY_PHONE_LOCKED_FORMAT" = "आपला %1$@ पुन्हा चालू होत असताना आपल्याला संदेश प्राप्त झाले असू शकतात.";
@@ -4140,6 +4143,9 @@
 
 /* Label indicating that the 2fa pin is invalid in the 'onboarding 2fa' view. */
 "ONBOARDING_2FA_INVALID_PIN" = "चुकीचा PIN";
+
+/* Label indicating that the 2fa pin is invalid in the 'onboarding 2fa' view, and you only have one more attempt */
+"ONBOARDING_2FA_INVALID_PIN_LAST_ATTEMPT" = "चुकीचा पिन. 1 प्रयत्न उर्वरित.";
 
 /* Label for the 'skip and create new pin' button when reglock is disabled during onboarding. */
 "ONBOARDING_2FA_SKIP_AND_CREATE_NEW_PIN" = "वगळा आणि नवीन PIN तयार करा";
@@ -4222,6 +4228,9 @@
 /* Title of the 'onboarding pin attempts exhausted' view when reglock is disabled. */
 "ONBOARDING_PIN_ATTEMPTS_EXHAUSTED_TITLE" = "चुकीचा PIN";
 
+/* Explanation of the 'onboarding pin attempts exhausted' view when it is unknown if reglock is enabled. */
+"ONBOARDING_PIN_ATTEMPTS_EXHAUSTED_WITH_UNKNOWN_REGLOCK_EXPLANATION" = "आपले पिन अंदाज संपत आलेले आहेत, परंतु आपण अद्याप आपल्या फोन क्रमांकाची पडताळणी करून आपल्या Signal अकाऊंट अ‍ॅक्सेस करण्याचा प्रयत्न करू शकता. आपली गोपनीयता आणि सुरक्षिततेसाठी आपले अकाऊंट कोणत्याही जतन केलेल्या प्रोफाईल माहिती किंवा सेटिंग्ज शिवाय पुर्नस्थापित केले जाऊ शकेल.";
+
 /* Title of the 'onboarding PIN' view. */
 "ONBOARDING_PIN_EXPLANATION" = "आपल्या खात्यासाठी आपण तयार केलेला PIN प्रविष्ट करा. हे आपल्या SMS सत्यापन कोडपेक्षा वेगळे आहे.";
 
@@ -4255,6 +4264,18 @@
 /* Label for a progress spinner currently validating code */
 "ONBOARDING_VERIFICATION_CODE_VALIDATION_PROGRESS_LABEL" = "कोड वैध केला जात आहे(…)";
 
+/* First bullet point for the explainer sheet for registering via verification code. */
+"ONBOARDING_VERIFICATION_HELP_BULLET_1" = "आपला SMS किंवा कॉल प्राप्त करण्यासाठी आपल्या फोनला सेल्यूलर सिग्नल असल्याची खात्री करा";
+
+/* Second bullet point for the explainer sheet for registering via verification code. */
+"ONBOARDING_VERIFICATION_HELP_BULLET_2" = "नंबर वर आपण फोन कॉल प्राप्त करू शकता याची पुष्टी करा";
+
+/* Third bullet point for the explainer sheet for registering via verification code. */
+"ONBOARDING_VERIFICATION_HELP_BULLET_3" = "आपण आपला फोन नंबर योग्यरीत्या प्रविष्ट केला आहे का ते तपासा";
+
+/* Label for a button to get help entering a verification code when registering. */
+"ONBOARDING_VERIFICATION_HELP_LINK" = "नोंदणी करण्यामध्ये समस्या येत आहे?";
+
 /* Label indicating that the verification code is incorrect in the 'onboarding verification' view. */
 "ONBOARDING_VERIFICATION_INVALID_CODE" = "हा कोड चुकीचा आहे";
 
@@ -4272,6 +4293,21 @@
 
 /* Button text which opens the settings app */
 "OPEN_SETTINGS_BUTTON" = "सेटिंग";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're on unsupported version. Some users can upgrade their device to a newer version of iOS to continue using Signal. If that's the case, they'll be shown this text. */
+"OS_EXPIRED_AND_CAN_UPGRADE_OS" = "Signal यापुढे या डिव्हाइसवर काम करणार नाही. Signal पुन्हा वापरण्यास, आपल्या डिव्हाइसला iOS च्या नवीनतम आवृत्तीवर अद्ययावत करा.";
+
+/* Signal doesn't support old devices. If that's the case, they'll be shown this action, and tapping it will open information about Signal's minimum supported operating systems. */
+"OS_EXPIRED_AND_DEVICE_IS_STUCK" = "Signal यापुढे या डिव्हाइसवर काम करणार नाही. Signal पुन्हा वापरण्यास, नवीनतम डिव्हाइसवर स्वीच करा.";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're on an old version. Some users can upgrade their device to a newer version of iOS to continue using Signal. If that's the case, they'll be shown this action, and tapping it will open device update instructions. */
+"OS_SOON_TO_EXPIRE_ACTION_TITLE" = "आता अद्यतनित करा";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're an old version that will soon lose support. Some users can upgrade their device to a newer version of iOS to continue using Signal. If that's the case, they'll be shown this text. Embeds {{expiration date}}. */
+"OS_SOON_TO_EXPIRE_AND_CAN_UPGRADE_OS_FORMAT" = "Signal लवकरच यापुढे आपल्या डिव्हाइसच्या iOS आवृत्तीला सपोर्ट करणार नाही. Signal वापरणे सुरू ठेवण्यासाठी, %1$@ पर्यंत आपले डिव्हाइस iOS च्या नवीनतम आवृत्तीवर अपडेट करा.";
+
+/* Signal doesn't support old versions of iOS and shows a warning if you're on an old version that will soon lose support. This is the text on that warning when users can't upgrade iOS without getting a new device. Embeds {{expiration date}}. */
+"OS_SOON_TO_EXPIRE_AND_DEVICE_WILL_BE_STUCK_FORMAT" = "Signal लवकरच यापुढे आपल्या डिव्हाइसच्या iOS आवृत्तीला सपोर्ट करणार नाही. Signal वापरणे पुढे सुरू ठेवण्यासाठी, %1$@ पर्यंत नवीन डिव्हाइस वर स्वीच करा.";
 
 /* Info Message when another user disabled disappearing messages. Embeds {{name of other user}}. */
 "OTHER_DISABLED_DISAPPEARING_MESSAGES_CONFIGURATION" = "%1$@ याने नाहीसे होणारे संदेश अक्षम केले.";
@@ -4649,22 +4685,16 @@
 "PHONE_NUMBER_DISCOVERABILITY_EVERYBODY" = "सर्वजण";
 
 /* A user friendly description of the 'everybody' phone number discoverability mode. */
-"PHONE_NUMBER_DISCOVERABILITY_EVERYBODY_DESCRIPTION" = "Anyone who has your phone number in their contacts will see you as a contact on Signal. Others will be able to reach you with your phone number when they start a new chat or group.";
+"PHONE_NUMBER_DISCOVERABILITY_EVERYBODY_DESCRIPTION" = "आपला फोन नंबर ज्यांच्या संपर्कांमध्ये आहे ते कोणीही तुम्हाला Signal वर संपर्क म्हणून पाहू शकतील. इतर लोक जेव्हा नवीन चॅट किंवा गट सुरू करतील तेव्हा ते आपल्यापर्यंत आपल्या फोनसह पोहचू शकतील.";
 
 /* A user friendly name for the 'nobody' phone number discoverability mode. */
 "PHONE_NUMBER_DISCOVERABILITY_NOBODY" = "कोणीही नाही";
 
 /* A user friendly description of the 'nobody' phone number discoverability mode. */
-"PHONE_NUMBER_DISCOVERABILITY_NOBODY_DESCRIPTION" = "Nobody on Signal will be able to reach you with your phone number.";
+"PHONE_NUMBER_DISCOVERABILITY_NOBODY_DESCRIPTION" = "Signal वरील कोणीही आपणापर्यंत आपल्या फोन नंबरसह पोहचू शकणार नाहीत.";
 
 /* A format for a label showing an example phone number. Embeds {{the example phone number}}. */
 "PHONE_NUMBER_EXAMPLE_FORMAT" = "उदाहरण: %1$@";
-
-/* A user friendly name for the 'contacts only' phone number sharing mode. */
-"PHONE_NUMBER_SHARING_CONTACTS_ONLY" = "माझे संपर्क";
-
-/* A user friendly description of the 'contacts only' phone number sharing mode. */
-"PHONE_NUMBER_SHARING_CONTACTS_ONLY_DESCRIPTION" = "फक्त आपले संपर्क Signal वर आपला फोन नंबर पाहू शकतील.";
 
 /* A user friendly name for the 'everybody' phone number sharing mode. */
 "PHONE_NUMBER_SHARING_EVERYBODY" = "सर्वजण";
@@ -4772,7 +4802,13 @@
 "PIN_CREATION_EXPLANATION" = "Signal सोबत संचयित केलेली माहिती PIN एन्क्रिप्टेड ठेवतात जेणेकरून ती फक्त आपण अॅक्सेस करू शकता. आपण पुन्हा स्थापन केल्यावर आपली प्रोफाईल, सेटिंग, आणि संपर्क पुनर्स्थित होईल. आपल्याला अॅप उघडण्यासाठी PIN ची गरज लागणार नाही.";
 
 /* Learn more action on the pin creation view */
-"PIN_CREATION_LEARN_MORE" = "PIN बद्दल अधिक जाणा";
+"PIN_CREATION_LEARN_MORE" = "पिन बद्दल अधिक";
+
+/* Users can create PINs to restore their account data later. They can learn more about this on a sheet. This is the text on that sheet. */
+"PIN_CREATION_LEARN_MORE_TEXT" = "पिन हे Signal सह आपली संग्रहित केलेली माहिती कूटबद्ध करून ठेवतात ज्यामुळे ती फक्त आपणच अ‍ॅक्सेस करू शकता. आपण पुर्नस्थापना कराल तेव्हा आपले प्रोफाईल, सेटिंग्ज आणि संपर्क पुनर्संचयित केले जातील.";
+
+/* Users can create PINs to restore their account data later. They can learn more about this on a sheet. This is the title on that sheet. */
+"PIN_CREATION_LEARN_MORE_TITLE" = "Signal पिन बद्दल";
 
 /* Label indicating that the attempted PIN does not match the first PIN */
 "PIN_CREATION_MISMATCH_ERROR" = "PIN जुळत नाहीत. पुन्हा प्रयत्न करा.";
@@ -4820,13 +4856,16 @@
 "PIN_CREATION_WEAK_ERROR" = "एक शक्तिशाली PIN निवडा";
 
 /* If your attempted PIN is too weak, you'll see an error message. This is the text on the error dialog. */
-"PIN_CREATION_WEAK_ERROR_MESSAGE" = "PINs keep your information stored with Signal encrypted so only you can access it. Choose a stronger PIN to protect your account.";
+"PIN_CREATION_WEAK_ERROR_MESSAGE" = "पिन हे Signal सह आपली संग्रहित केलेली माहिती कूटबद्ध करून ठेवतात ज्यामुळे फक्त तुम्हीच अ‍ॅक्सेस करू शकता. आपल्या खात्याचे संरक्षण करण्यासाठी सशक्त पिन निवडा.";
 
 /* Error body indicating that the attempt to disable a PIN failed. */
 "PIN_DISABLE_ERROR_MESSAGE" = "आपला PIN अक्षम केला जाऊ शकला नव्हता. आम्ही आपल्याला पुन्हा नंतर सूचित करू.";
 
 /* Error title indicating that the attempt to disable a PIN failed. */
 "PIN_DISABLE_ERROR_TITLE" = "PIN अक्षम करणे अयशस्वी";
+
+/* If the user is re-registering, they need to enter their PIN to restore all their data. In some cases, they can skip this entry and lose some data. This text is shown on a button that lets them begin to do this. */
+"PIN_ENTER_EXISTING_SKIP" = "पिन वगळा";
 
 /* Error title indicating that the attempt to recreate a PIN failed. */
 "PIN_RECREATION_ERROR_TITLE" = "PIN निर्मिती अयशस्वी";
@@ -4871,7 +4910,7 @@
 "PIN_REMINDER_TOO_SHORT_ERROR" = "PIN किमान 4 अंकांचा असायला हवा.";
 
 /* An explanation that you have already pinned the maximum number of conversations. */
-"PINNED_CONVERSATION_LIMIT" = "आपण फक्त 4 चॅट पर्यंत पिन करू शकता.";
+"PINNED_CONVERSATION_LIMIT" = "आपण फक्त 4 पर्यंत चॅट पिन करू शकता.";
 
 /* The title for pinned conversation section on the conversation list */
 "PINNED_SECTION_TITLE" = "पिन केलेला";
@@ -4897,7 +4936,7 @@
 /* Badge indicating that the user is verified. */
 "PRIVACY_IDENTITY_IS_VERIFIED_BADGE" = "सत्यापित";
 
-/* Label indicating that the user is verified. Embeds {{the user's name or phone number}}. */
+/* Label indicating that the user is verified. Embeds  user's name or phone number}}. */
 "PRIVACY_IDENTITY_IS_VERIFIED_FORMAT" = "%1$@ सत्यापित आहे.";
 
 /* Button that shows the 'scan with camera' view. */
@@ -5002,8 +5041,14 @@
 /* Placeholder when the user doesn't have a 'name' defined for profile settings screen. */
 "PROFILE_SETTINGS_NAME_PLACEHOLDER" = "नाव";
 
+/* Title for a menu action allowing users to edit their existing username. */
+"PROFILE_SETTINGS_USERNAME_EDIT_USERNAME_ACTION" = "वापरकर्तानाव संपादित करा";
+
 /* A placeholder value shown in the profile settings screen on a tappable item leading to a username selection flow, for when the user doesn't have a username. */
 "PROFILE_SETTINGS_USERNAME_PLACEHOLDER" = "वापरकर्तानाव";
+
+/* Title for a menu action allowing users to view their username link QR code. */
+"PROFILE_SETTINGS_USERNAME_VIEW_QR_CODE_ACTION" = "QR कोड पहा";
 
 /* Error message shown when user tries to update profile with a family name that is too long. */
 "PROFILE_VIEW_ERROR_FAMILY_NAME_TOO_LONG" = "आपले अडनाव खूप लांब आहे.";
@@ -5102,40 +5147,40 @@
 "REACTION_DETAIL_ALL_FORMAT" = "सर्व · %1$@";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_BODY_FORMAT" = "आपल्या संदेशाला %1$@ प्रतिसाद दिला";
+"REACTION_INCOMING_NOTIFICATION_BODY_FORMAT" = "आपल्या संदेशाला %1$@ प्रतिक्रिया दिली";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_ALBUM_BODY_FORMAT" = "आपल्या अल्बमला %1$@ प्रतिसाद दिला";
+"REACTION_INCOMING_NOTIFICATION_TO_ALBUM_BODY_FORMAT" = "आपल्या अल्बमला %1$@ प्रतिक्रिया दिली";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_AUDIO_BODY_FORMAT" = "आपल्या ऑडिओला %1$@ प्रतिसाद दिला";
+"REACTION_INCOMING_NOTIFICATION_TO_AUDIO_BODY_FORMAT" = "आपल्या ऑडिओला %1$@ प्रतिक्रिया दिली";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_CONTACT_SHARE_BODY_FORMAT" = "आपल्या संपर्क सामायिकरणाला %1$@ प्रतिसाद दिला";
+"REACTION_INCOMING_NOTIFICATION_TO_CONTACT_SHARE_BODY_FORMAT" = "आपल्या संपर्क सामायिकरणावर %1$@ प्रतिक्रिया दिली";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_FILE_BODY_FORMAT" = "आपल्या फाईलला %1$@ प्रतिसाद दिला";
+"REACTION_INCOMING_NOTIFICATION_TO_FILE_BODY_FORMAT" = "आपल्या फाइलवर %1$@ प्रतिक्रिया दिली";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_GIF_BODY_FORMAT" = "आपल्या GIF ला %1$@ प्रतिसाद दिला";
+"REACTION_INCOMING_NOTIFICATION_TO_GIF_BODY_FORMAT" = "आपल्या GIF ला %1$@ प्रतिक्रिया दिली";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_PHOTO_BODY_FORMAT" = "आपल्या फोटोला %1$@ प्रतिसाद दिला";
+"REACTION_INCOMING_NOTIFICATION_TO_PHOTO_BODY_FORMAT" = "आपल्या फोटोला %1$@ प्रतिक्रिया दिली";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_STICKER_MESSAGE_BODY_FORMAT" = "आपल्या स्टिकरला %1$@ प्रतिसाद दिला";
+"REACTION_INCOMING_NOTIFICATION_TO_STICKER_MESSAGE_BODY_FORMAT" = "आपल्या स्टिकरला %1$@ प्रतिक्रिया दिली";
 
 /* notification body. Embeds {{reaction emoji}} and {{body text}} */
-"REACTION_INCOMING_NOTIFICATION_TO_TEXT_MESSAGE_BODY_FORMAT" = "%1$@ प्रतिसाद दिला यास: \"%2$@\"";
+"REACTION_INCOMING_NOTIFICATION_TO_TEXT_MESSAGE_BODY_FORMAT" = "\"%2$@\" :ला %1$@ प्रतिक्रिया दिली";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_VIDEO_BODY_FORMAT" = "आपल्या व्हिडिओला %1$@ प्रतिसाद दिला";
+"REACTION_INCOMING_NOTIFICATION_TO_VIDEO_BODY_FORMAT" = "आपल्या व्हिडिओवर %1$@ प्रतिक्रिया दिली";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_VIEW_ONCE_MESSAGE_BODY_FORMAT" = "आपल्या एकदा-बघा व्हिडिओला %1$@ प्रतिसाद दिला";
+"REACTION_INCOMING_NOTIFICATION_TO_VIEW_ONCE_MESSAGE_BODY_FORMAT" = "आपल्या एकदा-बघा व्हिडिओवर %1$@ प्रतिक्रिया दिली";
 
 /* notification body. Embeds {{reaction emoji}} */
-"REACTION_INCOMING_NOTIFICATION_TO_VOICE_MESSAGE_BODY_FORMAT" = "आपल्या व्हॉईस संदेशाला %1$@ प्रतिसाद दिला";
+"REACTION_INCOMING_NOTIFICATION_TO_VOICE_MESSAGE_BODY_FORMAT" = "आपल्या व्हॉईस संदेशाला %1$@ प्रतिक्रिया दिली";
 
 /* Pressing this button marks a thread as read */
 "READ_ACTION" = "वाचले";
@@ -5164,8 +5209,11 @@
 /* Alert body for a forgotten SVR (V2) PIN */
 "REGISTER_2FA_FORGOT_SVR_PIN_ALERT_MESSAGE" = "आपला PIN आपण तयार केलेला एक 4+ अंकी कोड आहे जो न्युमेरिक किंवा अल्फान्युमेरिक असू शकतो. जर आपल्याला आपला PIN आठवत नसेल, तर आपल्या खात्यावर पुन्हा-नोंदणी करण्यासाठी आपल्याला 7 दिवस थांबावे लागेल.";
 
-/* Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock */
-"REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_ALERT_MESSAGE" = "आपला PIN आपण तयार केलेला एक 4+ अंकी कोड आहे जो न्युमेरिक किंवा अल्फान्युमेरिक असू शकतो. जर आपल्याला आपला PIN आठवत नसेल, तर आपण नवीन तयार करू शकता. आपण नोंदणी करू शकता आणि आपले खाते वापरू शकता पण आपण काही जतन केलेल्या सेटिंग गमवाल जसे की आपली प्रोफाईल माहिती.";
+/* Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock and they cannot necessarily create a new PIN */
+"REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_ALERT_MESSAGE" = "आपला पिन हा 4+ अंकांचा आपण तयार केलेला कोड असतो जो न्यूमेरिक किंवा अल्फान्यूमेरिक असू शकतो. आपणाला आपला पिन आठवत नसेल्यास, आपण आपल्या अकाऊंटची नोंदणी करू शकता आणि ते वापरू शकता मात्र आपण आपली प्रोफाईल माहिती यासारखी काही जतन केलेली सेटिंग्ज गमावू शकाल.";
+
+/* Alert body for a forgotten SVR (V2) PIN when the user doesn't have reglock and they can create a new PIN */
+"REGISTER_2FA_FORGOT_SVR_PIN_WITHOUT_REGLOCK_AND_CAN_CREATE_NEW_PIN_ALERT_MESSAGE" = "आपला PIN आपण तयार केलेला एक 4+ अंकी कोड आहे जो न्युमेरिक किंवा अल्फान्युमेरिक असू शकतो. जर आपल्याला आपला PIN आठवत नसेल, तर आपण नवीन तयार करू शकता. आपण नोंदणी करू शकता आणि आपले खाते वापरू शकता पण आपण आपल्या प्रोफाईल माहिती सारख्या काही जतन केलेल्या सेटिंग गमवाल.";
 
 /* Alert body for a forgotten V1 PIN */
 "REGISTER_2FA_FORGOT_V1_PIN_ALERT_MESSAGE" = "आपला PIN आपण तयार केलेला एक 4+ अंकी कोड आहे. जर आपल्याला आपला PIN आठवत नसेल, तर आपल्या खात्यावर पुन्हा-नोंदणी करण्यासाठी आपल्याला 7 दिवस थांबावे लागेल.";
@@ -5179,6 +5227,9 @@
 /* No comment provided by engineer. */
 "REGISTER_CONTACTS_WELCOME" = "स्वागत!";
 
+/* Body of action sheet shown when rate-limited during registration. */
+"REGISTER_RATE_LIMITING_ALERT" = "आपण खूप वारंवार प्रयत्न केले आहेत. कृपया पुन्हा प्रयत्न करण्यापूर्वी काही मिनिटे थांबा.";
+
 /* action sheet body */
 "REGISTER_RATE_LIMITING_BODY" = "आपण खूप वारंवार प्रयत्न केले आहेत. कृपया पुन्हा प्रयत्न करण्यापूर्वी एक मिनिट थांबा.";
 
@@ -5188,17 +5239,26 @@
 /* Title of alert shown when push tokens sync job fails. */
 "REGISTRATION_BODY" = "पुश सूचनांकरिता पुनर्नोंदणी करण्यात अयशस्वी.";
 
+/* During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the action button on that alert. */
+"REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_ACTION" = "अद्यतन";
+
+/* During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the description text on that alert. */
+"REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_DESCRIPTION" = "नोंदणीकरण पुढे सुरु ठेवण्यासाठी, कृपया Signal च्या नवीनतम आवृत्तीसह अद्यतन करा.";
+
+/* During (re)registration, users may need to update their app to continue. They'll be presented with an alert if this is the case, prompting them to update. This is the title on that alert. */
+"REGISTRATION_CANNOT_CONTINUE_WITHOUT_UPDATING_APP_TITLE" = "अद्यतन आवश्यक आहे";
+
 /* During registration, users may be shown a CAPTCHA to verify that they're human. This text is shown above the CAPTCHA. */
-"REGISTRATION_CAPTCHA_TITLE" = "We need to verify that you’re human";
+"REGISTRATION_CAPTCHA_TITLE" = "आम्हाला आपण मनुष्य असल्याचे सत्यापित करायचे आहे";
 
 /* Label for the country code field */
 "REGISTRATION_DEFAULT_COUNTRY_NAME" = "देश कोड";
 
 /* If a user is installing Signal on a new phone, they may be asked whether they want to transfer their account from their old device. This is a description on the screen that asks them this question. */
-"REGISTRATION_DEVICE_TRANSFER_CHOICE_EXPLANATION" = "Continuing will disable Signal on other devices currently registered with the same phone number.";
+"REGISTRATION_DEVICE_TRANSFER_CHOICE_EXPLANATION" = "सुरू ठेवल्याने या फोन नंबरसोबत सध्या नोंदवलेल्या इतर डिव्हाईसेसवर Signal अक्षम केले जाईल.";
 
 /* If a user is installing Signal on a new phone, they may be asked whether they want to transfer their account from their old device. This is the title on the screen that asks them this question. */
-"REGISTRATION_DEVICE_TRANSFER_CHOICE_TITLE" = "Transfer Account & Messages";
+"REGISTRATION_DEVICE_TRANSFER_CHOICE_TITLE" = "खाते आणि संदेश स्थानांतरित करा";
 
 /* Placeholder text for the phone number textfield */
 "REGISTRATION_ENTERNUMBER_DEFAULT_TEXT" = "नंबर प्रविष्ट करा";
@@ -5215,59 +5275,98 @@
 /* Alert title for network failure during registration */
 "REGISTRATION_ERROR_NETWORK_FAILURE_ALERT_TITLE" = "कनेक्शन तपासा";
 
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This is the description on that screen, explaining what's going on. Embeds {{ duration }}, such as \"7 days\". */
+"REGISTRATION_LOCK_TIMEOUT_DESCRIPTION_FORMAT" = "आपल्या गोपनीयता आणि सुरक्षितता यांचे संरक्षण करण्यासाठी आपले अकाऊंट लॉक करण्यात आले. आपल्या अकाऊंटमधील %1$@ च्या असक्रियेनंतर आपण या फोन नंबरला आपल्या पिन विना पुन्हा नोंदणी करू शकता. सर्व मजकूर हटवला जाईल.";
+
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This button appears on that screen. Tapping it will tell the user more information. */
+"REGISTRATION_LOCK_TIMEOUT_LEARN_MORE_BUTTON" = "लॉक केलेल्या अकाऊंटबद्दल अधिक जाणून घ्या";
+
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This button appears on that screen. Tapping it will bump the user back, earlier in registration, so they can register with a different phone number. */
+"REGISTRATION_LOCK_TIMEOUT_RESET_PHONE_NUMBER_BUTTON" = "वेगळा नंबर वापरा";
+
+/* Registration Lock can prevent users from registering in some cases, and they'll have to wait. This is the title of that screen. */
+"REGISTRATION_LOCK_TIMEOUT_TITLE" = "अकाऊंट लॉक झाले";
+
+/* A network error occurred during registration, and an error is shown to the user. This is the body on that error sheet. */
+"REGISTRATION_NETWORK_ERROR_BODY" = "सुरु ठेवण्यासाठी, आपल्या फोनचे इंटरनेट कनेक्शन तपासा आणि पुन्हा प्रयत्न करा.";
+
+/* A network error occurred during registration, and an error is shown to the user. This is the title on that error sheet. */
+"REGISTRATION_NETWORK_ERROR_TITLE" = "कनेक्शन तपासा";
+
 /* No comment provided by engineer. */
 "REGISTRATION_NON_VALID_NUMBER" = "हा फोन नंबर स्वरूपन समर्थित नाही, कृपया समर्थनाला संपर्क साधा.";
 
 /* During registration, users are asked to enter their phone number. This is the subtitle on that screen, which gives users some instructions. */
-"REGISTRATION_PHONE_NUMBER_SUBTITLE" = "Enter your phone number to get started.";
+"REGISTRATION_PHONE_NUMBER_SUBTITLE" = "सुरूवात करण्यासाठी आपला फोन नंबर प्रविष्ट करा.";
 
 /* During registration, users are asked to enter their phone number. This is the title on that screen. */
-"REGISTRATION_PHONE_NUMBER_TITLE" = "Your Phone Number";
+"REGISTRATION_PHONE_NUMBER_TITLE" = "आपला फोन नंबर";
+
+/* Message for confirmation alert when requesting a voice code during phone number registration. */
+"REGISTRATION_PHONE_NUMBER_VOICE_CODE_ALERT_MESSAGE" = "हा नंबर सत्यापित करण्यासाठी आपल्याला कॉल येईल. आपला वरील फोन नंबर बरोबर आहे?";
 
 /* Label for the phone number textfield */
 "REGISTRATION_PHONENUMBER_BUTTON" = "फोन नंबर";
 
 /* During registration, users are asked to create a PIN code. They'll be taken to a screen to confirm their PIN, much like confirming a password. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_CONFIRM_SUBTITLE" = "Re-enter the PIN you just created.";
+"REGISTRATION_PIN_CONFIRM_SUBTITLE" = "आपण आता तयार केलेला पिन पुन्हा-प्रविष्ट करा.";
 
 /* During registration, users are asked to create a PIN code. They'll be taken to a screen to confirm their PIN, much like confirming a password. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_CONFIRM_TITLE" = "Confirm your PIN";
+"REGISTRATION_PIN_CONFIRM_TITLE" = "आपल्या पिनची पुष्टी करा";
 
 /* During registration, users are asked to create a PIN code. This is the subtitle on the screen where this happens. A \"learn more\" link will be added to the end of this string. */
-"REGISTRATION_PIN_CREATE_SUBTITLE" = "PINs can help you restore your account and keep your info encrypted with Signal.";
+"REGISTRATION_PIN_CREATE_SUBTITLE" = "पिन आपणाला आपले अकाऊंट पुनर्संचयित करण्यास आणि Signal सह आपली माहिती कूटबद्ध ठेवण्यास मदत करु शकतात.";
 
 /* During registration, users are asked to create a PIN code. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_CREATE_TITLE" = "Create your PIN";
+"REGISTRATION_PIN_CREATE_TITLE" = "आपला पिन तयार करा";
 
 /* During re-registration, users may be asked to re-enter their PIN code. This is the subtitle on the screen where this happens. A \"learn more\" link will be added to the end of this string. */
-"REGISTRATION_PIN_ENTER_EXISTING_SUBTITLE" = "PINs can help you restore your account and keep your info encrypted with Signal.";
+"REGISTRATION_PIN_ENTER_EXISTING_SUBTITLE" = "पिन आपणाला आपले अकाऊंट पुनर्संचयित करण्यास आणि Signal सह आपली माहिती कूटबद्ध ठेवण्यास मदत करु शकतात.";
 
 /* During re-registration, users may be asked to re-enter their PIN code. This is the title on the screen where this happens. */
-"REGISTRATION_PIN_ENTER_EXISTING_TITLE" = "Enter your PIN";
+"REGISTRATION_PIN_ENTER_EXISTING_TITLE" = "आपला पिन प्रविष्ट करा";
 
 /* During registration, users set up their profile. Users input a family name. This is the placeholder for that field. */
-"REGISTRATION_PROFILE_SETUP_FAMILY_NAME_FIELD_PLACEHOLDER" = "Last Name";
+"REGISTRATION_PROFILE_SETUP_FAMILY_NAME_FIELD_PLACEHOLDER" = "आडनाव";
+
+/* During registration, users can choose who can see their phone number. */
+"REGISTRATION_PROFILE_SETUP_FIND_MY_NUMBER_TITLE" = "नंबराने माझा शोध कोण घेऊ शकतात?";
 
 /* During registration, users set up their profile. Users input a given name. This is the placeholder for that field. */
-"REGISTRATION_PROFILE_SETUP_GIVEN_NAME_FIELD_PLACEHOLDER" = "First Name";
+"REGISTRATION_PROFILE_SETUP_GIVEN_NAME_FIELD_PLACEHOLDER" = "नाव";
 
 /* During registration, users set up their profile. They can learn more about the privacy of their profile by clicking a \"learn more\" button. This is the message on a sheet that appears when they do that. */
-"REGISTRATION_PROFILE_SETUP_MORE_INFO_DETAILS" = "Your name, photo and changes to it will be visible to your contacts and when you start or accept new chats.";
+"REGISTRATION_PROFILE_SETUP_MORE_INFO_DETAILS" = "आपले नाव, फोटो आणि त्यामधील बदल हे आपल्या संपर्कांना आणि जेव्हा आपण नवीन चॅटस् सुरू किंवा स्वीकाराल तेव्हा दृश्यमान असतील.";
 
 /* During registration, users set up their profile. They can learn more about the privacy of their profile by clicking a \"learn more\" button. This is the title on a sheet that appears when they do that. */
-"REGISTRATION_PROFILE_SETUP_MORE_INFO_TITLE" = "About Profile Privacy";
+"REGISTRATION_PROFILE_SETUP_MORE_INFO_TITLE" = "प्रोफाइल गोपनीयतेबद्दल";
 
 /* During registration, users set up their profile. This is the subtitle on the screen where this is done. It tells users about the privacy of their profile. A \"learn more\" link will be added to the end of this string. */
-"REGISTRATION_PROFILE_SETUP_SUBTITLE" = "Profiles are visible to people you message, contacts, and groups.";
+"REGISTRATION_PROFILE_SETUP_SUBTITLE" = "आपण संदेश पाठवता असे लोक, संपर्क आणि गटांना प्रोफाइल्स दृश्यमान असतील.";
 
 /* During registration, users set up their profile. This is the title on the screen where this is done. */
-"REGISTRATION_PROFILE_SETUP_TITLE" = "Set up your profile";
+"REGISTRATION_PROFILE_SETUP_TITLE" = "आपले प्रोफाईल सेट अप करा";
+
+/* Error shown if an SMS/call service provider is permanently unable to send a verification code to the provided number. */
+"REGISTRATION_PROVIDER_FAILURE_MESSAGE_PERMANENT" = "बाह्य अपयशांमुळे Signal हे SMS कोड आपल्या नंबरवर पाठवण्यास अक्षम आहे.";
+
+/* Error shown if an SMS/call service provider is temporarily unable to send a verification code to the provided number. */
+"REGISTRATION_PROVIDER_FAILURE_MESSAGE_TRANSIENT" = "बाह्य अपयशांमुळे Signal हे SMS कोड पाठवण्यास आत्ता अक्षम आहे, कृपया नंतर पुन्हा प्रयत्न करा.";
 
 /* No comment provided by engineer. */
 "REGISTRATION_RESTRICTED_MESSAGE" = "संदेश पाठविण्यापूर्वी आपल्याला नोंदणी करणे आवश्यक आहे.";
 
+/* Alert shown when running out of attempts at submitting a verification code. */
+"REGISTRATION_SUBMIT_CODE_ATTEMPTS_EXHAUSTED_ALERT" = "आपण कोड प्रविष्ट करण्याचे अनेक प्रयत्न केले आहेत. कृपया कोड पुन्हा पाठवा आणि पुन्हा प्रयत्न करा.";
+
+/* Alert shown when submitting a verification code too many times. Embeds {{ duration }}, such as \"5:00\" */
+"REGISTRATION_SUBMIT_CODE_RATE_LIMIT_ALERT_FORMAT" = "आपण कोड प्रविष्ट करण्याचे अनेक प्रयत्न केले आहेत. %1$@ मध्ये पुन्हा प्रयत्न करा";
+
 /* Error message indicating that device transfer from another device might be possible. */
 "REGISTRATION_TRANSFER_AVAILABLE_DESCRIPTION" = "यापूर्वी या नंबरवर नोंदणी झालेले खाते होते जे आता हस्तांतरणासाठी उपलब्ध आहे.";
+
+/* During registration and re-registration, users may have to enter a code to verify ownership of their phone number. If they enter an invalid code, they will see this error message. */
+"REGISTRATION_VERIFICATION_ERROR_INVALID_VERIFICATION_CODE" = "आपण प्रविष्ट केलेला कोड वैध नाही. कृपया कोड पुन्हा पाठवा आणि पुन्हा प्रयत्न करा.";
 
 /* Alert view title */
 "REGISTRATION_VERIFICATION_FAILED_TITLE" = "सत्यापन अयशस्वी";
@@ -5317,6 +5416,12 @@
 /* No comment provided by engineer. */
 "REREGISTER_FOR_PUSH" = "पुश सूचना पुन्हा नोंदणी करा";
 
+/* If the user is re-registering, they may need to enter their PIN to restore all their data. If they enter the incorrect PIN, they will be shown a warning. In some cases (such as for this string), the user has the option to skip PIN entry and will lose some data. Embeds {{ number of attempts }}, such as \"3 attempts\". */
+"REREGISTER_INVALID_PIN_WARNING_SKIPPABLE_FORMAT" = "आपल्याकडे %1$@ शिल्लक आहेत. आपल्या प्रयत्नांची संख्या समाप्त झाल्यास, आपण एक नवीन पिन तयार करु शकता. आपण नोंदणी करु आणि आपले अकाऊंट वापरु शकता, मात्र आपण आपली प्रोफाईल माहिती सारख्या जतन केलेल्या सेटिंग्ज गमावाल.";
+
+/* If the user is re-registering, they may need to enter their PIN to restore all their data. If they enter the incorrect PIN, they will be shown a warning. Embeds {{ number of attempts }}, such as \"3 attempts\". */
+"REREGISTER_INVALID_PIN_WARNING_UNSKIPPABLE_FORMAT" = "आपल्याकडे %1$@ शिल्लक आहेत. आपल्या प्रयत्नांची संख्या समाप्त झाल्यास, आपले अकाऊंट 7 दिवसांसाठी लॉक करण्यात येईल. 7 दिवसांच्या निष्क्रियतेनंतर, आपण आपल्या पिन शिवाय पुन्हा-नोंदणी करु शकता. सर्व मजकूर हटवला जाईल.";
+
 /* Configure reactions reset button text */
 "RESET" = "रीसेट करा";
 
@@ -5343,6 +5448,9 @@
 
 /* Title for the 'safety number confirmation' view */
 "SAFETY_NUMBER_CONFIRMATION_TITLE" = "सुरक्षितता नंबर बदल";
+
+/* Text explaining that the given contact has had their safety number verified. */
+"SAFETY_NUMBER_CONFIRMATION_VERIFIED" = "सत्यापित";
 
 /* View safety number action for the 'safety number confirmation' view */
 "SAFETY_NUMBER_CONFIRMATION_VIEW_ACTION" = "बघा";
@@ -5402,7 +5510,7 @@
 "SEARCH_SECTION_CONTACTS" = "इतर संपर्क";
 
 /* section header for search results that match existing 1:1 chats */
-"SEARCH_SECTION_CONVERSATIONS" = "चॅट";
+"SEARCH_SECTION_CONVERSATIONS" = "चॅट्स";
 
 /* section header for search results that match existing groups */
 "SEARCH_SECTION_GROUPS" = "गट";
@@ -5513,10 +5621,10 @@
 "SENT_MEDIA_QUALITY_STANDARD" = "मानक";
 
 /* Description for the session refresh alert */
-"SESSION_REFRESH_ALERT_MESSAGE" = "Signal एंड-टू-एंड एन्क्रिप्शन वापरते आणि त्यास काही वेळा आपले चॅट रीफ्रेश करावे लागू शकते. यामुळे आपल्या चॅटच्या सुरक्षिततेवर कुठलाही प्रभाव पडत नाही, पण आपल्याकडून या संपर्काचा एखादा संदेश सुटला असू शकतो, आणि आपण त्यांना तो पुन्हा पाठविण्यास सांगू शकता.";
+"SESSION_REFRESH_ALERT_MESSAGE" = "Signal एंड-टू-एंड एन्क्रिप्शन वापरते आणि त्यास काही वेळा आपले चॅट रीफ्रेश करावे लागू शकते. यामुळे आपल्या चॅटच्या सुरक्षिततेवर कुठलाही प्रभाव पडत नाही, पण आपल्याकडून या संपर्काचा एखादा संदेश चुकवलेला असू शकतो, आणि आपण त्यांना तो पुन्हा पाठविण्यास सांगू शकता.";
 
 /* Title for the session refresh alert */
-"SESSION_REFRESH_ALERT_TITLE" = "चॅट सत्र ताजेतवाने झाले";
+"SESSION_REFRESH_ALERT_TITLE" = "चॅट सत्र रिफ्रेश झाले";
 
 /* Title for the wallpaper choose from photos option */
 "SET_WALLPAPER_CHOOSE_PHOTO" = "फोटोमधून निवडा";
@@ -5529,6 +5637,9 @@
 
 /* Title for the 'account' link in settings. */
 "SETTINGS_ACCOUNT" = "खाते";
+
+/* Label for button in settings to get your account data report */
+"SETTINGS_ACCOUNT_DATA_REPORT_BUTTON" = "आपला अकाऊंट डेटा";
 
 /* Title for the 'add to block list' view. */
 "SETTINGS_ADD_TO_BLOCK_LIST_TITLE" = "अवरोधित करा";
@@ -5638,7 +5749,7 @@
 /* Title for the 'old phone number' section in the 'change phone number' settings. */
 "SETTINGS_CHANGE_PHONE_NUMBER_OLD_PHONE_NUMBER_SECTION_TITLE" = "आपला जुना क्रमांक";
 
-/* Label for the 'country code' row in the 'change phone number' settings. */
+/* Label for the 'phone number' row in the 'change phone number' settings. */
 "SETTINGS_CHANGE_PHONE_NUMBER_PHONE_NUMBER_FIELD" = "फोन नंबर";
 
 /* Format for the 'change phone number' progress view. Embeds: {{ the user's new phone number }}. */
@@ -5654,7 +5765,7 @@
 "SETTINGS_CHANGE_PHONE_NUMBER_VIEW_TITLE" = "नंबर बदला";
 
 /* Title for the 'chats' link in settings. */
-"SETTINGS_CHATS" = "चॅट";
+"SETTINGS_CHATS" = "चॅट्स";
 
 /* No comment provided by engineer. */
 "SETTINGS_CLEAR_HISTORY" = "चॅट इतिहास साफ करा";
@@ -5723,7 +5834,7 @@
 "SETTINGS_DISAPPEARING_MESSAGES" = "हरवणारे संदेश";
 
 /* Explanation for the 'disappearing messages' privacy settings. */
-"SETTINGS_DISAPPEARING_MESSAGES_FOOTER" = "आपल्याद्वारा चालू केलेल्या सर्व नवीन चॅटसाठी पूर्वनिर्धारित हरवणारे संदेश टायमर सेट करा.";
+"SETTINGS_DISAPPEARING_MESSAGES_FOOTER" = "आपल्याद्वारा चालू केलेल्या सर्व नवीन चॅटसाठी पूर्वनिर्धारित लुप्त होणारे संदेश टायमर सेट करा.";
 
 /* Title for the 'donate to signal' link in settings. */
 "SETTINGS_DONATE" = "Signal ला देणगी द्या";
@@ -5741,10 +5852,10 @@
 "SETTINGS_ITEM_NOTIFICATION_SOUND" = "संदेश ध्वनी";
 
 /* When a chat is archived and receives a new message, it is unarchived. Turning this switch on disables this feature if the chat in question is also muted. This string is a thorough description paired with a labeled switch above, in the Chats settings. */
-"SETTINGS_KEEP_MUTED_ARCHIVED_DESCRIPTION" = "नवीन संदेश येईल तेव्हा संग्रहित केलेले मूक चॅट्स हे संग्रहित केलेलेच राहतील.";
+"SETTINGS_KEEP_MUTED_ARCHIVED_DESCRIPTION" = "नवीन संदेश येईल तेव्हा संग्रहित केलेले मूक चॅट्स हे अर्काईव्ह केलेलेच राहतील.";
 
 /* When a chat is archived and receives a new message, it is unarchived. Turning this switch on disables this feature if the chat in question is also muted. This string is a brief label for a switch paired with a longer description underneath, in the Chats settings. */
-"SETTINGS_KEEP_MUTED_ARCHIVED_LABEL" = "मूक केलेले चॅटस् संग्रहित ठेवा";
+"SETTINGS_KEEP_MUTED_ARCHIVED_LABEL" = "मूक केलेले चॅटस् अर्काईव्ह ठेवा";
 
 /* No comment provided by engineer. */
 "SETTINGS_LEGAL_TERMS_CELL" = "अटी आणि गोपनीयता धोरण";
@@ -5870,10 +5981,10 @@
 "SETTINGS_PAYMENTS_DEACTIVATE_TITLE" = "पेमेंट निष्क्रिय करा";
 
 /* Explanation of the 'deactivate payments with balance' process in the 'deactivate payments' settings. */
-"SETTINGS_PAYMENTS_DEACTIVATE_WITH_BALANCE_EXPLANATION" = "पेमेंट निष्क्रिय करण्यापूर्वी आपण आपले फंड इतर वॉलेट पत्त्यावर स्थानांतरित करण्याची शिफारस केलेली आहे. आपण आपले फंड स्थानांतरित नाही करण्याचे निवडल्यास, आपण पेमेंट पुन्हा सक्रिय केल्यास ते आपल्या वॉलेट मध्ये Signal ला लिंक केलेले राहतील.";
+"SETTINGS_PAYMENTS_DEACTIVATE_WITH_BALANCE_EXPLANATION" = "पेमेंट्स निष्क्रिय करण्यापूर्वी आपण आपले फंड्स इतर वॉलेट पत्त्यावर ट्रान्सफर करण्याची शिफारस केलेली आहे. आपण आपले फंड ट्रान्सफर न करण्याचे निवडल्यास, आपण पेमेंट पुन्हा सक्रिय केल्यास ते आपल्या वॉलेट मध्ये Signal ला लिंक केलेले राहतील.";
 
 /* Description for the 'deactivate payments confirmation' UI in the payment settings. */
-"SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_DESCRIPTION" = "आपण पेमेंट पुन्हा सक्रिय करण्याचे निवडल्यास आपला बॅलंस आपल्या वॉलेट मध्ये Signal ला लिंक केलेला राहील.";
+"SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_DESCRIPTION" = "आपण पेमेंट्स पुन्हा सक्रिय करण्याचे निवडल्यास आपला बॅलंस आपल्या वॉलेट मध्ये Signal ला लिंक केलेला राहील.";
 
 /* Title for the 'deactivate payments confirmation' UI in the payment settings. */
 "SETTINGS_PAYMENTS_DEACTIVATE_WITHOUT_TRANSFER_CONFIRM_TITLE" = "स्थानांतरित न करता निष्क्रिय करायचा?";
@@ -5960,7 +6071,7 @@
 "SETTINGS_PAYMENTS_OPT_IN_MESSAGE" = "नवीन गोपनीयता केंद्रित डिजिटल चलन, MobileCoin पाठवण्यासाठी आणि प्राप्त करण्यासाठी Signal वापरा. चालू करण्यासाठी सक्रिय करा.";
 
 /* Label for 'activate' button in the 'payments opt-in' view in the app settings. */
-"SETTINGS_PAYMENTS_OPT_IN_REACTIVATE_BUTTON" = "पेमेंट पुन्हा सक्रिय करा";
+"SETTINGS_PAYMENTS_OPT_IN_REACTIVATE_BUTTON" = "पेमेंट्स पुन्हा सक्रिय करा";
 
 /* Title for the 'payments opt-in' view in the app settings. */
 "SETTINGS_PAYMENTS_OPT_IN_TITLE" = "सादर करत आहे पेमेंट (बीटा)";
@@ -6278,16 +6389,16 @@
 "SETTINGS_PAYMENTS_WALLET_ADDRESS_LABEL" = "आपला वॉलेट पत्ता";
 
 /* The title for the phone number discoverability setting section. */
-"SETTINGS_PHONE_NUMBER_DISCOVERABILITY_TITLE" = "Who Can Find Me By Number";
+"SETTINGS_PHONE_NUMBER_DISCOVERABILITY_TITLE" = "मला फोन नंबरद्वारे कोण शोधू शकते";
 
 /* Description label for Phone Number Privacy */
-"SETTINGS_PHONE_NUMBER_PRIVACY_DESCRIPTION_LABEL" = "Choose who can see your phone number and who can contact you on Signal with it.";
+"SETTINGS_PHONE_NUMBER_PRIVACY_DESCRIPTION_LABEL" = "आपला फोन नंबर कोण पाहू शकते आणि त्याच्यासह Signal वर आपणाला कोण संपर्क करू शकते ते निवडा.";
 
 /* The title for phone number privacy settings. */
-"SETTINGS_PHONE_NUMBER_PRIVACY_TITLE" = "Phone Number";
+"SETTINGS_PHONE_NUMBER_PRIVACY_TITLE" = "फोन नंबर";
 
 /* The title for the phone number sharing setting section. */
-"SETTINGS_PHONE_NUMBER_SHARING_TITLE" = "Who Can See My Number";
+"SETTINGS_PHONE_NUMBER_SHARING_TITLE" = "माझा फोन नंबर कोण पाहू शकते";
 
 /* The button text for the dialog asking user to confirm their PIN to disable reminders */
 "SETTINGS_PIN_REMINDER_DISABLE_CONFIRMATION_ACTION" = "स्मरणपत्र बंद करा";
@@ -6608,10 +6719,10 @@
 "STORIES_REPLIES_AND_REACTIONS_FOOTER" = "आपली स्टोरी पाहू शकतील अशा लोकांना प्रतिक्रिया आणि उत्तर देऊ द्या.";
 
 /* Section header for the 'replies & reactions' section in stories settings */
-"STORIES_REPLIES_AND_REACTIONS_HEADER" = "प्रत्युत्तरे आणि प्रतिक्रिया";
+"STORIES_REPLIES_AND_REACTIONS_HEADER" = "प्रत्युत्तरे व प्रतिक्रिया";
 
 /* Toggle text for the 'replies & reactions' switch in stories settings */
-"STORIES_REPLIES_AND_REACTIONS_TOGGLE" = "प्रत्युत्तरे आणि प्रतिक्रियांना अनुमती द्या";
+"STORIES_REPLIES_AND_REACTIONS_TOGGLE" = "प्रत्युत्तरे व प्रतिक्रियांना अनुमती द्या";
 
 /* Title text for the 'replies' tab on the stories views & replies sheet */
 "STORIES_REPLIES_TAB" = "प्रत्युत्तरे";
@@ -6961,6 +7072,36 @@
 /* Tap to Replace Emoji string for reaction configuration */
 "TAP_REPLACE_EMOJI" = "ईमोजी बदलण्यासाठी टॅप करा";
 
+/* Option in selected text edit menu to make text bold */
+"TEXT_MENU_BOLD" = "बोल्ड";
+
+/* Option in selected text edit menu to clear all text formatting in the selected text range */
+"TEXT_MENU_CLEAR_FORMATTING" = "Clear Formatting";
+
+/* Option in selected text edit menu to view text formatting options */
+"TEXT_MENU_FORMAT" = "स्वरूपण";
+
+/* Option in selected text edit menu to make text italic */
+"TEXT_MENU_ITALIC" = "इटालिक";
+
+/* Option in selected text edit menu to look up word definitions */
+"TEXT_MENU_LOOK_UP" = "शोधा";
+
+/* Option in selected text edit menu to make text monospace */
+"TEXT_MENU_MONOSPACE" = "मोनोस्पेस";
+
+/* Option in selected text edit menu to replace text with suggestions */
+"TEXT_MENU_REPLACE" = "बदला";
+
+/* Option in selected text edit menu to share selected text */
+"TEXT_MENU_SHARE" = "सामायिक करा";
+
+/* Option in selected text edit menu to make text spoiler */
+"TEXT_MENU_SPOILER" = "स्पॉईलर";
+
+/* Option in selected text edit menu to make text strikethrough */
+"TEXT_MENU_STRIKETHROUGH" = "मध्यरेखित";
+
 /* text indicating the message was remotely deleted */
 "THIS_MESSAGE_WAS_DELETED" = "हा संदेश हटविला गेला.";
 
@@ -6968,7 +7109,7 @@
 "THREAD_DETAILS_MORE_MUTUAL_GROUP" = "%1$@, %2$@ याचे सदस्य, आणि %3$lu अतिरिक्त गट";
 
 /* Subtitle appearing at the top of the users 'note to self' conversation */
-"THREAD_DETAILS_NOTE_TO_SELF_EXPLANATION" = "या चॅटमध्ये आपण स्वतःसाठी टिपा जोडू शकता. जर आपल्या खात्यामध्ये लिंक केलेले डिव्हाईस असतील, तर नवीन टिपा संकलित केल्या जातील.";
+"THREAD_DETAILS_NOTE_TO_SELF_EXPLANATION" = "या चॅटमध्ये आपण स्वतःसाठी टिपा जोडू शकता. जर आपल्या खात्यामध्ये लिंक केलेली डिव्हाईस असतील, तर नवीन टिपा संकालित केल्या जातील.";
 
 /* A string indicating a mutual group the user shares with this contact. Embeds {{mutual group name}} */
 "THREAD_DETAILS_ONE_MUTUAL_GROUP" = "%1$@ चा सदस्य";
@@ -7082,22 +7223,25 @@
 "UNLINK_CONFIRMATION_ALERT_TITLE" = "\"%1$@\" अनलिंक करायचे?";
 
 /* Label warning the user that they have been unlinked from their primary device. */
-"UNLINKED_WARNING" = "डिव्हाईस आता लिंक केलेला नाही. आपल्या फोन सोबत संदेशन सुरू ठेवण्यासाठी Signal पुन्हा-लिंक करा.";
+"UNLINKED_WARNING" = "हे डिव्हाईस यापुढे लिंक केलेले राहणार नाही. संदेशन पुढे सुरू ठेवण्यासाठी आपल्या फोन सह Signal पुन्हा लिंक करा.";
+
+/* If this device has become unlinked from their primary device, they'll see a warning. This is the call to action on that warning. */
+"UNLINKED_WARNING_ACTION_TITLE" = "डिव्हाईस पुन्हा लिंक करा";
 
 /* Alert title when unlinking device fails */
 "UNLINKING_FAILED_ALERT_TITLE" = "Signal आपल्या डिव्हाईसला अनलिंक करण्यात अक्षम झाले.";
-
-/* Label text in device manager for a device with no name */
-"UNNAMED_DEVICE" = "अनामित डिव्हाईस";
 
 /* Pressing this button un-pins a thread */
 "UNPIN_ACTION" = "अनपिन करा";
 
 /* The title for unpinned conversation section on the conversation list */
-"UNPINNED_SECTION_TITLE" = "चॅट";
+"UNPINNED_SECTION_TITLE" = "चॅट्स";
 
 /* Pressing this button marks a thread as unread */
 "UNREAD_ACTION" = "वाचले नाही";
+
+/* Label warning the user that the validation of their username has failed. */
+"UNREGISTERED_USERNAME_WARNING" = "आपल्या वापरकर्ता नावासह काहीतरी चुकीचे झाले आहे आणि ते यापुढे आपल्या अकाऊंटसह नियुक्त केलेले नाही. आपण आता प्रयत्न करू शकता आणि तो पुन्हा सेट करू शकता किंवा नवीन निवडू शकता.";
 
 /* No comment provided by engineer. */
 "UNSUPPORTED_ATTACHMENT" = "असमर्थित संलग्न प्रकार प्राप्त झाला.";
@@ -7138,6 +7282,21 @@
 /* Description of username link */
 "USERNAME_LINK_DESCRIPTION" = "आपल्यासह चॅटस् सुरू करण्यासाठी आपल्या मित्रांसह आपण शेअर करू शकता अशी एक अद्वितीय लिंक प्रत्येक वापरकर्तानावासह असते";
 
+/* Title for a button to pick the color of your username link QR code. Lowercase styling is intentional. */
+"USERNAME_LINK_QR_CODE_VIEW_COLOR_BUTTON" = "रंग";
+
+/* Text for a label explaining what the username link and QR code give others access to. */
+"USERNAME_LINK_QR_CODE_VIEW_DISCLAIMER_LABEL" = "आपण विश्वास करत असलेल्या लाेकांसह फक्त आपला QR कोड आणि लिंक शेअर करा. जेव्हा शेअर केलेले असेल इतर आपले वापरकर्ता नाव पाहू शकतात आणि आपल्या बराेबर चॅट सुरु शकतात.";
+
+/* Title for a button that allows users to reset their username link and QR code. */
+"USERNAME_LINK_QR_CODE_VIEW_RESET_BUTTON_TITLE" = "रीसेट करा";
+
+/* Title for a button to share your username link QR code. Lowercase styling is intentional. */
+"USERNAME_LINK_QR_CODE_VIEW_SHARE_BUTTON" = "सामायिक करा";
+
+/* A title for a view that allows you to view and interact with a QR code for your username link. */
+"USERNAME_LINK_QR_CODE_VIEW_TITLE_CODE" = "कोड";
+
 /* A message indicating that username lookup failed. */
 "USERNAME_LOOKUP_ERROR_MESSAGE" = "वापरकर्तानाव शोधताना एक त्रुटी आढळली. कृपया नंतर पुन्हा प्रयत्न करा.";
 
@@ -7153,8 +7312,8 @@
 /* Title for an action sheet indicating that the given username is not associated with a registered Signal account. */
 "USERNAME_LOOKUP_NOT_FOUND_TITLE" = "वापरकर्ता आढळला नाही";
 
-/* A prefix appended to all usernames when displayed */
-"USERNAME_PREFIX" = "@";
+/* An error message shown when the user has typed a username that starts with a digit, which is invalid. */
+"USERNAME_SELECTION_CANNOT_START_WITH_DIGIT_ERROR_MESSAGE" = "वापरकर्तानाव अंकांने सुरु होऊ शकत नाही.";
 
 /* The title of an action sheet button that will delete a user's username. */
 "USERNAME_SELECTION_DELETE_USERNAME_ACTION_TITLE" = "वापरकर्तानाव हटवा";
@@ -7172,7 +7331,7 @@
 "USERNAME_SELECTION_INVALID_CHARACTERS_ERROR_MESSAGE" = "वापरकर्तानावामध्ये फक्त a-z, 0-9, आणि _ असू शकतात.";
 
 /* The message of a sheet that pops up when the user taps \"Learn More\" in text that explains how usernames work. This message help explain that the automatically-generated numeric suffix of their username helps keep their username private, to avoid them being contacted by people by whom they don't want to be contacted. */
-"USERNAME_SELECTION_LEARN_MORE_ACTION_SHEET_MESSAGE" = "हे अंक आपले वापरकर्तानाव गोपनीय ठेवण्यास मदत करतील ज्यामुळे आपण नको असलेले संदेश टाळू शकता. आपणाला ज्यांच्या सोबत चॅट करणे आवडते फक्त अशा लोकांसह आणि ग्रुप्ससह आपले वापरकर्तानाव शेअर करा. आपण वापरकर्तानाव बदलल्यास आपणाला अंकांचा नवीन संच मिळेल.";
+"USERNAME_SELECTION_LEARN_MORE_ACTION_SHEET_MESSAGE" = "हे अंक आपले वापरकर्तानाव गोपनीय ठेवण्यास मदत करतील ज्यामुळे आपण नको असलेले संदेश टाळू शकता. आपणाला ज्यांच्या सोबत चॅट करणे आवडते फक्त अशा लोकांसह आणि गटांसह आपले वापरकर्तानाव शेअर करा. आपण वापरकर्तानाव बदलल्यास आपणाला अंकांचा नवीन संच मिळेल.";
 
 /* The title of a sheet that pops up when the user taps \"Learn More\" in text that explains how usernames work. The sheet will present a more detailed explanation of the username's numeric suffix. */
 "USERNAME_SELECTION_LEARN_MORE_ACTION_SHEET_TITLE" = "हा नंबर काय आहे?";
@@ -7265,7 +7424,7 @@
 "WALLPAPER_PREVIEW_INCOMING_MESSAGE_PRESET" = "अधिक वॉलपेपरचे पुनरावलोकन करण्यासाठी स्वाइप करा.";
 
 /* The outgoing bubble text when setting a wallpaper for all chats. */
-"WALLPAPER_PREVIEW_OUTGOING_MESSAGE_ALL_CHATS" = "सर्व चॅटसाठी वॉलपेपर सेट करा.";
+"WALLPAPER_PREVIEW_OUTGOING_MESSAGE_ALL_CHATS" = "सर्व चॅट्ससाठी वॉलपेपर सेट करा.";
 
 /* The outgoing bubble text when setting a wallpaper for specific chat. Embeds {{chat name}} */
 "WALLPAPER_PREVIEW_OUTGOING_MESSAGE_FORMAT" = "%1$@ साठी वॉलपेपर सेट करा.";
@@ -7277,7 +7436,7 @@
 "WALLPAPER_SETTINGS_CLEAR_CHAT_COLOR" = "चॅट रंग साफ करा";
 
 /* Confirmation dialog when clearing the chat color for a specific chat. */
-"WALLPAPER_SETTINGS_CLEAR_CHAT_COLOR_CHAT_CONFIRMATION" = "याचॅटसाठी चॅट रंग साफ करायचे?";
+"WALLPAPER_SETTINGS_CLEAR_CHAT_COLOR_CHAT_CONFIRMATION" = "या चॅटसाठी चॅट रंग साफ करायचे?";
 
 /* Clear wallpaper action in wallpaper settings view. */
 "WALLPAPER_SETTINGS_CLEAR_WALLPAPER" = "वॉलपेपर साफ करा";
@@ -7301,7 +7460,7 @@
 "WALLPAPER_SETTINGS_RESET_ALL_WALLPAPERS" = "सर्व वॉलपेपर रीसेट करा";
 
 /* Message of confirmation dialog when resetting the global wallpaper settings. */
-"WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_MESSAGE" = "सर्व चॅटचे रंग ओव्हरराइड करण्यास आपण इच्छुक आहात का?";
+"WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_MESSAGE" = "सर्व चॅटचे रंग अधिलिखित करण्यास आपण इच्छुक आहात का?";
 
 /* Title of confirmation dialog when resetting the global wallpaper settings. */
 "WALLPAPER_SETTINGS_RESET_CHAT_COLORS_CONFIRMATION_TITLE" = "चॅट रंग रीसेट करा";

@@ -7,7 +7,6 @@ import UIKit
 import Foundation
 import SignalUI
 
-@objc
 class SharingThreadPickerViewController: ConversationPickerViewController {
 
     weak var shareViewDelegate: ShareViewDelegate?
@@ -65,7 +64,6 @@ class SharingThreadPickerViewController: ConversationPickerViewController {
 
     var selectedConversations: [ConversationItem] { selection.conversations }
 
-    @objc
     public init(shareViewDelegate: ShareViewDelegate) {
         self.shareViewDelegate = shareViewDelegate
 
@@ -97,7 +95,7 @@ class SharingThreadPickerViewController: ConversationPickerViewController {
         }
 
         owsAssertDebug(groupThread != nil)
-        if let groupThread = groupThread, Mention.threadAllowsMentionSend(groupThread) {
+        if let groupThread = groupThread, groupThread.allowsMentionSend {
             mentionCandidates = groupThread.recipientAddressesWithSneakyTransaction
         } else {
             mentionCandidates = []
@@ -268,7 +266,8 @@ extension SharingThreadPickerViewController {
                     return self.databaseStorage.write { transaction in
                         let builder = TSOutgoingMessageBuilder(thread: thread)
                         builder.contactShare = contactShare.dbRecord
-                        builder.expiresInSeconds = thread.disappearingMessagesDuration(with: transaction)
+                        let dmConfigurationStore = DependenciesBridge.shared.disappearingMessagesConfigurationStore
+                        builder.expiresInSeconds = dmConfigurationStore.durationSeconds(for: thread, tx: transaction.asV2Read)
                         let message = builder.build(transaction: transaction)
                         message.anyInsert(transaction: transaction)
                         self.outgoingMessages.append(message)
@@ -311,7 +310,7 @@ extension SharingThreadPickerViewController {
         progressLabel.textAlignment = .center
         progressLabel.numberOfLines = 0
         progressLabel.lineBreakMode = .byWordWrapping
-        progressLabel.font = UIFont.ows_dynamicTypeSubheadlineClamped.ows_semibold
+        progressLabel.font = UIFont.dynamicTypeSubheadlineClamped.semibold()
         progressLabel.textColor = Theme.primaryTextColor
         progressLabel.text = OWSLocalizedString("SHARE_EXTENSION_SENDING_IN_PROGRESS_TITLE", comment: "Alert title")
 
@@ -397,7 +396,7 @@ extension SharingThreadPickerViewController {
         }.done { threads in
             for thread in threads {
                 // We're sending a message to this thread, approve any pending message request
-                ThreadUtil.addThreadToProfileWhitelistIfEmptyOrPendingRequestAndSetDefaultTimerWithSneakyTransaction(thread: thread)
+                ThreadUtil.addThreadToProfileWhitelistIfEmptyOrPendingRequestAndSetDefaultTimerWithSneakyTransaction(thread)
             }
         }
     }
@@ -414,7 +413,7 @@ extension SharingThreadPickerViewController {
                 sendPromises.append(enqueueBlock(thread))
 
                 // We're sending a message to this thread, approve any pending message request
-                ThreadUtil.addThreadToProfileWhitelistIfEmptyOrPendingRequestAndSetDefaultTimerWithSneakyTransaction(thread: thread)
+                ThreadUtil.addThreadToProfileWhitelistIfEmptyOrPendingRequestAndSetDefaultTimerWithSneakyTransaction(thread)
             }
             return Promise.when(fulfilled: sendPromises)
         }
@@ -720,7 +719,11 @@ extension SharingThreadPickerViewController: AttachmentApprovalViewControllerDat
         selectedConversations.map { $0.titleWithSneakyTransaction }
     }
 
-    var attachmentApprovalMentionableAddresses: [SignalServiceAddress] {
+    func attachmentApprovalMentionableAddresses(tx: DBReadTransaction) -> [SignalServiceAddress] {
         mentionCandidates
+    }
+
+    func attachmentApprovalMentionCacheInvalidationKey() -> String {
+        return "\(mentionCandidates.hashValue)"
     }
 }

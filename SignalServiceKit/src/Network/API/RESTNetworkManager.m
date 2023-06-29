@@ -5,7 +5,6 @@
 
 #import "RESTNetworkManager.h"
 #import "OWSQueues.h"
-#import "TSRequest.h"
 #import <SignalServiceKit/SignalServiceKit-Swift.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -36,7 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
     [NSNotificationCenter.defaultCenter
         addObserver:self
            selector:@selector(isCensorshipCircumventionActiveDidChange)
-               name:OWSSignalService.isCensorshipCircumventionActiveDidChangeNotificationName
+               name:OWSSignalServiceObjC.isCensorshipCircumventionActiveDidChangeNotificationName
              object:nil];
 
     [NSNotificationCenter.defaultCenter addObserver:self

@@ -13,7 +13,6 @@ import SignalMessaging
 import SignalServiceKit
 import UIKit
 
-@objc
 public protocol ContactsPickerDelegate: AnyObject {
     func contactsPickerDidCancel(_: ContactsPicker)
     func contactsPicker(_: ContactsPicker, didSelectContact contact: Contact)
@@ -21,12 +20,10 @@ public protocol ContactsPickerDelegate: AnyObject {
     func contactsPicker(_: ContactsPicker, shouldSelectContact contact: Contact) -> Bool
 }
 
-@objc
 public enum SubtitleCellValue: Int {
     case phoneNumber, email, none
 }
 
-@objc
 open class ContactsPicker: OWSViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
 
     var tableView: UITableView!
@@ -43,7 +40,6 @@ open class ContactsPicker: OWSViewController, UITableViewDelegate, UITableViewDa
     private lazy var selectedContacts = [Contact]()
 
     // Configuration
-    @objc
     public weak var contactsPickerDelegate: ContactsPickerDelegate?
     private let subtitleCellType: SubtitleCellValue
     private let allowsMultipleSelection: Bool
@@ -52,7 +48,6 @@ open class ContactsPicker: OWSViewController, UITableViewDelegate, UITableViewDa
 
     // MARK: - Initializers
 
-    @objc
     required public init(allowsMultipleSelection: Bool, subtitleCellType: SubtitleCellValue) {
         self.allowsMultipleSelection = allowsMultipleSelection
         self.subtitleCellType = subtitleCellType
@@ -100,8 +95,6 @@ open class ContactsPicker: OWSViewController, UITableViewDelegate, UITableViewDa
         initializeBarButtons()
         reloadContacts()
         updateSearchResults(searchText: "")
-
-        NotificationCenter.default.addObserver(self, selector: #selector(self.didChangePreferredContentSize), name: UIContentSizeCategory.didChangeNotification, object: nil)
     }
 
     public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -112,8 +105,7 @@ open class ContactsPicker: OWSViewController, UITableViewDelegate, UITableViewDa
         tableView.separatorColor = Theme.cellSeparatorColor
     }
 
-    @objc
-    public func didChangePreferredContentSize() {
+    public override func contentSizeCategoryDidChange() {
         self.tableView.reloadData()
     }
 
@@ -268,12 +260,12 @@ open class ContactsPicker: OWSViewController, UITableViewDelegate, UITableViewDa
     // MARK: - Button Actions
 
     @objc
-    func onTouchCancelButton() {
+    private func onTouchCancelButton() {
         contactsPickerDelegate?.contactsPickerDidCancel(self)
     }
 
     @objc
-    func onTouchDoneButton() {
+    private func onTouchDoneButton() {
         contactsPickerDelegate?.contactsPicker(self, didSelectMultipleContacts: selectedContacts)
     }
 

@@ -158,14 +158,21 @@ class ContactsFrameworkContactStoreAdaptee: NSObject, ContactStoreAdaptee {
 
 @objc
 public protocol SystemContactsFetcherDelegate: AnyObject {
-    func systemContactsFetcher(_ systemContactsFetcher: SystemContactsFetcher, updatedContacts contacts: [Contact], isUserRequested: Bool)
-    func systemContactsFetcher(_ systemContactsFetcher: SystemContactsFetcher, hasAuthorizationStatus authorizationStatus: RawContactAuthorizationStatus)
+    func systemContactsFetcher(
+        _ systemContactsFetcher: SystemContactsFetcher,
+        updatedContacts contacts: [Contact],
+        isUserRequested: Bool
+    )
+    func systemContactsFetcher(
+        _ systemContactsFetcher: SystemContactsFetcher,
+        hasAuthorizationStatus authorizationStatus: RawContactAuthorizationStatus
+    )
 }
 
 @objc
 public class SystemContactsFetcher: NSObject {
 
-    private let serialQueue = DispatchQueue(label: "SystemContactsFetcherQueue")
+    private let serialQueue = DispatchQueue(label: "org.signal.contacts.system-fetcher")
 
     var lastContactUpdateHash: Int?
     var lastDelegateNotificationDate: Date?
@@ -179,7 +186,6 @@ public class SystemContactsFetcher: NSObject {
         return contactStoreAdapter.rawAuthorizationStatus
     }
 
-    @objc
     public private(set) var systemContactsHaveBeenRequestedAtLeastOnce = false
     private var hasSetupObservation = false
 
@@ -283,7 +289,7 @@ public class SystemContactsFetcher: NSObject {
             return
         }
 
-        updateContacts(completion: nil, isUserRequested: false)
+        updateContacts(isUserRequested: false, completion: nil)
     }
 
     @objc
@@ -302,10 +308,9 @@ public class SystemContactsFetcher: NSObject {
             return
         }
 
-        updateContacts(completion: completion, isUserRequested: true)
+        updateContacts(isUserRequested: true, completion: completion)
     }
 
-    @objc
     public func refreshAfterContactsChange() {
         AssertIsOnMainThread()
 
@@ -319,10 +324,13 @@ public class SystemContactsFetcher: NSObject {
             return
         }
 
-        updateContacts(completion: nil, isUserRequested: false)
+        updateContacts(isUserRequested: false, completion: nil)
     }
 
-    private func updateContacts(completion completionParam: ((Error?) -> Void)?, isUserRequested: Bool = false) {
+    private func updateContacts(
+        isUserRequested: Bool = false,
+        completion completionParam: ((Error?) -> Void)?
+    ) {
         AssertIsOnMainThread()
 
         guard !CurrentAppContext().isNSE else {

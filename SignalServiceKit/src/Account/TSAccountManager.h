@@ -26,13 +26,13 @@ extern NSString *const TSAccountManager_LastSetIsDiscoverableByPhoneNumberKey;
 
 extern NSString *const TSAccountManager_UserAccountCollection;
 extern NSString *const TSAccountManager_ServerAuthTokenKey;
-extern NSString *const TSAccountManager_ServerSignalingKey;
 extern NSString *const TSAccountManager_ManualMessageFetchKey;
 
-extern NSString *const TSAccountManager_DeviceNameKey;
 extern NSString *const TSAccountManager_DeviceIdKey;
 
 @class AnyPromise;
+@class E164ObjC;
+@class LocalIdentifiersObjC;
 @class SDSAnyReadTransaction;
 @class SDSAnyWriteTransaction;
 @class SDSKeyValueStore;
@@ -63,34 +63,17 @@ NSString *NSStringForOWSRegistrationState(OWSRegistrationState value);
 
 @property (nonatomic, readonly) SDSKeyValueStore *keyValueStore;
 
-@property (nonatomic, nullable) NSString *phoneNumberAwaitingVerification;
+@property (nonatomic, nullable) E164ObjC *phoneNumberAwaitingVerification;
 @property (nonatomic, nullable) NSUUID *uuidAwaitingVerification;
 @property (nonatomic, nullable) NSUUID *pniAwaitingVerification;
 
 #pragma mark - Initializers
-
-- (void)warmCaches;
 
 - (TSAccountState *)getOrLoadAccountStateWithTransaction:(SDSAnyReadTransaction *)transaction;
 - (TSAccountState *)getOrLoadAccountStateWithSneakyTransaction;
 
 - (TSAccountState *)loadAccountStateWithTransaction:(SDSAnyReadTransaction *)transaction;
 - (TSAccountState *)loadAccountStateWithSneakyTransaction;
-
-- (OWSRegistrationState)registrationState;
-
-/**
- *  Returns if a user is registered or not
- *
- *  @return registered or not
- */
-@property (readonly) BOOL isRegistered;
-@property (readonly) BOOL isRegisteredAndReady;
-
-// useful before account state has been cached, otherwise you should prefer `isRegistered`
-- (BOOL)isRegisteredWithTransaction:(SDSAnyReadTransaction *)transaction NS_SWIFT_NAME(isRegistered(transaction:));
-
-- (BOOL)isRegisteredAndReadyWithTransaction:(SDSAnyReadTransaction *)transaction;
 
 /**
  *  Returns current phone number for this device, which may not yet have been registered.
@@ -105,11 +88,11 @@ NSString *NSStringForOWSRegistrationState(OWSRegistrationState value);
 
 @property (readonly, nullable) NSUUID *localUuid;
 
-- (nullable NSUUID *)localUuidWithTransaction:(SDSAnyReadTransaction *)transaction NS_SWIFT_NAME(uuid(with:));
+- (nullable NSUUID *)localUuidWithTransaction:(SDSAnyReadTransaction *)transaction NS_SWIFT_NAME(localUuid(with:));
 
 @property (readonly, nullable) NSUUID *localPni;
 
-- (nullable NSUUID *)localPniWithTransaction:(SDSAnyReadTransaction *)transaction NS_SWIFT_NAME(pni(with:));
+- (nullable NSUUID *)localPniWithTransaction:(SDSAnyReadTransaction *)transaction NS_SWIFT_NAME(localPni(with:));
 
 @property (readonly, nullable, class) SignalServiceAddress *localAddress;
 @property (readonly, nullable) SignalServiceAddress *localAddress;
@@ -119,34 +102,11 @@ NSString *NSStringForOWSRegistrationState(OWSRegistrationState value);
 - (nullable SignalServiceAddress *)localAddressWithTransaction:(SDSAnyReadTransaction *)transaction
     NS_SWIFT_NAME(localAddress(with:));
 
-- (nullable NSDate *)registrationDateWithTransaction:(SDSAnyReadTransaction *)transaction;
-
-/**
- *  Symmetric key that's used to encrypt message payloads from the server,
- *
- *  @return signaling key
- */
-- (nullable NSString *)storedSignalingKey;
-
-/**
- *  The server auth token allows the Signal client to connect to the Signal server
- *
- *  @return server authentication token
- */
-- (nullable NSString *)storedServerAuthToken;
 - (void)setStoredServerAuthToken:(NSString *)authToken
                         deviceId:(UInt32)deviceId
                      transaction:(SDSAnyWriteTransaction *)transaction;
 
-- (nullable NSString *)storedDeviceName;
-- (void)setStoredDeviceName:(NSString *)deviceName transaction:(SDSAnyWriteTransaction *)transaction;
-
-- (UInt32)storedDeviceId;
-- (UInt32)storedDeviceIdWithTransaction:(SDSAnyReadTransaction *)transaction;
-
 /// Onboarding state
-- (BOOL)isOnboarded;
-- (BOOL)isOnboardedWithTransaction:(SDSAnyReadTransaction *)transaction;
 - (void)setIsOnboarded:(BOOL)isOnboarded transaction:(SDSAnyWriteTransaction *)transaction;
 
 #pragma mark - Register with phone number
@@ -156,30 +116,13 @@ NSString *NSStringForOWSRegistrationState(OWSRegistrationState value);
 // - uploaded pre-keys
 // - uploaded push tokens
 - (void)didRegister;
-- (void)didRegisterPrimaryWithE164:(NSString *)e164
+- (void)didRegisterPrimaryWithE164:(E164ObjC *)e164
                                aci:(NSUUID *)aci
-                               pni:(nullable NSUUID *)pni
+                               pni:(NSUUID *)pni
                          authToken:(NSString *)authToken
                        transaction:(SDSAnyWriteTransaction *)transaction;
-- (void)recordUuidForLegacyUser:(NSUUID *)uuid NS_SWIFT_NAME(recordUuidForLegacyUser(_:));
 
-#pragma mark - De-Registration
-
-/// Checks if the account is "deregistered".
-///
-/// An account is deregistered if a device transfer is in progress, a device
-/// transfer was just completed to another device, or we received an HTTP
-/// 401/403 error that indicates we're no longer registered.
-///
-/// If an account is deregistered due to an HTTP 401/403 error, the user
-/// should complete re-registration to re-mark the account as "registered".
-- (BOOL)isDeregistered;
-- (void)setIsDeregistered:(BOOL)isDeregistered;
-
-#pragma mark - Transfer
-
-@property (nonatomic) BOOL isTransferInProgress;
-@property (nonatomic) BOOL wasTransferred;
+@property (nonatomic, copy, nullable) void (^didStoreLocalNumber)(LocalIdentifiersObjC *);
 
 #pragma mark - Re-registration
 
@@ -187,18 +130,22 @@ NSString *NSStringForOWSRegistrationState(OWSRegistrationState value);
 
 // Returns YES on success.
 - (BOOL)resetForReregistration;
-- (nullable NSString *)reregistrationPhoneNumber;
-- (nullable NSUUID *)reregistrationUUID;
-@property (nonatomic, readonly) BOOL isReregistering;
+- (void)resetForReregistrationWithLocalPhoneNumber:(E164ObjC *)localPhoneNumber
+                                          localAci:(NSUUID *)localAci
+                                  wasPrimaryDevice:(BOOL)wasPrimaryDevice
+                                       transaction:(SDSAnyWriteTransaction *)transaction;
 
 #pragma mark - Change Phone Number
 
-- (void)updateLocalPhoneNumber:(NSString *)phoneNumber
-                           aci:(NSUUID *)aci
+/// Update local state concerning the phone number.
+///
+/// Note that the `pni` parameter is nullable to support legacy behavior.
+///
+// PNI TODO: once all devices are PNI-capable, remove PNI nullability here.
+- (void)updateLocalPhoneNumber:(E164ObjC *)e164
+                           aci:(NSUUID *)uuid
                            pni:(NSUUID *_Nullable)pni
-    shouldUpdateStorageService:(BOOL)shouldUpdateStorageService
-                   transaction:(SDSAnyWriteTransaction *)transaction
-    NS_SWIFT_NAME(updateLocalPhoneNumber(_:aci:pni:shouldUpdateStorageService:transaction:));
+                   transaction:(SDSAnyWriteTransaction *)transaction;
 
 #pragma mark - Manual Message Fetch
 

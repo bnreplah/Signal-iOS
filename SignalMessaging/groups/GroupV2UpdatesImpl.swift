@@ -7,8 +7,7 @@ import Foundation
 import SignalServiceKit
 import LibSignalClient
 
-@objc
-public class GroupV2UpdatesImpl: NSObject {
+public class GroupV2UpdatesImpl: Dependencies {
 
     // This tracks the last time that groups were updated to the current
     // revision.
@@ -19,22 +18,19 @@ public class GroupV2UpdatesImpl: NSObject {
 
     let immediateOperationQueue: OperationQueue = {
         let operationQueue = OperationQueue()
-        operationQueue.name = "GroupV2UpdatesImpl.immediateOperationQueue"
+        operationQueue.name = "GroupV2Updates-Immediate"
         operationQueue.maxConcurrentOperationCount = 1
         return operationQueue
     }()
 
     let afterMessageProcessingOperationQueue: OperationQueue = {
         let operationQueue = OperationQueue()
-        operationQueue.name = "GroupV2UpdatesImpl.afterMessageProcessingOperationQueue"
+        operationQueue.name = "GroupV2Updates-AfterMessageProcessing"
         operationQueue.maxConcurrentOperationCount = 1
         return operationQueue
     }()
 
-    @objc
-    public required override init() {
-        super.init()
-
+    public required init() {
         SwiftSingletons.register(self)
 
         AppReadiness.runNowOrWhenAppDidBecomeReadyAsync {
@@ -180,13 +176,11 @@ extension GroupV2UpdatesImpl: GroupV2UpdatesSwift {
             throw OWSAssertionError("Invalid groupV2Revision: \(changedGroupModel.newGroupModel.revision).")
         }
 
-        let groupUpdateSourceAddress = SignalServiceAddress(uuid: changedGroupModel.changeAuthorUuid)
-        let newGroupModel = changedGroupModel.newGroupModel
-        let newDisappearingMessageToken = changedGroupModel.newDisappearingMessageToken
         let updatedGroupThread = try GroupManager.updateExistingGroupThreadInDatabaseAndCreateInfoMessage(
-            newGroupModel: newGroupModel,
-            newDisappearingMessageToken: newDisappearingMessageToken,
-            groupUpdateSourceAddress: groupUpdateSourceAddress,
+            newGroupModel: changedGroupModel.newGroupModel,
+            newDisappearingMessageToken: changedGroupModel.newDisappearingMessageToken,
+            newlyLearnedPniToAciAssociations: changedGroupModel.newlyLearnedPniToAciAssociations,
+            groupUpdateSourceAddress: SignalServiceAddress(uuid: changedGroupModel.changeAuthorUuid),
             transaction: transaction
         ).groupThread
 
@@ -342,7 +336,7 @@ extension GroupV2UpdatesImpl: GroupV2UpdatesSwift {
         }
     }
 
-    private class GroupV2UpdateOperation: OWSOperation {
+    private class GroupV2UpdateOperation: OWSOperation, Dependencies {
 
         let groupId: Data
         let groupSecretParamsData: Data
@@ -491,6 +485,10 @@ private extension GroupV2UpdatesImpl {
                     case GroupsV2Error.missingGroupChangeProtos:
                         // If the service returns a group state without change protos,
                         // fail over to the snapshot.
+                        return true
+                    case GroupsV2Error.groupChangeProtoForIncompatibleRevision:
+                        // If we got change protos for an incompatible revision,
+                        // try and recover using a snapshot.
                         return true
                     default:
                         owsFailDebugUnlessNetworkFailure(error)
@@ -642,6 +640,7 @@ private extension GroupV2UpdatesImpl {
                 groupId: groupId,
                 groupV2Params: groupV2Params,
                 groupChanges: groupChanges,
+                groupModelOptions: groupModelOptions,
                 transaction: transaction
             ) else {
                 throw OWSAssertionError("Missing group thread.")
@@ -735,6 +734,7 @@ private extension GroupV2UpdatesImpl {
         groupId: Data,
         groupV2Params: GroupV2Params,
         groupChanges: [GroupV2Change],
+        groupModelOptions: TSGroupModelOptions,
         transaction: SDSAnyWriteTransaction
     ) -> (TSGroupThread, addedToNewThreadBy: SignalServiceAddress?)? {
 
@@ -756,6 +756,7 @@ private extension GroupV2UpdatesImpl {
                 groupV2Snapshot: snapshot,
                 transaction: transaction
             )
+            builder.apply(options: groupModelOptions)
             if snapshot.revision == 0, groupUpdateSourceAddress?.isLocalAddress == true {
                 builder.wasJustCreatedByLocalUser = true
             }
@@ -771,6 +772,7 @@ private extension GroupV2UpdatesImpl {
             let result = try GroupManager.tryToUpsertExistingGroupThreadInDatabaseAndCreateInfoMessage(
                 newGroupModel: newGroupModel,
                 newDisappearingMessageToken: newDisappearingMessageToken,
+                newlyLearnedPniToAciAssociations: [:],
                 groupUpdateSourceAddress: groupUpdateSourceAddress,
                 canInsert: true,
                 didAddLocalUserToV2Group: didAddLocalUserToV2Group,
@@ -805,13 +807,18 @@ private extension GroupV2UpdatesImpl {
         profileKeysByUuid: inout [UUID: Data],
         transaction: SDSAnyWriteTransaction
     ) throws -> ApplySingleChangeFromServiceResult? {
-
         guard let oldGroupModel = groupThread.groupModel as? TSGroupModelV2 else {
             throw OWSAssertionError("Invalid group model.")
         }
-        let changeRevision = groupChange.revision
 
-        let isSingleRevisionUpdate = oldGroupModel.revision + 1 == changeRevision
+        let oldRevision = oldGroupModel.revision
+        let changeRevision = groupChange.revision
+        let isSingleRevisionUpdate = oldRevision + 1 == changeRevision
+
+        let logger = PrefixedLogger(
+            prefix: "ApplySingleChange",
+            suffix: "\(oldRevision) -> \(changeRevision)"
+        )
 
         // We should only replace placeholder models using
         // latest snapshots _except_ in the case where the
@@ -837,6 +844,7 @@ private extension GroupV2UpdatesImpl {
         let newGroupModel: TSGroupModel
         let newDisappearingMessageToken: DisappearingMessageToken?
         let newProfileKeys: [UUID: Data]
+        let newlyLearnedPniToAciAssociations: [ServiceId: ServiceId]
 
         // We should prefer to update models using the change action if we can,
         // since it contains information about the change author.
@@ -844,6 +852,8 @@ private extension GroupV2UpdatesImpl {
             isSingleRevisionUpdate,
             let changeActionsProto = groupChange.changeActionsProto
         {
+            logger.info("Applying single revision update from change proto.")
+
             let changedGroupModel = try GroupsV2IncomingChanges.applyChangesToGroupModel(
                 groupThread: groupThread,
                 changeActionsProto: changeActionsProto,
@@ -852,13 +862,23 @@ private extension GroupV2UpdatesImpl {
             newGroupModel = changedGroupModel.newGroupModel
             newDisappearingMessageToken = changedGroupModel.newDisappearingMessageToken
             newProfileKeys = changedGroupModel.profileKeys
+            newlyLearnedPniToAciAssociations = changedGroupModel.newlyLearnedPniToAciAssociations
         } else if let snapshot = groupChange.snapshot {
+            logger.info("Applying snapshot.")
+
             var builder = try TSGroupModelBuilder.builderForSnapshot(groupV2Snapshot: snapshot,
                                                                      transaction: transaction)
             builder.apply(options: groupModelOptions)
             newGroupModel = try builder.build()
             newDisappearingMessageToken = snapshot.disappearingMessageToken
             newProfileKeys = snapshot.profileKeys
+            newlyLearnedPniToAciAssociations = [:]
+        } else if groupChange.changeActionsProto != nil {
+            logger.info("Change action proto was not a single revision update.")
+
+            // We had a group change proto with no snapshot, but the change was
+            // not a single revision update.
+            throw GroupsV2Error.groupChangeProtoForIncompatibleRevision
         } else {
             owsFailDebug("neither a snapshot nor a change action (should have been validated earlier)")
             return nil
@@ -890,9 +910,7 @@ private extension GroupV2UpdatesImpl {
                 // group proto's membership). However, as differences only in
                 // "joined via invite link" are ignored when comparing
                 // memberships, getting here is a bug.
-                Logger.verbose("oldGroupModel: \(oldGroupModel.debugDescription)")
-                Logger.verbose("newGroupModel: \(newGroupModel.debugDescription)")
-                Logger.warn("Local and server group models don't match.")
+                logger.warn("Local and server group models don't match.")
             }
         }
 
@@ -910,8 +928,10 @@ private extension GroupV2UpdatesImpl {
         groupThread = try GroupManager.updateExistingGroupThreadInDatabaseAndCreateInfoMessage(
             newGroupModel: newGroupModel,
             newDisappearingMessageToken: newDisappearingMessageToken,
+            newlyLearnedPniToAciAssociations: newlyLearnedPniToAciAssociations,
             groupUpdateSourceAddress: groupUpdateSourceAddressForAttribution,
-            transaction: transaction).groupThread
+            transaction: transaction
+        ).groupThread
 
         // Merge known profile keys, always taking latest.
         profileKeysByUuid.merge(newProfileKeys) { (_, latest) in latest }
@@ -1004,6 +1024,7 @@ private extension GroupV2UpdatesImpl {
             let result = try GroupManager.tryToUpsertExistingGroupThreadInDatabaseAndCreateInfoMessage(
                 newGroupModel: newGroupModel,
                 newDisappearingMessageToken: newDisappearingMessageToken,
+                newlyLearnedPniToAciAssociations: [:], // Not available from snapshots
                 groupUpdateSourceAddress: groupUpdateSourceAddress,
                 canInsert: true,
                 didAddLocalUserToV2Group: false,
@@ -1201,9 +1222,9 @@ extension GroupsV2Error: IsRetryableProvider {
                 .groupDowngradeNotAllowed,
                 .missingGroupChangeProtos,
                 .groupBlocked,
-                .localUserBlockedFromJoining:
-            return false
-        case .serviceRequestHitRecoverable400:
+                .localUserBlockedFromJoining,
+                .groupChangeProtoForIncompatibleRevision,
+                .serviceRequestHitRecoverable400:
             return false
         }
     }

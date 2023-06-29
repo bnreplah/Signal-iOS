@@ -3,10 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
-import SignalServiceKit
-import UIKit
 import SignalMessaging
+import SignalServiceKit
 import SignalUI
 
 protocol Deprecated_ChangePhoneNumberViewDelegate: AnyObject {
@@ -89,9 +87,11 @@ class Deprecated_ChangePhoneNumberController: Dependencies {
         }
         let registrationLockToken: String? = self.registrationLockToken
 
-        let promise = Self.accountManager.requestChangePhoneNumber(newPhoneNumber: newPhoneNumber.e164,
-                                                                   verificationCode: verificationCode,
-                                                                   registrationLock: registrationLockToken)
+        let promise = Self.accountManager.deprecated_requestChangePhoneNumber(
+            newPhoneNumber: newPhoneNumber.e164,
+            verificationCode: verificationCode,
+            registrationLock: registrationLockToken
+        )
 
         ModalActivityIndicatorViewController.present(fromViewController: fromViewController,
                                                      canCancel: false) { modal in
@@ -140,7 +140,7 @@ class Deprecated_ChangePhoneNumberController: Dependencies {
             }
 
             navigationController.popToViewController(rootViewController, animated: true) {
-                let format = NSLocalizedString(
+                let format = OWSLocalizedString(
                     "SETTINGS_CHANGE_PHONE_NUMBER_CHANGE_SUCCESSFUL_FORMAT",
                     comment: "Message indicating that 'change phone number' was successful. Embeds: {{ the user's new phone number }}")
                 OWSActionSheets.showActionSheet(
@@ -173,7 +173,7 @@ class Deprecated_ChangePhoneNumberController: Dependencies {
             }
 
             Logger.warn("Error: \(error)")
-            OWSActionSheets.showActionSheet(title: NSLocalizedString("REGISTRATION_VERIFICATION_FAILED_TITLE", comment: "Alert view title"),
+            OWSActionSheets.showActionSheet(title: OWSLocalizedString("REGISTRATION_VERIFICATION_FAILED_TITLE", comment: "Alert view title"),
                                             message: error.userErrorDescription,
                                             fromViewController: fromViewController)
         }

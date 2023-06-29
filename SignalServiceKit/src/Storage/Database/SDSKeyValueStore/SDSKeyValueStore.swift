@@ -529,6 +529,10 @@ public class SDSKeyValueStore: NSObject {
                 }
                 return numberOfKeys
             } catch {
+                DatabaseCorruptionState.flagDatabaseReadCorruptionIfNecessary(
+                    userDefaults: CurrentAppContext().appUserDefaults(),
+                    error: error
+                )
                 owsFail("error: \(error)")
             }
         }
@@ -646,6 +650,10 @@ public class SDSKeyValueStore: NSObject {
                                      sql: "SELECT \(self.valueColumn.columnName) FROM \(self.table.tableName) WHERE \(self.keyColumn.columnName) = ? AND \(collectionColumn.columnName) == ?",
                 arguments: [key, collection])
         } catch {
+            DatabaseCorruptionState.flagDatabaseReadCorruptionIfNecessary(
+                userDefaults: CurrentAppContext().appUserDefaults(),
+                error: error
+            )
             owsFailDebug("error: \(error)")
             return nil
         }
@@ -657,7 +665,7 @@ public class SDSKeyValueStore: NSObject {
         switch transaction.writeTransaction {
         case .grdbWrite:
             if let value = value {
-                let encoded = NSKeyedArchiver.archivedData(withRootObject: value)
+                let encoded = try? NSKeyedArchiver.archivedData(withRootObject: value, requiringSecureCoding: false)
                 writeData(encoded, forKey: key, transaction: transaction)
             } else {
                 writeData(nil, forKey: key, transaction: transaction)

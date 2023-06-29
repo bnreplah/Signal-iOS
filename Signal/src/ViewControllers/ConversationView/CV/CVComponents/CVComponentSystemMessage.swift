@@ -5,6 +5,7 @@
 
 import SignalMessaging
 import SignalServiceKit
+import SignalUI
 
 public class CVComponentSystemMessage: CVComponentBase, CVRootComponent {
 
@@ -345,7 +346,7 @@ public class CVComponentSystemMessage: CVComponentBase, CVRootComponent {
             textColor = Theme.conversationButtonTextColor
         }
         return CVLabelConfig(text: action.title,
-                             font: UIFont.ows_dynamicTypeFootnote.ows_semibold,
+                             font: UIFont.dynamicTypeFootnote.semibold(),
                              textColor: textColor,
                              textAlignment: .center)
     }
@@ -355,7 +356,7 @@ public class CVComponentSystemMessage: CVComponentBase, CVRootComponent {
     }
 
     private static var textLabelFont: UIFont {
-        UIFont.ows_dynamicTypeFootnote
+        UIFont.dynamicTypeFootnote
     }
 
     private static let measurementKey_outerHStack = "CVComponentSystemMessage.measurementKey_outerHStack"
@@ -466,6 +467,7 @@ public class CVComponentSystemMessage: CVComponentBase, CVRootComponent {
         }
 
         if let item = componentView.textLabel.itemForGesture(sender: sender) {
+            componentView.textLabel.animate(selectedItem: item)
             componentDelegate.didTapSystemMessageItem(item)
             return true
         }
@@ -609,13 +611,13 @@ extension CVComponentSystemMessage {
            let groupUpdates = infoMessage.groupUpdateItems(transaction: transaction),
            !groupUpdates.isEmpty {
 
-            for (index, update) in groupUpdates.enumerated() {
-                let iconName = Self.iconName(forGroupUpdateType: update.type)
+            for (index, updateItem) in groupUpdates.enumerated() {
+                let iconName = Self.iconName(forGroupUpdateItem: updateItem)
                 labelText.appendTemplatedImage(named: iconName,
                                                font: font,
                                                heightReference: ImageAttachmentHeightReference.lineHeight)
                 labelText.append("  ", attributes: [:])
-                labelText.append(update.text)
+                labelText.append(updateItem.localizedText)
 
                 let isLast = index == groupUpdates.count - 1
                 if !isLast {
@@ -664,18 +666,18 @@ extension CVComponentSystemMessage {
             let displayName = contactsManager.displayName(for: verificationMessage.recipientAddress, transaction: transaction)
             let format = (isVerified
                             ? (verificationMessage.isLocalChange
-                                ? NSLocalizedString("VERIFICATION_STATE_CHANGE_FORMAT_VERIFIED_LOCAL",
+                                ? OWSLocalizedString("VERIFICATION_STATE_CHANGE_FORMAT_VERIFIED_LOCAL",
                                                     comment: "Format for info message indicating that the verification state was verified on this device. Embeds {{user's name or phone number}}.")
-                                : NSLocalizedString("VERIFICATION_STATE_CHANGE_FORMAT_VERIFIED_OTHER_DEVICE",
+                                : OWSLocalizedString("VERIFICATION_STATE_CHANGE_FORMAT_VERIFIED_OTHER_DEVICE",
                                                     comment: "Format for info message indicating that the verification state was verified on another device. Embeds {{user's name or phone number}}."))
                             : (verificationMessage.isLocalChange
-                                ? NSLocalizedString("VERIFICATION_STATE_CHANGE_FORMAT_NOT_VERIFIED_LOCAL",
+                                ? OWSLocalizedString("VERIFICATION_STATE_CHANGE_FORMAT_NOT_VERIFIED_LOCAL",
                                                     comment: "Format for info message indicating that the verification state was unverified on this device. Embeds {{user's name or phone number}}.")
-                                : NSLocalizedString("VERIFICATION_STATE_CHANGE_FORMAT_NOT_VERIFIED_OTHER_DEVICE",
+                                : OWSLocalizedString("VERIFICATION_STATE_CHANGE_FORMAT_NOT_VERIFIED_OTHER_DEVICE",
                                                     comment: "Format for info message indicating that the verification state was unverified on another device. Embeds {{user's name or phone number}}.")))
             return String(format: format, displayName)
         } else if let infoMessage = interaction as? TSInfoMessage {
-            return infoMessage.systemMessageText(with: transaction)
+            return infoMessage.conversationSystemMessageComponentText(with: transaction)
         } else if let call = interaction as? TSCall {
             return call.previewText(transaction: transaction)
         } else if let groupCall = interaction as? OWSGroupCallMessage {
@@ -770,100 +772,181 @@ extension CVComponentSystemMessage {
             case .profileUpdate:
                 return Theme.iconImage(.profile16)
             case .phoneNumberChange:
-                let offerTypeString = "phone"
-                let themeString = Theme.isDarkThemeEnabled ? "solid" : "outline"
-                let imageName = "\(offerTypeString)-\(themeString)-16"
-                return UIImage(named: imageName)
+                return Theme.iconImage(.phone16)
             }
         } else if let call = interaction as? TSCall {
-
-            let offerTypeString: String
             switch call.offerType {
             case .audio:
-                offerTypeString = "phone"
+                return Theme.iconImage(.phone16)
             case .video:
-                offerTypeString = "video"
+                return Theme.iconImage(.video16)
             }
-
-            let directionString: String
-            switch call.callType {
-            case .incomingMissed,
-                 .incomingMissedBecauseOfChangedIdentity,
-                 .incomingMissedBecauseOfDoNotDisturb,
-                 .incomingBusyElsewhere,
-                 .incomingDeclined,
-                 .incomingDeclinedElsewhere:
-                directionString = "x"
-            case .incoming,
-                 .incomingIncomplete,
-                 .incomingAnsweredElsewhere:
-                directionString = "incoming"
-            case .outgoing,
-                 .outgoingIncomplete,
-                 .outgoingMissed:
-                directionString = "outgoing"
-            @unknown default:
-                owsFailDebug("Unknown value.")
-                return nil
-            }
-
-            let themeString = Theme.isDarkThemeEnabled ? "solid" : "outline"
-            let imageName = "\(offerTypeString)-\(directionString)-\(themeString)-16"
-            return UIImage(named: imageName)
         } else if nil != interaction as? OWSGroupCallMessage {
-            let imageName = Theme.isDarkThemeEnabled ? "video-solid-16" : "video-outline-16"
-            return UIImage(named: imageName)
+            return Theme.iconImage(.video16)
         } else {
             owsFailDebug("Unknown interaction type: \(type(of: interaction))")
             return nil
         }
     }
 
-    private static func iconName(forGroupUpdateType groupUpdateType: GroupUpdateType) -> String {
-        switch groupUpdateType {
-        case .userMembershipState_left:
+    private static func iconName(forGroupUpdateItem groupUpdateItem: GroupUpdateItem) -> String {
+        switch groupUpdateItem {
+        case
+                .localUserLeft,
+                .otherUserLeft:
             return Theme.iconName(.leave16)
-        case .userMembershipState_removed:
+        case
+                .localUserRemoved,
+                .localUserRemovedByUnknownUser,
+                .otherUserRemovedByLocalUser,
+                .otherUserRemoved:
             return Theme.iconName(.memberRemove16)
-        case .userMembershipState_invited,
-             .userMembershipState_added,
-             .userMembershipState_invitesNew:
+        case
+                .unnamedUsersWereInvitedByLocalUser,
+                .unnamedUsersWereInvitedByOtherUser,
+                .unnamedUsersWereInvitedByUnknownUser,
+                .localUserWasInvitedByLocalUser,
+                .localUserWasInvitedByOtherUser,
+                .localUserWasInvitedByUnknownUser,
+                .otherUserWasInvitedByLocalUser,
+                .localUserAddedByLocalUser,
+                .localUserAddedByOtherUser,
+                .localUserAddedByUnknownUser,
+                .localUserAcceptedInviteFromUnknownUser,
+                .localUserAcceptedInviteFromInviter,
+                .localUserJoined,
+                .localUserJoinedViaInviteLink,
+                .localUserRequestApproved,
+                .localUserRequestApprovedByUnknownUser,
+                .otherUserAddedByLocalUser,
+                .otherUserAddedByOtherUser,
+                .otherUserAddedByUnknownUser,
+                .otherUserAcceptedInviteFromLocalUser,
+                .otherUserAcceptedInviteFromInviter,
+                .otherUserAcceptedInviteFromUnknownUser,
+                .otherUserJoined,
+                .otherUserJoinedViaInviteLink,
+                .otherUserRequestApprovedByLocalUser,
+                .otherUserRequestApproved:
             return Theme.iconName(.memberAdded16)
-        case .groupCreated,
-             .generic,
-             .debug,
-             .userMembershipState,
-             .userMembershipState_invalidInvitesRemoved,
-             .userMembershipState_invalidInvitesAdded,
-             .groupInviteLink,
-             .groupGroupLinkPromotion:
+        case
+                .createdByLocalUser,
+                .createdByOtherUser,
+                .createdByUnknownUser,
+                .genericUpdateByLocalUser,
+                .genericUpdateByOtherUser,
+                .genericUpdateByUnknownUser,
+                .localUserRequestedToJoin,
+                .localUserRequestCanceledByLocalUser,
+                .localUserRequestRejectedByUnknownUser,
+                .otherUserRequestedToJoin,
+                .otherUserRequestCanceledByOtherUser,
+                .otherUserRequestRejectedByLocalUser,
+                .otherUserRequestRejectedByOtherUser,
+                .otherUserRequestRejectedByUnknownUser,
+                .invalidInvitesAddedByLocalUser,
+                .invalidInvitesAddedByOtherUser,
+                .invalidInvitesAddedByUnknownUser,
+                .invalidInvitesRemovedByLocalUser,
+                .invalidInvitesRemovedByOtherUser,
+                .invalidInvitesRemovedByUnknownUser,
+                .sequenceOfInviteLinkRequestAndCancels,
+                .inviteLinkResetByLocalUser,
+                .inviteLinkResetByOtherUser,
+                .inviteLinkResetByUnknownUser,
+                .inviteLinkDisabledByLocalUser,
+                .inviteLinkDisabledByOtherUser,
+                .inviteLinkDisabledByUnknownUser,
+                .inviteLinkEnabledWithApprovalByLocalUser,
+                .inviteLinkEnabledWithApprovalByOtherUser,
+                .inviteLinkEnabledWithApprovalByUnknownUser,
+                .inviteLinkEnabledWithoutApprovalByLocalUser,
+                .inviteLinkEnabledWithoutApprovalByOtherUser,
+                .inviteLinkEnabledWithoutApprovalByUnknownUser,
+                .inviteLinkApprovalEnabledByLocalUser,
+                .inviteLinkApprovalEnabledByOtherUser,
+                .inviteLinkApprovalEnabledByUnknownUser,
+                .inviteLinkApprovalDisabledByLocalUser,
+                .inviteLinkApprovalDisabledByOtherUser,
+                .inviteLinkApprovalDisabledByUnknownUser,
+                .wasJustCreatedByLocalUser:
             return Theme.iconName(.group16)
-        case .userMembershipState_invitesDeclined,
-             .userMembershipState_invitesRevoked:
+        case
+                .unnamedUserInvitesWereRevokedByLocalUser,
+                .unnamedUserInvitesWereRevokedByOtherUser,
+                .unnamedUserInvitesWereRevokedByUnknownUser,
+                .localUserDeclinedInviteFromInviter,
+                .localUserDeclinedInviteFromUnknownUser,
+                .localUserInviteRevoked,
+                .localUserInviteRevokedByUnknownUser,
+                .otherUserDeclinedInviteFromLocalUser,
+                .otherUserDeclinedInviteFromInviter,
+                .otherUserDeclinedInviteFromUnknownUser,
+                .otherUserInviteRevokedByLocalUser:
             return Theme.iconName(.memberDeclined16)
-        case .accessAttributes,
-             .accessMembers,
-             .userRole:
+        case
+                .wasMigrated,
+                .attributesAccessChangedByLocalUser,
+                .attributesAccessChangedByOtherUser,
+                .attributesAccessChangedByUnknownUser,
+                .membersAccessChangedByLocalUser,
+                .membersAccessChangedByOtherUser,
+                .membersAccessChangedByUnknownUser,
+                .localUserWasGrantedAdministratorByLocalUser,
+                .localUserWasGrantedAdministratorByOtherUser,
+                .localUserWasGrantedAdministratorByUnknownUser,
+                .localUserWasRevokedAdministratorByLocalUser,
+                .localUserWasRevokedAdministratorByOtherUser,
+                .localUserWasRevokedAdministratorByUnknownUser,
+                .otherUserWasGrantedAdministratorByLocalUser,
+                .otherUserWasGrantedAdministratorByOtherUser,
+                .otherUserWasGrantedAdministratorByUnknownUser,
+                .otherUserWasRevokedAdministratorByLocalUser,
+                .otherUserWasRevokedAdministratorByOtherUser,
+                .otherUserWasRevokedAdministratorByUnknownUser,
+                .announcementOnlyEnabledByLocalUser,
+                .announcementOnlyEnabledByOtherUser,
+                .announcementOnlyEnabledByUnknownUser,
+                .announcementOnlyDisabledByLocalUser,
+                .announcementOnlyDisabledByOtherUser,
+                .announcementOnlyDisabledByUnknownUser:
             return Theme.iconName(.megaphone16)
-        case .groupName,
-             .groupDescriptionUpdated,
-             .groupDescriptionRemoved:
+        case
+                .nameChangedByLocalUser,
+                .nameChangedByOtherUser,
+                .nameChangedByUnknownUser,
+                .nameRemovedByLocalUser,
+                .nameRemovedByOtherUser,
+                .nameRemovedByUnknownUser,
+                .descriptionChangedByLocalUser,
+                .descriptionChangedByOtherUser,
+                .descriptionChangedByUnknownUser,
+                .descriptionRemovedByLocalUser,
+                .descriptionRemovedByOtherUser,
+                .descriptionRemovedByUnknownUser:
             return Theme.iconName(.compose16)
-        case .groupAvatar:
+        case
+                .avatarChangedByLocalUser,
+                .avatarChangedByOtherUser,
+                .avatarChangedByUnknownUser,
+                .avatarRemovedByLocalUser,
+                .avatarRemovedByOtherUser,
+                .avatarRemovedByUnknownUser:
             return Theme.iconName(.photo16)
-        case .disappearingMessagesState,
-             .disappearingMessagesState_enabled:
+        case
+            .disappearingMessagesUpdatedNoOldTokenByLocalUser,
+            .disappearingMessagesUpdatedNoOldTokenByUnknownUser:
             return Theme.iconName(.timer16)
-        case .disappearingMessagesState_disabled:
+        case
+            .disappearingMessagesEnabledByLocalUser,
+            .disappearingMessagesEnabledByOtherUser,
+            .disappearingMessagesEnabledByUnknownUser:
+            return Theme.iconName(.timer16)
+        case
+            .disappearingMessagesDisabledByLocalUser,
+            .disappearingMessagesDisabledByOtherUser,
+            .disappearingMessagesDisabledByUnknownUser:
             return Theme.iconName(.timerDisabled16)
-        case .groupMigrated:
-            return Theme.iconName(.megaphone16)
-        case .groupMigrated_usersInvited:
-            return Theme.iconName(.memberAdded16)
-        case .groupMigrated_usersDropped:
-            return Theme.iconName(.group16)
-        case .isAnnouncementOnly:
-            return Theme.iconName(.megaphone16)
         }
     }
 
@@ -874,7 +957,7 @@ extension CVComponentSystemMessage {
                                                transaction: SDSAnyReadTransaction) -> CVComponentState.SystemMessage {
 
         if threadViewModel.isGroupThread {
-            let title = NSLocalizedString("SYSTEM_MESSAGE_UNKNOWN_THREAD_WARNING_GROUP",
+            let title = OWSLocalizedString("SYSTEM_MESSAGE_UNKNOWN_THREAD_WARNING_GROUP",
                                           comment: "Indicator warning about an unknown group thread.")
 
             let labelText = NSMutableAttributedString()
@@ -889,7 +972,7 @@ extension CVComponentSystemMessage {
                                 action: .didTapUnknownThreadWarningGroup)
             return buildComponentState(title: labelText, action: action)
         } else {
-            let title = NSLocalizedString("SYSTEM_MESSAGE_UNKNOWN_THREAD_WARNING_CONTACT",
+            let title = OWSLocalizedString("SYSTEM_MESSAGE_UNKNOWN_THREAD_WARNING_CONTACT",
                                           comment: "Indicator warning about an unknown contact thread.")
             let action = Action(title: CommonStrings.learnMore,
                                 accessibilityIdentifier: "unknown_thread_warning",
@@ -903,9 +986,10 @@ extension CVComponentSystemMessage {
     static func buildDefaultDisappearingMessageTimerState(
         interaction: TSInteraction,
         threadViewModel: ThreadViewModel,
-        transaction: SDSAnyReadTransaction
+        transaction tx: SDSAnyReadTransaction
     ) -> CVComponentState.SystemMessage {
-        let configuration = OWSDisappearingMessagesConfiguration.fetchOrBuildDefaultUniversalConfiguration(with: transaction)
+        let dmConfigurationStore = DependenciesBridge.shared.disappearingMessagesConfigurationStore
+        let configuration = dmConfigurationStore.fetchOrBuildDefault(for: .universal, tx: tx.asV2Read)
 
         let labelText = NSMutableAttributedString()
         labelText.appendImage(
@@ -915,7 +999,7 @@ extension CVComponentSystemMessage {
         )
         labelText.append("  ", attributes: [:])
 
-        let titleFormat = NSLocalizedString(
+        let titleFormat = OWSLocalizedString(
             "SYSTEM_MESSAGE_DEFAULT_DISAPPEARING_MESSAGE_TIMER_FORMAT",
             comment: "Indicator that the default disappearing message timer will be applied when you send a message. Embeds {default disappearing message time}"
         )
@@ -958,7 +1042,7 @@ extension CVComponentSystemMessage {
             }
 
             if message.wasIdentityVerified {
-                return Action(title: NSLocalizedString("SYSTEM_MESSAGE_ACTION_VERIFY_SAFETY_NUMBER",
+                return Action(title: OWSLocalizedString("SYSTEM_MESSAGE_ACTION_VERIFY_SAFETY_NUMBER",
                                                        comment: "Label for button to verify a user's safety number."),
                               accessibilityIdentifier: "verify_safety_number",
                               action: .didTapPreviouslyVerifiedIdentityChange(address: address))
@@ -972,7 +1056,7 @@ extension CVComponentSystemMessage {
                 owsFailDebug("Invalid interaction.")
                 return nil
             }
-            return Action(title: NSLocalizedString("SYSTEM_MESSAGE_ACTION_VERIFY_SAFETY_NUMBER",
+            return Action(title: OWSLocalizedString("SYSTEM_MESSAGE_ACTION_VERIFY_SAFETY_NUMBER",
                                                    comment: "Label for button to verify a user's safety number."),
                           accessibilityIdentifier: "verify_safety_number",
                           action: .didTapInvalidIdentityKeyErrorMessage(errorMessage: message))
@@ -980,7 +1064,7 @@ extension CVComponentSystemMessage {
              .missingKeyId,
              .noSession,
              .invalidMessage:
-            return Action(title: NSLocalizedString("FINGERPRINT_SHRED_KEYMATERIAL_BUTTON",
+            return Action(title: OWSLocalizedString("FINGERPRINT_SHRED_KEYMATERIAL_BUTTON",
                                                    comment: "Label for button to reset a session."),
                           accessibilityIdentifier: "reset_session",
                           action: .didTapCorruptedMessage(errorMessage: message))
@@ -1031,47 +1115,44 @@ extension CVComponentSystemMessage {
             guard let newGroupModel = infoMessage.newGroupModel else {
                 return nil
             }
+
             if newGroupModel.wasJustCreatedByLocalUserV2 {
-                return Action(title: NSLocalizedString("GROUPS_INVITE_FRIENDS_BUTTON",
-                                                       comment: "Label for 'invite friends to group' button."),
-                              accessibilityIdentifier: "group_invite_friends",
-                              action: .didTapGroupInviteLinkPromotion(groupModel: newGroupModel))
+                return Action(
+                    title: OWSLocalizedString(
+                        "GROUPS_INVITE_FRIENDS_BUTTON",
+                        comment: "Label for 'invite friends to group' button."
+                    ),
+                    accessibilityIdentifier: "group_invite_friends",
+                    action: .didTapGroupInviteLinkPromotion(groupModel: newGroupModel)
+                )
             }
-            guard let oldGroupModel = infoMessage.oldGroupModel else {
+
+            guard
+                let oldGroupModel = infoMessage.oldGroupModel,
+                let groupUpdateItems = infoMessage.groupUpdateItems(transaction: transaction),
+                !groupUpdateItems.isEmpty
+            else {
                 return nil
             }
 
-            guard let groupUpdates = infoMessage.groupUpdateItems(transaction: transaction),
-                  !groupUpdates.isEmpty else {
-                return nil
-            }
-
-            for groupUpdate in groupUpdates {
-                switch groupUpdate.type {
-                case .groupMigrated:
+            for updateItem in groupUpdateItems {
+                switch updateItem {
+                case .wasMigrated:
                     return Action(
                         title: CommonStrings.learnMore,
                         accessibilityIdentifier: "group_migration_learn_more",
-                        action: .didTapShowGroupMigrationLearnMoreActionSheet(
-                            infoMessage: infoMessage,
-                            oldGroupModel: oldGroupModel,
-                            newGroupModel: newGroupModel
-                        )
+                        action: .didTapGroupMigrationLearnMore
                     )
-                case .groupDescriptionUpdated:
+                case
+                        .descriptionChangedByLocalUser,
+                        .descriptionChangedByOtherUser,
+                        .descriptionChangedByUnknownUser:
                     return Action(
                         title: CommonStrings.viewButton,
                         accessibilityIdentifier: "group_description_view",
                         action: .didTapViewGroupDescription(groupModel: newGroupModel)
                     )
-                default:
-                    break
-                }
-            }
-
-            if let singleUpdateMessage = infoMessage.updateMessages?.asSingleMessage {
-                switch singleUpdateMessage {
-                case .sequenceOfInviteLinkRequestAndCancels(_, let isTail):
+                case let .sequenceOfInviteLinkRequestAndCancels(_, _, _, isTail):
                     guard isTail else { return nil }
 
                     guard
@@ -1118,26 +1199,37 @@ extension CVComponentSystemMessage {
                             requesterUuid: requesterUuid
                         )
                     )
+                default:
+                    break
                 }
-            } else {
-                let newlyRequestingMembers = newGroupModel.groupMembership.requestingMembers
-                    .subtracting(oldGroupModel.groupMembership.requestingMembers)
-
-                guard !newlyRequestingMembers.isEmpty else {
-                    return nil
-                }
-
-                let title = (newlyRequestingMembers.count > 1
-                             ? NSLocalizedString("GROUPS_VIEW_REQUESTS_BUTTON",
-                                                 comment: "Label for button that lets the user view the requests to join the group.")
-                             : NSLocalizedString("GROUPS_VIEW_REQUEST_BUTTON",
-                                                 comment: "Label for button that lets the user view the request to join the group."))
-                return Action(
-                    title: title,
-                    accessibilityIdentifier: "show_group_requests_button",
-                    action: .didTapShowConversationSettingsAndShowMemberRequests
-                )
             }
+
+            let newlyRequestingMembers = newGroupModel.groupMembership.requestingMembers
+                .subtracting(oldGroupModel.groupMembership.requestingMembers)
+
+            guard !newlyRequestingMembers.isEmpty else {
+                return nil
+            }
+
+            let title: String = {
+                if newlyRequestingMembers.count > 1 {
+                    return OWSLocalizedString(
+                        "GROUPS_VIEW_REQUESTS_BUTTON",
+                        comment: "Label for button that lets the user view the requests to join the group."
+                    )
+                } else {
+                    return OWSLocalizedString(
+                        "GROUPS_VIEW_REQUEST_BUTTON",
+                        comment: "Label for button that lets the user view the request to join the group."
+                    )
+                }
+            }()
+
+            return Action(
+                title: title,
+                accessibilityIdentifier: "show_group_requests_button",
+                action: .didTapShowConversationSettingsAndShowMemberRequests
+            )
         case .typeGroupQuit:
             return nil
         case .unknownProtocolVersion:
@@ -1148,7 +1240,7 @@ extension CVComponentSystemMessage {
             guard message.isProtocolVersionUnknown else {
                 return nil
             }
-            return Action(title: NSLocalizedString("UNKNOWN_PROTOCOL_VERSION_UPGRADE_BUTTON",
+            return Action(title: OWSLocalizedString("UNKNOWN_PROTOCOL_VERSION_UPGRADE_BUTTON",
                                                    comment: "Label for button that lets users upgrade the app."),
                           accessibilityIdentifier: "show_upgrade_app_ui",
                           action: .didTapShowUpgradeAppUI)
@@ -1191,7 +1283,7 @@ extension CVComponentSystemMessage {
                 return nil
             }
 
-            return Action(title: NSLocalizedString("UPDATE_CONTACT_ACTION", comment: "Action sheet item"),
+            return Action(title: OWSLocalizedString("UPDATE_CONTACT_ACTION", comment: "Action sheet item"),
                           accessibilityIdentifier: "update_contact",
                           action: .didTapUpdateSystemContact(address: profileChangeAddress,
                                                              newNameComponents: profileChangeNewNameComponents))
@@ -1223,7 +1315,7 @@ extension CVComponentSystemMessage {
                 return nil
             }
 
-            return Action(title: NSLocalizedString("UPDATE_CONTACT_ACTION", comment: "Action sheet item"),
+            return Action(title: OWSLocalizedString("UPDATE_CONTACT_ACTION", comment: "Action sheet item"),
                           accessibilityIdentifier: "update_contact",
                           action: .didTapPhoneNumberChange(uuid: uuid,
                                                            phoneNumberOld: phoneNumberOld,
@@ -1254,7 +1346,7 @@ extension CVComponentSystemMessage {
                 return nil
             }
             // TODO: cvc_didTapGroupCall?
-            return Action(title: NSLocalizedString("CALLBACK_BUTTON_TITLE", comment: "notification action"),
+            return Action(title: OWSLocalizedString("CALLBACK_BUTTON_TITLE", comment: "notification action"),
                           accessibilityIdentifier: "call_back",
                           action: .didTapIndividualCall(call: call))
         case .outgoing,
@@ -1263,7 +1355,7 @@ extension CVComponentSystemMessage {
                 return nil
             }
             // TODO: cvc_didTapGroupCall?
-            return Action(title: NSLocalizedString("CALL_AGAIN_BUTTON_TITLE",
+            return Action(title: OWSLocalizedString("CALL_AGAIN_BUTTON_TITLE",
                                                    comment: "Label for button that lets users call a contact again."),
                           accessibilityIdentifier: "call_again",
                           action: .didTapIndividualCall(call: call))
@@ -1293,8 +1385,8 @@ extension CVComponentSystemMessage {
         // TODO: We need to touch thread whenever current call changes.
         let isCurrentCallForThread = currentCallThreadId == thread.uniqueId
 
-        let joinTitle = NSLocalizedString("GROUP_CALL_JOIN_BUTTON", comment: "Button to join an ongoing group call")
-        let returnTitle = NSLocalizedString("CALL_RETURN_BUTTON", comment: "Button to return to the current call")
+        let joinTitle = OWSLocalizedString("GROUP_CALL_JOIN_BUTTON", comment: "Button to join an ongoing group call")
+        let returnTitle = OWSLocalizedString("CALL_RETURN_BUTTON", comment: "Button to return to the current call")
         let title = isCurrentCallForThread ? returnTitle : joinTitle
 
         return Action(title: title,

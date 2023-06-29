@@ -3,8 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 //
 
-import Foundation
-import UIKit
+import SignalServiceKit
 
 /// Any view controller which wants to be able cancel back button
 /// presses and back gestures should implement this protocol.
@@ -13,10 +12,6 @@ public protocol OWSNavigationChildController: AnyObject {
     /// If non-nil, will use the provided child (should be a child view controller) for
     /// all other protocol methods.
     var childForOWSNavigationConfiguration: OWSNavigationChildController? { get }
-
-    /// If non-nil, will use the provided child (should be a child view controller) for
-    /// all other protocol methods.
-    var objcChildForOWSNavigationConfiguration: OWSViewControllerObjc? { get }
 
     /// Will be called if the back button was pressed or if a back gesture
     /// was performed but not if the view is popped programmatically.
@@ -40,8 +35,6 @@ extension OWSNavigationChildController {
 
     public var childForOWSNavigationConfiguration: OWSNavigationChildController? { nil }
 
-    public var objcChildForOWSNavigationConfiguration: OWSViewControllerObjc? { nil }
-
     public var shouldCancelNavigationBack: Bool { false }
 
     public var preferredNavigationBarStyle: OWSNavigationBarStyle { .blur }
@@ -54,7 +47,6 @@ extension OWSNavigationChildController {
 /// This navigation controller subclass should be used anywhere we might
 /// want to cancel back button presses or back gestures due to, for example,
 /// unsaved changes.
-@objc
 open class OWSNavigationController: OWSNavigationControllerBase {
 
     private var owsNavigationBar: OWSNavigationBar {
@@ -84,28 +76,9 @@ open class OWSNavigationController: OWSNavigationControllerBase {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(themeDidChange),
-            name: .ThemeDidChange,
+            name: .themeDidChange,
             object: nil
         )
-    }
-
-    // On iOS 12, init(navigationBarClass:toolbarClass:) calls
-    // init(nibName:bundle:). In the latest iOS SDK, these are both marked as
-    // designated initializers, so that shouldn't be allowed. In Objective-C,
-    // this resolves to the superclass implementation and behaves properly, but
-    // in Swift, it results in a crash. A no-op implementation avoids the crash
-    // and results in the same behavior as in Objective-C.
-    //
-    // Subclass are required to implement this initializer if they implement
-    // any other initializer. However, the initializer should *always* be an
-    // empty shim that calls `super`. The compiler will force you to initialize
-    // all ivars before calling `super` -- don’t do that. Instead, make ivars
-    // `var` or optional so they don’t need to be modified in this initializer.
-    public required override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        if #available(iOS 13, *) {
-            owsFailDebug("This initializer should never be explicitly executed.")
-        }
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
 
     public override convenience init(rootViewController: UIViewController) {
@@ -155,17 +128,14 @@ open class OWSNavigationController: OWSNavigationControllerBase {
             return super.preferredStatusBarStyle
         } else if let presentedViewController = self.presentedViewController {
             return presentedViewController.preferredStatusBarStyle
-        } else if #available(iOS 13, *) {
-            return Theme.isDarkThemeEnabled ? .lightContent : .darkContent
         } else {
-            return Theme.isDarkThemeEnabled ? .lightContent : super.preferredStatusBarStyle
+            return Theme.isDarkThemeEnabled ? .lightContent : .darkContent
         }
     }
 
     /// Apply any changes to navbar appearance from the top view controller in the stack.
     /// Changes will be automatically applied when a view controller is pushed or popped;
     /// this method is just for use if state changes while the view is on screen.
-    @objc
     public func updateNavbarAppearance(animated: Bool = false) {
         if let topViewController = topViewController {
             updateNavbarAppearance(for: topViewController, fromViewControllerTransition: false, animated: animated)
@@ -355,14 +325,7 @@ extension OWSNavigationController: UINavigationControllerDelegate {
 extension UIViewController {
 
     func getFinalNavigationChildController() -> OWSNavigationChildController? {
-        let child: OWSNavigationChildController
-        if let vc = self as? OWSViewControllerObjc {
-            child = ObjcControllerWrapper(vc)
-        } else if let vc = self as? OWSNavigationChildController {
-            child = vc
-        } else {
-            return nil
-        }
+        guard let child = self as? OWSNavigationChildController else { return nil }
         return child.getFinalChild()
     }
 }
@@ -370,38 +333,9 @@ extension UIViewController {
 extension OWSNavigationChildController {
 
     func getFinalChild() -> OWSNavigationChildController {
-        if let child = self.objcChildForOWSNavigationConfiguration {
-            return ObjcControllerWrapper(child)
-        } else if let child = self.childForOWSNavigationConfiguration {
+        if let child = childForOWSNavigationConfiguration {
             return child.getFinalChild()
         }
         return self
     }
-}
-
-private class ObjcControllerWrapper: OWSNavigationChildController {
-
-    private let objcController: OWSViewControllerObjc
-
-    init(_ objcController: OWSViewControllerObjc) {
-        self.objcController = objcController
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    var childForOWSNavigationConfiguration: OWSNavigationChildController? { nil }
-
-    var objcChildForOWSNavigationConfiguration: OWSViewControllerObjc? { nil }
-
-    var shouldCancelNavigationBack: Bool { objcController.shouldCancelNavigationBack }
-
-    var preferredNavigationBarStyle: OWSNavigationBarStyle {
-        OWSNavigationBarStyle(rawValue: objcController.preferredNavigationBarStyle) ?? .blur
-    }
-
-    var navbarBackgroundColorOverride: UIColor? { objcController.navbarBackgroundColorOverride }
-
-    var prefersNavigationBarHidden: Bool { objcController.prefersNavigationBarHidden }
 }

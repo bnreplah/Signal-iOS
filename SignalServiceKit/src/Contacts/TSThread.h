@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class SignalServiceAddress;
 @class TSInteraction;
 @class TSInvalidIdentityKeyReceivingErrorMessage;
-@class TSThreadReplyInfo;
+@class ThreadReplyInfoObjC;
 
 typedef NS_CLOSED_ENUM(NSUInteger, TSThreadMentionNotificationMode) {
     TSThreadMentionNotificationMode_Default = 0,
@@ -111,10 +111,8 @@ NS_DESIGNATED_INITIALIZER NS_SWIFT_NAME(init(grdbId:uniqueId:conversationColorNa
 /**
  * Get all messages in the thread we weren't able to decrypt
  */
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-- (NSArray<TSInvalidIdentityKeyReceivingErrorMessage *> *)receivedMessagesForInvalidKey:(NSData *)key;
-#pragma clang diagnostic pop
+- (NSArray<TSInvalidIdentityKeyReceivingErrorMessage *> *)receivedMessagesForInvalidKey:(NSData *)key
+                                                                                     tx:(SDSAnyReadTransaction *)tx;
 
 - (BOOL)hasSafetyNumbers;
 
@@ -144,13 +142,6 @@ NS_DESIGNATED_INITIALIZER NS_SWIFT_NAME(init(grdbId:uniqueId:conversationColorNa
 - (void)removeAllThreadInteractionsWithTransaction:(SDSAnyWriteTransaction *)transaction
     NS_SWIFT_NAME(removeAllThreadInteractions(transaction:));
 
-
-#pragma mark Disappearing Messages
-
-- (OWSDisappearingMessagesConfiguration *)disappearingMessagesConfigurationWithTransaction:
-    (SDSAnyReadTransaction *)transaction;
-- (uint32_t)disappearingMessagesDurationWithTransaction:(SDSAnyReadTransaction *)transaction;
-
 /**
  *  Sets the draft of a thread. Typically called when leaving a conversation view.
  *
@@ -158,7 +149,7 @@ NS_DESIGNATED_INITIALIZER NS_SWIFT_NAME(init(grdbId:uniqueId:conversationColorNa
  *  @param transaction Database transaction.
  */
 - (void)updateWithDraft:(nullable MessageBody *)draftMessageBody
-              replyInfo:(nullable TSThreadReplyInfo *)replyInfo
+              replyInfo:(nullable ThreadReplyInfoObjC *)replyInfo
             transaction:(SDSAnyWriteTransaction *)transaction;
 
 @property (atomic, readonly) uint64_t mutedUntilTimestampObsolete;
