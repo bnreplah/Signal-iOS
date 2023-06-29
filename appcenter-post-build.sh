@@ -21,12 +21,27 @@ appname="Signal"
 projectLocation="$appname.xcodeproj"
 debug=true
 
+echo "========================================================================================================================================================================"
+echo "Clean build"
+echo "========================================================================================================================================================================"
+
+xcodebuild clean
+
+echo "========================================================================================================================================================================"
+echo "Install Gen-IR and Generate Dependencies"
+echo "========================================================================================================================================================================"
 brew tap veracode/tap
 brew install gen-ir
+
 make dependencies
 bundle install
 pod install
 
+echo "========================================================================================================================================================================"
+echo "Reading out the configuration structure"
+echo "========================================================================================================================================================================"
+
+xcodebuild -list 
 
 #APPCENTER DEFINED ENV VAR
 echo "APPCENTER_XCODE_PROJECT/WORKSPACE:  $APPCENTER_XCODE_PROJECT"	
@@ -38,6 +53,8 @@ echo "==========================================================================
 echo "creating archive"
 echo "========================================================================================================================================================================"
 xcodebuild archive -workspace $appname.xcworkspace -configuration Debug -scheme $APPCENTER_XCODE_SCHEME -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath $appname.xcarchive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO ENABLE_BITCODE=NO | tee build_log.txt
+cat build_log.txt
+
 if [$debug]; then
       xcodebuild archive -workspace Signal.xcworkspace  -configuration Debug -scheme Signal-Veracode -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath Signal.xcarchive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO ENABLE_BITCODE=NO | tee build_log.txt
       echo "========================================================================================================================================================================"
@@ -63,11 +80,21 @@ echo "GEN-IR Running ###########################################################
 echo "========================================================================================================================================================================"
 gen-ir build_log.txt $appname.xcarchive/ --project-path $projectLocation 
 
+echo "========================================================================================================================================================================" 
+echo "Contents of archive"
+echo "========================================================================================================================================================================"
+
+ls -la $appname.xcarchive
+
 if [$debug]; then
   echo "========================================================================================================================================================================" 
   echo "Running modified version to write bitcode out to IR folder"
   echo "========================================================================================================================================================================"
-  gen-ir build_log.txt Signal.xcarchive/IR --project-path ./Signal.xcproj
+  gen-ir build_log.txt Signal.xcarchive/IR --project-path ./Signal.xcodeproj
+  
+  ls -la $appname.xcarchive/IR
+
+
 fi
 
 
