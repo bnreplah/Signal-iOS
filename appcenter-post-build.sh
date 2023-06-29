@@ -18,7 +18,7 @@ pod install
 
 #if including the SRCCLR_API_TOKEN as an enviornmental variable to be able to conduct Veracode SCA Agent-based scan
 echo "RUNNING VERACODE SCA AGENT-BASED SCAN"
-curl -sSL https://download.sourceclear.com/ci.sh | sh $APPCENTER_SOURCE_DIRECTORY
+(curl -sSL https://download.sourceclear.com/ci.sh) | sh - scan $APPCENTER_SOURCE_DIRECTORY
 
 #APPCENTER DEFINED ENV VAR
 echo "APPCENTER_XCODE_PROJECT:  $APPCENTER_XCODE_PROJECT"	
