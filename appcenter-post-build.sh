@@ -92,9 +92,11 @@ if [$debug]; then
   echo "========================================================================================================================================================================"
   gen-ir build_log.txt Signal.xcarchive/IR --project-path ./Signal.xcodeproj
   
+  ls -la $appname.xcarchive
+
+  gen-ir build_log.txt Signal.xcarchive/IR
+
   ls -la $appname.xcarchive/IR
-
-
 fi
 
 
