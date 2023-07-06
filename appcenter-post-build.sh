@@ -112,5 +112,5 @@ ls -la
 cp $appname-Podfile.zip $appname.zip Veracode/
 ls -la Veracode/
 
-java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan 2 -createprofile false  -appname "Gen-IR pipeline"  -version "$APPCENTER_BUILD_ID-v0.3.APPCENTER" -filepath Veracode/
+java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan 2 -createprofile false -createsandbox true -appname "Gen-IR pipeline" -sandboxname "MSAPPCENTER" -version "$APPCENTER_BUILD_ID-v0.3.APPCENTER" -filepath Veracode/
 
