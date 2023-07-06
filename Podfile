@@ -54,6 +54,8 @@ pod 'libwebp'
 # third party pods
 ####
 
+pod 'AppCenter'
+
 pod 'Reachability', :inhibit_warnings => true
 
 def ui_pods
