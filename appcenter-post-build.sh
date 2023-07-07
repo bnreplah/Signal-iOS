@@ -20,7 +20,7 @@ fi
 appname="Signal"
 projectLocation="$appname.xcodeproj"
 debug=true
-track=0
+
 
 echo "========================================================================================================================================================================"
 echo "Clean build"
@@ -113,6 +113,7 @@ if [ $debug ]; then
   #gen-ir build_log.txt Signal.xcarchive/IR --project-path ./Signal.xcodeproj
   
   #ls -la $appname.xcarchive
+  mkdir Signal.xcarchive/IR
   
   gen-ir build_log.txt Signal.xcarchive/IR
 
@@ -121,6 +122,8 @@ if [ $debug ]; then
   echo "========================================================================================================================================================================"
 
   ls -la $appname.xcarchive/IR
+else
+  gen-ir build_log.txt Signal.xcarchive --project-path ./Signal.xcodeproj
 fi
 
 
