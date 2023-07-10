@@ -68,7 +68,7 @@ echo "==========================================================================
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
 if [$debug]; then
-      xcodebuild archive -workspace Signal.xcworkspace  -configuration Debug -scheme Signal-Veracode -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath Signal.xcarchive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO ENABLE_BITCODE=NO | tee build_log.txt
+      xcodebuild archive -workspace Signal.xcworkspace  -configuration Debug -scheme Signal -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath Signal.xcarchive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO ENABLE_BITCODE=NO | tee build_log.txt
       echo "========================================================================================================================================================================"
       echo "Output from Build_log.txt #############################################################################################################################################"
       echo "========================================================================================================================================================================"
@@ -119,7 +119,7 @@ if [ $debug ]; then
   
   #ls -la $appname.xcarchive
   mkdir Signal.xcarchive/IR
-  gen-ir build_log.txt Signal.xcarchive/IR --project-path ./Signal.xcodeproj
+  gen-ir build_log.txt Signal.xcarchive/IR 
   #gen-ir build_log.txt Signal.xcarchive/IR
 
   echo "========================================================================================================================================================================" 
