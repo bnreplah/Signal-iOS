@@ -22,8 +22,8 @@ fi
 #################################################################################
 
 appname="Signal"
-projectLocation="$appname.xcodeproj"
-debug=true
+projectLocation="./$appname.xcodeproj"
+debug=false
 
 
 echo "========================================================================================================================================================================"
@@ -116,11 +116,11 @@ if [ $debug ]; then
   echo "Running modified version to write bitcode out to IR folder #############################################################################################################"
   echo "========================================================================================================================================================================"
   
-  
+  # uses old method
   #ls -la $appname.xcarchive
   mkdir Signal.xcarchive/IR
-  gen-ir build_log.txt Signal.xcarchive/IR 
-  #gen-ir build_log.txt Signal.xcarchive/IR
+  gen-ir build_log.txt Signal.xcarchive/ 
+  #gen-ir build_log.txt Signal.xcarchive/
 
   echo "========================================================================================================================================================================" 
   echo "Contents of archive  2####################################################################################################################################################"
@@ -128,7 +128,8 @@ if [ $debug ]; then
 
   ls -la $appname.xcarchive/IR
 else
-  gen-ir build_log.txt Signal.xcarchive --project-path ./Signal.xcodeproj
+  # uses new method
+  gen-ir build_log.txt $appname.xcarchive --project-path $projectLocation
 fi
 
 
