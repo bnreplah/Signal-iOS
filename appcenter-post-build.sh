@@ -119,8 +119,8 @@ if [ $debug ]; then
   # uses old method
   #ls -la $appname.xcarchive
   mkdir Signal.xcarchive/IR
-  gen-ir build_log.txt Signal.xcarchive/ 
-  #gen-ir build_log.txt Signal.xcarchive/
+  #gen-ir build_log.txt Signal.xcarchive/ 
+  gen-ir build_log.txt $appname.xcarchive/IR
 
   echo "========================================================================================================================================================================" 
   echo "Contents of archive  2####################################################################################################################################################"
