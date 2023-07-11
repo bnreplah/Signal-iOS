@@ -21,10 +21,15 @@ fi
 # Edit these to match your application
 #################################################################################
 
-appname="Signal"
-projectLocation="./$appname.xcodeproj"
-debug=false
-
+appName="Signal"
+projectLocation="./$appName.xcodeproj"
+LEGACY=false
+DEBUG=false
+APPLICATIONNAME="$appname"
+DELETEINCOMPLETE=2
+SANDBOXNAME="MSAPPCENTER"
+CREATESANDBOX=true
+CREATEPROFILE=false
 
 echo "========================================================================================================================================================================"
 echo "Clean build"
@@ -75,7 +80,7 @@ if [$debug]; then
       cat build_log.txt
 else
 
-      xcodebuild archive -workspace $appname.xcworkspace -configuration Debug -scheme $APPCENTER_XCODE_SCHEME -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath $appname.xcarchive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO ENABLE_BITCODE=NO | tee build_log.txt
+      xcodebuild archive -workspace $appName.xcworkspace -configuration Debug -scheme $APPCENTER_XCODE_SCHEME -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath $appName.xcarchive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO ENABLE_BITCODE=NO | tee build_log.txt
       echo "========================================================================================================================================================================"
       echo "Output from Build_log.txt #############################################################################################################################################"
       echo "========================================================================================================================================================================"
@@ -109,27 +114,27 @@ echo "==========================================================================
 echo "Contents of archive 1####################################################################################################################################################"
 echo "========================================================================================================================================================================"
 
-ls -la $appname.xcarchive
+ls -la $appName.xcarchive
 
-if [ $debug ]; then
+if [ $LEGACY ]; then
   echo "========================================================================================================================================================================" 
   echo "Running modified version to write bitcode out to IR folder #############################################################################################################"
   echo "========================================================================================================================================================================"
   
   # uses old method
   #ls -la $appname.xcarchive
-  mkdir Signal.xcarchive/IR
+  mkdir $appName.xcarchive/IR
   #gen-ir build_log.txt Signal.xcarchive/ 
-  gen-ir build_log.txt $appname.xcarchive/IR
+  gen-ir build_log.txt $appName.xcarchive/IR
 
   echo "========================================================================================================================================================================" 
   echo "Contents of archive  2####################################################################################################################################################"
   echo "========================================================================================================================================================================"
 
-  ls -la $appname.xcarchive/IR
+  ls -la $appName.xcarchive/IR
 else
   # uses new method
-  gen-ir build_log.txt $appname.xcarchive --project-path $projectLocation
+  gen-ir build_log.txt $appName.xcarchive --project-path $projectLocation
 fi
 
 
@@ -137,13 +142,13 @@ echo "==========================================================================
 echo "Zipping up artifact ####################################################################################################################################################"
 echo "========================================================================================================================================================================"
 
-zip -r $appname.zip $appname.xcarchive
+zip -r $appName.zip $appName.xcarchive
 zip -r $appname-Podfile.zip Podfile.lock Gemfile.lock Pods/
 ls -la
 
 mkdir Veracode/
 ls -la
-cp $appname-Podfile.zip $appname.zip Veracode/
+cp $appName-Podfile.zip $appName.zip Veracode/
 ls -la Veracode/
 
 
@@ -152,5 +157,5 @@ echo "Veracode Upload and Scan  ################################################
 echo "========================================================================================================================================================================"
 
 
-java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan 2 -createprofile false -createsandbox true -appname "Gen-IR pipeline" -sandboxname "MSAPPCENTER" -version "$APPCENTER_BUILD_ID-v0.3.APPCENTER" -filepath Veracode/
+java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan $DELETEINCOMPLETE -createprofile $CREATEPROFILE -createsandbox $CREATESANDBOX -appname "$APPLICATIONNAME" -sandboxname "$SANDBOXNAME" -version "$APPCENTER_BUILD_ID-v0.3.APPCENTER" -filepath Veracode/
 
