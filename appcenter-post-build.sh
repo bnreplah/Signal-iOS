@@ -79,7 +79,7 @@ fi
 # Parameters for Veracode Upload and Scan
 ###############################################################################
 
-APPLICATIONNAME="$appname"
+APPLICATIONNAME="$appName"
 DELETEINCOMPLETE=0                # Default is [(0): don't delete a scan ,(1): delete any scan that is not in progress and doesn't have results ready,(2): delete any scan that doesn't have results ready]  
 SANDBOXNAME="MSAPPCENTER"
 CREATESANDBOX=true
@@ -168,13 +168,13 @@ if [ -n $SRCCLR_API_TOKEN ]; then
   ls -la 
 fi
 
-#gen-ir build_log.txt $appname.xcarchive/IR
+#gen-ir build_log.txt $appName.xcarchive/IR
 #updated version
 #::SCN012
 echo "========================================================================================================================================================================"
 echo "GEN-IR Running #########################################################################################################################################################"
 echo "========================================================================================================================================================================"
-#gen-ir build_log.txt $appname.xcarchive/ --project-path $projectLocation 
+#gen-ir build_log.txt $appName.xcarchive/ --project-path $projectLocation 
 echo "========================================================================================================================================================================" 
 echo "Contents of archive 1####################################################################################################################################################"
 echo "========================================================================================================================================================================"
@@ -189,7 +189,7 @@ if [ $LEGACY ]; then
   echo "========================================================================================================================================================================"
   
   # uses old method
-  #ls -la $appname.xcarchive
+  #ls -la $appName.xcarchive
   #mkdir $appName.xcarchive/IR
   #gen-ir build_log.txt Signal.xcarchive/ 
   gen-ir build_log.txt $appName.xcarchive/IR
@@ -212,7 +212,7 @@ echo "==========================================================================
 zip -r $appName.zip $appName.xcarchive
 
 # This section is also specific to your configuration. Make sure to include the necessary SCA component files such as the lock files from your enviornment
-zip -r $appname-Podfile.zip Podfile.lock Gemfile.lock 
+zip -r $appName-Podfile.zip Podfile.lock Gemfile.lock 
 ls -la
 
 #::SCN014
@@ -242,13 +242,13 @@ fi
 
 if [ $DEBUG ]; then
   echo "[DEBUG]:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
-  java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan 2 -createprofile false -createsandbox true -appname "$APPLICATIONNAME" -sandboxname "$SANDBOXNAME" -version "$APPCENTER_BUILD_ID-v0.3.APPCENTER" -filepath Veracode/
+  java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan 2 -createprofile false -createsandbox true -appName "$APPLICATIONNAME" -sandboxname "$SANDBOXNAME" -version "$APPCENTER_BUILD_ID-v0.3.APPCENTER" -filepath Veracode/
 else
 
  if [ -n $SANDBOXNAME ]; then
-    java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan $DELETEINCOMPLETE -createprofile $CREATEPROFILE -createsandbox $CREATESANDBOX -appname "$APPLICATIONNAME" -sandboxname "$SANDBOXNAME" -version "$APPCENTER_BUILD_ID-APPCENTER" -filepath Veracode/ $OPTARGS
+    java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan $DELETEINCOMPLETE -createprofile $CREATEPROFILE -createsandbox $CREATESANDBOX -appName "$APPLICATIONNAME" -sandboxname "$SANDBOXNAME" -version "$APPCENTER_BUILD_ID-APPCENTER" -filepath Veracode/ $OPTARGS
   else
-    java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan $DELETEINCOMPLETE -createprofile $CREATEPROFILE -appname "$APPLICATIONNAME" -version "$APPCENTER_BUILD_ID-APPCENTER" -filepath Veracode/ $OPTARGS
+    java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan $DELETEINCOMPLETE -createprofile $CREATEPROFILE -appName "$APPLICATIONNAME" -version "$APPCENTER_BUILD_ID-APPCENTER" -filepath Veracode/ $OPTARGS
   fi
 
 fi
