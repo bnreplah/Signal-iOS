@@ -156,6 +156,14 @@ echo "==========================================================================
 echo "Veracode Upload and Scan  ##############################################################################################################################################"
 echo "========================================================================================================================================================================"
 
+if [ $debug ]; then
+  java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan 2 -createprofile false -createsandbox true -appname "$APPLICATIONNAME" -sandboxname "$SANDBOXNAME" -version "$APPCENTER_BUILD_ID-v0.3.APPCENTER" -filepath Veracode/
+else
 
-java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan $DELETEINCOMPLETE -createprofile $CREATEPROFILE -createsandbox $CREATESANDBOX -appname "$APPLICATIONNAME" -sandboxname "$SANDBOXNAME" -version "$APPCENTER_BUILD_ID-v0.3.APPCENTER" -filepath Veracode/
+ if [ -n $SANDBOXNAME ]; then
+    java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan $DELETEINCOMPLETE -createprofile $CREATEPROFILE -createsandbox $CREATESANDBOX -appname "$APPLICATIONNAME" -sandboxname "$SANDBOXNAME" -version "$APPCENTER_BUILD_ID-v0.3.APPCENTER" -filepath Veracode/
+  else
+    java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan $DELETEINCOMPLETE -createprofile $CREATEPROFILE -appname "$APPLICATIONNAME" -version "$APPCENTER_BUILD_ID-v0.3.APPCENTER" -filepath Veracode/
+  fi
 
+fi
