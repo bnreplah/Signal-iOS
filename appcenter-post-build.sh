@@ -6,10 +6,11 @@
 # How to use:
 #  Place this script inside the root directory of the application connected to Appcenter.
 #  Either modify the constants, or comment them out and set them as enviornmental variables from within Micrsoft App Center
-#  A "VID" and "VKEY" Variable need to be set within Appcenter set with the Veracode API ID and Key 
+#  A "VID" and "VKEY" Variable need to be set within App Center set with the Veracode API ID and Key 
 #  If you provide a "SRCCLR_API_TOKEN" variable in App Center then a SCA Agent scan will be performed. https://docs.veracode.com/r/Setting_Up_Agent_Based_Scans
 # NOTE: make sure that the archive settings in section SCN010 when creating the archive match that of your configuration
 # This shell script is meant to be used as a modifiable document showing a method of integrating veracode into the Microsoft App Center Workflow
+# If the build log is able to be pulled out of App Center, then that can be used instead of the Archive being generated.
 
 #::SCN001
 ##################################################################################
@@ -22,7 +23,7 @@ LEGACY=false
 DEBUG=false
 
 ###################################################################################
-# XCODE Settings
+# XCODE Settings Variables
 ##################################################################################
 
 CODE_SIGN_IDENTITY_V="" 
@@ -126,11 +127,13 @@ echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 echo "APPCENTER_XCODE_PROJECT/WORKSPACE:  $APPCENTER_XCODE_PROJECT"	
 echo "APPCENTER_XCODE_SCHEME: $APPCENTER_XCODE_SCHEME"
 echo "APPCENTER_SOURCE_DIRECTORY: $APPCENTER_SOURCE_DIRECTORY"
-ls $APPCENTER_SOURCE_DIRECTORY
 echo "APPCENTER_OUTPUT_DIRECTORY: $APPCENTER_OUTPUT_DIRECTORY"
+
+ls $APPCENTER_SOURCE_DIRECTORY
 
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 #::SCN010
+# Creating XCODE Project Archive to be place within
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo "========================================================================================================================================================================"
 echo " Creating Archive"
@@ -145,13 +148,15 @@ if [ $DEBUG ]; then
       echo "========================================================================================================================================================================"
       cat build_log.txt
 else
-
-      xcodebuild archive -workspace $appName.xcworkspace -configuration Debug -scheme $APPCENTER_XCODE_SCHEME -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath $appName.xcarchive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO ENABLE_BITCODE=NO | tee build_log.txt
-      echo "========================================================================================================================================================================"
-      echo "Output from Build_log.txt #############################################################################################################################################"
-      echo "========================================================================================================================================================================"
-      cat build_log.txt
-
+  if [ $LEGACY ]; then
+        xcodebuild archive -workspace $appName.xcworkspace -configuration Debug -scheme $APPCENTER_XCODE_SCHEME -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath $appName.xcarchive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO ENABLE_BITCODE=NO | tee build_log.txt
+        echo "========================================================================================================================================================================"
+        echo "Output from Build_log.txt #############################################################################################################################################"
+        echo "========================================================================================================================================================================"
+        cat build_log.txt
+  else
+    xcodebuild build -project $appName.xcodeproj -scheme $APPCENTER_XCODE_SCHEME -configuration Debug -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym CODE_SIGN_IDENTITY=$CODE_SIGN_IDENTITY_V CODE_SIGNING_REQUIRED=$CODE_SIGNING_REQUIRED_V CODE_SIGNING_ALLOWED=$CODE_SIGNING_ALLOWED_V ENABLE_BITCODE=NO | gen-ir - ir_files/  --project-path $projectLocation
+  fi
 fi
 
 #::SCN011
@@ -174,7 +179,7 @@ fi
 echo "========================================================================================================================================================================"
 echo "GEN-IR Running #########################################################################################################################################################"
 echo "========================================================================================================================================================================"
-#gen-ir build_log.txt $appName.xcarchive/ --project-path $projectLocation 
+#https://github.com/veracode/gen-ir/
 echo "========================================================================================================================================================================" 
 echo "Contents of archive 1####################################################################################################################################################"
 echo "========================================================================================================================================================================"
@@ -201,6 +206,7 @@ if [ $LEGACY ]; then
   ls -la $appName.xcarchive/IR
 else
   # uses new method
+  # https://docs.veracode.com/r/Generate_IR_to_Package_iOS_and_tvOS_Apps
   gen-ir build_log.txt $appName.xcarchive --project-path $projectLocation
 fi
 
@@ -209,8 +215,11 @@ echo "==========================================================================
 echo "Zipping up artifact ####################################################################################################################################################"
 echo "========================================================================================================================================================================"
 
-zip -r $appName.zip $appName.xcarchive
-
+if [$LEGACY]; then
+  zip -r $appName.zip $appName.xcarchive
+else
+  zip -r $appName.zip ir_files/
+fi
 # This section is also specific to your configuration. Make sure to include the necessary SCA component files such as the lock files from your enviornment
 zip -r $appName-Podfile.zip Podfile.lock Gemfile.lock 
 ls -la
