@@ -25,7 +25,7 @@ DEBUG=false
 ###################################################################################
 # XCODE Settings Variables
 ##################################################################################
-
+# Put the location of Your Signing Identity to sign the code with
 CODE_SIGN_IDENTITY_V="" 
 CODE_SIGNING_REQUIRED_V='NO' 
 CODE_SIGNING_ALLOWED_V='NO'
