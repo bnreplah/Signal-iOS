@@ -65,12 +65,15 @@ fi
 # Edit these to match your application
 #################################################################################
 
+#Default
+projectLocation="$appName.xcodeproj"
+
 appName="Signal"
 if [ $DEBUG ]; then
   
   projectLocation="./$appName.xcodeproj"
 
-else
+elif [ $LEGACY ]; then
   projectLocation=$APPCENTER_XCODE_PROJECT
 fi
 
