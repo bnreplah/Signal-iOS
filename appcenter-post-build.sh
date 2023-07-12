@@ -88,7 +88,7 @@ appName="Signal"
 projectLocation="$appName.xcodeproj"
 if [ $DEBUG ]; then
   projectLocation="./$appName.xcodeproj"
-  schemeName="Signal"
+  schemeName="$appName-Veracode"
   
 elif [ $LEGACY ]; then
   projectLocation=$APPCENTER_XCODE_PROJECT
@@ -100,9 +100,9 @@ fi
 # Parameters for Veracode Upload and Scan
 ###############################################################################
 
-#APPLICATIONNAME="$appName"
+#APPLICATIONNAME="$appName"       # Defaults to using enviornmental variable from within MS APP CENTER
 DELETEINCOMPLETE=2                # Default is [(0): don't delete a scan ,(1): delete any scan that is not in progress and doesn't have results ready,(2): delete any scan that doesn't have results ready]  
-SANDBOXNAME="MSAPPCENTER"
+SANDBOXNAME="MSAPPCENTER"         # If null then will skip
 CREATESANDBOX=true
 CREATEPROFILE=false
 OPTARGS=''
@@ -287,6 +287,7 @@ if [ -n $SANDBOXNAME ]; then
     echo "[DEBUG]:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
     java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan 2 -createprofile false -createsandbox true -appname "$APPLICATIONNAME" -sandboxname "$SANDBOXNAME" -version "$APPCENTER_BUILD_ID-APPCENTER" -filepath Veracode/
   else
+    # Default Sandbox
     java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan $DELETEINCOMPLETE -createprofile $CREATEPROFILE -createsandbox $CREATESANDBOX -appname "$APPLICATIONNAME" -sandboxname "$SANDBOXNAME" -version "$APPCENTER_BUILD_ID-APPCENTER" -filepath Veracode/ $OPTARGS
   fi
 else
@@ -294,6 +295,7 @@ else
     echo "[DEBUG]:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
     java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan 1 -createprofile false -appname "$APPLICATIONNAME"  -version "$APPCENTER_BUILD_ID-APPCENTER" -filepath Veracode/ $OPTARGS
   else
+    # Default Policy
     java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan $DELETEINCOMPLETE -createprofile $CREATEPROFILE -appname "$APPLICATIONNAME" -version "$APPCENTER_BUILD_ID-APPCENTER" -filepath Veracode/ $OPTARGS
   fi
 fi
