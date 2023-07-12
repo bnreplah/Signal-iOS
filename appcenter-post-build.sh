@@ -41,6 +41,8 @@ fi
 # XCODE Settings Variables
 ##################################################################################
 # Put the location of Your Signing Identity to sign the code with
+# This is needed for archiving the application. If you already have an archive file produced then this step is not needed and can be commented out.
+# IF the code signing identity is already loaded from MS APP center you may be able to pass an enviornmental variable to call it
 CODE_SIGN_IDENTITY_V="" 
 CODE_SIGNING_REQUIRED_V='NO' 
 CODE_SIGNING_ALLOWED_V='NO'
@@ -79,15 +81,15 @@ fi
 # Local Script Variables
 # Edit these to match your application
 #################################################################################
-
+# Set this manually or configure the appName to be utilized 
 #Default
-projectLocation="$appName.xcodeproj"
-
 appName="Signal"
-if [ $DEBUG ]; then
-  
-  projectLocation="./$appName.xcodeproj"
 
+projectLocation="$appName.xcodeproj"
+if [ $DEBUG ]; then
+  projectLocation="./$appName.xcodeproj"
+  schemeName="Signal"
+  
 elif [ $LEGACY ]; then
   projectLocation=$APPCENTER_XCODE_PROJECT
 fi
@@ -129,25 +131,27 @@ bundle install
 pod install
 
 #::SCN008
-echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-echo "========================================================================================================================================================================"
-echo "Reading out the configuration structure"
-echo "========================================================================================================================================================================"
-echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-xcodebuild -list 
+#echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+#echo "========================================================================================================================================================================"
+#echo "Reading out the configuration structure"
+#echo "========================================================================================================================================================================"
+#echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+#xcodebuild -list 
 
 #::SCN009
 #APPCENTER DEFINED ENV VAR
-echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-echo "= App Center Defined  Variables      ===================================================================================================================================" 
-echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+if [ "$DEBUG" = true ]; then
+  echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+  echo "= App Center Defined  Variables      ===================================================================================================================================" 
+  echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
-echo "APPCENTER_XCODE_PROJECT/WORKSPACE:  $APPCENTER_XCODE_PROJECT"	
-echo "APPCENTER_XCODE_SCHEME: $APPCENTER_XCODE_SCHEME"
-echo "APPCENTER_SOURCE_DIRECTORY: $APPCENTER_SOURCE_DIRECTORY"
-echo "APPCENTER_OUTPUT_DIRECTORY: $APPCENTER_OUTPUT_DIRECTORY"
+  echo "APPCENTER_XCODE_PROJECT/WORKSPACE:  $APPCENTER_XCODE_PROJECT"	
+  echo "APPCENTER_XCODE_SCHEME: $APPCENTER_XCODE_SCHEME"
+  echo "APPCENTER_SOURCE_DIRECTORY: $APPCENTER_SOURCE_DIRECTORY"
+  echo "APPCENTER_OUTPUT_DIRECTORY: $APPCENTER_OUTPUT_DIRECTORY"
 
-ls $APPCENTER_SOURCE_DIRECTORY
+  ls $APPCENTER_SOURCE_DIRECTORY
+fi
 
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 #::SCN010
@@ -157,15 +161,16 @@ echo "==========================================================================
 echo " Creating Archive"
 echo "========================================================================================================================================================================"
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-
+# Debug
 if [ "$DEBUG" = true ]; then
       echo "[DEBUG]:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
-      xcodebuild archive -workspace Signal.xcworkspace  -configuration Debug -scheme Signal -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath Signal.xcarchive CODE_SIGN_IDENTITY=$CODE_SIGN_IDENTITY_V CODE_SIGNING_REQUIRED=$CODE_SIGNING_REQUIRED_V CODE_SIGNING_ALLOWED=$CODE_SIGNING_ALLOWED_V ENABLE_BITCODE=NO | tee build_log.txt
+      xcodebuild archive -workspace $appName.xcworkspace  -configuration Debug -scheme $schemeName -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath $appName.xcarchive CODE_SIGN_IDENTITY=$CODE_SIGN_IDENTITY_V CODE_SIGNING_REQUIRED=$CODE_SIGNING_REQUIRED_V CODE_SIGNING_ALLOWED=$CODE_SIGNING_ALLOWED_V ENABLE_BITCODE=NO | tee build_log.txt
       echo "========================================================================================================================================================================"
       echo "Output from Build_log.txt #############################################################################################################################################"
       echo "========================================================================================================================================================================"
       cat build_log.txt
 else
+  # Legacy Mode
   if [ "$LEGACY" = true ]; then
         xcodebuild archive -workspace $appName.xcworkspace -configuration Debug -scheme $APPCENTER_XCODE_SCHEME -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath $appName.xcarchive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO ENABLE_BITCODE=NO | tee build_log.txt
         echo "========================================================================================================================================================================"
@@ -173,37 +178,45 @@ else
         echo "========================================================================================================================================================================"
         cat build_log.txt
   else
+    # Default
     xcodebuild archive -project $appName.xcodeproj -scheme $APPCENTER_XCODE_SCHEME -configuration Debug -destination generic/platform=iOS -archivePath $appName.xcarchive DEBUG_INFORMATION_FORMAT=dwarf-with-dsym CODE_SIGN_IDENTITY=$CODE_SIGN_IDENTITY_V CODE_SIGNING_REQUIRED=$CODE_SIGNING_REQUIRED_V CODE_SIGNING_ALLOWED=$CODE_SIGNING_ALLOWED_V ENABLE_BITCODE=NO | tee build_log.txt
   fi
 fi
 
 #::SCN011
+################################################################################################################################################################################
+######################################################### Veracode SCA AGENT BASED SCAN ######################################################################################## 
+################################################################################################################################################################################
 #if including the SRCCLR_API_TOKEN as an enviornmental variable to be able to conduct Veracode SCA Agent-based scan
 # comment out the next line if the token is set in appcenter
 # SRCCLR_API_TOKEN=$SRCCLR_API_TOKEN
-if [ -n $SRCCLR_API_TOKEN ]; then
-  
-  echo "========================================================================================================================================================================"
-  echo "RUNNING VERACODE SCA AGENT-BASED SCAN  #################################################################################################################################"
-  echo "========================================================================================================================================================================"
 
-  curl -sSL https://download.sourceclear.com/ci.sh | sh
-  ls -la 
-fi
+#if [ -n $SRCCLR_API_TOKEN ]; then
+#  
+#  echo "========================================================================================================================================================================"
+#  echo "RUNNING VERACODE SCA AGENT-BASED SCAN  #################################################################################################################################"
+#  echo "========================================================================================================================================================================"
+#
+#  curl -sSL https://download.sourceclear.com/ci.sh | sh
+#  ls -la 
+#fi
 
-#gen-ir build_log.txt $appName.xcarchive/IR
+
 #updated version
 #::SCN012
+if [ "$DEBUG" = true ]; then
+  echo "========================================================================================================================================================================" 
+  echo "Contents of archive 1####################################################################################################################################################"
+  echo "========================================================================================================================================================================"
+
+  ls -la $appName.xcarchive
+fi
+
 echo "========================================================================================================================================================================"
 echo "GEN-IR Running #########################################################################################################################################################"
 echo "========================================================================================================================================================================"
 # See Documentation and Source:
 # https://github.com/veracode/gen-ir/
-echo "========================================================================================================================================================================" 
-echo "Contents of archive 1####################################################################################################################################################"
-echo "========================================================================================================================================================================"
-
-ls -la $appName.xcarchive
 
 #::SCN013
 if [ "$LEGACY" = true ]; then
@@ -235,11 +248,13 @@ echo "==========================================================================
 echo "Zipping up artifact ####################################################################################################################################################"
 echo "========================================================================================================================================================================"
 
-if [ "$LEGACY" = true ]; then
-  zip -r $appName.zip $appName.xcarchive
-else
-  zip -r $appName.zip $appName.xcarchive
-fi
+#if [ "$LEGACY" = true ]; then
+#  zip -r $appName.zip $appName.xcarchive
+#else
+#  zip -r $appName.zip $appName.xcarchive
+#fi
+
+zip -r $appName.zip $appName.xcarchive
 # This section is also specific to your configuration. Make sure to include the necessary SCA component files such as the lock files from your enviornment
 zip -r $appName-Podfile.zip Podfile.lock Gemfile.lock 
 ls -la
@@ -266,17 +281,23 @@ if [ $DEBUG ]; then
 fi
 
 
-if [ "$DEBUG" = true ]; then
-  echo "[DEBUG]:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
-  java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan 2 -createprofile false -createsandbox true -appname "$APPLICATIONNAME" -sandboxname "$SANDBOXNAME" -version "$APPCENTER_BUILD_ID-v0.3.APPCENTER" -filepath Veracode/
-else
 
- if [ -n $SANDBOXNAME ]; then
+if [ -n $SANDBOXNAME ]; then
+  if [ "$DEBUG" = true ]; then
+    echo "[DEBUG]:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
+    java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan 2 -createprofile false -createsandbox true -appname "$APPLICATIONNAME" -sandboxname "$SANDBOXNAME" -version "$APPCENTER_BUILD_ID-APPCENTER" -filepath Veracode/
+  else
     java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan $DELETEINCOMPLETE -createprofile $CREATEPROFILE -createsandbox $CREATESANDBOX -appname "$APPLICATIONNAME" -sandboxname "$SANDBOXNAME" -version "$APPCENTER_BUILD_ID-APPCENTER" -filepath Veracode/ $OPTARGS
+  fi
+else
+   if [ "$DEBUG" = true ]; then
+    echo "[DEBUG]:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
+    java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan 1 -createprofile false -appname "$APPLICATIONNAME"  -version "$APPCENTER_BUILD_ID-APPCENTER" -filepath Veracode/ $OPTARGS
   else
     java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan $DELETEINCOMPLETE -createprofile $CREATEPROFILE -appname "$APPLICATIONNAME" -version "$APPCENTER_BUILD_ID-APPCENTER" -filepath Veracode/ $OPTARGS
   fi
-
 fi
+
+
 
 #EOF
