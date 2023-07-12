@@ -43,6 +43,7 @@ fi
 # Put the location of Your Signing Identity to sign the code with
 # This is needed for archiving the application. If you already have an archive file produced then this step is not needed and can be commented out.
 # IF the code signing identity is already loaded from MS APP center you may be able to pass an enviornmental variable to call it
+# https://learn.microsoft.com/en-us/appcenter/build/custom/variables/#pre-defined-variables
 CODE_SIGN_IDENTITY_V="" 
 CODE_SIGNING_REQUIRED_V='NO' 
 CODE_SIGNING_ALLOWED_V='NO'
@@ -100,7 +101,7 @@ fi
 # Parameters for Veracode Upload and Scan
 ###############################################################################
 
-#APPLICATIONNAME="$appName"       # Defaults to using enviornmental variable from within MS APP CENTER
+#APPLICATIONNAME="$appName"       # Comment out to use enviornmental variable from within MS APP CENTER
 DELETEINCOMPLETE=2                # Default is [(0): don't delete a scan ,(1): delete any scan that is not in progress and doesn't have results ready,(2): delete any scan that doesn't have results ready]  
 SANDBOXNAME="MSAPPCENTER"         # If null then will skip
 CREATESANDBOX=true
