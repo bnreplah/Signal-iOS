@@ -173,7 +173,7 @@ else
         echo "========================================================================================================================================================================"
         cat build_log.txt
   else
-    xcodebuild archive -project $appName.xcodeproj -scheme $APPCENTER_XCODE_SCHEME -configuration Debug -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym CODE_SIGN_IDENTITY=$CODE_SIGN_IDENTITY_V CODE_SIGNING_REQUIRED=$CODE_SIGNING_REQUIRED_V CODE_SIGNING_ALLOWED=$CODE_SIGNING_ALLOWED_V ENABLE_BITCODE=NO | gen-ir - $appName.xcarchive ir_files/  --project-path $projectLocation
+    xcodebuild archive -project $appName.xcodeproj -scheme $APPCENTER_XCODE_SCHEME -configuration Debug -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym CODE_SIGN_IDENTITY=$CODE_SIGN_IDENTITY_V CODE_SIGNING_REQUIRED=$CODE_SIGNING_REQUIRED_V CODE_SIGNING_ALLOWED=$CODE_SIGNING_ALLOWED_V ENABLE_BITCODE=NO | tee build_log.txt
   fi
 fi
 
@@ -197,7 +197,8 @@ fi
 echo "========================================================================================================================================================================"
 echo "GEN-IR Running #########################################################################################################################################################"
 echo "========================================================================================================================================================================"
-#https://github.com/veracode/gen-ir/
+# See Documentation and Source:
+# https://github.com/veracode/gen-ir/
 echo "========================================================================================================================================================================" 
 echo "Contents of archive 1####################################################################################################################################################"
 echo "========================================================================================================================================================================"
@@ -226,7 +227,7 @@ else
   # uses new method
   # https://docs.veracode.com/r/Generate_IR_to_Package_iOS_and_tvOS_Apps
   #echo "Default"
-  #gen-ir build_log.txt $appName.xcarchive --project-path $projectLocation
+  gen-ir build_log.txt $appName.xcarchive --project-path $projectLocation
 fi
 
 #::SCN013
@@ -247,7 +248,7 @@ ls -la
 
 mkdir Veracode/
 ls -la
-cp $appName-Podfile.zip $appName.zip Veracode/
+cp $appName-Podfile.zip $appName.zip -t Veracode/
 ls -la Veracode/
 
 #::SCN015
