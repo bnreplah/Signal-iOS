@@ -22,6 +22,21 @@
 LEGACY=false
 DEBUG=false
 
+if [ $LEGACY ]; then
+  echo "----------------------------------------------------------------------------"
+  echo " Legacy is turned on : $LEGACY"
+  echo "----------------------------------------------------------------------------"
+
+fi
+
+if [ $DEBUG ]; then
+
+  echo "----------------------------------------------------------------------------"
+  echo " Debug is turned on : $DEBUG"
+  echo "----------------------------------------------------------------------------"
+
+fi
+
 ###################################################################################
 # XCODE Settings Variables
 ##################################################################################
@@ -221,7 +236,7 @@ echo "==========================================================================
 if [$LEGACY]; then
   zip -r $appName.zip $appName.xcarchive
 else
-  zip -r $appName.zip ir_files/
+  zip -r $appName.zip $appName.xcarchive
 fi
 # This section is also specific to your configuration. Make sure to include the necessary SCA component files such as the lock files from your enviornment
 zip -r $appName-Podfile.zip Podfile.lock Gemfile.lock 
