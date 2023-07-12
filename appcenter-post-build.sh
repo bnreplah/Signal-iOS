@@ -99,7 +99,7 @@ fi
 ###############################################################################
 
 #APPLICATIONNAME="$appName"
-DELETEINCOMPLETE=0                # Default is [(0): don't delete a scan ,(1): delete any scan that is not in progress and doesn't have results ready,(2): delete any scan that doesn't have results ready]  
+DELETEINCOMPLETE=2                # Default is [(0): don't delete a scan ,(1): delete any scan that is not in progress and doesn't have results ready,(2): delete any scan that doesn't have results ready]  
 SANDBOXNAME="MSAPPCENTER"
 CREATESANDBOX=true
 CREATEPROFILE=false
