@@ -173,7 +173,7 @@ else
         echo "========================================================================================================================================================================"
         cat build_log.txt
   else
-    xcodebuild archive -project $appName.xcodeproj -scheme $APPCENTER_XCODE_SCHEME -configuration Debug -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym CODE_SIGN_IDENTITY=$CODE_SIGN_IDENTITY_V CODE_SIGNING_REQUIRED=$CODE_SIGNING_REQUIRED_V CODE_SIGNING_ALLOWED=$CODE_SIGNING_ALLOWED_V ENABLE_BITCODE=NO | tee build_log.txt
+    xcodebuild archive -project $appName.xcodeproj -scheme $APPCENTER_XCODE_SCHEME -configuration Debug -destination generic/platform=iOS -archivePath $appName.xcarchive DEBUG_INFORMATION_FORMAT=dwarf-with-dsym CODE_SIGN_IDENTITY=$CODE_SIGN_IDENTITY_V CODE_SIGNING_REQUIRED=$CODE_SIGNING_REQUIRED_V CODE_SIGNING_ALLOWED=$CODE_SIGNING_ALLOWED_V ENABLE_BITCODE=NO | tee build_log.txt
   fi
 fi
 
