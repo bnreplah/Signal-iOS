@@ -173,14 +173,14 @@ else
         echo "========================================================================================================================================================================"
         cat build_log.txt
   else
-    xcodebuild build -project $appName.xcodeproj -scheme $APPCENTER_XCODE_SCHEME -configuration Debug -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym CODE_SIGN_IDENTITY=$CODE_SIGN_IDENTITY_V CODE_SIGNING_REQUIRED=$CODE_SIGNING_REQUIRED_V CODE_SIGNING_ALLOWED=$CODE_SIGNING_ALLOWED_V ENABLE_BITCODE=NO | gen-ir - $appName.xcarchive ir_files/  --project-path $projectLocation
+    xcodebuild archive -project $appName.xcodeproj -scheme $APPCENTER_XCODE_SCHEME -configuration Debug -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym CODE_SIGN_IDENTITY=$CODE_SIGN_IDENTITY_V CODE_SIGNING_REQUIRED=$CODE_SIGNING_REQUIRED_V CODE_SIGNING_ALLOWED=$CODE_SIGNING_ALLOWED_V ENABLE_BITCODE=NO | gen-ir - $appName.xcarchive ir_files/  --project-path $projectLocation
   fi
 fi
 
 #::SCN011
 #if including the SRCCLR_API_TOKEN as an enviornmental variable to be able to conduct Veracode SCA Agent-based scan
 # comment out the next line if the token is set in appcenter
-SRCCLR_API_TOKEN=$SRCCLR_API_TOKEN
+# SRCCLR_API_TOKEN=$SRCCLR_API_TOKEN
 if [ -n $SRCCLR_API_TOKEN ]; then
   
   echo "========================================================================================================================================================================"
@@ -225,7 +225,7 @@ if [ "$LEGACY" = true ]; then
 else
   # uses new method
   # https://docs.veracode.com/r/Generate_IR_to_Package_iOS_and_tvOS_Apps
-  echo "Default"
+  #echo "Default"
   #gen-ir build_log.txt $appName.xcarchive --project-path $projectLocation
 fi
 
