@@ -22,14 +22,14 @@
 LEGACY=false
 DEBUG=false
 
-if [ $LEGACY ]; then
+if [ "$LEGACY" = true ]; then
   echo "----------------------------------------------------------------------------"
   echo " Legacy is turned on : $LEGACY"
   echo "----------------------------------------------------------------------------"
 
 fi
 
-if [ $DEBUG ]; then
+if [ "$DEBUG" = true ]; then
 
   echo "----------------------------------------------------------------------------"
   echo " Debug is turned on : $DEBUG"
@@ -158,7 +158,7 @@ echo " Creating Archive"
 echo "========================================================================================================================================================================"
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
-if [ $DEBUG ]; then
+if [ "$DEBUG" = true ]; then
       echo "[DEBUG]:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
       xcodebuild archive -workspace Signal.xcworkspace  -configuration Debug -scheme Signal -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath Signal.xcarchive CODE_SIGN_IDENTITY=$CODE_SIGN_IDENTITY_V CODE_SIGNING_REQUIRED=$CODE_SIGNING_REQUIRED_V CODE_SIGNING_ALLOWED=$CODE_SIGNING_ALLOWED_V ENABLE_BITCODE=NO | tee build_log.txt
       echo "========================================================================================================================================================================"
@@ -166,7 +166,7 @@ if [ $DEBUG ]; then
       echo "========================================================================================================================================================================"
       cat build_log.txt
 else
-  if [ $LEGACY ]; then
+  if [ "$LEGACY" = true ]; then
         xcodebuild archive -workspace $appName.xcworkspace -configuration Debug -scheme $APPCENTER_XCODE_SCHEME -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath $appName.xcarchive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO ENABLE_BITCODE=NO | tee build_log.txt
         echo "========================================================================================================================================================================"
         echo "Output from Build_log.txt #############################################################################################################################################"
@@ -205,7 +205,7 @@ echo "==========================================================================
 ls -la $appName.xcarchive
 
 #::SCN013
-if [ $LEGACY ]; then
+if [ "$LEGACY" = true ]; then
   echo "[LEGACY]::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
   echo "========================================================================================================================================================================" 
   echo "Running modified version to write bitcode out to IR folder #############################################################################################################"
@@ -233,7 +233,7 @@ echo "==========================================================================
 echo "Zipping up artifact ####################################################################################################################################################"
 echo "========================================================================================================================================================================"
 
-if [$LEGACY]; then
+if [ "$LEGACY" = true ]; then
   zip -r $appName.zip $appName.xcarchive
 else
   zip -r $appName.zip $appName.xcarchive
@@ -264,7 +264,7 @@ if [ $DEBUG ]; then
 fi
 
 
-if [ $DEBUG ]; then
+if [ "$DEBUG" = true ]; then
   echo "[DEBUG]:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
   java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan 2 -createprofile false -createsandbox true -appname "$APPLICATIONNAME" -sandboxname "$SANDBOXNAME" -version "$APPCENTER_BUILD_ID-v0.3.APPCENTER" -filepath Veracode/
 else
