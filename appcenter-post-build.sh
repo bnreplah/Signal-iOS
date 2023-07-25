@@ -44,7 +44,7 @@ fi
 # This is needed for archiving the application. If you already have an archive file produced then this step is not needed and can be commented out.
 # IF the code signing identity is already loaded from MS APP center you may be able to pass an enviornmental variable to call it
 # https://learn.microsoft.com/en-us/appcenter/build/custom/variables/#pre-defined-variables
-CODE_SIGN_IDENTITY_V="" 
+CODE_SIGN_IDENTITY_V=" " 
 CODE_SIGNING_REQUIRED_V='NO' 
 CODE_SIGNING_ALLOWED_V='NO'
 
@@ -87,7 +87,7 @@ fi
 appName="Signal"
 
 projectLocation="$appName.xcodeproj"
-if [ $DEBUG ]; then
+if [ "$DEBUG" == "true" ]; then
   projectLocation="./$appName.xcodeproj"
   schemeName="$appName-Veracode"
   
@@ -165,7 +165,7 @@ echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Debug
 if [ "$DEBUG" == "true" ]; then
       echo "[DEBUG]:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
-      xcodebuild archive -workspace $appName.xcworkspace  -configuration Debug -scheme $schemeName -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath $appName.xcarchive CODE_SIGN_IDENTITY=$CODE_SIGN_IDENTITY_V CODE_SIGNING_REQUIRED=$CODE_SIGNING_REQUIRED_V CODE_SIGNING_ALLOWED=$CODE_SIGNING_ALLOWED_V ENABLE_BITCODE=NO | tee build_log.txt
+      xcodebuild archive -workspace $appName.xcworkspace  -configuration Debug -scheme $schemeName -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath $appName.xcarchive CODE_SIGN_IDENTITY="$CODE_SIGN_IDENTITY_V" CODE_SIGNING_REQUIRED="$CODE_SIGNING_REQUIRED_V" CODE_SIGNING_ALLOWED="$CODE_SIGNING_ALLOWED_V" ENABLE_BITCODE=NO | tee build_log.txt
       echo "========================================================================================================================================================================"
       echo "Output from Build_log.txt #############################################################################################################################################"
       echo "========================================================================================================================================================================"
