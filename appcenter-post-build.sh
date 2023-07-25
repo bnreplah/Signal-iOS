@@ -22,14 +22,14 @@
 LEGACY=false
 DEBUG=false
 
-if [ "$LEGACY" = true ]; then
+if [ "$LEGACY" == "true" ]; then
   echo "----------------------------------------------------------------------------"
   echo " Legacy is turned on : $LEGACY"
   echo "----------------------------------------------------------------------------"
 
 fi
 
-if [ "$DEBUG" = true ]; then
+if [ "$DEBUG" == "true" ]; then
 
   echo "----------------------------------------------------------------------------"
   echo " Debug is turned on : $DEBUG"
@@ -91,7 +91,7 @@ if [ $DEBUG ]; then
   projectLocation="./$appName.xcodeproj"
   schemeName="$appName-Veracode"
   
-elif [ $LEGACY ]; then
+elif [ "$LEGACY" == "true" ]; then
   projectLocation=$APPCENTER_XCODE_PROJECT
 fi
 
@@ -141,7 +141,7 @@ pod install
 
 #::SCN009
 #APPCENTER DEFINED ENV VAR
-if [ "$DEBUG" = true ]; then
+if [ "$DEBUG" == "true" ]; then
   echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
   echo "= App Center Defined  Variables      ===================================================================================================================================" 
   echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
@@ -163,7 +163,7 @@ echo " Creating Archive"
 echo "========================================================================================================================================================================"
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 # Debug
-if [ "$DEBUG" = true ]; then
+if [ "$DEBUG" == "true" ]; then
       echo "[DEBUG]:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
       xcodebuild archive -workspace $appName.xcworkspace  -configuration Debug -scheme $schemeName -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath $appName.xcarchive CODE_SIGN_IDENTITY=$CODE_SIGN_IDENTITY_V CODE_SIGNING_REQUIRED=$CODE_SIGNING_REQUIRED_V CODE_SIGNING_ALLOWED=$CODE_SIGNING_ALLOWED_V ENABLE_BITCODE=NO | tee build_log.txt
       echo "========================================================================================================================================================================"
@@ -172,7 +172,7 @@ if [ "$DEBUG" = true ]; then
       cat build_log.txt
 else
   # Legacy Mode
-  if [ "$LEGACY" = true ]; then
+  if [ "$LEGACY" == "true" ]; then
         xcodebuild archive -workspace $appName.xcworkspace -configuration Debug -scheme $APPCENTER_XCODE_SCHEME -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath $appName.xcarchive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO ENABLE_BITCODE=NO | tee build_log.txt
         echo "========================================================================================================================================================================"
         echo "Output from Build_log.txt #############################################################################################################################################"
@@ -205,7 +205,7 @@ fi
 
 #updated version
 #::SCN012
-if [ "$DEBUG" = true ]; then
+if [ "$DEBUG" == "true" ]; then
   echo "========================================================================================================================================================================" 
   echo "Contents of archive 1####################################################################################################################################################"
   echo "========================================================================================================================================================================"
@@ -220,7 +220,7 @@ echo "==========================================================================
 # https://github.com/veracode/gen-ir/
 
 #::SCN013
-if [ "$LEGACY" = true ]; then
+if [ "$LEGACY" == "true" ]; then
   echo "[LEGACY]::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
   echo "========================================================================================================================================================================" 
   echo "Running modified version to write bitcode out to IR folder #############################################################################################################"
@@ -271,7 +271,7 @@ ls -la Veracode/
 echo "========================================================================================================================================================================"
 echo "#####  Veracode Upload and Scan  #######################################################################################################################################"
 echo "========================================================================================================================================================================"
-if [ $DEBUG ]; then
+if [ "$DEBUG" == "true" ]; then
   echo "         0000000000000000000000000          1111111    -----------------------------------------------------------"
   echo "         000000              00000        11 111111    ------- Veracode Upload and Scan --------------------------"
   echo "         111111              11111             1111    -----------------------------------------------------------"
@@ -284,7 +284,7 @@ fi
 
 
 if [ -n $SANDBOXNAME ]; then
-  if [ "$DEBUG" = true ]; then
+  if [ "$DEBUG" == "true" ]; then
     echo "[DEBUG]:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
     java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan 2 -createprofile false -createsandbox true -appname "$APPLICATIONNAME" -sandboxname "$SANDBOXNAME" -version "$APPCENTER_BUILD_ID-APPCENTER" -filepath Veracode/
   else
@@ -292,7 +292,7 @@ if [ -n $SANDBOXNAME ]; then
     java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan $DELETEINCOMPLETE -createprofile $CREATEPROFILE -createsandbox $CREATESANDBOX -appname "$APPLICATIONNAME" -sandboxname "$SANDBOXNAME" -version "$APPCENTER_BUILD_ID-APPCENTER" -filepath Veracode/ $OPTARGS
   fi
 else
-   if [ "$DEBUG" = true ]; then
+   if [ "$DEBUG" == "true" ]; then
     echo "[DEBUG]:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
     java -jar VeracodeJavaAPI.jar -action UploadAndScan -vid $VID -vkey $VKEY  -deleteincompletescan 1 -createprofile false -appname "$APPLICATIONNAME"  -version "$APPCENTER_BUILD_ID-APPCENTER" -filepath Veracode/ $OPTARGS
   else
