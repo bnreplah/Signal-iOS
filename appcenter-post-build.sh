@@ -19,8 +19,8 @@
 # DEBUG : true -> Uses Hardcoded Test Values
 # LEGACY: true -> Uses old method of Gen-IR
 
-LEGACY=false
-DEBUG=false
+#LEGACY=true
+#DEBUG=true
 
 if [ "$LEGACY" == "true" ]; then
   echo "----------------------------------------------------------------------------"
