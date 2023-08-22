@@ -19,7 +19,7 @@
 # DEBUG : true -> Uses Hardcoded Test Values
 # LEGACY: true -> Uses old method of Gen-IR
 
-#LEGACY=true
+LEGACY=true
 #DEBUG=true
 
 if [ "$LEGACY" == "true" ]; then
@@ -44,10 +44,13 @@ fi
 # This is needed for archiving the application. If you already have an archive file produced then this step is not needed and can be commented out.
 # IF the code signing identity is already loaded from MS APP center you may be able to pass an enviornmental variable to call it
 # https://learn.microsoft.com/en-us/appcenter/build/custom/variables/#pre-defined-variables
-CODE_SIGN_IDENTITY_V=" " 
-CODE_SIGNING_REQUIRED_V='NO' 
-CODE_SIGNING_ALLOWED_V='NO'
-
+CODE_SIGN_IDENTITY_V="" 
+CODE_SIGNING_REQUIRED_V=NO 
+CODE_SIGNING_ALLOWED_V=NO
+AD_HOC_CODE_SIGNING_ALLOWED=YES
+PROVISIONING_PROFILE=""
+DEBUG_INFORMATION_FORMAT=dwarf-with-dsym
+ENABLE_BITCODE=NO
 echo "======================================================================================"
 echo "===        Microsoft App Center Post Build Script with Veracode Integration        ==="
 #echo "=====        Veracode Unofficial Integration with Microsoft App Center        ========"
@@ -165,7 +168,7 @@ echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Debug
 if [ "$DEBUG" == "true" ]; then
       echo "[DEBUG]:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
-      xcodebuild archive -workspace $appName.xcworkspace  -configuration Debug -scheme $schemeName -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath $appName.xcarchive CODE_SIGN_IDENTITY="$CODE_SIGN_IDENTITY_V" CODE_SIGNING_REQUIRED="$CODE_SIGNING_REQUIRED_V" CODE_SIGNING_ALLOWED="$CODE_SIGNING_ALLOWED_V" ENABLE_BITCODE=NO | tee build_log.txt
+      xcodebuild archive -workspace $appName.xcworkspace  -configuration Debug -scheme $schemeName -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath $appName.xcarchive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO ENABLE_BITCODE=NO AD_HOC_CODE_SIGNING_ALLOWED=YES | tee build_log.txt
       echo "========================================================================================================================================================================"
       echo "Output from Build_log.txt #############################################################################################################################################"
       echo "========================================================================================================================================================================"
@@ -173,7 +176,7 @@ if [ "$DEBUG" == "true" ]; then
 else
   # Legacy Mode
   if [ "$LEGACY" == "true" ]; then
-        xcodebuild archive -workspace $appName.xcworkspace -configuration Debug -scheme $APPCENTER_XCODE_SCHEME -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath $appName.xcarchive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO ENABLE_BITCODE=NO | tee build_log.txt
+        xcodebuild archive -workspace $appName.xcworkspace -configuration Debug -scheme $APPCENTER_XCODE_SCHEME -destination generic/platform=iOS DEBUG_INFORMATION_FORMAT=dwarf-with-dsym -archivePath $appName.xcarchive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO ENABLE_BITCODE=NO AD_HOC_CODE_SIGNING_ALLOWED=YES | tee build_log.txt
         echo "========================================================================================================================================================================"
         echo "Output from Build_log.txt #############################################################################################################################################"
         echo "========================================================================================================================================================================"
@@ -230,7 +233,7 @@ if [ "$LEGACY" == "true" ]; then
   #ls -la $appName.xcarchive
   #mkdir $appName.xcarchive/IR
   #gen-ir build_log.txt Signal.xcarchive/ 
-  gen-ir build_log.txt $appName.xcarchive/IR
+  gen-ir build_log.txt $appName.xcarchive/
 
   echo "========================================================================================================================================================================" 
   echo "Contents of archive  2####################################################################################################################################################"
@@ -242,6 +245,15 @@ else
   # https://docs.veracode.com/r/Generate_IR_to_Package_iOS_and_tvOS_Apps
   #echo "Default"
   gen-ir build_log.txt $appName.xcarchive --project-path $projectLocation
+fi
+
+
+if [ "$DEBUG" == "true" ]; then
+  echo "========================================================================================================================================================================" 
+  echo "Contents of archive 2####################################################################################################################################################"
+  echo "========================================================================================================================================================================"
+
+  ls -la $appName.xcarchive
 fi
 
 #::SCN013
